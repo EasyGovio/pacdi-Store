@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>QR Kod Oluşturucu | PACDI Games</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; user-select:none; -webkit-tap-highlight-color:transparent; }
+        body { background:#04162E; font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif; min-height:100vh; display:flex; justify-content:center; align-items:center; padding:16px; }
+        .game-container { max-width:500px; width:100%; background:rgba(4,22,46,0.85); border-radius:56px; padding:20px 16px 24px; box-shadow:0 20px 35px rgba(0,0,0,0.5); backdrop-filter:blur(2px); border:1px solid rgba(246,180,95,0.3); text-align:center; }
+        .top-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+        .logo { font-size:1.3rem; font-weight:800; color:#F6B45F; }
+        .back-link { color:#F6B45F; text-decoration:none; font-weight:bold; font-size:0.78rem; background:#0a1018; padding:5px 12px; border-radius:40px; border:1px solid rgba(246,180,95,0.3); }
+        .lang-selector { display:flex; gap:6px; margin-bottom:12px; justify-content:flex-end; }
+        .lang-btn { background:#0a1018; border:1px solid #F6B45F; color:#F6B45F; font-size:0.7rem; padding:3px 10px; border-radius:30px; cursor:pointer; }
+        .lang-btn.active { background:#F6B45F; color:#04162E; }
+        .qr-area { background:#0a1018; border-radius:28px; padding:24px 16px; margin-bottom:16px; }
+        .qr-input { width:100%; padding:14px 16px; border-radius:16px; border:2px solid rgba(246,180,95,0.3); background:#1e2a3a; color:#eaf2fb; font-size:1rem; text-align:center; outline:none; font-family:inherit; margin-bottom:16px; }
+        .qr-input:focus { border-color:#F6B45F; }
+        .qr-display { display:flex; justify-content:center; margin:20px 0; min-height:200px; align-items:center; }
+        .qr-display canvas, .qr-display img { border-radius:16px; background:white; padding:10px; }
+        .generate-btn { background:#F6B45F; border:none; font-weight:bold; padding:14px 32px; border-radius:60px; color:#04162E; cursor:pointer; font-size:1rem; width:100%; }
+        .generate-btn:active { transform:scale(0.96); }
+
+        /* İndirme butonları */
+        .download-section { margin-top:16px; display:none; }
+        .download-label { color:rgba(246,180,95,0.7); font-size:0.72rem; margin-bottom:10px; letter-spacing:0.08em; text-transform:uppercase; }
+        .download-btns { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+        .dl-btn { background:#0a1018; border:1px solid rgba(246,180,95,0.4); color:#F6B45F; font-size:0.8rem; font-weight:700; padding:10px 18px; border-radius:40px; cursor:pointer; transition:0.15s; display:flex; align-items:center; gap:6px; }
+        .dl-btn:hover, .dl-btn:active { transform:scale(0.97); }
+        .dl-btn.png { border-color:#2ECC71; color:#2ECC71; }
+        .dl-btn.png:hover { background:#2ECC71; color:#04162E; }
+        .dl-btn.jpg { border-color:#3498DB; color:#3498DB; }
+        .dl-btn.jpg:hover { background:#3498DB; color:#04162E; }
+        .dl-btn.svg { border-color:#9B59B6; color:#9B59B6; }
+        .dl-btn.svg:hover { background:#9B59B6; color:white; }
+
+        /* Kullanım amacı */
+        .purpose-section { margin-top:20px; }
+        .purpose-label { color:rgba(246,180,95,0.8); font-size:0.75rem; margin-bottom:10px; letter-spacing:0.06em; }
+        .purpose-btns { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:16px; }
+        .purpose-btn { background:#0a1018; border:1px solid rgba(255,255,255,0.1); color:#b8d0e8; font-size:0.75rem; padding:7px 14px; border-radius:30px; cursor:pointer; transition:0.15s; }
+        .purpose-btn.selected { background:rgba(246,180,95,0.15); border-color:#F6B45F; color:#F6B45F; }
+
+        /* E-posta bölümü */
+        .email-section { background:rgba(246,180,95,0.06); border:1px solid rgba(246,180,95,0.2); border-radius:20px; padding:16px; margin-top:16px; }
+        .email-title { color:#F6B45F; font-size:0.85rem; font-weight:700; margin-bottom:4px; }
+        .email-sub { color:#9bb7d4; font-size:0.7rem; margin-bottom:12px; line-height:1.4; }
+        .email-row { display:flex; gap:8px; }
+        .email-input { flex:1; padding:10px 14px; border-radius:40px; border:1px solid rgba(246,180,95,0.3); background:#1e2a3a; color:#eaf2fb; font-size:0.85rem; outline:none; font-family:inherit; }
+        .email-input:focus { border-color:#F6B45F; }
+        .email-btn { background:#F6B45F; border:none; color:#04162E; font-weight:700; font-size:0.8rem; padding:10px 16px; border-radius:40px; cursor:pointer; white-space:nowrap; }
+        .email-btn:active { transform:scale(0.96); }
+        .email-skip { color:rgba(255,255,255,0.25); font-size:0.65rem; margin-top:8px; cursor:pointer; text-decoration:underline; }
+        .email-success { color:#2ECC71; font-size:0.8rem; margin-top:8px; display:none; }
+        .email-privacy { color:rgba(255,255,255,0.2); font-size:0.6rem; margin-top:6px; }
+
+        .footer { text-align:center; font-size:0.6rem; color:#6c8fb0; margin-top:12px; }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <div class="top-bar">
+        <div class="logo" id="gameTitle">QR KOD</div>
+        <a href="index.html" class="back-link" id="backLink">← Geri</a>
+    </div>
+    <div class="lang-selector">
+        <button class="lang-btn active" data-lang="tr">TR</button>
+        <button class="lang-btn" data-lang="de">DE</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+
+    <div class="qr-area">
+        <input type="text" class="qr-input" id="qrInput" placeholder="Metin veya link girin..." value="https://pacdi.games">
+        <button class="generate-btn" id="generateBtn">🔳 QR Kod Oluştur</button>
+        <div class="qr-display" id="qrDisplay">
+            <span style="color:#9bb7d4;">QR kod burada görünecek</span>
+        </div>
+
+        <!-- İndirme bölümü -->
+        <div class="download-section" id="downloadSection">
+            <div class="download-label" id="downloadLabel">İndir</div>
+            <div class="download-btns">
+                <button class="dl-btn png" id="dlPng">⬇️ PNG</button>
+                <button class="dl-btn jpg" id="dlJpg">⬇️ JPG</button>
+                <button class="dl-btn svg" id="dlSvg">⬇️ SVG</button>
+            </div>
+
+            <!-- Kullanım amacı -->
+            <div class="purpose-section">
+                <div class="purpose-label" id="purposeLabel">Bu QR kodu ne için kullanıyorsunuz?</div>
+                <div class="purpose-btns">
+                    <button class="purpose-btn" data-purpose="business" id="p1">🏪</button>
+                    <button class="purpose-btn" data-purpose="event" id="p2">📅</button>
+                    <button class="purpose-btn" data-purpose="personal" id="p3">👤</button>
+                    <button class="purpose-btn" data-purpose="other" id="p4">🔧</button>
+                </div>
+            </div>
+
+            <!-- E-posta bölümü -->
+            <div class="email-section" id="emailSection">
+                <div class="email-title" id="emailTitle">📧 Yeni araçlardan haberdar ol</div>
+                <div class="email-sub" id="emailSub">İsteğe bağlı — reklam yok, sadece faydalı güncellemeler.</div>
+                <div id="businessCheck" style="display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;text-align:left;">
+                    <input type="checkbox" id="isBusinessCb" style="margin-top:3px;accent-color:#F6B45F;width:16px;height:16px;flex-shrink:0;">
+                    <label for="isBusinessCb" id="businessLabel" style="color:#b8d0e8;font-size:0.72rem;line-height:1.4;cursor:pointer;"></label>
+                </div>
+                <div class="email-row">
+                    <input type="email" class="email-input" id="emailInput" placeholder="e-posta@adresiniz.com">
+                    <button class="email-btn" id="emailBtn">Katıl</button>
+                </div>
+                <div class="email-success" id="emailSuccess">✓ Teşekkürler! Sizi ekledik.</div>
+                <div class="email-skip" id="emailSkip" onclick="skipEmail()">Şimdi değil</div>
+                <div class="email-privacy" id="emailPrivacy">🔒 E-postanız saklanmaz, üçüncü taraflarla paylaşılmaz.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer" id="footerText">PACDI Games · Hızlı QR kod oluşturucu.</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+    var langData = {
+        tr: {
+            title:"QR KOD", back:"← Geri", generate:"🔳 QR Kod Oluştur",
+            placeholder:"Metin veya link girin...", empty:"QR kod burada görünecek",
+            footer:"PACDI Games · Hızlı QR kod oluşturucu.", downloadLabel:"İndir",
+            purposeLabel:"Bu QR kodu ne için kullanıyorsunuz?",
+            p1:"🏪 İşletmem", p2:"📅 Etkinlik", p3:"👤 Kişisel", p4:"🔧 Diğer",
+            emailTitle:"📧 Yeni araçlardan haberdar ol",
+            emailSub:"İsteğe bağlı — reklam yok, sadece faydalı güncellemeler.",
+            emailPlaceholder:"e-posta@adresiniz.com",
+            emailBtn:"Katıl", emailSkip:"Şimdi değil",
+            emailSuccess:"✓ Teşekkürler! Sizi ekledik.",
+            emailPrivacy:"🔒 E-postanız saklanmaz, üçüncü taraflarla paylaşılmaz.",
+            businessLabel:"🏪 İşletme sahibiyim — dijital çözümler hakkında bilgi almak istiyorum"
+        },
+        de: {
+            title:"QR CODE", back:"← Zurück", generate:"🔳 QR Code erstellen",
+            placeholder:"Text oder Link eingeben...", empty:"QR Code erscheint hier",
+            footer:"PACDI Games · Schneller QR Code Generator.", downloadLabel:"Herunterladen",
+            purposeLabel:"Wofür verwenden Sie diesen QR Code?",
+            p1:"🏪 Geschäft", p2:"📅 Event", p3:"👤 Privat", p4:"🔧 Sonstiges",
+            emailTitle:"📧 Über neue Tools informiert bleiben",
+            emailSub:"Optional — kein Spam, nur nützliche Updates.",
+            emailPlaceholder:"ihre@email.de",
+            emailBtn:"Eintragen", emailSkip:"Nicht jetzt",
+            emailSuccess:"✓ Danke! Sie wurden eingetragen.",
+            emailPrivacy:"🔒 Ihre E-Mail wird nicht gespeichert oder weitergegeben.",
+            businessLabel:"🏪 Ich bin Unternehmer — ich möchte Infos zu digitalen Lösungen erhalten"
+        },
+        en: {
+            title:"QR CODE", back:"← Back", generate:"🔳 Generate QR Code",
+            placeholder:"Enter text or link...", empty:"QR code will appear here",
+            footer:"PACDI Games · Fast QR code generator.", downloadLabel:"Download",
+            purposeLabel:"What will you use this QR code for?",
+            p1:"🏪 Business", p2:"📅 Event", p3:"👤 Personal", p4:"🔧 Other",
+            emailTitle:"📧 Stay updated on new tools",
+            emailSub:"Optional — no spam, just useful updates.",
+            emailPlaceholder:"your@email.com",
+            emailBtn:"Join", emailSkip:"Not now",
+            emailSuccess:"✓ Thank you! You're added.",
+            emailPrivacy:"🔒 Your email is never stored or shared.",
+            businessLabel:"🏪 I\'m a business owner — I\'d like info on digital solutions"
+        }
+    };
+
+    var currentLang = "tr";
+    var currentCanvas = null;
+    var currentText = "";
+    var selectedPurpose = "";
+
+    function updateLanguage() {
+        var t = langData[currentLang];
+        document.getElementById('gameTitle').innerText = t.title;
+        document.getElementById('backLink').innerText = t.back;
+        document.getElementById('generateBtn').innerText = t.generate;
+        document.getElementById('qrInput').placeholder = t.placeholder;
+        document.getElementById('footerText').innerText = t.footer;
+        document.getElementById('downloadLabel').innerText = t.downloadLabel;
+        document.getElementById('purposeLabel').innerText = t.purposeLabel;
+        document.getElementById('p1').innerText = t.p1;
+        document.getElementById('p2').innerText = t.p2;
+        document.getElementById('p3').innerText = t.p3;
+        document.getElementById('p4').innerText = t.p4;
+        document.getElementById('emailTitle').innerText = t.emailTitle;
+        document.getElementById('emailSub').innerText = t.emailSub;
+        document.getElementById('emailInput').placeholder = t.emailPlaceholder;
+        document.getElementById('emailBtn').innerText = t.emailBtn;
+        document.getElementById('emailSkip').innerText = t.emailSkip;
+        document.getElementById('emailSuccess').innerText = t.emailSuccess;
+        document.getElementById('emailPrivacy').innerText = t.emailPrivacy;
+        document.getElementById('businessLabel').innerText = t.businessLabel;
+    }
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        updateLanguage();
+        var btns = document.querySelectorAll('.lang-btn');
+        for(var i = 0; i < btns.length; i++) {
+            btns[i].classList.toggle('active', btns[i].getAttribute('data-lang') === lang);
+        }
+    }
+
+    function generateQR() {
+        var text = document.getElementById('qrInput').value.trim();
+        var display = document.getElementById('qrDisplay');
+        var dlSection = document.getElementById('downloadSection');
+        currentText = text;
+        currentCanvas = null;
+        display.innerHTML = '';
+        dlSection.style.display = 'none';
+
+        if(!text) {
+            display.innerHTML = '<span style="color:#9bb7d4;">' + langData[currentLang].empty + '</span>';
+            return;
+        }
+
+        if(typeof QRCode !== 'undefined') {
+            new QRCode(display, {
+                text: text, width: 200, height: 200,
+                colorDark: '#04162E', colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+            setTimeout(function() {
+                var canvas = display.querySelector('canvas');
+                if(canvas) { currentCanvas = canvas; dlSection.style.display = 'block'; }
+            }, 300);
+        } else {
+            var img = document.createElement('img');
+            img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(text);
+            img.alt = 'QR Code';
+            img.style.borderRadius = '12px';
+            img.crossOrigin = 'anonymous';
+            img.onload = function() {
+                var canvas = document.createElement('canvas');
+                canvas.width = 200; canvas.height = 200;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                currentCanvas = canvas;
+                dlSection.style.display = 'block';
+            };
+            display.appendChild(img);
+        }
+    }
+
+    // Amaç seçimi
+    var purposeBtns = document.querySelectorAll('.purpose-btn');
+    for(var i = 0; i < purposeBtns.length; i++) {
+        purposeBtns[i].addEventListener('click', function() {
+            selectedPurpose = this.getAttribute('data-purpose');
+            for(var j = 0; j < purposeBtns.length; j++) purposeBtns[j].classList.remove('selected');
+            this.classList.add('selected');
+        });
+    }
+
+    // E-posta gönder
+    document.getElementById('emailBtn').addEventListener('click', function() {
+        var email = document.getElementById('emailInput').value.trim();
+        if(!email || email.indexOf('@') === -1) return;
+        // Formspree veya mailto ile gönder
+        var subject = encodeURIComponent('PACDI QR Tool - Yeni Kayıt');
+        var body = encodeURIComponent('E-posta: ' + email + '\nKullanım amacı: ' + selectedPurpose + '\nDil: ' + currentLang);
+        window.location.href = 'mailto:mehmet@askmeai.io?subject=' + subject + '&body=' + body;
+        document.getElementById('emailSuccess').style.display = 'block';
+        document.getElementById('emailInput').value = '';
+        document.getElementById('emailSkip').style.display = 'none';
+    });
+
+    window.skipEmail = function() {
+        document.getElementById('emailSection').style.display = 'none';
+    };
+
+    // İndirme butonları
+    document.getElementById('dlPng').addEventListener('click', function() {
+        if(!currentCanvas) return;
+        var link = document.createElement('a');
+        link.download = 'qr-code.png';
+        link.href = currentCanvas.toDataURL('image/png');
+        link.click();
+    });
+
+    document.getElementById('dlJpg').addEventListener('click', function() {
+        if(!currentCanvas) return;
+        var canvas = document.createElement('canvas');
+        canvas.width = currentCanvas.width; canvas.height = currentCanvas.height;
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(currentCanvas, 0, 0);
+        var link = document.createElement('a');
+        link.download = 'qr-code.jpg';
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+    });
+
+    document.getElementById('dlSvg').addEventListener('click', function() {
+        if(!currentText) return;
+        var link = document.createElement('a');
+        link.download = 'qr-code.svg';
+        link.href = 'https://api.qrserver.com/v1/create-qr-code/?format=svg&size=300x300&data=' + encodeURIComponent(currentText);
+        link.target = '_blank';
+        link.click();
+    });
+
+    document.getElementById('generateBtn').addEventListener('click', generateQR);
+    document.getElementById('qrInput').addEventListener('keydown', function(e) {
+        if(e.key === 'Enter') generateQR();
+    });
+
+    var langBtns = document.querySelectorAll('.lang-btn');
+    for(var i = 0; i < langBtns.length; i++) {
+        langBtns[i].addEventListener('click', function() {
+            var l = this.getAttribute('data-lang');
+            if(l !== currentLang) setLanguage(l);
+        });
+    }
+
+    setLanguage('tr');
+    generateQR();
+})();
+</script>
+</body>
+</html>
