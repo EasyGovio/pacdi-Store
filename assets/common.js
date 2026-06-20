@@ -1,143 +1,234 @@
-// PACDI Store – Ortak JavaScript
+// assets/common.js
 
-(function() {
-  // ---------- Dil verileri ----------
-  const langData = {
-    tr: {
-      title:"QR KOD", back:"← Geri", generate:"🔳 QR Kod Oluştur",
-      placeholder:"Metin veya link girin...", empty:"QR kod burada görünecek",
-      footer:"PACDI Store · Hızlı QR kod oluşturucu.", downloadLabel:"İndir",
-      purposeLabel:"Bu QR kodu ne için kullanıyorsunuz?",
-      p1:"🏪 İşletmem", p2:"📅 Etkinlik", p3:"👤 Kişisel", p4:"🔧 Diğer",
-      emailTitle:"📧 Yeni araçlardan haberdar ol",
-      emailSub:"İsteğe bağlı — reklam yok, sadece faydalı güncellemeler.",
-      emailPlaceholder:"e-posta@adresiniz.com",
-      emailBtn:"Katıl", emailSkip:"Şimdi değil",
-      emailSuccess:"✓ Teşekkürler! Sizi ekledik.",
-      emailPrivacy:"🔒 E-postanız saklanmaz, üçüncü taraflarla paylaşılmaz.",
-      businessLabel:"🏪 İşletme sahibiyim — dijital çözümler hakkında bilgi almak istiyorum"
-    },
-    de: {
-      title:"QR CODE", back:"← Zurück", generate:"🔳 QR Code erstellen",
-      placeholder:"Text oder Link eingeben...", empty:"QR Code erscheint hier",
-      footer:"PACDI Store · Schneller QR Code Generator.", downloadLabel:"Herunterladen",
-      purposeLabel:"Wofür verwenden Sie diesen QR Code?",
-      p1:"🏪 Geschäft", p2:"📅 Event", p3:"👤 Privat", p4:"🔧 Sonstiges",
-      emailTitle:"📧 Über neue Tools informiert bleiben",
-      emailSub:"Optional — kein Spam, nur nützliche Updates.",
-      emailPlaceholder:"ihre@email.de",
-      emailBtn:"Eintragen", emailSkip:"Nicht jetzt",
-      emailSuccess:"✓ Danke! Sie wurden eingetragen.",
-      emailPrivacy:"🔒 Ihre E-Mail wird nicht gespeichert oder weitergegeben.",
-      businessLabel:"🏪 Ich bin Unternehmer — ich möchte Infos zu digitalen Lösungen erhalten"
-    },
-    en: {
-      title:"QR CODE", back:"← Back", generate:"🔳 Generate QR Code",
-      placeholder:"Enter text or link...", empty:"QR code will appear here",
-      footer:"PACDI Store · Fast QR code generator.", downloadLabel:"Download",
-      purposeLabel:"What will you use this QR code for?",
-      p1:"🏪 Business", p2:"📅 Event", p3:"👤 Personal", p4:"🔧 Other",
-      emailTitle:"📧 Stay updated on new tools",
-      emailSub:"Optional — no spam, just useful updates.",
-      emailPlaceholder:"your@email.com",
-      emailBtn:"Join", emailSkip:"Not now",
-      emailSuccess:"✓ Thank you! You're added.",
-      emailPrivacy:"🔒 Your email is never stored or shared.",
-      businessLabel:"🏪 I\'m a business owner — I\'d like info on digital solutions"
-    }
-  };
-
-  let currentLang = "tr";
-  let userToken = localStorage.getItem('token') || null;
-  let isPro = localStorage.getItem('isPro') === 'true';
-
-  // ---------- Dil fonksiyonları ----------
-  function updateLanguage() {
-    const t = langData[currentLang];
-    document.querySelectorAll('[data-lang-key]').forEach(el => {
-      const key = el.getAttribute('data-lang-key');
-      if (t[key] !== undefined) el.innerText = t[key];
-    });
-    // placeholder için özel işlem
-    const placeholderEl = document.querySelector('[data-lang-placeholder]');
-    if (placeholderEl) {
-      const key = placeholderEl.getAttribute('data-lang-placeholder');
-      if (t[key] !== undefined) placeholderEl.placeholder = t[key];
-    }
+// ---------- DİL VERİLERİ ----------
+const langData = {
+  tr: {
+    title: "PACDI Store",
+    menu_home: "🏠 Ana Sayfa",
+    menu_scanner: "📷 Tarayıcı",
+    menu_shortener: "🔗 Kısa Link",
+    menu_password: "🔐 Şifre",
+    login: "Giriş Yap",
+    logout: "Çıkış",
+    pro: "⭐ PRO",
+    dashboard: "📊 QR'larım",
+    guest: "Misafir",
+    user: "👤 Kullanıcı",
+    upgrade: "⬆ Yükselt",
+    already_pro: "Zaten Pro üyesisiniz!",
+    login_prompt_email: "E-posta:",
+    login_prompt_password: "Şifre:",
+    login_success: "Giriş başarılı!",
+    login_fail: "Giriş başarısız: ",
+    logout_success: "Çıkış yapıldı.",
+    need_login: "Lütfen önce giriş yapın.",
+    pro_feature: "Bu özellik Pro aboneliği gerektirir.",
+    paddle_vendor: 12345, // Değiştir
+    paddle_token: "YOUR_PADDLE_CLIENT_TOKEN", // Değiştir
+    paddle_priceId: "pri_xxxxxxxxxxxxx" // Değiştir
+  },
+  de: {
+    title: "PACDI Store",
+    menu_home: "🏠 Startseite",
+    menu_scanner: "📷 Scanner",
+    menu_shortener: "🔗 Kurzlink",
+    menu_password: "🔐 Passwort",
+    login: "Anmelden",
+    logout: "Abmelden",
+    pro: "⭐ PRO",
+    dashboard: "📊 Meine QR-Codes",
+    guest: "Gast",
+    user: "👤 Benutzer",
+    upgrade: "⬆ Upgrade",
+    already_pro: "Sie sind bereits PRO-Mitglied!",
+    login_prompt_email: "E-Mail:",
+    login_prompt_password: "Passwort:",
+    login_success: "Anmeldung erfolgreich!",
+    login_fail: "Anmeldung fehlgeschlagen: ",
+    logout_success: "Abgemeldet.",
+    need_login: "Bitte melden Sie sich zuerst an.",
+    pro_feature: "Dieses Feature erfordert ein PRO-Abonnement.",
+    paddle_vendor: 12345,
+    paddle_token: "YOUR_PADDLE_CLIENT_TOKEN",
+    paddle_priceId: "pri_xxxxxxxxxxxxx"
+  },
+  en: {
+    title: "PACDI Store",
+    menu_home: "🏠 Home",
+    menu_scanner: "📷 Scanner",
+    menu_shortener: "🔗 Short Link",
+    menu_password: "🔐 Password",
+    login: "Login",
+    logout: "Logout",
+    pro: "⭐ PRO",
+    dashboard: "📊 My QR Codes",
+    guest: "Guest",
+    user: "👤 User",
+    upgrade: "⬆ Upgrade",
+    already_pro: "You are already a PRO member!",
+    login_prompt_email: "Email:",
+    login_prompt_password: "Password:",
+    login_success: "Login successful!",
+    login_fail: "Login failed: ",
+    logout_success: "Logged out.",
+    need_login: "Please login first.",
+    pro_feature: "This feature requires a PRO subscription.",
+    paddle_vendor: 12345,
+    paddle_token: "YOUR_PADDLE_CLIENT_TOKEN",
+    paddle_priceId: "pri_xxxxxxxxxxxxx"
   }
+};
 
-  function setLanguage(lang) {
-    currentLang = lang;
-    updateLanguage();
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.lang === lang);
-    });
-    localStorage.setItem('lang', lang);
+let currentLang = "tr";
+let userToken = localStorage.getItem('token') || null;
+let isPro = localStorage.getItem('isPro') === 'true';
+
+// ---------- DİL FONKSİYONLARI ----------
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  updateUI();
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+}
+
+function getLang() {
+  return currentLang;
+}
+
+function t(key) {
+  return langData[currentLang][key] || key;
+}
+
+// ---------- KULLANICI İŞLEMLERİ ----------
+function updateUI() {
+  const userStatus = document.getElementById('userStatus');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const proBtn = document.getElementById('proBtn');
+  const dashboardToggle = document.getElementById('dashboardToggle');
+
+  if (!userStatus) return;
+
+  if (userToken) {
+    userStatus.innerText = t('user');
+    if (loginBtn) loginBtn.style.display = 'none';
+    if (logoutBtn) logoutBtn.style.display = 'inline-block';
+    if (dashboardToggle) dashboardToggle.style.display = 'inline-block';
+    if (proBtn) {
+      proBtn.style.display = 'inline-block';
+      proBtn.innerText = isPro ? t('pro') : t('upgrade');
+    }
+    // Pro özelliklerini aktif/pasif yap (sayfa özelinde)
+    enableProFeatures(isPro);
+  } else {
+    userStatus.innerText = t('guest');
+    if (loginBtn) loginBtn.style.display = 'inline-block';
+    if (logoutBtn) logoutBtn.style.display = 'none';
+    if (proBtn) proBtn.style.display = 'none';
+    if (dashboardToggle) dashboardToggle.style.display = 'none';
+    enableProFeatures(false);
   }
+}
 
-  // ---------- Kullanıcı oturumu ----------
-  function updateUserUI() {
-    const userStatus = document.getElementById('userStatus');
-    const loginBtn = document.getElementById('loginBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const proBtn = document.getElementById('proBtn');
-    const dashboardToggle = document.getElementById('dashboardToggle');
+function enableProFeatures(enable) {
+  // Bu fonksiyon her sayfada override edilebilir
+  // Varsayılan olarak hiçbir şey yapmaz
+}
 
-    if (userToken) {
-      userStatus.innerText = '👤 Kullanıcı';
-      if (loginBtn) loginBtn.style.display = 'none';
-      if (logoutBtn) logoutBtn.style.display = 'inline-block';
-      if (dashboardToggle) dashboardToggle.style.display = 'inline-block';
-      if (proBtn) {
-        proBtn.style.display = 'inline-block';
-        proBtn.innerText = isPro ? '⭐ PRO' : '⬆ Yükselt';
+// ---------- PADDLE ----------
+function initPaddle() {
+  if (typeof Paddle === 'undefined') return;
+  Paddle.Environment.set('sandbox'); // canlıda 'production'
+  Paddle.Initialize({
+    vendor: langData[currentLang].paddle_vendor,
+    token: langData[currentLang].paddle_token,
+  });
+}
+
+function openPaddleCheckout() {
+  if (!userToken) {
+    alert(t('need_login'));
+    return;
+  }
+  if (typeof Paddle === 'undefined') {
+    alert('Paddle yüklenemedi, lütfen sayfayı yenileyin.');
+    return;
+  }
+  const items = [{
+    priceId: langData[currentLang].paddle_priceId,
+    quantity: 1
+  }];
+  Paddle.Checkout.open({
+    items: items,
+    successUrl: 'https://pacdi.store/success',
+    cancelUrl: 'https://pacdi.store/cancel',
+    customerEmail: 'user@example.com',
+  });
+}
+
+// ---------- MENÜ ----------
+function buildMenu() {
+  const nav = document.getElementById('mainNav');
+  if (!nav) return;
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  nav.innerHTML = `
+    <a href="/index.html" class="${currentPage === 'index.html' ? 'active' : ''}">${t('menu_home')}</a>
+    <a href="/scanner.html" class="${currentPage === 'scanner.html' ? 'active' : ''}">${t('menu_scanner')}</a>
+    <a href="/shortener.html" class="${currentPage === 'shortener.html' ? 'active' : ''}">${t('menu_shortener')}</a>
+    <a href="/password.html" class="${currentPage === 'password.html' ? 'active' : ''}">${t('menu_password')}</a>
+  `;
+}
+
+// ---------- LOGIN / LOGOUT ----------
+function loginUser() {
+  const email = prompt(t('login_prompt_email'));
+  if (!email) return;
+  const password = prompt(t('login_prompt_password'));
+  if (!password) return;
+
+  fetch('/api/user/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.token) {
+        userToken = data.token;
+        isPro = data.isPro || false;
+        localStorage.setItem('token', userToken);
+        localStorage.setItem('isPro', JSON.stringify(isPro));
+        updateUI();
+        alert(t('login_success'));
+        if (typeof loadDashboard === 'function') loadDashboard();
+      } else {
+        alert(t('login_fail') + (data.error || ''));
       }
-      // Pro özelliklerini aktif/pasif yap (sayfa içinde ayrıca kontrol edilecek)
-    } else {
-      userStatus.innerText = 'Misafir';
-      if (loginBtn) loginBtn.style.display = 'inline-block';
-      if (logoutBtn) logoutBtn.style.display = 'none';
-      if (proBtn) proBtn.style.display = 'none';
-      if (dashboardToggle) dashboardToggle.style.display = 'none';
-    }
-  }
-
-  // ---------- Paddle ----------
-  function initPaddle() {
-    if (typeof Paddle !== 'undefined') {
-      Paddle.Environment.set('sandbox'); // canlıda 'production'
-      Paddle.Initialize({
-        vendor: 12345, // Değiştirilecek
-        token: 'YOUR_PADDLE_CLIENT_TOKEN',
-      });
-    }
-  }
-
-  function openPaddleCheckout() {
-    if (!userToken) {
-      alert('Lütfen önce giriş yapın.');
-      return;
-    }
-    const items = [{
-      priceId: 'pri_xxxxxxxxxxxxx', // Değiştirilecek
-      quantity: 1
-    }];
-    Paddle.Checkout.open({
-      items: items,
-      successUrl: 'https://pacdi.store/success',
-      cancelUrl: 'https://pacdi.store/cancel',
-      customerEmail: 'user@example.com',
-    });
-  }
-
-  // ---------- Dashboard (tüm sayfalarda kullanılabilir) ----------
-  function loadDashboard() {
-    if (!userToken) return;
-    const qrList = document.getElementById('qrList');
-    if (!qrList) return;
-    fetch('/api/qr/list', {
-      headers: { 'Authorization': 'Bearer ' + userToken }
     })
+    .catch(err => alert('Sunucu hatası: ' + err.message));
+}
+
+function logoutUser() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('isPro');
+  userToken = null;
+  isPro = false;
+  updateUI();
+  const dashboardSection = document.getElementById('dashboardSection');
+  if (dashboardSection) dashboardSection.style.display = 'none';
+  alert(t('logout_success'));
+}
+
+// ---------- DASHBOARD (QR listeleme) ----------
+function loadDashboard() {
+  if (!userToken) return;
+  const qrList = document.getElementById('qrList');
+  if (!qrList) return;
+  fetch('/api/qr/list', {
+    headers: { 'Authorization': 'Bearer ' + userToken }
+  })
     .then(res => res.json())
     .then(qrs => {
       if (!qrs.length) {
@@ -152,26 +243,27 @@
             ${qr.shortCode ? `<span>🔗 /s/${qr.shortCode}</span>` : ''}
           </div>
           <div class="actions">
-            ${qr.type === 'dynamic' ? `<button onclick="window.editQR('${qr._id}')">✏️</button>` : ''}
-            <button class="delete" onclick="window.deleteQR('${qr._id}')">🗑️</button>
+            ${qr.type === 'dynamic' ? `<button onclick="editQR('${qr._id}')">✏️</button>` : ''}
+            <button class="delete" onclick="deleteQR('${qr._id}')">🗑️</button>
           </div>
         </div>
       `).join('');
     })
     .catch(err => console.error('Dashboard yüklenemedi:', err));
-  }
+}
 
-  window.editQR = function(id) {
-    const newUrl = prompt('Yeni hedef URL girin:');
-    if (!newUrl) return;
-    fetch(`/api/qr/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + userToken
-      },
-      body: JSON.stringify({ destinationUrl: newUrl })
-    })
+// ---------- QR DÜZENLEME / SİLME (global) ----------
+window.editQR = function(id) {
+  const newUrl = prompt('Yeni hedef URL girin:');
+  if (!newUrl) return;
+  fetch(`/api/qr/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + userToken
+    },
+    body: JSON.stringify({ destinationUrl: newUrl })
+  })
     .then(res => res.json())
     .then(data => {
       if (data.success) {
@@ -182,14 +274,14 @@
       }
     })
     .catch(err => alert('Sunucu hatası: ' + err.message));
-  };
+};
 
-  window.deleteQR = function(id) {
-    if (!confirm('Bu QR kodunu silmek istediğinize emin misiniz?')) return;
-    fetch(`/api/qr/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': 'Bearer ' + userToken }
-    })
+window.deleteQR = function(id) {
+  if (!confirm('Bu QR kodunu silmek istediğinize emin misiniz?')) return;
+  fetch(`/api/qr/${id}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': 'Bearer ' + userToken }
+  })
     .then(res => res.json())
     .then(data => {
       if (data.success) {
@@ -200,160 +292,60 @@
       }
     })
     .catch(err => alert('Sunucu hatası: ' + err.message));
-  };
+};
 
-  // ---------- Menü oluşturma ----------
-  function buildMenu() {
-    const nav = document.getElementById('mainNav');
-    if (!nav) return;
-    nav.innerHTML = `
-      <div class="top-bar">
-        <div class="logo" data-lang-key="title">QR KOD</div>
-        <div style="display:flex; gap:6px;">
-          <a href="/" class="back-link">🏠</a>
-          <a href="/scanner.html" class="back-link">📷</a>
-          <a href="/shortener.html" class="back-link">🔗</a>
-        </div>
-      </div>
-      <div class="lang-selector">
-        <button class="lang-btn active" data-lang="tr">TR</button>
-        <button class="lang-btn" data-lang="de">DE</button>
-        <button class="lang-btn" data-lang="en">EN</button>
-      </div>
+// ---------- ORTAK BAŞLANGIÇ ----------
+function initCommon() {
+  // Dil
+  const savedLang = localStorage.getItem('lang') || 'tr';
+  setLanguage(savedLang);
+
+  // Menü
+  buildMenu();
+
+  // Kullanıcı panelini oluştur
+  const userPanel = document.getElementById('userPanel');
+  if (userPanel) {
+    userPanel.innerHTML = `
+      <span id="userStatus">${t('guest')}</span>
+      <button id="loginBtn">${t('login')}</button>
+      <button id="logoutBtn" class="logout" style="display:none;">${t('logout')}</button>
+      <button id="proBtn" style="display:none; background:#F6B45F; color:#04162E; border:none; font-weight:bold;">${t('pro')}</button>
+      <button id="dashboardToggle" style="display:none; background:#0a1018; border:1px solid #3498DB; color:#3498DB;">${t('dashboard')}</button>
     `;
-    // Dil butonlarını bağla
-    nav.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const lang = this.dataset.lang;
-        if (lang !== currentLang) setLanguage(lang);
-      });
+    // Olayları bağla
+    document.getElementById('loginBtn').addEventListener('click', loginUser);
+    document.getElementById('logoutBtn').addEventListener('click', logoutUser);
+    document.getElementById('proBtn').addEventListener('click', function() {
+      if (isPro) {
+        alert(t('already_pro'));
+      } else {
+        openPaddleCheckout();
+      }
     });
-    // Mevcut dili aktif yap
-    setLanguage(currentLang);
-  }
-
-  // ---------- Giriş/Çıkış (event'leri bağla) ----------
-  function setupAuthEvents() {
-    const loginBtn = document.getElementById('loginBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const proBtn = document.getElementById('proBtn');
-    const dashboardToggle = document.getElementById('dashboardToggle');
-
-    if (loginBtn) {
-      loginBtn.addEventListener('click', function() {
-        const email = prompt('E-posta:');
-        if (!email) return;
-        const password = prompt('Şifre:');
-        if (!password) return;
-        fetch('/api/user/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.token) {
-            userToken = data.token;
-            isPro = data.isPro || false;
-            localStorage.setItem('token', userToken);
-            localStorage.setItem('isPro', JSON.stringify(isPro));
-            updateUserUI();
-            alert('Giriş başarılı!');
-            loadDashboard();
-          } else {
-            alert('Giriş başarısız: ' + (data.error || ''));
-          }
-        })
-        .catch(err => alert('Sunucu hatası: ' + err.message));
-      });
-    }
-
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', function() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('isPro');
-        userToken = null;
-        isPro = false;
-        updateUserUI();
-        const dashboardSection = document.getElementById('dashboardSection');
-        if (dashboardSection) dashboardSection.style.display = 'none';
-        alert('Çıkış yapıldı.');
-      });
-    }
-
-    if (proBtn) {
-      proBtn.addEventListener('click', function() {
-        if (isPro) {
-          alert('Zaten Pro üyesisiniz!');
+    document.getElementById('dashboardToggle').addEventListener('click', function() {
+      const ds = document.getElementById('dashboardSection');
+      if (ds) {
+        if (ds.style.display === 'none') {
+          ds.style.display = 'block';
+          loadDashboard();
         } else {
-          openPaddleCheckout();
+          ds.style.display = 'none';
         }
-      });
-    }
-
-    if (dashboardToggle) {
-      dashboardToggle.addEventListener('click', function() {
-        const section = document.getElementById('dashboardSection');
-        if (section) {
-          if (section.style.display === 'none') {
-            section.style.display = 'block';
-            loadDashboard();
-          } else {
-            section.style.display = 'none';
-          }
-        }
-      });
-    }
-  }
-
-  // ---------- E-posta aboneliği (tüm sayfalarda) ----------
-  function setupEmailSubscription() {
-    const emailBtn = document.getElementById('emailBtn');
-    if (!emailBtn) return;
-    emailBtn.addEventListener('click', function() {
-      const emailInput = document.getElementById('emailInput');
-      const email = emailInput ? emailInput.value.trim() : '';
-      if (!email || email.indexOf('@') === -1) return;
-      const purpose = document.querySelector('.purpose-btn.selected')?.dataset?.purpose || '';
-      fetch('/api/user/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, purpose, lang: currentLang })
-      })
-      .then(res => res.json())
-      .then(() => {
-        const successEl = document.getElementById('emailSuccess');
-        if (successEl) successEl.style.display = 'block';
-        if (emailInput) emailInput.value = '';
-        const skipEl = document.getElementById('emailSkip');
-        if (skipEl) skipEl.style.display = 'none';
-      })
-      .catch(err => console.error('E-posta hatası:', err));
+      }
     });
   }
 
-  // ---------- Genel başlatma ----------
-  window.initCommon = function() {
-    // Dil
-    const savedLang = localStorage.getItem('lang') || 'tr';
-    setLanguage(savedLang);
+  // Paddle
+  initPaddle();
 
-    // Kullanıcı
-    updateUserUI();
+  // UI güncelle
+  updateUI();
+}
 
-    // Paddle
-    initPaddle();
-
-    // Menü
-    buildMenu();
-
-    // Auth event'leri
-    setupAuthEvents();
-
-    // E-posta
-    setupEmailSubscription();
-
-    // Dil değişimini yakala (menü içindeki butonlar zaten bağlı)
-  };
-
-})();
+// Sayfa yüklendiğinde otomatik çalışsın
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCommon);
+} else {
+  initCommon();
+}
