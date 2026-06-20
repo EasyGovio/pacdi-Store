@@ -2,100 +2,129 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>QR Tarayıcı | PACDI Store</title>
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <link rel="stylesheet" href="/assets/common.css">
+  <style>
+    #reader { width:100%; max-width:500px; margin:0 auto; }
+    #reader video { border-radius:16px; }
+    .scan-result { background:#0a1018; padding:16px; border-radius:12px; margin-top:16px; }
+    .scan-result strong { color:#2ECC71; }
+    .scan-result span { color:#eaf2fb; word-break:break-all; }
+    .history-item { background:#0a1018; padding:8px 12px; border-radius:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
+    .history-item .text { color:#eaf2fb; font-size:0.85rem; }
+    .history-item .date { color:#9bb7d4; font-size:0.6rem; }
+  </style>
 </head>
 <body>
 <div class="app-container">
   <nav id="mainNav"></nav>
-  <div class="user-panel" id="userPanel"></div>
 
-  <div class="main-content">
-    <h1>📷 QR / Barkod Tarayıcı</h1>
-    <div id="reader" style="width:100%; max-width:500px; margin:0 auto;"></div>
-    <div id="result" style="margin-top:16px; color:#eaf2fb;"></div>
-    <button id="scanAgainBtn" style="display:none; margin-top:12px;">Yeniden Tara</button>
-    <div id="history" style="margin-top:24px;"></div>
+  <div class="user-panel">
+    <span id="userStatus">Misafir</span>
+    <button id="loginBtn">Giriş Yap</button>
+    <button id="logoutBtn" class="logout" style="display:none;">Çıkış</button>
+    <button id="proBtn" style="display:none; background:#F6B45F; color:#04162E; border:none; font-weight:bold;">⭐ PRO</button>
   </div>
 
-  <footer class="footer">PACDI Store</footer>
+  <div class="main-content">
+    <h1 style="color:#F6B45F; font-size:1.5rem; margin-bottom:16px;">📷 QR / Barkod Tarayıcı</h1>
+    <div id="reader"></div>
+    <div id="result" class="scan-result" style="display:none;"></div>
+    <button id="scanAgainBtn" style="display:none; margin-top:12px; background:#F6B45F; border:none; padding:10px 20px; border-radius:40px; font-weight:bold; color:#04162E; cursor:pointer;">Yeniden Tara</button>
+
+    <div style="margin-top:24px;">
+      <h3 style="color:#F6B45F; font-size:1rem; margin-bottom:8px;">📜 Tarama Geçmişi</h3>
+      <div id="history"></div>
+      <button id="clearHistoryBtn" style="margin-top:8px; background:#e74c3c; border:none; color:white; padding:4px 12px; border-radius:20px; font-size:0.7rem; cursor:pointer;">Geçmişi Temizle</button>
+    </div>
+  </div>
+
+  <div class="footer">PACDI Store · QR Tarayıcı</div>
 </div>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="/assets/common.js"></script>
 <script>
-  let html5QrCode;
-  let scanHistory = JSON.parse(localStorage.getItem('scanHistory') || '[]');
+  (function() {
+    let html5QrCode;
+    let scanHistory = JSON.parse(localStorage.getItem('scanHistory') || '[]');
 
-  function startScanner() {
-    if (html5QrCode) {
-      html5QrCode.stop().then(() => {
-        html5QrCode.clear();
-        startScanner();
-      });
-      return;
+    function startScanner() {
+      if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+          html5QrCode.clear();
+          startScanner();
+        });
+        return;
+      }
+      html5QrCode = new Html5Qrcode("reader");
+      const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+      html5QrCode.start(
+        { facingMode: "environment" },
+        config,
+        onScanSuccess,
+        onScanError
+      );
     }
-    html5QrCode = new Html5Qrcode("reader");
-    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-    html5QrCode.start(
-      { facingMode: "environment" },
-      config,
-      onScanSuccess,
-      onScanError
-    );
-  }
 
-  function onScanSuccess(decodedText, decodedResult) {
-    document.getElementById('result').innerHTML = `
-      <div style="background:#0a1018; padding:16px; border-radius:12px;">
-        <strong style="color:#2ECC71;">✅ Okundu:</strong>
-        <span style="color:#eaf2fb; word-break:break-all;">${decodedText}</span>
-        <button onclick="saveHistory('${decodedText}')" style="background:#F6B45F; border:none; padding:6px 16px; border-radius:20px; margin-top:8px;">Kaydet</button>
-      </div>
-    `;
-    document.getElementById('scanAgainBtn').style.display = 'inline-block';
-    // Okuyucuyu durdur (isteğe bağlı)
-    html5QrCode.stop();
-  }
-
-  function onScanError(err) {
-    // console.warn(err);
-  }
-
-  function saveHistory(text) {
-    scanHistory.push({ text, date: new Date().toISOString() });
-    localStorage.setItem('scanHistory', JSON.stringify(scanHistory));
-    renderHistory();
-  }
-
-  function renderHistory() {
-    const container = document.getElementById('history');
-    if (!scanHistory.length) {
-      container.innerHTML = '<p style="color:#9bb7d4;">Henüz tarama yok.</p>';
-      return;
+    function onScanSuccess(decodedText, decodedResult) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = `
+        <strong>✅ Okundu:</strong>
+        <span>${decodedText}</span>
+        <button onclick="saveHistory('${decodedText}')" style="background:#F6B45F; border:none; padding:6px 16px; border-radius:20px; margin-top:8px; cursor:pointer;">Kaydet</button>
+      `;
+      document.getElementById('scanAgainBtn').style.display = 'inline-block';
+      html5QrCode.stop();
     }
-    container.innerHTML = '<h3 style="color:#F6B45F;">📜 Geçmiş</h3>' +
-      scanHistory.slice(-10).reverse().map(item =>
-        `<div style="background:#0a1018; padding:8px 12px; border-radius:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
-          <span style="color:#eaf2fb; font-size:0.85rem;">${item.text}</span>
-          <span style="color:#9bb7d4; font-size:0.6rem;">${new Date(item.date).toLocaleString()}</span>
+
+    function onScanError(err) {
+      // sessiz
+    }
+
+    window.saveHistory = function(text) {
+      scanHistory.push({ text, date: new Date().toISOString() });
+      localStorage.setItem('scanHistory', JSON.stringify(scanHistory));
+      renderHistory();
+      document.getElementById('result').innerHTML = `<strong style="color:#2ECC71;">✅ Kaydedildi!</strong>`;
+    };
+
+    function renderHistory() {
+      const container = document.getElementById('history');
+      if (!scanHistory.length) {
+        container.innerHTML = '<p style="color:#9bb7d4;">Henüz tarama yok.</p>';
+        return;
+      }
+      container.innerHTML = scanHistory.slice(-10).reverse().map(item =>
+        `<div class="history-item">
+          <span class="text">${item.text}</span>
+          <span class="date">${new Date(item.date).toLocaleString()}</span>
         </div>`
       ).join('');
-  }
+    }
 
-  document.getElementById('scanAgainBtn').addEventListener('click', function() {
-    document.getElementById('result').innerHTML = '';
-    this.style.display = 'none';
-    startScanner();
-  });
+    document.getElementById('scanAgainBtn').addEventListener('click', function() {
+      document.getElementById('result').style.display = 'none';
+      this.style.display = 'none';
+      startScanner();
+    });
 
-  document.addEventListener('DOMContentLoaded', function() {
-    initCommon();
-    startScanner();
-    renderHistory();
-  });
+    document.getElementById('clearHistoryBtn').addEventListener('click', function() {
+      if (!confirm('Tüm tarama geçmişini silmek istediğinize emin misiniz?')) return;
+      scanHistory = [];
+      localStorage.setItem('scanHistory', JSON.stringify(scanHistory));
+      renderHistory();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof initCommon === 'function') initCommon();
+      startScanner();
+      renderHistory();
+    });
+  })();
 </script>
 </body>
 </html>
