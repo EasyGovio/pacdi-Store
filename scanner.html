@@ -6,42 +6,23 @@
   <title>QR Tarayıcı | PACDI Store</title>
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <link rel="stylesheet" href="/assets/common.css">
-  <style>
-    #reader { width:100%; max-width:500px; margin:0 auto; }
-    #reader video { border-radius:16px; }
-    .scan-result { background:#0a1018; padding:16px; border-radius:12px; margin-top:16px; }
-    .scan-result strong { color:#2ECC71; }
-    .scan-result span { color:#eaf2fb; word-break:break-all; }
-    .history-item { background:#0a1018; padding:8px 12px; border-radius:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
-    .history-item .text { color:#eaf2fb; font-size:0.85rem; }
-    .history-item .date { color:#9bb7d4; font-size:0.6rem; }
-  </style>
 </head>
 <body>
 <div class="app-container">
   <nav id="mainNav"></nav>
+  <div class="user-panel" id="userPanel"></div>
 
-  <div class="user-panel">
-    <span id="userStatus">Misafir</span>
-    <button id="loginBtn">Giriş Yap</button>
-    <button id="logoutBtn" class="logout" style="display:none;">Çıkış</button>
-    <button id="proBtn" style="display:none; background:#F6B45F; color:#04162E; border:none; font-weight:bold;">⭐ PRO</button>
-  </div>
+  <h1 style="color:#F6B45F; margin-bottom:16px;">📷 QR / Barkod Tarayıcı</h1>
 
-  <div class="main-content">
-    <h1 style="color:#F6B45F; font-size:1.5rem; margin-bottom:16px;">📷 QR / Barkod Tarayıcı</h1>
-    <div id="reader"></div>
-    <div id="result" class="scan-result" style="display:none;"></div>
-    <button id="scanAgainBtn" style="display:none; margin-top:12px; background:#F6B45F; border:none; padding:10px 20px; border-radius:40px; font-weight:bold; color:#04162E; cursor:pointer;">Yeniden Tara</button>
+  <div id="reader" style="width:100%; max-width:500px; margin:0 auto;"></div>
 
-    <div style="margin-top:24px;">
-      <h3 style="color:#F6B45F; font-size:1rem; margin-bottom:8px;">📜 Tarama Geçmişi</h3>
-      <div id="history"></div>
-      <button id="clearHistoryBtn" style="margin-top:8px; background:#e74c3c; border:none; color:white; padding:4px 12px; border-radius:20px; font-size:0.7rem; cursor:pointer;">Geçmişi Temizle</button>
-    </div>
-  </div>
+  <div id="result" style="margin-top:16px; color:#eaf2fb;"></div>
 
-  <div class="footer">PACDI Store · QR Tarayıcı</div>
+  <button id="scanAgainBtn" style="display:none; margin-top:12px; background:#F6B45F; border:none; padding:10px 24px; border-radius:40px; font-weight:bold; color:#04162E; cursor:pointer;">Yeniden Tara</button>
+
+  <div id="history" style="margin-top:24px; text-align:left;"></div>
+
+  <div class="footer" style="margin-top:24px;">PACDI Store</div>
 </div>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -70,15 +51,15 @@
     }
 
     function onScanSuccess(decodedText, decodedResult) {
-      const resultDiv = document.getElementById('result');
-      resultDiv.style.display = 'block';
-      resultDiv.innerHTML = `
-        <strong>✅ Okundu:</strong>
-        <span>${decodedText}</span>
-        <button onclick="saveHistory('${decodedText}')" style="background:#F6B45F; border:none; padding:6px 16px; border-radius:20px; margin-top:8px; cursor:pointer;">Kaydet</button>
+      document.getElementById('result').innerHTML = `
+        <div style="background:#0a1018; padding:16px; border-radius:12px;">
+          <strong style="color:#2ECC71;">✅ Okundu:</strong>
+          <span style="color:#eaf2fb; word-break:break-all;">${decodedText}</span>
+          <button onclick="saveHistory('${decodedText}')" style="background:#F6B45F; border:none; padding:6px 16px; border-radius:20px; margin-top:8px; cursor:pointer;">Kaydet</button>
+        </div>
       `;
       document.getElementById('scanAgainBtn').style.display = 'inline-block';
-      html5QrCode.stop();
+      if (html5QrCode) html5QrCode.stop();
     }
 
     function onScanError(err) {
@@ -89,7 +70,6 @@
       scanHistory.push({ text, date: new Date().toISOString() });
       localStorage.setItem('scanHistory', JSON.stringify(scanHistory));
       renderHistory();
-      document.getElementById('result').innerHTML = `<strong style="color:#2ECC71;">✅ Kaydedildi!</strong>`;
     };
 
     function renderHistory() {
@@ -98,29 +78,25 @@
         container.innerHTML = '<p style="color:#9bb7d4;">Henüz tarama yok.</p>';
         return;
       }
-      container.innerHTML = scanHistory.slice(-10).reverse().map(item =>
-        `<div class="history-item">
-          <span class="text">${item.text}</span>
-          <span class="date">${new Date(item.date).toLocaleString()}</span>
-        </div>`
-      ).join('');
+      container.innerHTML = '<h3 style="color:#F6B45F;">📜 Geçmiş</h3>' +
+        scanHistory.slice(-10).reverse().map(item =>
+          `<div style="background:#0a1018; padding:8px 12px; border-radius:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="color:#eaf2fb; font-size:0.85rem;">${item.text}</span>
+            <span style="color:#9bb7d4; font-size:0.6rem;">${new Date(item.date).toLocaleString()}</span>
+          </div>`
+        ).join('');
     }
 
     document.getElementById('scanAgainBtn').addEventListener('click', function() {
-      document.getElementById('result').style.display = 'none';
+      document.getElementById('result').innerHTML = '';
       this.style.display = 'none';
       startScanner();
     });
 
-    document.getElementById('clearHistoryBtn').addEventListener('click', function() {
-      if (!confirm('Tüm tarama geçmişini silmek istediğinize emin misiniz?')) return;
-      scanHistory = [];
-      localStorage.setItem('scanHistory', JSON.stringify(scanHistory));
-      renderHistory();
-    });
+    // Pro özelliklerini override (scanner'da pro özelliği yok)
+    window.enableProFeatures = function(enable) {};
 
     document.addEventListener('DOMContentLoaded', function() {
-      if (typeof initCommon === 'function') initCommon();
       startScanner();
       renderHistory();
     });
