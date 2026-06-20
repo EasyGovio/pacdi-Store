@@ -2,40 +2,402 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>QR Kod Oluşturucu | PACDI Store</title>
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <link rel="stylesheet" href="/assets/common.css">
 </head>
 <body>
 <div class="app-container">
-  <!-- Üst navigasyon (common.js ile eklenecek) -->
+  <!-- Navigasyon (common.js tarafından doldurulacak) -->
   <nav id="mainNav"></nav>
 
   <!-- Kullanıcı paneli -->
-  <div class="user-panel" id="userPanel"></div>
-
-  <!-- Ana içerik -->
-  <div class="main-content">
-    <h1>QR Kod Oluşturucu</h1>
-    <!-- Şablon seçici, alanlar, buton, QR gösterimi, indirme, özelleştirme, vs. (mevcut) -->
-    <!-- ... -->
+  <div class="user-panel">
+    <span id="userStatus">Misafir</span>
+    <button id="loginBtn">Giriş Yap</button>
+    <button id="logoutBtn" class="logout" style="display:none;">Çıkış</button>
+    <button id="proBtn" style="display:none; background:#F6B45F; color:#04162E; border:none; font-weight:bold;">⭐ PRO</button>
+    <button id="dashboardToggle" style="display:none; background:#0a1018; border:1px solid #3498DB; color:#3498DB;">📊 QR'larım</button>
   </div>
 
-  <footer class="footer">PACDI Store · Tüm hakları saklıdır.</footer>
+  <div class="main-content">
+    <div class="qr-area">
+      <!-- Şablon seçici -->
+      <div class="template-section">
+        <select id="templateSelect">
+          <option value="url">🌐 URL / Link</option>
+          <option value="vcard">👤 vCard (Kartvizit)</option>
+          <option value="wifi">📶 WiFi Ağı</option>
+          <option value="social">📱 Sosyal Medya (Link-in-Bio)</option>
+        </select>
+      </div>
+      <div class="template-fields" id="templateFields">
+        <input type="text" id="urlInput" class="qr-input" placeholder="https://..." value="https://pacdi.store" data-lang-placeholder="placeholder">
+      </div>
+
+      <button class="generate-btn" id="generateBtn" data-lang-key="generate">🔳 QR Kod Oluştur</button>
+      <div class="qr-display" id="qrDisplay">
+        <span style="color:#9bb7d4;" data-lang-key="empty">QR kod burada görünecek</span>
+      </div>
+
+      <!-- İndirme bölümü -->
+      <div class="download-section" id="downloadSection">
+        <div class="download-label" data-lang-key="downloadLabel">İndir</div>
+        <div class="download-btns">
+          <button class="dl-btn png" id="dlPng">⬇️ PNG</button>
+          <button class="dl-btn jpg" id="dlJpg">⬇️ JPG</button>
+          <button class="dl-btn svg" id="dlSvg">⬇️ SVG</button>
+        </div>
+      </div>
+
+      <!-- Özelleştirme (Pro) -->
+      <div class="customize-section">
+        <div class="customize-row">
+          <div class="customize-item">
+            <label>Ön Renk</label>
+            <input type="color" id="fgColor" value="#04162E" disabled>
+          </div>
+          <div class="customize-item">
+            <label>Arka Renk</label>
+            <input type="color" id="bgColor" value="#FFFFFF" disabled>
+          </div>
+          <div class="customize-item">
+            <label>Boyut</label>
+            <select id="qrSize" disabled>
+              <option value="200">200px</option>
+              <option value="300">300px</option>
+              <option value="500">500px</option>
+            </select>
+          </div>
+          <div class="customize-item">
+            <label>Logo</label>
+            <input type="file" id="logoUpload" accept="image/*" disabled>
+            <button class="logo-btn" id="logoBtn" disabled>📷 Seç</button>
+          </div>
+        </div>
+        <div class="plan-selector">
+          <label><input type="radio" name="qrType" value="static" checked> Statik (Ücretsiz)</label>
+          <label style="color:#F6B45F;"><input type="radio" name="qrType" value="dynamic" disabled> Dinamik (Pro) 🔒</label>
+        </div>
+        <div class="pro-upgrade" id="proUpgrade">
+          ⭐ Bu özellikler Pro aboneliği gerektirir. <a id="upgradeLink">Hemen yükseltin</a>
+        </div>
+      </div>
+
+      <!-- Kullanım amacı -->
+      <div class="purpose-section">
+        <div class="purpose-label" data-lang-key="purposeLabel">Bu QR kodu ne için kullanıyorsunuz?</div>
+        <div class="purpose-btns">
+          <button class="purpose-btn" data-purpose="business" data-lang-key="p1">🏪</button>
+          <button class="purpose-btn" data-purpose="event" data-lang-key="p2">📅</button>
+          <button class="purpose-btn" data-purpose="personal" data-lang-key="p3">👤</button>
+          <button class="purpose-btn" data-purpose="other" data-lang-key="p4">🔧</button>
+        </div>
+      </div>
+
+      <!-- E-posta bölümü -->
+      <div class="email-section" id="emailSection">
+        <div class="email-title" data-lang-key="emailTitle">📧 Yeni araçlardan haberdar ol</div>
+        <div class="email-sub" data-lang-key="emailSub">İsteğe bağlı — reklam yok, sadece faydalı güncellemeler.</div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px; text-align:left;">
+          <input type="checkbox" id="isBusinessCb" style="accent-color:#F6B45F; width:16px; height:16px; flex-shrink:0;">
+          <label for="isBusinessCb" id="businessLabel" data-lang-key="businessLabel" style="color:#b8d0e8; font-size:0.72rem; line-height:1.4; cursor:pointer;"></label>
+        </div>
+        <div class="email-row">
+          <input type="email" class="email-input" id="emailInput" placeholder="e-posta@adresiniz.com" data-lang-placeholder="emailPlaceholder">
+          <button class="email-btn" id="emailBtn" data-lang-key="emailBtn">Katıl</button>
+        </div>
+        <div class="email-success" id="emailSuccess" data-lang-key="emailSuccess">✓ Teşekkürler! Sizi ekledik.</div>
+        <div class="email-skip" id="emailSkip" onclick="skipEmail()" data-lang-key="emailSkip">Şimdi değil</div>
+        <div class="email-privacy" data-lang-key="emailPrivacy">🔒 E-postanız saklanmaz, üçüncü taraflarla paylaşılmaz.</div>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="dashboard-section" id="dashboardSection">
+        <h3>📊 QR Kodlarım</h3>
+        <div id="qrList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer" data-lang-key="footer">PACDI Store · Hızlı QR kod oluşturucu.</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="/assets/common.js"></script>
 <script>
-  // Sayfaya özel QR oluşturma fonksiyonları (mevcut generateQR, getQRContent vb.)
-  // ...
-  document.addEventListener('DOMContentLoaded', function() {
-    initCommon();
-    // QR ile ilgili başlangıç işlemleri
+  // ============================================================
+  // SAYFAYA ÖZEL QR OLUŞTURMA MANTIĞI
+  // ============================================================
+  (function() {
+    const $ = id => document.getElementById(id);
+    const generateBtn = $('generateBtn');
+    const qrDisplay = $('qrDisplay');
+    const dlSection = $('downloadSection');
+    const fgColor = $('fgColor');
+    const bgColor = $('bgColor');
+    const qrSize = $('qrSize');
+    const logoUpload = $('logoUpload');
+    const logoBtn = $('logoBtn');
+    const qrTypeRadios = document.querySelectorAll('input[name="qrType"]');
+    const proUpgrade = $('proUpgrade');
+    const upgradeLink = $('upgradeLink');
+    const templateSelect = $('templateSelect');
+    const templateFields = $('templateFields');
+
+    let currentCanvas = null;
+    let currentText = "";
+
+    // Şablonlar
+    const templates = {
+      url: `<input type="text" id="urlInput" class="qr-input" placeholder="https://..." value="https://pacdi.store">`,
+      vcard: `
+        <input type="text" id="vcardName" placeholder="Ad Soyad" class="qr-input" style="margin-bottom:6px;">
+        <input type="text" id="vcardPhone" placeholder="Telefon" class="qr-input" style="margin-bottom:6px;">
+        <input type="email" id="vcardEmail" placeholder="E-posta" class="qr-input" style="margin-bottom:6px;">
+        <input type="text" id="vcardCompany" placeholder="Şirket" class="qr-input" style="margin-bottom:6px;">
+        <input type="text" id="vcardWebsite" placeholder="Web Sitesi" class="qr-input">
+      `,
+      wifi: `
+        <input type="text" id="wifiSSID" placeholder="Ağ Adı (SSID)" class="qr-input" style="margin-bottom:6px;">
+        <input type="text" id="wifiPassword" placeholder="Şifre" class="qr-input" style="margin-bottom:6px;">
+        <select id="wifiEncryption" class="qr-input" style="margin-bottom:6px;">
+          <option value="WPA">WPA/WPA2</option>
+          <option value="WEP">WEP</option>
+          <option value="nopass">Şifresiz</option>
+        </select>
+      `,
+      social: `
+        <input type="text" id="socialInstagram" placeholder="Instagram @kullanici" class="qr-input" style="margin-bottom:6px;">
+        <input type="text" id="socialTwitter" placeholder="Twitter @kullanici" class="qr-input" style="margin-bottom:6px;">
+        <input type="text" id="socialLinkedin" placeholder="LinkedIn URL" class="qr-input" style="margin-bottom:6px;">
+        <input type="text" id="socialYoutube" placeholder="YouTube URL" class="qr-input">
+      `
+    };
+
+    templateSelect.addEventListener('change', function() {
+      templateFields.innerHTML = templates[this.value];
+    });
+
+    function getQRContent() {
+      const type = templateSelect.value;
+      if (type === 'url') {
+        const el = document.getElementById('urlInput');
+        return el ? el.value : '';
+      }
+      if (type === 'vcard') {
+        const name = document.getElementById('vcardName')?.value || '';
+        const phone = document.getElementById('vcardPhone')?.value || '';
+        const email = document.getElementById('vcardEmail')?.value || '';
+        const company = document.getElementById('vcardCompany')?.value || '';
+        const website = document.getElementById('vcardWebsite')?.value || '';
+        return `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL:${phone}\nEMAIL:${email}\nORG:${company}\nURL:${website}\nEND:VCARD`;
+      }
+      if (type === 'wifi') {
+        const ssid = document.getElementById('wifiSSID')?.value || '';
+        const pass = document.getElementById('wifiPassword')?.value || '';
+        const enc = document.getElementById('wifiEncryption')?.value || 'WPA';
+        return `WIFI:T:${enc};S:${ssid};P:${pass};;`;
+      }
+      if (type === 'social') {
+        // Link-in-Bio placeholder
+        return 'https://pacdi.store/bio/username';
+      }
+      return '';
+    }
+
+    function generateQR() {
+      const content = getQRContent();
+      const display = qrDisplay;
+      const fg = fgColor.value;
+      const bg = bgColor.value;
+      const size = parseInt(qrSize.value) || 200;
+      const type = document.querySelector('input[name="qrType"]:checked').value;
+
+      if (!content) {
+        display.innerHTML = `<span style="color:#9bb7d4;">${window.langData ? window.langData.tr.empty : 'QR kod burada görünecek'}</span>`;
+        dlSection.style.display = 'none';
+        return;
+      }
+
+      currentText = content;
+
+      // Dinamik QR
+      if (type === 'dynamic') {
+        const token = localStorage.getItem('token');
+        const isPro = localStorage.getItem('isPro') === 'true';
+        if (!token || !isPro) {
+          alert('Dinamik QR Pro özelliğidir. Lütfen abone olun.');
+          return;
+        }
+        fetch('/api/qr/dynamic', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({
+            destinationUrl: content,
+            fgColor: fg,
+            bgColor: bg,
+            size: size,
+            logo: localStorage.getItem('logoData') || null
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            display.innerHTML = `<div style="text-align:center;">
+              <p style="color:#2ECC71; font-size:0.9rem;">✅ Dinamik QR oluşturuldu!</p>
+              <p style="color:#9bb7d4; font-size:0.7rem;">Kısa URL: ${data.qrUrl}</p>
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(data.qrUrl)}" style="border-radius:12px; background:white; padding:10px; max-width:100%;">
+            </div>`;
+            dlSection.style.display = 'block';
+            const img = display.querySelector('img');
+            if (img) {
+              const canvas = document.createElement('canvas');
+              canvas.width = size;
+              canvas.height = size;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, size, size);
+              currentCanvas = canvas;
+            }
+          } else {
+            alert('Hata: ' + data.error);
+          }
+        })
+        .catch(err => alert('Sunucu hatası: ' + err.message));
+        return;
+      }
+
+      // Statik QR
+      if (typeof QRCode !== 'undefined') {
+        display.innerHTML = '';
+        new QRCode(display, {
+          text: content,
+          width: size,
+          height: size,
+          colorDark: fg,
+          colorLight: bg,
+          correctLevel: QRCode.CorrectLevel.M
+        });
+        const canvas = display.querySelector('canvas');
+        if (canvas) {
+          currentCanvas = canvas;
+          dlSection.style.display = 'block';
+        } else {
+          display.innerHTML = '<span style="color:#e74c3c;">QR oluşturulamadı.</span>';
+          dlSection.style.display = 'none';
+        }
+      } else {
+        // Fallback API
+        const img = document.createElement('img');
+        img.crossOrigin = 'anonymous';
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(content)}`;
+        img.style.borderRadius = '12px';
+        img.style.background = 'white';
+        img.style.padding = '10px';
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, size, size);
+          currentCanvas = canvas;
+          dlSection.style.display = 'block';
+        };
+        display.innerHTML = '';
+        display.appendChild(img);
+      }
+    }
+
+    // İndirme
+    function downloadImage(format) {
+      if (!currentCanvas) {
+        alert('Lütfen önce bir QR kodu oluşturun.');
+        return;
+      }
+      let canvas = currentCanvas;
+      if (format === 'jpg') {
+        const newCanvas = document.createElement('canvas');
+        newCanvas.width = canvas.width;
+        newCanvas.height = canvas.height;
+        const ctx = newCanvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+        ctx.drawImage(canvas, 0, 0);
+        canvas = newCanvas;
+      }
+      const link = document.createElement('a');
+      link.download = `qr-code.${format === 'jpg' ? 'jpg' : 'png'}`;
+      link.href = canvas.toDataURL(`image/${format === 'jpg' ? 'jpeg' : 'png'}`, 0.95);
+      link.click();
+    }
+
+    $('dlPng').addEventListener('click', () => downloadImage('png'));
+    $('dlJpg').addEventListener('click', () => downloadImage('jpg'));
+    $('dlSvg').addEventListener('click', function() {
+      if (!currentText) { alert('Önce QR oluşturun.'); return; }
+      const link = document.createElement('a');
+      link.download = 'qr-code.svg';
+      link.href = `https://api.qrserver.com/v1/create-qr-code/?format=svg&size=300x300&data=${encodeURIComponent(currentText)}`;
+      link.target = '_blank';
+      link.click();
+    });
+
+    // Logo
+    logoBtn.addEventListener('click', () => logoUpload.click());
+    logoUpload.addEventListener('change', function(e) {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          localStorage.setItem('logoData', ev.target.result);
+          alert('Logo yüklendi.');
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+
+    // QR tipi değişikliğinde pro kontrolü
+    qrTypeRadios.forEach(radio => {
+      radio.addEventListener('change', function() {
+        if (this.value === 'dynamic') {
+          const token = localStorage.getItem('token');
+          const isPro = localStorage.getItem('isPro') === 'true';
+          if (!token || !isPro) {
+            alert('Dinamik QR Pro özelliğidir.');
+            document.querySelector('input[name="qrType"][value="static"]').checked = true;
+          }
+        }
+      });
+    });
+
+    // Abonelik yükseltme
+    upgradeLink.addEventListener('click', function() {
+      if (typeof openPaddleCheckout === 'function') openPaddleCheckout();
+    });
+
+    // Olaylar
+    generateBtn.addEventListener('click', generateQR);
+    templateFields.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') generateQR();
+    });
+
+    // Başlangıç
     templateFields.innerHTML = templates.url;
     setTimeout(generateQR, 500);
+  })();
+
+  // Ortak başlatma (common.js)
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof initCommon === 'function') initCommon();
   });
+
+  // E-posta skip
+  window.skipEmail = function() {
+    document.getElementById('emailSection').style.display = 'none';
+  };
 </script>
 </body>
 </html>
