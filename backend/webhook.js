@@ -3,7 +3,6 @@ const User = require('./models/User');
 module.exports = async (req, res) => {
   try {
     const event = req.body;
-    // Paddle webhook olaylarını işle
     if (event.event_type === 'subscription_created' || event.event_type === 'subscription_updated') {
       const email = event.data.customer_email;
       const user = await User.findOne({ email });
