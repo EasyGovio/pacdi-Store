@@ -9,128 +9,128 @@
 </head>
 <body>
 <div class="app-container">
-  <!-- Navigasyon (common.js tarafından doldurulacak) -->
   <nav id="mainNav"></nav>
+  <div class="user-panel" id="userPanel"></div>
 
-  <!-- Kullanıcı paneli -->
-  <div class="user-panel">
-    <span id="userStatus">Misafir</span>
-    <button id="loginBtn">Giriş Yap</button>
-    <button id="logoutBtn" class="logout" style="display:none;">Çıkış</button>
-    <button id="proBtn" style="display:none; background:#F6B45F; color:#04162E; border:none; font-weight:bold;">⭐ PRO</button>
-    <button id="dashboardToggle" style="display:none; background:#0a1018; border:1px solid #3498DB; color:#3498DB;">📊 QR'larım</button>
+  <div class="top-bar">
+    <div class="logo" id="gameTitle">QR KOD</div>
+    <a href="index.html" class="back-link" id="backLink">← Geri</a>
+  </div>
+  <div class="lang-selector">
+    <button class="lang-btn active" data-lang="tr">TR</button>
+    <button class="lang-btn" data-lang="de">DE</button>
+    <button class="lang-btn" data-lang="en">EN</button>
   </div>
 
-  <div class="main-content">
-    <div class="qr-area">
-      <!-- Şablon seçici -->
-      <div class="template-section">
-        <select id="templateSelect">
-          <option value="url">🌐 URL / Link</option>
-          <option value="vcard">👤 vCard (Kartvizit)</option>
-          <option value="wifi">📶 WiFi Ağı</option>
-          <option value="social">📱 Sosyal Medya (Link-in-Bio)</option>
-        </select>
-      </div>
-      <div class="template-fields" id="templateFields">
-        <input type="text" id="urlInput" class="qr-input" placeholder="https://..." value="https://pacdi.store" data-lang-placeholder="placeholder">
-      </div>
+  <div class="qr-area">
+    <!-- Şablon seçici -->
+    <div class="template-section">
+      <select id="templateSelect">
+        <option value="url">🌐 URL / Link</option>
+        <option value="vcard">👤 vCard (Kartvizit)</option>
+        <option value="wifi">📶 WiFi Ağı</option>
+        <option value="social">📱 Sosyal Medya (Link-in-Bio)</option>
+      </select>
+    </div>
+    <div class="template-fields" id="templateFields">
+      <input type="text" id="urlInput" class="qr-input" placeholder="https://..." value="https://pacdi.store">
+    </div>
 
-      <button class="generate-btn" id="generateBtn" data-lang-key="generate">🔳 QR Kod Oluştur</button>
-      <div class="qr-display" id="qrDisplay">
-        <span style="color:#9bb7d4;" data-lang-key="empty">QR kod burada görünecek</span>
-      </div>
+    <button class="generate-btn" id="generateBtn">🔳 QR Kod Oluştur</button>
+    <div class="qr-display" id="qrDisplay">
+      <span style="color:#9bb7d4;">QR kod burada görünecek</span>
+    </div>
 
-      <!-- İndirme bölümü -->
-      <div class="download-section" id="downloadSection">
-        <div class="download-label" data-lang-key="downloadLabel">İndir</div>
-        <div class="download-btns">
-          <button class="dl-btn png" id="dlPng">⬇️ PNG</button>
-          <button class="dl-btn jpg" id="dlJpg">⬇️ JPG</button>
-          <button class="dl-btn svg" id="dlSvg">⬇️ SVG</button>
-        </div>
+    <!-- İndirme bölümü -->
+    <div class="download-section" id="downloadSection">
+      <div class="download-label" id="downloadLabel">İndir</div>
+      <div class="download-btns">
+        <button class="dl-btn png" id="dlPng">⬇️ PNG</button>
+        <button class="dl-btn jpg" id="dlJpg">⬇️ JPG</button>
+        <button class="dl-btn svg" id="dlSvg">⬇️ SVG</button>
       </div>
+    </div>
 
-      <!-- Özelleştirme (Pro) -->
-      <div class="customize-section">
-        <div class="customize-row">
-          <div class="customize-item">
-            <label>Ön Renk</label>
-            <input type="color" id="fgColor" value="#04162E" disabled>
-          </div>
-          <div class="customize-item">
-            <label>Arka Renk</label>
-            <input type="color" id="bgColor" value="#FFFFFF" disabled>
-          </div>
-          <div class="customize-item">
-            <label>Boyut</label>
-            <select id="qrSize" disabled>
-              <option value="200">200px</option>
-              <option value="300">300px</option>
-              <option value="500">500px</option>
-            </select>
-          </div>
-          <div class="customize-item">
-            <label>Logo</label>
-            <input type="file" id="logoUpload" accept="image/*" disabled>
-            <button class="logo-btn" id="logoBtn" disabled>📷 Seç</button>
-          </div>
+    <!-- Özelleştirme (Pro) -->
+    <div class="customize-section">
+      <div class="customize-row">
+        <div class="customize-item">
+          <label>Ön Renk</label>
+          <input type="color" id="fgColor" value="#04162E" disabled>
         </div>
-        <div class="plan-selector">
-          <label><input type="radio" name="qrType" value="static" checked> Statik (Ücretsiz)</label>
-          <label style="color:#F6B45F;"><input type="radio" name="qrType" value="dynamic" disabled> Dinamik (Pro) 🔒</label>
+        <div class="customize-item">
+          <label>Arka Renk</label>
+          <input type="color" id="bgColor" value="#FFFFFF" disabled>
         </div>
-        <div class="pro-upgrade" id="proUpgrade">
-          ⭐ Bu özellikler Pro aboneliği gerektirir. <a id="upgradeLink">Hemen yükseltin</a>
+        <div class="customize-item">
+          <label>Boyut</label>
+          <select id="qrSize" disabled>
+            <option value="200">200px</option>
+            <option value="300">300px</option>
+            <option value="500">500px</option>
+          </select>
+        </div>
+        <div class="customize-item">
+          <label>Logo</label>
+          <input type="file" id="logoUpload" accept="image/*" disabled>
+          <button class="logo-btn" id="logoBtn" disabled>📷 Seç</button>
         </div>
       </div>
+      <div class="plan-selector">
+        <label><input type="radio" name="qrType" value="static" checked> Statik (Ücretsiz)</label>
+        <label style="color:#F6B45F;"><input type="radio" name="qrType" value="dynamic" disabled> Dinamik (Pro) 🔒</label>
+      </div>
+      <div class="pro-upgrade" id="proUpgrade">
+        ⭐ Bu özellikler Pro aboneliği gerektirir. <a id="upgradeLink">Hemen yükseltin</a>
+      </div>
+    </div>
 
-      <!-- Kullanım amacı -->
-      <div class="purpose-section">
-        <div class="purpose-label" data-lang-key="purposeLabel">Bu QR kodu ne için kullanıyorsunuz?</div>
-        <div class="purpose-btns">
-          <button class="purpose-btn" data-purpose="business" data-lang-key="p1">🏪</button>
-          <button class="purpose-btn" data-purpose="event" data-lang-key="p2">📅</button>
-          <button class="purpose-btn" data-purpose="personal" data-lang-key="p3">👤</button>
-          <button class="purpose-btn" data-purpose="other" data-lang-key="p4">🔧</button>
-        </div>
+    <!-- Kullanım amacı -->
+    <div class="purpose-section">
+      <div class="purpose-label" id="purposeLabel">Bu QR kodu ne için kullanıyorsunuz?</div>
+      <div class="purpose-btns">
+        <button class="purpose-btn" data-purpose="business" id="p1">🏪</button>
+        <button class="purpose-btn" data-purpose="event" id="p2">📅</button>
+        <button class="purpose-btn" data-purpose="personal" id="p3">👤</button>
+        <button class="purpose-btn" data-purpose="other" id="p4">🔧</button>
       </div>
+    </div>
 
-      <!-- E-posta bölümü -->
-      <div class="email-section" id="emailSection">
-        <div class="email-title" data-lang-key="emailTitle">📧 Yeni araçlardan haberdar ol</div>
-        <div class="email-sub" data-lang-key="emailSub">İsteğe bağlı — reklam yok, sadece faydalı güncellemeler.</div>
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px; text-align:left;">
-          <input type="checkbox" id="isBusinessCb" style="accent-color:#F6B45F; width:16px; height:16px; flex-shrink:0;">
-          <label for="isBusinessCb" id="businessLabel" data-lang-key="businessLabel" style="color:#b8d0e8; font-size:0.72rem; line-height:1.4; cursor:pointer;"></label>
-        </div>
-        <div class="email-row">
-          <input type="email" class="email-input" id="emailInput" placeholder="e-posta@adresiniz.com" data-lang-placeholder="emailPlaceholder">
-          <button class="email-btn" id="emailBtn" data-lang-key="emailBtn">Katıl</button>
-        </div>
-        <div class="email-success" id="emailSuccess" data-lang-key="emailSuccess">✓ Teşekkürler! Sizi ekledik.</div>
-        <div class="email-skip" id="emailSkip" onclick="skipEmail()" data-lang-key="emailSkip">Şimdi değil</div>
-        <div class="email-privacy" data-lang-key="emailPrivacy">🔒 E-postanız saklanmaz, üçüncü taraflarla paylaşılmaz.</div>
+    <!-- E-posta bölümü -->
+    <div class="email-section" id="emailSection">
+      <div class="email-title" id="emailTitle">📧 Yeni araçlardan haberdar ol</div>
+      <div class="email-sub" id="emailSub">İsteğe bağlı — reklam yok, sadece faydalı güncellemeler.</div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px; text-align:left;">
+        <input type="checkbox" id="isBusinessCb" style="accent-color:#F6B45F; width:16px; height:16px; flex-shrink:0;">
+        <label for="isBusinessCb" id="businessLabel" style="color:#b8d0e8; font-size:0.72rem; line-height:1.4; cursor:pointer;"></label>
       </div>
+      <div class="email-row">
+        <input type="email" class="email-input" id="emailInput" placeholder="e-posta@adresiniz.com">
+        <button class="email-btn" id="emailBtn">Katıl</button>
+      </div>
+      <div class="email-success" id="emailSuccess">✓ Teşekkürler! Sizi ekledik.</div>
+      <div class="email-skip" id="emailSkip" onclick="skipEmail()">Şimdi değil</div>
+      <div class="email-privacy" id="emailPrivacy">🔒 E-postanız saklanmaz, üçüncü taraflarla paylaşılmaz.</div>
+    </div>
 
-      <!-- Dashboard -->
-      <div class="dashboard-section" id="dashboardSection">
-        <h3>📊 QR Kodlarım</h3>
-        <div id="qrList"></div>
-      </div>
+    <!-- Dashboard -->
+    <div class="dashboard-section" id="dashboardSection">
+      <h3>📊 QR Kodlarım</h3>
+      <div id="qrList"></div>
     </div>
   </div>
 
-  <div class="footer" data-lang-key="footer">PACDI Store · Hızlı QR kod oluşturucu.</div>
+  <div class="footer" id="footerText">PACDI Store · Hızlı QR kod oluşturucu.</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="/assets/common.js"></script>
 <script>
-  // ============================================================
-  // SAYFAYA ÖZEL QR OLUŞTURMA MANTIĞI
-  // ============================================================
   (function() {
+    // ---------- QR İLE İLGİLİ TÜM MANTIK ----------
+    let currentCanvas = null;
+    let currentText = "";
+
     const $ = id => document.getElementById(id);
     const generateBtn = $('generateBtn');
     const qrDisplay = $('qrDisplay');
@@ -146,10 +146,7 @@
     const templateSelect = $('templateSelect');
     const templateFields = $('templateFields');
 
-    let currentCanvas = null;
-    let currentText = "";
-
-    // Şablonlar
+    // ---------- Şablonlar ----------
     const templates = {
       url: `<input type="text" id="urlInput" class="qr-input" placeholder="https://..." value="https://pacdi.store">`,
       vcard: `
@@ -201,12 +198,12 @@
         return `WIFI:T:${enc};S:${ssid};P:${pass};;`;
       }
       if (type === 'social') {
-        // Link-in-Bio placeholder
         return 'https://pacdi.store/bio/username';
       }
       return '';
     }
 
+    // ---------- QR Oluştur ----------
     function generateQR() {
       const content = getQRContent();
       const display = qrDisplay;
@@ -216,26 +213,23 @@
       const type = document.querySelector('input[name="qrType"]:checked').value;
 
       if (!content) {
-        display.innerHTML = `<span style="color:#9bb7d4;">${window.langData ? window.langData.tr.empty : 'QR kod burada görünecek'}</span>`;
+        display.innerHTML = `<span style="color:#9bb7d4;">QR kod burada görünecek</span>`;
         dlSection.style.display = 'none';
         return;
       }
 
       currentText = content;
 
-      // Dinamik QR
       if (type === 'dynamic') {
-        const token = localStorage.getItem('token');
-        const isPro = localStorage.getItem('isPro') === 'true';
-        if (!token || !isPro) {
-          alert('Dinamik QR Pro özelliğidir. Lütfen abone olun.');
+        if (!userToken || !isPro) {
+          alert(t('pro_feature'));
           return;
         }
         fetch('/api/qr/dynamic', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
+            'Authorization': 'Bearer ' + userToken
           },
           body: JSON.stringify({
             destinationUrl: content,
@@ -312,7 +306,7 @@
       }
     }
 
-    // İndirme
+    // ---------- İndirme ----------
     function downloadImage(format) {
       if (!currentCanvas) {
         alert('Lütfen önce bir QR kodu oluşturun.');
@@ -346,6 +340,38 @@
       link.click();
     });
 
+    // ---------- Diğer işlevler ----------
+    // Amaç seçimi
+    document.querySelectorAll('.purpose-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.purpose-btn').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+        selectedPurpose = this.dataset.purpose;
+      });
+    });
+
+    // E-posta
+    $('emailBtn').addEventListener('click', function() {
+      const email = $('emailInput').value.trim();
+      if (!email || email.indexOf('@') === -1) return;
+      fetch('/api/user/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, purpose: selectedPurpose, lang: currentLang })
+      })
+      .then(res => res.json())
+      .then(() => {
+        $('emailSuccess').style.display = 'block';
+        $('emailInput').value = '';
+        $('emailSkip').style.display = 'none';
+      })
+      .catch(err => console.error('E-posta hatası:', err));
+    });
+
+    window.skipEmail = function() {
+      $('emailSection').style.display = 'none';
+    };
+
     // Logo
     logoBtn.addEventListener('click', () => logoUpload.click());
     logoUpload.addEventListener('change', function(e) {
@@ -359,45 +385,48 @@
       }
     });
 
-    // QR tipi değişikliğinde pro kontrolü
+    // QR tipi değişikliği
     qrTypeRadios.forEach(radio => {
       radio.addEventListener('change', function() {
-        if (this.value === 'dynamic') {
-          const token = localStorage.getItem('token');
-          const isPro = localStorage.getItem('isPro') === 'true';
-          if (!token || !isPro) {
-            alert('Dinamik QR Pro özelliğidir.');
-            document.querySelector('input[name="qrType"][value="static"]').checked = true;
-          }
+        if (this.value === 'dynamic' && !isPro) {
+          alert(t('pro_feature'));
+          document.querySelector('input[name="qrType"][value="static"]').checked = true;
         }
       });
     });
 
-    // Abonelik yükseltme
-    upgradeLink.addEventListener('click', function() {
-      if (typeof openPaddleCheckout === 'function') openPaddleCheckout();
+    // Abonelik linki
+    upgradeLink.addEventListener('click', openPaddleCheckout);
+
+    // Dil butonları
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const lang = this.dataset.lang;
+        if (lang !== currentLang) setLanguage(lang);
+      });
     });
 
-    // Olaylar
+    // Olay bağlamaları
     generateBtn.addEventListener('click', generateQR);
     templateFields.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') generateQR();
     });
 
+    // Pro özelliklerini enable et (common.js'den override)
+    window.enableProFeatures = function(enable) {
+      fgColor.disabled = !enable;
+      bgColor.disabled = !enable;
+      qrSize.disabled = !enable;
+      logoUpload.disabled = !enable;
+      logoBtn.disabled = !enable;
+      document.querySelector('input[name="qrType"][value="dynamic"]').disabled = !enable;
+      proUpgrade.style.display = enable ? 'none' : 'block';
+    };
+
     // Başlangıç
     templateFields.innerHTML = templates.url;
     setTimeout(generateQR, 500);
   })();
-
-  // Ortak başlatma (common.js)
-  document.addEventListener('DOMContentLoaded', function() {
-    if (typeof initCommon === 'function') initCommon();
-  });
-
-  // E-posta skip
-  window.skipEmail = function() {
-    document.getElementById('emailSection').style.display = 'none';
-  };
 </script>
 </body>
 </html>
