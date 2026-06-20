@@ -4,10 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>QR Kod Oluşturucu | PACDI Store</title>
-  <!-- Paddle.js (prod) -->
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <style>
-    /* (CSS kodunuz aynen kalabilir, sadece eklemeler yapacağım) */
     * { margin:0; padding:0; box-sizing:border-box; user-select:none; -webkit-tap-highlight-color:transparent; }
     body { background:#04162E; font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif; min-height:100vh; display:flex; justify-content:center; align-items:center; padding:16px; }
     .game-container { max-width:500px; width:100%; background:rgba(4,22,46,0.85); border-radius:56px; padding:20px 16px 24px; box-shadow:0 20px 35px rgba(0,0,0,0.5); backdrop-filter:blur(2px); border:1px solid rgba(246,180,95,0.3); text-align:center; }
@@ -47,6 +45,10 @@
     .customize-item .logo-btn { background:#0a1018; border:1px solid #F6B45F; color:#F6B45F; padding:4px 12px; border-radius:30px; font-size:0.7rem; cursor:pointer; }
     .customize-item .logo-btn:disabled { opacity:0.3; cursor:not-allowed; }
 
+    .template-section { margin:12px 0; }
+    .template-section select { width:100%; background:#1e2a3a; color:#eaf2fb; border:1px solid #F6B45F; border-radius:8px; padding:6px; font-size:0.9rem; }
+    .template-fields { margin-top:8px; }
+
     .plan-selector { margin-top:12px; display:flex; gap:16px; justify-content:center; }
     .plan-selector label { font-size:0.75rem; display:flex; align-items:center; gap:4px; cursor:pointer; }
     .plan-selector label input { accent-color:#F6B45F; }
@@ -54,7 +56,7 @@
     .pro-upgrade { display:none; margin-top:10px; background:rgba(246,180,95,0.1); border-radius:12px; padding:10px; color:#F6B45F; font-size:0.75rem; }
     .pro-upgrade a { color:#F6B45F; font-weight:bold; text-decoration:underline; cursor:pointer; }
 
-    .user-panel { display:flex; gap:8px; align-items:center; justify-content:flex-end; margin-bottom:10px; }
+    .user-panel { display:flex; gap:8px; align-items:center; justify-content:flex-end; margin-bottom:10px; flex-wrap:wrap; }
     .user-panel span { color:#9bb7d4; font-size:0.7rem; }
     .user-panel button { background:#0a1018; border:1px solid #F6B45F; color:#F6B45F; padding:4px 12px; border-radius:30px; font-size:0.7rem; cursor:pointer; }
     .user-panel button.logout { border-color:#e74c3c; color:#e74c3c; }
@@ -77,6 +79,15 @@
     .email-success { color:#2ECC71; font-size:0.8rem; margin-top:8px; display:none; }
     .email-privacy { color:rgba(255,255,255,0.2); font-size:0.6rem; margin-top:6px; }
 
+    .dashboard-section { margin-top:20px; display:none; background:#0a1018; border-radius:16px; padding:16px; max-height:300px; overflow-y:auto; }
+    .dashboard-section h3 { color:#F6B45F; margin-bottom:10px; }
+    .qr-list-item { background:#1e2a3a; border-radius:12px; padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+    .qr-list-item .info { text-align:left; }
+    .qr-list-item .info strong { color:#eaf2fb; }
+    .qr-list-item .info span { color:#9bb7d4; font-size:0.7rem; display:block; }
+    .qr-list-item .actions button { background:#F6B45F; border:none; color:#04162E; padding:4px 12px; border-radius:20px; font-size:0.7rem; cursor:pointer; margin-left:4px; }
+    .qr-list-item .actions button.delete { background:#e74c3c; color:white; }
+
     .footer { text-align:center; font-size:0.6rem; color:#6c8fb0; margin-top:12px; }
   </style>
 </head>
@@ -89,6 +100,7 @@
     <button id="loginBtn">Giriş Yap</button>
     <button id="logoutBtn" class="logout" style="display:none;">Çıkış</button>
     <button id="proBtn" style="display:none; background:#F6B45F; color:#04162E; border:none; font-weight:bold;">⭐ PRO</button>
+    <button id="dashboardToggle" style="display:none; background:#0a1018; border:1px solid #3498DB; color:#3498DB;">📊 QR'larım</button>
   </div>
 
   <div class="top-bar">
@@ -102,7 +114,19 @@
   </div>
 
   <div class="qr-area">
-    <input type="text" class="qr-input" id="qrInput" placeholder="Metin veya link girin..." value="https://pacdi.store">
+    <!-- Şablon seçici -->
+    <div class="template-section">
+      <select id="templateSelect">
+        <option value="url">🌐 URL / Link</option>
+        <option value="vcard">👤 vCard (Kartvizit)</option>
+        <option value="wifi">📶 WiFi Ağı</option>
+        <option value="social">📱 Sosyal Medya (Link-in-Bio)</option>
+      </select>
+    </div>
+    <div class="template-fields" id="templateFields">
+      <input type="text" id="urlInput" class="qr-input" placeholder="https://..." value="https://pacdi.store">
+    </div>
+
     <button class="generate-btn" id="generateBtn">🔳 QR Kod Oluştur</button>
     <div class="qr-display" id="qrDisplay">
       <span style="color:#9bb7d4;">QR kod burada görünecek</span>
@@ -118,7 +142,7 @@
       </div>
     </div>
 
-    <!-- Özelleştirme (Pro özellikler) -->
+    <!-- Özelleştirme (Pro) -->
     <div class="customize-section">
       <div class="customize-row">
         <div class="customize-item">
@@ -179,6 +203,12 @@
       <div class="email-skip" id="emailSkip" onclick="skipEmail()">Şimdi değil</div>
       <div class="email-privacy" id="emailPrivacy">🔒 E-postanız saklanmaz, üçüncü taraflarla paylaşılmaz.</div>
     </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard-section" id="dashboardSection">
+      <h3>📊 QR Kodlarım</h3>
+      <div id="qrList"></div>
+    </div>
   </div>
 
   <div class="footer" id="footerText">PACDI Store · Hızlı QR kod oluşturucu.</div>
@@ -187,7 +217,7 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script>
 // ============================================================
-// TÜM FRONTEND MANTIĞI (script.js)
+// TÜM FRONTEND MANTIĞI (GÜNCELLENMİŞ)
 // ============================================================
 
 (function() {
@@ -246,7 +276,7 @@
 
   // ---------- DOM referansları ----------
   const $ = id => document.getElementById(id);
-  const qrInput = $('qrInput');
+  const qrInput = $('qrInput'); // aslında urlInput veya dinamik alan
   const generateBtn = $('generateBtn');
   const qrDisplay = $('qrDisplay');
   const dlSection = $('downloadSection');
@@ -262,6 +292,11 @@
   const loginBtn = $('loginBtn');
   const logoutBtn = $('logoutBtn');
   const proBtn = $('proBtn');
+  const templateSelect = $('templateSelect');
+  const templateFields = $('templateFields');
+  const dashboardSection = $('dashboardSection');
+  const qrList = $('qrList');
+  const dashboardToggle = $('dashboardToggle');
 
   // ---------- Dil fonksiyonları ----------
   function updateLanguage() {
@@ -269,7 +304,7 @@
     $('gameTitle').innerText = t.title;
     $('backLink').innerText = t.back;
     generateBtn.innerText = t.generate;
-    qrInput.placeholder = t.placeholder;
+    // placeholder dinamik olarak değişir
     $('footerText').innerText = t.footer;
     $('downloadLabel').innerText = t.downloadLabel;
     $('purposeLabel').innerText = t.purposeLabel;
@@ -295,12 +330,73 @@
     });
   }
 
+  // ---------- Şablon yönetimi ----------
+  const templates = {
+    url: `<input type="text" id="urlInput" class="qr-input" placeholder="https://..." value="https://pacdi.store">`,
+    vcard: `
+      <input type="text" id="vcardName" placeholder="Ad Soyad" class="qr-input" style="margin-bottom:6px;">
+      <input type="text" id="vcardPhone" placeholder="Telefon" class="qr-input" style="margin-bottom:6px;">
+      <input type="email" id="vcardEmail" placeholder="E-posta" class="qr-input" style="margin-bottom:6px;">
+      <input type="text" id="vcardCompany" placeholder="Şirket" class="qr-input" style="margin-bottom:6px;">
+      <input type="text" id="vcardWebsite" placeholder="Web Sitesi" class="qr-input">
+    `,
+    wifi: `
+      <input type="text" id="wifiSSID" placeholder="Ağ Adı (SSID)" class="qr-input" style="margin-bottom:6px;">
+      <input type="text" id="wifiPassword" placeholder="Şifre" class="qr-input" style="margin-bottom:6px;">
+      <select id="wifiEncryption" class="qr-input" style="margin-bottom:6px;">
+        <option value="WPA">WPA/WPA2</option>
+        <option value="WEP">WEP</option>
+        <option value="nopass">Şifresiz</option>
+      </select>
+    `,
+    social: `
+      <input type="text" id="socialInstagram" placeholder="Instagram @kullanici" class="qr-input" style="margin-bottom:6px;">
+      <input type="text" id="socialTwitter" placeholder="Twitter @kullanici" class="qr-input" style="margin-bottom:6px;">
+      <input type="text" id="socialLinkedin" placeholder="LinkedIn URL" class="qr-input" style="margin-bottom:6px;">
+      <input type="text" id="socialYoutube" placeholder="YouTube URL" class="qr-input">
+    `
+  };
+
+  templateSelect.addEventListener('change', function() {
+    templateFields.innerHTML = templates[this.value];
+  });
+
+  // ---------- QR içeriği oluşturma ----------
+  function getQRContent() {
+    const type = templateSelect.value;
+    if (type === 'url') {
+      const el = document.getElementById('urlInput');
+      return el ? el.value : '';
+    }
+    if (type === 'vcard') {
+      const name = document.getElementById('vcardName')?.value || '';
+      const phone = document.getElementById('vcardPhone')?.value || '';
+      const email = document.getElementById('vcardEmail')?.value || '';
+      const company = document.getElementById('vcardCompany')?.value || '';
+      const website = document.getElementById('vcardWebsite')?.value || '';
+      return `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL:${phone}\nEMAIL:${email}\nORG:${company}\nURL:${website}\nEND:VCARD`;
+    }
+    if (type === 'wifi') {
+      const ssid = document.getElementById('wifiSSID')?.value || '';
+      const pass = document.getElementById('wifiPassword')?.value || '';
+      const enc = document.getElementById('wifiEncryption')?.value || 'WPA';
+      return `WIFI:T:${enc};S:${ssid};P:${pass};;`;
+    }
+    if (type === 'social') {
+      // Link-in-Bio sayfasına yönlendirme (backend'de oluşturulabilir)
+      // Şimdilik sabit bir URL döndürüyoruz
+      return 'https://pacdi.store/bio/username';
+    }
+    return '';
+  }
+
   // ---------- Kullanıcı oturumu ----------
   function updateUserUI() {
     if (userToken) {
       userStatus.innerText = '👤 Kullanıcı';
       loginBtn.style.display = 'none';
       logoutBtn.style.display = 'inline-block';
+      dashboardToggle.style.display = 'inline-block';
       if (isPro) {
         proBtn.style.display = 'inline-block';
         proBtn.innerText = '⭐ PRO';
@@ -308,7 +404,6 @@
         proBtn.style.display = 'inline-block';
         proBtn.innerText = '⬆ Yükselt';
       }
-      // Pro özelliklerini aktif et
       fgColor.disabled = !isPro;
       bgColor.disabled = !isPro;
       qrSize.disabled = !isPro;
@@ -321,7 +416,7 @@
       loginBtn.style.display = 'inline-block';
       logoutBtn.style.display = 'none';
       proBtn.style.display = 'none';
-      // Tüm pro özelliklerini devre dışı bırak
+      dashboardToggle.style.display = 'none';
       fgColor.disabled = true;
       bgColor.disabled = true;
       qrSize.disabled = true;
@@ -334,11 +429,10 @@
 
   // ---------- Paddle abonelik ----------
   function initPaddle() {
-    // Paddle'ı başlat (vendor ID’nizi .env’den alın)
     Paddle.Environment.set('sandbox'); // canlıda 'production'
     Paddle.Initialize({
-      vendor: 12345, // Paddle vendor ID'niz
-      token: 'YOUR_PADDLE_CLIENT_TOKEN', // Paddle client token
+      vendor: 12345, // Değiştir
+      token: 'YOUR_PADDLE_CLIENT_TOKEN',
     });
   }
 
@@ -347,41 +441,41 @@
       alert('Lütfen önce giriş yapın.');
       return;
     }
-    // Paddle checkout'u aç
     const items = [{
-      priceId: 'pri_xxxxxxxxxxxxx', // Paddle'da oluşturduğunuz abonelik fiyat ID'si
+      priceId: 'pri_xxxxxxxxxxxxx', // Paddle fiyat ID'si
       quantity: 1
     }];
     Paddle.Checkout.open({
       items: items,
       successUrl: 'https://pacdi.store/success',
       cancelUrl: 'https://pacdi.store/cancel',
-      customerEmail: 'user@example.com', // kullanıcının email'i dinamik
+      customerEmail: 'user@example.com',
     });
   }
 
   // ---------- QR oluşturma ----------
   function generateQR() {
-    const text = qrInput.value.trim();
+    const content = getQRContent();
     const display = qrDisplay;
     const fg = fgColor.value;
     const bg = bgColor.value;
     const size = parseInt(qrSize.value) || 200;
     const type = document.querySelector('input[name="qrType"]:checked').value;
 
-    if (!text) {
+    if (!content) {
       display.innerHTML = `<span style="color:#9bb7d4;">${langData[currentLang].empty}</span>`;
       dlSection.style.display = 'none';
       return;
     }
 
-    // Dinamik QR için backend'e istek at
+    currentText = content;
+
+    // Dinamik QR
     if (type === 'dynamic') {
       if (!userToken || !isPro) {
         alert('Dinamik QR Pro özelliğidir. Lütfen abone olun.');
         return;
       }
-      // Backend'e dinamik QR oluşturma isteği
       fetch('/api/qr/dynamic', {
         method: 'POST',
         headers: {
@@ -389,24 +483,22 @@
           'Authorization': 'Bearer ' + userToken
         },
         body: JSON.stringify({
-          destinationUrl: text,
+          destinationUrl: content,
           fgColor: fg,
           bgColor: bg,
           size: size,
-          logo: null // logo işlemi ayrıca yapılabilir
+          logo: localStorage.getItem('logoData') || null
         })
       })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          // QR kodu göster (data.qrUrl ile)
           display.innerHTML = `<div style="text-align:center;">
             <p style="color:#2ECC71; font-size:0.9rem;">✅ Dinamik QR oluşturuldu!</p>
             <p style="color:#9bb7d4; font-size:0.7rem;">Kısa URL: ${data.qrUrl}</p>
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(data.qrUrl)}" style="border-radius:12px; background:white; padding:10px; max-width:100%;">
           </div>`;
           dlSection.style.display = 'block';
-          // canvas yakalama (API üzerinden olduğu için manuel)
           const img = display.querySelector('img');
           if (img) {
             const canvas = document.createElement('canvas');
@@ -424,11 +516,11 @@
       return;
     }
 
-    // Statik QR (yerel oluştur)
+    // Statik QR
     if (typeof QRCode !== 'undefined') {
       display.innerHTML = '';
-      const qr = new QRCode(display, {
-        text: text,
+      new QRCode(display, {
+        text: content,
         width: size,
         height: size,
         colorDark: fg,
@@ -447,7 +539,7 @@
       // Fallback API
       const img = document.createElement('img');
       img.crossOrigin = 'anonymous';
-      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}`;
+      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(content)}`;
       img.style.borderRadius = '12px';
       img.style.background = 'white';
       img.style.padding = '10px';
@@ -465,7 +557,7 @@
     }
   }
 
-  // ---------- İndirme butonları ----------
+  // ---------- İndirme ----------
   function downloadImage(format) {
     if (!currentCanvas) {
       alert('Lütfen önce bir QR kodu oluşturun.');
@@ -490,12 +582,8 @@
 
   $('dlPng').addEventListener('click', () => downloadImage('png'));
   $('dlJpg').addEventListener('click', () => downloadImage('jpg'));
-
   $('dlSvg').addEventListener('click', function() {
-    if (!currentText) {
-      alert('Önce bir QR kodu oluşturun.');
-      return;
-    }
+    if (!currentText) { alert('Önce QR oluşturun.'); return; }
     const link = document.createElement('a');
     link.download = 'qr-code.svg';
     link.href = `https://api.qrserver.com/v1/create-qr-code/?format=svg&size=300x300&data=${encodeURIComponent(currentText)}`;
@@ -516,67 +604,60 @@
   $('emailBtn').addEventListener('click', function() {
     const email = $('emailInput').value.trim();
     if (!email || email.indexOf('@') === -1) return;
-    // Backend'e kaydet (opsiyonel)
     fetch('/api/user/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, purpose: selectedPurpose, lang: currentLang })
     })
     .then(res => res.json())
-    .then(data => {
+    .then(() => {
       $('emailSuccess').style.display = 'block';
       $('emailInput').value = '';
       $('emailSkip').style.display = 'none';
     })
-    .catch(err => console.error('E-posta kayıt hatası:', err));
+    .catch(err => console.error('E-posta hatası:', err));
   });
 
   window.skipEmail = function() {
     $('emailSection').style.display = 'none';
   };
 
-  // ---------- Logo yükleme ----------
+  // ---------- Logo ----------
   logoBtn.addEventListener('click', () => logoUpload.click());
   logoUpload.addEventListener('change', function(e) {
     if (this.files && this.files[0]) {
       const reader = new FileReader();
       reader.onload = function(ev) {
-        // Logo base64 olarak saklanabilir, QR oluştururken kullanılır
         localStorage.setItem('logoData', ev.target.result);
-        alert('Logo yüklendi. QR oluştururken kullanılacak.');
+        alert('Logo yüklendi.');
       };
       reader.readAsDataURL(this.files[0]);
     }
   });
 
-  // ---------- QR tipi değişikliğinde pro kontrolü ----------
+  // ---------- QR tipi değişikliği ----------
   qrTypeRadios.forEach(radio => {
     radio.addEventListener('change', function() {
       if (this.value === 'dynamic' && !isPro) {
-        alert('Dinamik QR Pro özelliğidir. Lütfen abone olun.');
+        alert('Dinamik QR Pro özelliğidir.');
         document.querySelector('input[name="qrType"][value="static"]').checked = true;
       }
     });
   });
 
-  // ---------- Abonelik yükseltme ----------
+  // ---------- Abonelik ----------
   upgradeLink.addEventListener('click', openPaddleCheckout);
   proBtn.addEventListener('click', function() {
-    if (isPro) {
-      alert('Zaten Pro üyesisiniz!');
-    } else {
-      openPaddleCheckout();
-    }
+    if (isPro) alert('Zaten Pro üyesisiniz!');
+    else openPaddleCheckout();
   });
 
   // ---------- Giriş / Çıkış ----------
   loginBtn.addEventListener('click', function() {
-    // Basit giriş ekranı (prompt ile hızlı test)
-    const email = prompt('E-posta adresinizi girin:');
+    const email = prompt('E-posta:');
     if (!email) return;
-    const password = prompt('Şifrenizi girin:');
+    const password = prompt('Şifre:');
     if (!password) return;
-
     fetch('/api/user/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -591,8 +672,9 @@
         localStorage.setItem('isPro', JSON.stringify(isPro));
         updateUserUI();
         alert('Giriş başarılı!');
+        loadDashboard();
       } else {
-        alert('Giriş başarısız: ' + (data.error || 'Bilinmeyen hata'));
+        alert('Giriş başarısız: ' + (data.error || ''));
       }
     })
     .catch(err => alert('Sunucu hatası: ' + err.message));
@@ -604,7 +686,87 @@
     userToken = null;
     isPro = false;
     updateUserUI();
+    dashboardSection.style.display = 'none';
     alert('Çıkış yapıldı.');
+  });
+
+  // ---------- Dashboard ----------
+  function loadDashboard() {
+    if (!userToken) return;
+    fetch('/api/qr/list', {
+      headers: { 'Authorization': 'Bearer ' + userToken }
+    })
+    .then(res => res.json())
+    .then(qrs => {
+      if (!qrs.length) {
+        qrList.innerHTML = '<p style="color:#9bb7d4; font-size:0.8rem;">Henüz QR oluşturmadınız.</p>';
+        return;
+      }
+      qrList.innerHTML = qrs.map(qr => `
+        <div class="qr-list-item">
+          <div class="info">
+            <strong>${qr.type === 'dynamic' ? '🔗 Dinamik' : '📄 Statik'}</strong>
+            <span>${new Date(qr.createdAt).toLocaleDateString()}</span>
+            ${qr.shortCode ? `<span>🔗 /s/${qr.shortCode}</span>` : ''}
+          </div>
+          <div class="actions">
+            ${qr.type === 'dynamic' ? `<button onclick="editQR('${qr._id}')">✏️</button>` : ''}
+            <button class="delete" onclick="deleteQR('${qr._id}')">🗑️</button>
+          </div>
+        </div>
+      `).join('');
+    })
+    .catch(err => console.error('Dashboard yüklenemedi:', err));
+  }
+
+  window.editQR = function(id) {
+    const newUrl = prompt('Yeni hedef URL girin:');
+    if (!newUrl) return;
+    fetch(`/api/qr/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + userToken
+      },
+      body: JSON.stringify({ destinationUrl: newUrl })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert('Güncellendi!');
+        loadDashboard();
+      } else {
+        alert('Hata: ' + data.error);
+      }
+    })
+    .catch(err => alert('Sunucu hatası: ' + err.message));
+  };
+
+  window.deleteQR = function(id) {
+    if (!confirm('Bu QR kodunu silmek istediğinize emin misiniz?')) return;
+    fetch(`/api/qr/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + userToken }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert('Silindi.');
+        loadDashboard();
+      } else {
+        alert('Hata: ' + data.error);
+      }
+    })
+    .catch(err => alert('Sunucu hatası: ' + err.message));
+  };
+
+  dashboardToggle.addEventListener('click', function() {
+    if (dashboardSection.style.display === 'none') {
+      dashboardSection.style.display = 'block';
+      loadDashboard();
+    } else {
+      dashboardSection.style.display = 'none';
+    }
   });
 
   // ---------- Dil butonları ----------
@@ -617,16 +779,18 @@
 
   // ---------- Olay bağlamaları ----------
   generateBtn.addEventListener('click', generateQR);
-  qrInput.addEventListener('keydown', e => { if (e.key === 'Enter') generateQR(); });
+  // Enter tuşu için dinamik alanları dinle (delegasyon)
+  templateFields.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') generateQR();
+  });
 
   // ---------- Başlangıç ----------
   setLanguage('tr');
   updateUserUI();
   initPaddle();
-
-  // Varsayılan QR oluştur
+  // Şablonları ilk haline getir
+  templateFields.innerHTML = templates.url;
   setTimeout(generateQR, 500);
-
 })();
 </script>
 </body>
