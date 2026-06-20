@@ -1,6 +1,6 @@
 # PACDI Store - QR Kod Oluşturucu (Freemium)
 
-Bu proje, statik ve dinamik QR kod oluşturma, renk/logo/boyut özelleştirme, Paddle ile abonelik yönetimi ve kullanıcı paneline sahiptir.
+Bu proje, statik ve dinamik QR kod oluşturma, renk/logo/boyut özelleştirme, vCard/WiFi/Sosyal Medya şablonları, Paddle ile abonelik yönetimi, detaylı analitik (ülke, tarayıcı, cihaz) ve kullanıcı paneline sahiptir.
 
 ## Kurulum
 
@@ -18,6 +18,15 @@ Bu proje, statik ve dinamik QR kod oluşturma, renk/logo/boyut özelleştirme, P
 
 - Paddle vendor ID, client token ve API key'ini `.env`'ye ekleyin.
 - Webhook URL'ini Paddle dashboard'da ayarlayın: `https://backend-url.onrender.com/webhook/paddle`
+
+## Özellikler
+
+- **Şablonlar**: URL, vCard, WiFi, Sosyal Medya (Link-in-Bio)
+- **Dinamik QR**: Hedef URL'yi panelden değiştirebilme
+- **Analitik**: Tıklama, ülke, tarayıcı, cihaz bilgileri
+- **Rate Limiting**: Ücretsiz kullanıcılar günde 5 QR oluşturabilir
+- **Dashboard**: QR'ları listeleme, düzenleme, silme
+- **Paddle Abonelik**: Aylık 1.99€ / Yıllık 14.90€
 
 ## Lisans
 
