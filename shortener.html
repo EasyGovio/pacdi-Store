@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kısa Link | PACDI Store</title>
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <link rel="stylesheet" href="/assets/common.css">
+</head>
+<body>
+<div class="app-container">
+  <nav id="mainNav"></nav>
+  <div class="user-panel" id="userPanel"></div>
+
+  <h1 style="color:#F6B45F; margin-bottom:16px;">🔗 Kısa Link Oluşturucu</h1>
+
+  <div style="background:#0a1018; border-radius:20px; padding:20px;">
+    <input type="url" id="longUrl" class="qr-input" placeholder="Uzun URL'yi yapıştır..." style="margin-bottom:12px;">
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <input type="text" id="customSlug" class="qr-input" placeholder="Özel kısa kod (isteğe bağlı)" style="flex:1; margin-bottom:12px;">
+    </div>
+    <button id="shortenBtn" class="generate-btn">🔗 Kısalt</button>
+    <div id="shortResult" style="margin-top:16px; color:#eaf2fb; word-break:break-all;"></div>
+  </div>
+
+  <div class="footer" style="margin-top:24px;">PACDI Store</div>
+</div>
+
+<script src="/assets/common.js"></script>
+<script>
+  (function() {
+    const longUrl = document.getElementById('longUrl');
+    const customSlug = document.getElementById('customSlug');
+    const shortResult = document.getElementById('shortResult');
+    const shortenBtn = document.getElementById('shortenBtn');
+
+    shortenBtn.addEventListener('click', function() {
+      const url = longUrl.value.trim();
+      if (!url) { alert('Lütfen bir URL girin.'); return; }
+      if (!userToken || !isPro) {
+        alert(t('pro_feature'));
+        return;
+      }
+      const slug = customSlug.value.trim() || undefined;
+      fetch('/api/qr/dynamic', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + userToken
+        },
+        body: JSON.stringify({
+          destinationUrl: url,
+          customShortCode: slug,
+          fgColor: '#04162E',
+          bgColor: '#FFFFFF',
+          size: 200,
+          logo: null
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          shortResult.innerHTML = `
+            <div style="background:#0a1018; padding:12px; border-radius:12px;">
+              <p style="color:#2ECC71;">✅ Kısa link oluşturuldu!</p>
+              <p style="font-size:1.1rem; font-weight:bold; color:#F6B45F;">${data.qrUrl}</p>
+              <button onclick="navigator.clipboard.writeText('${data.qrUrl}')" style="background:#F6B45F; border:none; padding:6px 16px; border-radius:20px; margin-top:8px; cursor:pointer;">📋 Kopyala</button>
+            </div>
+          `;
+        } else {
+          alert('Hata: ' + data.error);
+        }
+      })
+      .catch(err => alert('Sunucu hatası: ' + err.message));
+    });
+
+    // Pro özelliklerini override
+    window.enableProFeatures = function(enable) {
+      // Kısa link zaten Pro özelliği, buton kontrolü yapabiliriz
+      // Şimdilik her şey açık, ama backend kontrol edecek.
+    };
+  })();
+</script>
+</body>
+</html>
