@@ -8,17 +8,25 @@ const User = require('../models/User');
 router.post('/register', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const existing = await User.findOne({ email });
+    if (!email || !password) {
+      return res.status(400).json({ error: 'E-posta ve şifre zorunludur.' });
+    }
+    const existing = await User.findOne({ email: email.toLowerCase() });
     if (existing) return res.status(400).json({ error: 'Bu e-posta zaten kayıtlı.' });
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hashed });
+    const user = new User({ email: email.toLowerCase(), password: hashed });
     await user.save();
 
-    const token = jwt.sign({ id: user._id, isPro: false }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign(
+      { id: user._id, isPro: false },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
     res.json({ token, isPro: false });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Register hatası:', err);
+    res.status(500).json({ error: 'Kayıt sırasında hata oluştu.' });
   }
 });
 
@@ -26,11 +34,19 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ error: 'Kullanıcı bulunamadı.' });
+    if (!email || !password) {
+      return res.status(400).json({ error: 'E-posta ve şifre zorunludur.' });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return res.status(400).json({ error: 'Kullanıcı bulunamadı.' });
+    }
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ error: 'Hatalı şifre.' });
+    if (!match) {
+      return res.status(400).json({ error: 'Hatalı şifre.' });
+    }
 
     const token = jwt.sign(
       { id: user._id, isPro: user.isPro },
@@ -39,7 +55,8 @@ router.post('/login', async (req, res) => {
     );
     res.json({ token, isPro: user.isPro });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Login hatası:', err);
+    res.status(500).json({ error: 'Giriş sırasında hata oluştu.' });
   }
 });
 
@@ -49,16 +66,23 @@ router.get('/profile', require('../middleware/auth'), async (req, res) => {
     const user = await User.findById(req.user.id).select('-password');
     res.json(user);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Profil hatası:', err);
+    res.status(500).json({ error: 'Profil getirilemedi.' });
   }
 });
 
-// E-posta aboneliği
+// E-posta aboneliği (newsletter)
 router.post('/subscribe', async (req, res) => {
-  const { email, purpose, lang } = req.body;
-  console.log('E-posta aboneliği:', email, purpose, lang);
-  // Burada Mailchimp, SendGrid vb. entegre edilebilir.
-  res.json({ success: true });
+  try {
+    const { email, purpose, lang } = req.body;
+    if (!email) return res.status(400).json({ error: 'E-posta gerekli.' });
+    console.log('E-posta aboneliği:', email, purpose, lang);
+    // Burada Mailchimp/SendGrid entegrasyonu yapılabilir.
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Abonelik hatası:', err);
+    res.status(500).json({ error: 'Abonelik kaydedilemedi.' });
+  }
 });
 
 module.exports = router;
