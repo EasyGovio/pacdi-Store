@@ -43,7 +43,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Profil (token ile)
+// Profil
 router.get('/profile', require('../middleware/auth'), async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
@@ -53,11 +53,11 @@ router.get('/profile', require('../middleware/auth'), async (req, res) => {
   }
 });
 
-// E-posta aboneliği (newsletter)
+// E-posta aboneliği
 router.post('/subscribe', async (req, res) => {
   const { email, purpose, lang } = req.body;
-  // Burada Mailchimp veya benzeri servise ekleyebilirsiniz.
   console.log('E-posta aboneliği:', email, purpose, lang);
+  // Burada Mailchimp, SendGrid vb. entegre edilebilir.
   res.json({ success: true });
 });
 
