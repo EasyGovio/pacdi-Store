@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://pacdi-backend.onrender.com/api/$1" },
+    { "source": "/s/(.*)", "destination": "https://pacdi-backend.onrender.com/s/$1" }
+  ]
+}
