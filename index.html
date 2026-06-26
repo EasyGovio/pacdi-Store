@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PACDI Store — QR Kod, Bağlantı Kısaltıcı, Şifre Üretici ve DGUV Prüfprotokoll araçları. Ücretsiz ve Pro.">
+  <title>PACDI Store | Dijital Araçlar</title>
+  <link rel="canonical" href="https://pacdi.store/" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #04162E;
+      --surface: #0a1a30;
+      --border: rgba(246,180,95,0.2);
+      --gold: #F6B45F;
+      --gold-dark: #d4941f;
+      --text: #e8edf2;
+      --muted: #7a9ab8;
+      --green: #34D399;
+      --radius: 16px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: rgba(4,22,46,0.95);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 24px;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      gap: 16px;
+    }
+    .logo-mark {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .logo-mark span { color: var(--muted); font-weight: 400; font-size: 0.85rem; margin-left: 4px; }
+
+    nav {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.72rem;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid transparent;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    nav a:hover, nav a.active {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(246,180,95,0.06);
+    }
+
+    .header-user {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .header-user span { color: var(--muted); font-size: 0.72rem; }
+    .btn-sm {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .btn-sm:hover { background: rgba(246,180,95,0.1); }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, rgba(246,180,95,0.07) 0%, transparent 60%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      margin-bottom: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--gold);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 480px;
+      line-height: 1.6;
+    }
+    .hero-badges { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .badge-free { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+    .badge-new  { background: rgba(246,180,95,0.12); color: var(--gold); border: 1px solid rgba(246,180,95,0.3); }
+
+    /* ── TOOLS GRID ── */
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .tool-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(246,180,95,0.04) 0%, transparent 60%);
+      opacity: 0;
+      transition: 0.2s;
+    }
+    .tool-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+    .tool-card:hover::before { opacity: 1; }
+
+    .tool-card.featured { border-color: rgba(246,180,95,0.4); }
+    .tool-card.featured .card-badge {
+      position: absolute;
+      top: 14px; right: 14px;
+      background: rgba(246,180,95,0.15);
+      color: var(--gold);
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: 1px solid rgba(246,180,95,0.3);
+    }
+
+    .tool-icon { font-size: 2rem; line-height: 1; }
+    .tool-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .tool-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
+      flex: 1;
+    }
+    .tool-meta {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .tag {
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      color: var(--muted);
+    }
+    .tag-free { color: var(--green); background: rgba(52,211,153,0.08); }
+    .tag-pro  { color: var(--gold); background: rgba(246,180,95,0.08); }
+
+    /* ── PRUEF FEATURED STRIP ── */
+    .featured-strip {
+      background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(246,180,95,0.04));
+      border: 1px solid rgba(246,180,95,0.35);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .featured-strip .fs-icon { font-size: 2.8rem; flex-shrink: 0; }
+    .featured-strip .fs-body { flex: 1; min-width: 200px; }
+    .featured-strip h2 { font-size: 1.3rem; font-weight: 700; color: var(--gold); margin-bottom: 6px; }
+    .featured-strip p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+    .featured-strip .fs-cta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+    .btn-primary {
+      background: var(--gold);
+      color: #04162E;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-primary:hover { background: #f0c870; transform: translateY(-1px); }
+    .fs-hint { font-size: 0.7rem; color: var(--muted); }
+
+    /* ── LANG BAR ── */
+    .lang-bar {
+      display: flex;
+      gap: 4px;
+    }
+    .lang-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      transition: 0.2s;
+    }
+    .lang-btn.active, .lang-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    footer a { color: rgba(246,180,95,0.6); text-decoration: none; margin: 0 8px; }
+    footer a:hover { color: var(--gold); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      main { padding: 20px 16px 48px; }
+      .hero { padding: 24px 20px; }
+      .hero h1 { font-size: 1.5rem; }
+      .featured-strip { padding: 20px; }
+      .featured-strip .fs-cta { align-items: flex-start; }
+      .tools-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .tool-card { padding: 16px; }
+    }
+    @media (max-width: 420px) {
+      .tools-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-mark">PACDI Store <span>Dijital Araçlar</span></div>
+    <nav id="mainNav"></nav>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="lang-bar">
+        <button class="lang-btn active" onclick="setLanguage('tr')">TR</button>
+        <button class="lang-btn" onclick="setLanguage('de')">DE</button>
+        <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+      </div>
+      <div id="userPanel" class="header-user"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div>
+      <h1 id="hero-title">Dijital Araçlar</h1>
+      <p id="hero-sub">QR kod, bağlantı kısaltıcı, güçlü şifre üretici ve profesyonel Prüfprotokoll — hepsi burada, ücretsiz.</p>
+      <div class="hero-badges">
+        <span class="badge badge-free">Ücretsiz Araçlar</span>
+        <span class="badge badge-new" id="hero-new-badge">⚡ Yeni: DGUV Prüfprotokoll</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED: DGUV PRUEFPROTOKOLL -->
+  <div class="featured-strip">
+    <div class="fs-icon">⚡</div>
+    <div class="fs-body">
+      <h2 id="fs-title">DGUV V3 Prüfprotokoll</h2>
+      <p id="fs-desc">Elektrische Betriebsmittel prüfen, dokumentieren und als PDF exportieren. Kostenlos testen — kein Login, keine Installation. Rakipler 80€+ alırken biz 15€'dan başlıyoruz.</p>
+    </div>
+    <div class="fs-cta">
+      <a href="/pruefprotokoll.html" class="btn-primary" id="fs-btn">Jetzt testen →</a>
+      <span class="fs-hint" id="fs-hint">✔ Ücretsiz · PDF çıktı · Mobil uyumlu</span>
+    </div>
+  </div>
+
+  <!-- TOOLS GRID -->
+  <div class="section-title" id="tools-label">ARAÇLAR</div>
+  <div class="tools-grid">
+
+    <a href="/index.html" class="tool-card active">
+      <div class="tool-icon">🔳</div>
+      <div class="tool-name" id="t1-name">QR Kod Oluşturucu</div>
+      <div class="tool-desc" id="t1-desc">URL, vCard, WiFi ve sosyal medya için anında QR kod üret. PNG, JPG veya SVG olarak indir.</div>
+      <div class="tool-meta">
+        <span class="tag tag-free">Ücretsiz</span>
+        <span class="tag tag-pro">Pro: Dinamik QR</span>
+      </div>
+    </a>
+
+    <a href="/pruefprotokoll.html" class="tool-card featured">
+      <div class="card-badge" id="cb-new">YENİ</div>
+      <div class="tool-icon">⚡</div>
+      <div class="tool-name">DGUV Prüfprotokoll</div>
+      <div class="tool-desc" id="t2-desc">BGV A3 / DGUV Vorschrift 3 uyumlu elektro muayene protokolü. PDF export, imza, renk kodlu sonuçlar.</div>
+      <div class="tool-meta">
+        <span class="tag tag-free">3 Protokol Ücretsiz</span>
+        <span class="tag tag-pro">Pro: Sınırsız</span>
+      </div>
+    </a>
+
+    <a href="/scanner.html" class="tool-card">
+      <div class="tool-icon">📷</div>
+      <div class="tool-name" id="t3-name">QR Tarayıcı</div>
+      <div class="tool-desc" id="t3-desc">Kamera veya görsel yükleyerek QR kodları ve barkodları anında okut.</div>
+      <div class="tool-meta">
+        <span class="tag tag-free">Ücretsiz</span>
+      </div>
+    </a>
+
+    <a href="/shortener.html" class="tool-card">
+      <div class="tool-icon">🔗</div>
+      <div class="tool-name" id="t4-name">Bağlantı Kısaltıcı</div>
+      <div class="tool-desc" id="t4-desc">Uzun URL'leri kısa ve paylaşılabilir bağlantılara dönüştür.</div>
+      <div class="tool-meta">
+        <span class="tag tag-free">Ücretsiz</span>
+        <span class="tag tag-pro">Pro: İstatistik</span>
+      </div>
+    </a>
+
+    <a href="/password.html" class="tool-card">
+      <div class="tool-icon">🔐</div>
+      <div class="tool-name" id="t5-name">Şifre Üretici</div>
+      <div class="tool-desc" id="t5-desc">Güvenli, özelleştirilebilir şifreler üret. Uzunluk, karakter seti, özel karakterler ayarlanabilir.</div>
+      <div class="tool-meta">
+        <span class="tag tag-free">Ücretsiz</span>
+      </div>
+    </a>
+
+  </div>
+
+</main>
+
+<footer>
+  <span>© 2026 PACDI Global · pacdi.store</span>
+  <a href="/legal.html">Impressum & Datenschutz</a>
+  <a href="https://pacdi.de" target="_blank">pacdi.de</a>
+</footer>
+
+<script src="/assets/common.js"></script>
+<script>
+(function() {
+  var i18n = {
+    tr: {
+      heroTitle: "Dijital Araçlar",
+      heroSub: "QR kod, bağlantı kısaltıcı, güçlü şifre üretici ve profesyonel Prüfprotokoll — hepsi burada, ücretsiz.",
+      heroNew: "⚡ Yeni: DGUV Prüfprotokoll",
+      fsTitle: "DGUV V3 Prüfprotokoll",
+      fsDesc: "Elektrikli cihazları kayıt altına al, ölçüm değerlerini gir, PDF olarak dışa aktar. Rakipler 80€+ alırken biz 15€'dan başlıyoruz.",
+      fsBtn: "Hemen dene →",
+      fsHint: "✔ Ücretsiz · PDF çıktı · Mobil uyumlu",
+      toolsLabel: "ARAÇLAR",
+      t1: "QR Kod Oluşturucu",
+      t1d: "URL, vCard, WiFi ve sosyal medya için anında QR kod üret. PNG, JPG veya SVG olarak indir.",
+      t3: "QR Tarayıcı",
+      t3d: "Kamera veya görsel yükleyerek QR kodları ve barkodları anında okut.",
+      t4: "Bağlantı Kısaltıcı",
+      t4d: "Uzun URL'leri kısa ve paylaşılabilir bağlantılara dönüştür.",
+      t5: "Şifre Üretici",
+      t5d: "Güvenli, özelleştirilebilir şifreler üret.",
+      cbNew: "YENİ",
+      t2d: "BGV A3 / DGUV Vorschrift 3 uyumlu elektro muayene protokolü. PDF export, imza, renk kodlu sonuçlar."
+    },
+    de: {
+      heroTitle: "Digitale Werkzeuge",
+      heroSub: "QR-Code-Generator, Link-Shortener, Passwort-Generator und professionelles Prüfprotokoll — alles kostenlos.",
+      heroNew: "⚡ Neu: DGUV Prüfprotokoll",
+      fsTitle: "DGUV V3 Prüfprotokoll",
+      fsDesc: "Elektrische Betriebsmittel prüfen, dokumentieren und als PDF exportieren. Kostenlos testen — kein Login, keine Installation. Ab 15 € statt 80 €+ bei Mitbewerbern.",
+      fsBtn: "Jetzt testen →",
+      fsHint: "✔ Kostenlos · PDF-Export · Mobilfreundlich",
+      toolsLabel: "WERKZEUGE",
+      t1: "QR-Code-Generator",
+      t1d: "Erstelle sofort QR-Codes für URL, vCard, WLAN und Social Media. Als PNG, JPG oder SVG herunterladen.",
+      t3: "QR-Scanner",
+      t3d: "QR-Codes und Barcodes per Kamera oder Bilddatei scannen.",
+      t4: "Link-Shortener",
+      t4d: "Lange URLs in kurze, teilbare Links umwandeln.",
+      t5: "Passwort-Generator",
+      t5d: "Sichere, anpassbare Passwörter generieren.",
+      cbNew: "NEU",
+      t2d: "BGV A3 / DGUV Vorschrift 3 konformes Prüfprotokoll. PDF-Export, Unterschriftenfeld, farbkodierte Ergebnisse."
+    },
+    en: {
+      heroTitle: "Digital Tools",
+      heroSub: "QR code generator, link shortener, password generator and professional inspection protocol — all free.",
+      heroNew: "⚡ New: DGUV Inspection Protocol",
+      fsTitle: "DGUV V3 Inspection Protocol",
+      fsDesc: "Test and document electrical equipment, export as PDF. Free to try — no login, no installation. From €15 vs. competitors charging €80+.",
+      fsBtn: "Try now →",
+      fsHint: "✔ Free · PDF export · Mobile friendly",
+      toolsLabel: "TOOLS",
+      t1: "QR Code Generator",
+      t1d: "Generate QR codes for URL, vCard, WiFi and social media. Download as PNG, JPG or SVG.",
+      t3: "QR Scanner",
+      t3d: "Scan QR codes and barcodes via camera or image upload.",
+      t4: "Link Shortener",
+      t4d: "Convert long URLs into short, shareable links.",
+      t5: "Password Generator",
+      t5d: "Generate secure, customizable passwords.",
+      cbNew: "NEW",
+      t2d: "BGV A3 / DGUV Vorschrift 3 compliant inspection protocol. PDF export, signature field, color-coded results."
+    }
+  };
+
+  function applyLang(lang) {
+    var d = i18n[lang] || i18n.de;
+    document.getElementById('hero-title').textContent = d.heroTitle;
+    document.getElementById('hero-sub').textContent = d.heroSub;
+    document.getElementById('hero-new-badge').textContent = d.heroNew;
+    document.getElementById('fs-title').textContent = d.fsTitle;
+    document.getElementById('fs-desc').textContent = d.fsDesc;
+    document.getElementById('fs-btn').textContent = d.fsBtn;
+    document.getElementById('fs-hint').textContent = d.fsHint;
+    document.getElementById('tools-label').textContent = d.toolsLabel;
+    document.getElementById('t1-name').textContent = d.t1;
+    document.getElementById('t1-desc').textContent = d.t1d;
+    document.getElementById('t2-desc').textContent = d.t2d;
+    document.getElementById('t3-name').textContent = d.t3;
+    document.getElementById('t3-desc').textContent = d.t3d;
+    document.getElementById('t4-name').textContent = d.t4;
+    document.getElementById('t4-desc').textContent = d.t4d;
+    document.getElementById('t5-name').textContent = d.t5;
+    document.getElementById('t5-desc').textContent = d.t5d;
+    document.getElementById('cb-new').textContent = d.cbNew;
+    document.querySelectorAll('.lang-btn').forEach(function(b) {
+      b.classList.toggle('active', b.textContent === lang.toUpperCase());
+    });
+    if (typeof window.setLanguage === 'function') window.setLanguage(lang);
+    document.documentElement.lang = lang;
+  }
+
+  window.setLanguage = function(lang) { applyLang(lang); };
+
+  var ul = (navigator.language || 'de').toLowerCase();
+  if (ul.startsWith('tr')) applyLang('tr');
+  else if (ul.startsWith('en')) applyLang('en');
+  else applyLang('de');
+})();
+</script>
+
+</body>
+</html>
