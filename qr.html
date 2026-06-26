@@ -9,22 +9,49 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
-  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <!-- common.css kasıtlı kaldırıldı - stiller inline -->
   <style>
-    /* ── PAGE OVERRIDES — PC layout ── */
-    html, body { overflow-x: hidden; max-width: 100vw; }
-    @media (max-width: 600px) {
-      .nav-label { display: none; }
+    /* ── RESET & BOX-SIZING ── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: #04162E;
+      color: #e8edf2;
     }
-    * { user-select: auto !important; -webkit-tap-highlight-color: rgba(246,180,95,0.2); }
-    button, a, input, select { cursor: pointer; }
-    body {
-      align-items: flex-start;
-      padding: 0;
+    body { align-items: flex-start; padding: 0; }
+
+    /* ── GLOBAL CONTAINER SAFETY ── */
+    .page-wrap,
+    .panel-left,
+    .panel-right,
+    .tool-panel,
+    .qr-preview,
+    .dl-row,
+    .dl-row-full,
+    .barcode-types,
+    .input-grid,
+    .customize-grid,
+    .plan-row,
+    .pro-note,
+    .blog-grid,
+    .blog-card,
+    .qr-box,
+    #site-header > div,
+    #mobile-menu {
+      max-width: 100%;
+      box-sizing: border-box;
     }
+
+    img, canvas, svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ── PAGE WRAP ── */
     .page-wrap {
       max-width: 1100px;
       width: 100%;
@@ -39,15 +66,14 @@
       gap: 20px;
       align-items: start;
     }
-    @media (max-width: 720px) {
-      .tool-panel { grid-template-columns: 1fr; }
-    }
 
     .panel-left, .panel-right {
       background: rgba(4,22,46,0.85);
       border: 1px solid rgba(246,180,95,0.2);
       border-radius: 18px;
       padding: 24px;
+      max-width: 100%;
+      overflow: hidden;
     }
 
     /* ── INPUTS ── */
@@ -83,7 +109,6 @@
       gap: 10px;
     }
     .input-grid .qr-input { margin-bottom: 0; }
-    @media (max-width: 480px) { .input-grid { grid-template-columns: 1fr; } }
 
     /* ── BARCODE TYPE ── */
     .barcode-types {
@@ -91,6 +116,7 @@
       gap: 8px;
       flex-wrap: wrap;
       margin-bottom: 12px;
+      max-width: 100%;
     }
     .bc-btn {
       background: #0a1828;
@@ -103,6 +129,8 @@
       cursor: pointer;
       font-family: inherit;
       transition: 0.2s;
+      flex-shrink: 1;
+      white-space: nowrap;
     }
     .bc-btn.active, .bc-btn:hover {
       border-color: #F6B45F;
@@ -134,6 +162,7 @@
       flex-direction: column;
       align-items: center;
       gap: 16px;
+      width: 100%;
     }
     .qr-box {
       width: 220px;
@@ -145,8 +174,14 @@
       justify-content: center;
       padding: 12px;
       position: relative;
+      max-width: 100%;
+      aspect-ratio: 1/1;
     }
-    .qr-box canvas, .qr-box img { max-width: 100%; max-height: 100%; border-radius: 6px; }
+    .qr-box canvas, .qr-box img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 6px;
+    }
     .qr-placeholder {
       color: #7a9ab8;
       font-size: 0.8rem;
@@ -173,6 +208,8 @@
       font-family: inherit;
       transition: 0.2s;
       text-align: center;
+      min-width: 0;
+      width: 100%;
     }
     .pacdi-dl-btn:hover { background: rgba(246,180,95,0.1); border-color: #F6B45F; }
 
@@ -193,6 +230,8 @@
       cursor: pointer;
       font-family: inherit;
       transition: 0.2s;
+      width: 100%;
+      text-align: center;
     }
     .pacdi-dl-btn-pdf:hover { background: rgba(212,50,50,0.2); }
     .pacdi-dl-btn-print {
@@ -206,6 +245,8 @@
       cursor: pointer;
       font-family: inherit;
       transition: 0.2s;
+      width: 100%;
+      text-align: center;
     }
     .pacdi-dl-btn-print:hover { background: rgba(52,211,153,0.15); }
 
@@ -215,6 +256,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin-top: 12px;
+      max-width: 100%;
     }
     .customize-item label {
       display: block;
@@ -241,6 +283,7 @@
       gap: 14px;
       margin-top: 12px;
       font-size: 0.8rem;
+      flex-wrap: wrap;
     }
     .plan-row label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: #b8d0e8; }
     .plan-row input { accent-color: #F6B45F; }
@@ -307,6 +350,57 @@
     .page-title { font-size: 1.4rem; font-weight: 800; color: #F6B45F; }
     .page-sub { font-size: 0.82rem; color: #7a9ab8; margin-top: 4px; }
 
+    /* ── MOBILE LAYOUT ── */
+    @media (max-width: 720px) {
+      .tool-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .panel-left, .panel-right {
+        width: 100%;
+        max-width: 100%;
+      }
+      .dl-row {
+        grid-template-columns: 1fr 1fr;
+      }
+      .dl-row .pacdi-dl-btn:last-child {
+        grid-column: span 2;
+      }
+      .dl-row-full {
+        grid-template-columns: 1fr 1fr;
+      }
+      .input-grid {
+        grid-template-columns: 1fr;
+      }
+      .customize-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .qr-box {
+        width: 100%;
+        max-width: 220px;
+        height: auto;
+        aspect-ratio: 1/1;
+      }
+      .page-title { font-size: 1.2rem; }
+      .page-sub { font-size: 0.75rem; }
+      .bc-btn { font-size: 0.65rem; padding: 5px 10px; }
+      .plan-row { font-size: 0.75rem; }
+    }
+
+    @media (max-width: 480px) {
+      .page-wrap { padding: 16px 12px 40px; }
+      .panel-left, .panel-right { padding: 16px; }
+      .dl-row { grid-template-columns: 1fr 1fr; }
+      .dl-row .pacdi-dl-btn:last-child { grid-column: span 2; }
+      .dl-row-full { grid-template-columns: 1fr; }
+      .customize-grid { grid-template-columns: 1fr; }
+      .qr-box { max-width: 180px; }
+      .barcode-types { gap: 4px; }
+      .bc-btn { font-size: 0.6rem; padding: 4px 8px; }
+      .btn-generate { font-size: 0.9rem; padding: 12px; }
+    }
+
     /* ── PRINT STYLES ── */
     @media print {
       header, footer, .panel-left, .blog-section, .dl-row, .dl-row-full, .btn-generate, .customize-grid, .plan-row, .pro-note, .page-header, .barcode-types, .section-label { display: none !important; }
@@ -318,22 +412,30 @@
       .print-label { display: block !important; }
     }
     .print-label { display: none; font-size: 0.8rem; text-align: center; color: #333; margin-top: 8px; }
+
+    /* ── NAV HAMBURGER ── */
+    .nav-label { display: inline; }
+    @media (max-width: 640px) {
+      .nav-label { display: none !important; }
+    }
+    #hamburger { display: none; }
+    @media (max-width: 640px) {
+      #hamburger { display: block !important; }
+      #mainNav { display: none !important; }
+    }
   </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <div id="site-header" style="background:rgba(4,22,46,0.97);border-bottom:1px solid rgba(246,180,95,0.2);padding:0 16px;position:sticky;top:0;z-index:200;backdrop-filter:blur(8px);">
-  <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px;">
+  <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px;width:100%;">
     <a href="/index.html" style="font-size:0.95rem;font-weight:800;color:#F6B45F;text-decoration:none;white-space:nowrap;flex-shrink:0;">PACDI Store</a>
 
-    <!-- Hamburger butonu - sadece mobil -->
-    <button id="hamburger" onclick="toggleMenu()" style="display:none;background:none;border:1px solid rgba(246,180,95,0.3);color:#F6B45F;padding:6px 10px;border-radius:8px;font-size:1rem;cursor:pointer;flex-shrink:0;">☰</button>
+    <button id="hamburger" onclick="toggleMenu()" style="background:none;border:1px solid rgba(246,180,95,0.3);color:#F6B45F;padding:6px 10px;border-radius:8px;font-size:1rem;cursor:pointer;flex-shrink:0;">☰</button>
 
-    <!-- PC nav -->
     <nav id="mainNav" style="display:flex;gap:4px;align-items:center;flex-wrap:nowrap;overflow:hidden;"></nav>
 
-    <!-- Dil butonları -->
     <div style="display:flex;gap:3px;flex-shrink:0;">
       <button onclick="setLanguage('tr')" id="lbtr" style="background:none;border:1px solid rgba(246,180,95,0.3);color:#F6B45F;padding:4px 8px;border-radius:8px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;">TR</button>
       <button onclick="setLanguage('de')" id="lbde" style="background:none;border:1px solid rgba(246,180,95,0.2);color:#7a9ab8;padding:4px 8px;border-radius:8px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;">DE</button>
@@ -341,7 +443,6 @@
     </div>
   </div>
 
-  <!-- Mobil dropdown menü -->
   <div id="mobile-menu" style="display:none;padding:8px 0 12px;border-top:1px solid rgba(246,180,95,0.1);">
     <a href="/" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">🏠 Ana Sayfa</a>
     <a href="/qr.html" style="display:block;padding:9px 16px;color:#F6B45F;text-decoration:none;font-size:0.85rem;background:rgba(246,180,95,0.06);">🔳 QR & Barkod</a>
@@ -352,29 +453,8 @@
   </div>
 </div>
 
-<style>
-@media (max-width: 640px) {
-  #hamburger { display:block !important; }
-  #mainNav { display:none !important; }
-}
-</style>
-
-<script>
-function toggleMenu() {
-  var m = document.getElementById('mobile-menu');
-  m.style.display = m.style.display === 'block' ? 'none' : 'block';
-}
-// Dışarı tıklayınca kapat
-document.addEventListener('click', function(e) {
-  if (!document.getElementById('site-header').contains(e.target)) {
-    document.getElementById('mobile-menu').style.display = 'none';
-  }
-});
-</script>
-
 <div class="page-wrap">
 
-  <!-- PAGE HEADER -->
   <div class="page-header">
     <div>
       <div class="page-title" id="pg-title">🔳 QR & Barkod Oluşturucu</div>
@@ -382,13 +462,10 @@ document.addEventListener('click', function(e) {
     </div>
   </div>
 
-  <!-- TOOL PANEL -->
   <div class="tool-panel">
 
-    <!-- LEFT: INPUTS -->
     <div class="panel-left">
 
-      <!-- TİP SEÇİMİ: QR vs BARCODE -->
       <div class="section-label" id="lb-type">TÜR</div>
       <div class="barcode-types" id="typeSelector">
         <button class="bc-btn active" data-mode="qr" onclick="switchMode('qr', this)">🔳 QR Kod</button>
@@ -399,7 +476,6 @@ document.addEventListener('click', function(e) {
         <button class="bc-btn" data-mode="qrpruf" onclick="switchMode('qrpruf', this)">⚡ Prüfprotokoll QR</button>
       </div>
 
-      <!-- QR ŞABLON SEÇİMİ -->
       <div id="qr-template-section">
         <div class="section-label" id="lb-template">ŞABLON</div>
         <select class="qr-select" id="templateSelect">
@@ -410,13 +486,11 @@ document.addEventListener('click', function(e) {
         </select>
       </div>
 
-      <!-- FIELDS -->
       <div class="section-label" id="lb-content">İÇERİK</div>
       <div id="templateFields">
         <input type="text" id="urlInput" class="qr-input" placeholder="https://pacdi.store" value="https://pacdi.store">
       </div>
 
-      <!-- PRÜFPROTOKOLL HELPER -->
       <div id="pruf-helper" style="display:none;">
         <div class="section-label">CİHAZ BİLGİSİ</div>
         <div class="input-grid">
@@ -432,7 +506,6 @@ document.addEventListener('click', function(e) {
 
       <hr class="divider">
 
-      <!-- ÖZELLEŞTIRME -->
       <div class="section-label" id="lb-custom">ÖZELLEŞTİR</div>
       <div class="customize-grid">
         <div class="customize-item">
@@ -449,12 +522,11 @@ document.addEventListener('click', function(e) {
         <label style="color:#F6B45F;"><input type="radio" name="qrType" value="dynamic" disabled> <span id="lb-dynamic">Dinamik (Pro) 🔒</span></label>
       </div>
       <div class="pro-note" id="proUpgrade">
-        ⭐ Renk, logo ve Dinamik QR için <a onclick="alert("Pro özelliği yakında!")">Pro'ya geç</a>
+        ⭐ Renk, logo ve Dinamik QR için <a onclick="alert('Pro özelliği yakında!')">Pro'ya geç</a>
       </div>
 
-    </div><!-- /panel-left -->
+    </div>
 
-    <!-- RIGHT: PREVIEW + DOWNLOAD -->
     <div class="panel-right">
       <div class="qr-preview">
 
@@ -463,7 +535,6 @@ document.addEventListener('click', function(e) {
         </div>
         <div class="print-label" id="print-label-text"></div>
 
-        <!-- İNDİR -->
         <div class="dl-row" id="downloadSection" style="display:none;">
           <button class="pacdi-dl-btn" id="dlPng">⬇ PNG</button>
           <button class="pacdi-dl-btn" id="dlJpg">⬇ JPG</button>
@@ -474,7 +545,6 @@ document.addEventListener('click', function(e) {
           <button class="pacdi-dl-btn-print" id="dlPrint">🖨️ Yazdır</button>
         </div>
 
-        <!-- AMAÇ -->
         <div style="width:100%;">
           <div class="section-label" id="lb-purpose" style="text-align:center;">KULLANIM AMACI</div>
           <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
@@ -485,23 +555,21 @@ document.addEventListener('click', function(e) {
           </div>
         </div>
 
-        <!-- E-POSTA -->
         <div style="width:100%;background:rgba(246,180,95,0.04);border:1px solid rgba(246,180,95,0.15);border-radius:12px;padding:14px;" id="emailSection">
           <div style="font-size:0.78rem;font-weight:600;color:#F6B45F;margin-bottom:4px;" id="lb-email-title">📧 Yeni araçlardan haberdar ol</div>
           <div style="font-size:0.7rem;color:#7a9ab8;margin-bottom:10px;" id="lb-email-sub">Reklam yok — sadece faydalı güncellemeler.</div>
-          <div style="display:flex;gap:8px;">
-            <input type="email" class="qr-input" id="emailInput" placeholder="e-posta@adresiniz.com" style="margin-bottom:0;flex:1;">
-            <button class="bc-btn active" id="emailBtn" style="white-space:nowrap;" id="lb-email-btn">Katıl</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <input type="email" class="qr-input" id="emailInput" placeholder="e-posta@adresiniz.com" style="margin-bottom:0;flex:1;min-width:120px;">
+            <button class="bc-btn active" id="emailBtn" style="white-space:nowrap;">Katıl</button>
           </div>
           <div style="font-size:0.65rem;color:#4a6a88;margin-top:6px;cursor:pointer;" onclick="document.getElementById('emailSection').style.display='none'" id="lb-email-skip">Şimdi değil</div>
         </div>
 
       </div>
-    </div><!-- /panel-right -->
+    </div>
 
-  </div><!-- /tool-panel -->
+  </div>
 
-  <!-- BLOG SECTION -->
   <div class="blog-section">
     <div class="section-label" id="lb-blog">İLGİLİ MAKALELER</div>
     <div class="blog-grid">
@@ -523,7 +591,7 @@ document.addEventListener('click', function(e) {
     </div>
   </div>
 
-</div><!-- /page-wrap -->
+</div>
 
 <footer style="border-top:1px solid rgba(246,180,95,0.15);padding:18px 24px;text-align:center;font-size:0.72rem;color:#4a6a88;">
   <span>© 2026 PACDI Global · pacdi.store</span>
@@ -531,12 +599,11 @@ document.addEventListener('click', function(e) {
 </footer>
 
 <script>
-// Nav inline — common.js bağımlılığı yok
+// ── NAV ──
 (function buildNav() {
   var nav = document.getElementById('mainNav');
   if (!nav) return;
   var page = (window.location.pathname.split('/').pop() || 'index.html');
-  // Mobilde sadece ikon, PC'de ikon+metin
   var items = [
     ['/', '🏠', 'Ana Sayfa'],
     ['/qr.html', '🔳', 'QR'],
@@ -545,281 +612,471 @@ document.addEventListener('click', function(e) {
     ['/shortener.html', '🔗', 'Link'],
     ['/password.html', '🔐', 'Şifre']
   ];
-  nav.innerHTML = items.map(function(i) {
-    var href = i[0], icon = i[1], label = i[2];
+  var html = '';
+  for (var i = 0; i < items.length; i++) {
+    var href = items[i][0];
+    var icon = items[i][1];
+    var label = items[i][2];
     var isActive = (page === href.replace('/','') || (href==='/' && (page===''||page==='index.html')));
     var color = isActive ? '#F6B45F' : '#7a9ab8';
     var border = isActive ? '#F6B45F' : 'transparent';
-    return '<a href="' + href + '" style="color:' + color + ';text-decoration:none;font-size:0.7rem;padding:5px 8px;border-radius:16px;border:1px solid ' + border + ';white-space:nowrap;display:inline-flex;align-items:center;gap:3px;">'
+    html += '<a href="' + href + '" style="color:' + color + ';text-decoration:none;font-size:0.7rem;padding:5px 8px;border-radius:16px;border:1px solid ' + border + ';white-space:nowrap;display:inline-flex;align-items:center;gap:3px;">'
       + '<span>' + icon + '</span>'
       + '<span class="nav-label">' + label + '</span>'
       + '</a>';
-  }).join('');
+  }
+  nav.innerHTML = html;
 })();
-</script>
-<script>
-(function() {
-  var currentCanvas = null;
-  var currentText = "";
-  var currentMode = "qr";
-  var selectedPurpose = "";
 
-  function $(id) { return document.getElementById(id); }
+// ── HAMBURGER ──
+function toggleMenu() {
+  var m = document.getElementById('mobile-menu');
+  m.style.display = m.style.display === 'block' ? 'none' : 'block';
+}
+document.addEventListener('click', function(e) {
+  var header = document.getElementById('site-header');
+  if (!header.contains(e.target)) {
+    document.getElementById('mobile-menu').style.display = 'none';
+  }
+});
 
-  // ── MOD DEĞİŞİMİ ──
-  window.switchMode = function(mode, btn) {
-    currentMode = mode;
-    document.querySelectorAll('#typeSelector .bc-btn').forEach(function(b) { b.classList.remove('active'); });
-    btn.classList.add('active');
-    $('qr-template-section').style.display = (mode === 'qr' || mode === 'qrpruf') ? 'block' : 'none';
-    $('pruf-helper').style.display = (mode === 'qrpruf') ? 'block' : 'none';
-    if (mode !== 'qr' && mode !== 'qrpruf') {
-      $('templateFields').innerHTML = '<input type="text" id="urlInput" class="qr-input" placeholder="Barkod içeriği..." value="">';
-    } else if (mode === 'qr') {
-      $('templateFields').innerHTML = templates.url;
-    }
-    $('generateBtn').textContent = (mode === 'qrpruf') ? '⚡ Prüfprotokoll QR Oluştur' : '🔳 Oluştur';
-  };
+// ── TRANSLATIONS ──
+var translations = {
+  tr: {
+    title: '🔳 QR & Barkod Oluşturucu',
+    sub: 'URL, vCard, WiFi, Sosyal Medya — PNG, JPG, SVG, PDF veya direkt yazdır',
+    type: 'TÜR',
+    template: 'ŞABLON',
+    content: 'İÇERİK',
+    custom: 'ÖZELLEŞTİR',
+    fg: 'Ön Renk',
+    bg: 'Arka Renk',
+    static: 'Statik (Ücretsiz)',
+    dynamic: 'Dinamik (Pro) 🔒',
+    purpose: 'KULLANIM AMACI',
+    email_title: '📧 Yeni araçlardan haberdar ol',
+    email_sub: 'Reklam yok — sadece faydalı güncellemeler.',
+    email_btn: 'Katıl',
+    email_skip: 'Şimdi değil',
+    blog: 'İLGİLİ MAKALELER'
+  },
+  de: {
+    title: '🔳 QR & Barcode Generator',
+    sub: 'URL, vCard, WiFi, Soziale Medien — PNG, JPG, SVG, PDF oder direkt drucken',
+    type: 'TYP',
+    template: 'VORLAGE',
+    content: 'INHALT',
+    custom: 'ANPASSEN',
+    fg: 'Vordergrund',
+    bg: 'Hintergrund',
+    static: 'Statisch (Kostenlos)',
+    dynamic: 'Dynamisch (Pro) 🔒',
+    purpose: 'VERWENDUNGSZWECK',
+    email_title: '📧 Über neue Tools informiert bleiben',
+    email_sub: 'Keine Werbung — nur nützliche Updates.',
+    email_btn: 'Beitreten',
+    email_skip: 'Jetzt nicht',
+    blog: 'VERWANDTE ARTIKEL'
+  },
+  en: {
+    title: '🔳 QR & Barcode Generator',
+    sub: 'URL, vCard, WiFi, Social Media — PNG, JPG, SVG, PDF or print directly',
+    type: 'TYPE',
+    template: 'TEMPLATE',
+    content: 'CONTENT',
+    custom: 'CUSTOMIZE',
+    fg: 'Foreground',
+    bg: 'Background',
+    static: 'Static (Free)',
+    dynamic: 'Dynamic (Pro) 🔒',
+    purpose: 'PURPOSE',
+    email_title: '📧 Stay informed about new tools',
+    email_sub: 'No ads — just useful updates.',
+    email_btn: 'Join',
+    email_skip: 'Not now',
+    blog: 'RELATED ARTICLES'
+  }
+};
 
-  // ── ŞABLONLAR ──
-  var templates = {
-    url: '<input type="text" id="urlInput" class="qr-input" placeholder="https://..." value="https://pacdi.store">',
-    vcard: '<div class="input-grid"><input type="text" id="vcardName" class="qr-input" placeholder="Ad Soyad"><input type="text" id="vcardPhone" class="qr-input" placeholder="Telefon"><input type="email" id="vcardEmail" class="qr-input" placeholder="E-posta"><input type="text" id="vcardCompany" class="qr-input" placeholder="Şirket"></div><input type="text" id="vcardWebsite" class="qr-input" placeholder="Web Sitesi" style="margin-top:10px;">',
-    wifi: '<input type="text" id="wifiSSID" class="qr-input" placeholder="Ağ Adı (SSID)"><input type="text" id="wifiPassword" class="qr-input" placeholder="Şifre"><select id="wifiEncryption" class="qr-select"><option value="WPA">WPA/WPA2</option><option value="WEP">WEP</option><option value="nopass">Şifresiz</option></select>',
-    social: '<input type="text" id="socialInstagram" class="qr-input" placeholder="Instagram @kullanici"><input type="text" id="socialTwitter" class="qr-input" placeholder="Twitter/X @kullanici"><input type="text" id="socialLinkedin" class="qr-input" placeholder="LinkedIn URL"><input type="text" id="socialYoutube" class="qr-input" placeholder="YouTube URL">'
-  };
+var currentLang = 'tr';
 
-  $('templateSelect').addEventListener('change', function() {
-    $('templateFields').innerHTML = templates[this.value] || templates.url;
-  });
+function setLanguage(lang) {
+  currentLang = lang;
+  var t = translations[lang] || translations.tr;
+  document.getElementById('pg-title').textContent = t.title;
+  document.getElementById('pg-sub').textContent = t.sub;
+  document.getElementById('lb-type').textContent = t.type;
+  document.getElementById('lb-template').textContent = t.template;
+  document.getElementById('lb-content').textContent = t.content;
+  document.getElementById('lb-custom').textContent = t.custom;
+  document.getElementById('lb-fg').textContent = t.fg;
+  document.getElementById('lb-bg').textContent = t.bg;
+  document.getElementById('lb-static').textContent = t.static;
+  document.getElementById('lb-dynamic').textContent = t.dynamic;
+  document.getElementById('lb-purpose').textContent = t.purpose;
+  document.getElementById('lb-email-title').textContent = t.email_title;
+  document.getElementById('lb-email-sub').textContent = t.email_sub;
+  document.getElementById('lb-email-btn').textContent = t.email_btn;
+  document.getElementById('lb-email-skip').textContent = t.email_skip;
+  document.getElementById('lb-blog').textContent = t.blog;
 
-  // ── İÇERİK ÜRETİMİ ──
-  function getContent() {
-    var mode = currentMode;
-    if (mode === 'qrpruf') {
-      var inv = ($('pruf-inventar') && $('pruf-inventar').value) || '';
-      var bez = ($('pruf-bezeichnung') && $('pruf-bezeichnung').value) || '';
-      var ort = ($('pruf-standort') && $('pruf-standort').value) || '';
-      var dat = ($('pruf-datum') && $('pruf-datum').value) || '';
-      return 'https://pacdi.store/pruefprotokoll.html?inv=' + encodeURIComponent(inv) + '&bez=' + encodeURIComponent(bez) + '&standort=' + encodeURIComponent(ort) + '&datum=' + encodeURIComponent(dat);
-    }
-    if (mode !== 'qr') {
-      return ($('urlInput') && $('urlInput').value.trim()) || '';
-    }
-    var tpl = $('templateSelect').value;
-    if (tpl === 'vcard') {
-      return 'BEGIN:VCARD\nVERSION:3.0\nFN:' + (($('vcardName') && $('vcardName').value) || '') + '\nTEL:' + (($('vcardPhone') && $('vcardPhone').value) || '') + '\nEMAIL:' + (($('vcardEmail') && $('vcardEmail').value) || '') + '\nORG:' + (($('vcardCompany') && $('vcardCompany').value) || '') + '\nURL:' + (($('vcardWebsite') && $('vcardWebsite').value) || '') + '\nEND:VCARD';
-    }
-    if (tpl === 'wifi') {
-      var ssid = ($('wifiSSID') && $('wifiSSID').value) || '';
-      var pass = ($('wifiPassword') && $('wifiPassword').value) || '';
-      var enc = ($('wifiEncryption') && $('wifiEncryption').value) || 'WPA';
-      return 'WIFI:T:' + enc + ';S:' + ssid + ';P:' + pass + ';;';
-    }
-    if (tpl === 'social') {
-      var ig = ($('socialInstagram') && $('socialInstagram').value) || '';
-      var tw = ($('socialTwitter') && $('socialTwitter').value) || '';
-      var li = ($('socialLinkedin') && $('socialLinkedin').value) || '';
-      var yt = ($('socialYoutube') && $('socialYoutube').value) || '';
-      return [ig && 'Instagram: ' + ig, tw && 'Twitter: ' + tw, li && 'LinkedIn: ' + li, yt && 'YouTube: ' + yt].filter(Boolean).join('\n');
-    }
-    return ($('urlInput') && $('urlInput').value.trim()) || 'https://pacdi.store';
+  // Dil butonlarını vurgula
+  var btns = ['lbtr', 'lbde', 'lben'];
+  for (var i = 0; i < btns.length; i++) {
+    var btn = document.getElementById(btns[i]);
+    if (!btn) continue;
+    var isActive = (btns[i] === 'lb' + lang);
+    btn.style.borderColor = isActive ? '#F6B45F' : 'rgba(246,180,95,0.2)';
+    btn.style.color = isActive ? '#F6B45F' : '#7a9ab8';
+  }
+}
+
+// ── QR / BARCODE LOGIC ──
+var currentCanvas = null;
+var currentText = '';
+var currentMode = 'qr';
+var selectedPurpose = '';
+var qrCodeInstance = null;
+
+function $(id) { return document.getElementById(id); }
+
+function switchMode(mode, btn) {
+  currentMode = mode;
+  var btns = document.querySelectorAll('#typeSelector .bc-btn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.remove('active');
+  }
+  btn.classList.add('active');
+
+  var templateSection = $('qr-template-section');
+  var prufHelper = $('pruf-helper');
+  if (mode === 'qr' || mode === 'qrpruf') {
+    templateSection.style.display = 'block';
+  } else {
+    templateSection.style.display = 'none';
+  }
+  if (mode === 'qrpruf') {
+    prufHelper.style.display = 'block';
+  } else {
+    prufHelper.style.display = 'none';
   }
 
-  // ── ÜRETİM ──
-  function generate() {
-    var content = getContent();
-    if (!content) { alert('İçerik girin.'); return; }
-    currentText = content;
-    var display = $('qrDisplay');
-    display.innerHTML = '';
+  if (mode !== 'qr' && mode !== 'qrpruf') {
+    $('templateFields').innerHTML = '<input type="text" id="urlInput" class="qr-input" placeholder="Barkod içeriği..." value="">';
+  } else if (mode === 'qr') {
+    var tpl = $('templateSelect').value;
+    $('templateFields').innerHTML = templates[tpl] || templates.url;
+  }
+  var genBtn = $('generateBtn');
+  genBtn.textContent = (mode === 'qrpruf') ? '⚡ Prüfprotokoll QR Oluştur' : '🔳 Oluştur';
+}
 
-    // BARKOD modları — API ile
-    if (currentMode !== 'qr' && currentMode !== 'qrpruf') {
-      var barcodeType = currentMode; // ean13, ean8, code128, code39
-      var img = document.createElement('img');
-      img.crossOrigin = 'anonymous';
-      img.style.maxWidth = '100%';
-      img.style.maxHeight = '180px';
-      // bwip-js CDN fallback via barcode.tec-it.com
-      img.src = 'https://barcode.tec-it.com/barcode.ashx?data=' + encodeURIComponent(content) + '&code=' + barcodeType.toUpperCase() + '&unit=Fit&dpi=150&imagetype=Png&rotation=0&color=%23000000&bgcolor=%23ffffff';
-      img.onload = function() {
-        var canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth || 300;
-        canvas.height = img.naturalHeight || 100;
-        var ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.drawImage(img, 0, 0);
+var templates = {
+  url: '<input type="text" id="urlInput" class="qr-input" placeholder="https://..." value="https://pacdi.store">',
+  vcard: '<div class="input-grid"><input type="text" id="vcardName" class="qr-input" placeholder="Ad Soyad"><input type="text" id="vcardPhone" class="qr-input" placeholder="Telefon"><input type="email" id="vcardEmail" class="qr-input" placeholder="E-posta"><input type="text" id="vcardCompany" class="qr-input" placeholder="Şirket"></div><input type="text" id="vcardWebsite" class="qr-input" placeholder="Web Sitesi" style="margin-top:10px;">',
+  wifi: '<input type="text" id="wifiSSID" class="qr-input" placeholder="Ağ Adı (SSID)"><input type="text" id="wifiPassword" class="qr-input" placeholder="Şifre"><select id="wifiEncryption" class="qr-select"><option value="WPA">WPA/WPA2</option><option value="WEP">WEP</option><option value="nopass">Şifresiz</option></select>',
+  social: '<input type="text" id="socialInstagram" class="qr-input" placeholder="Instagram @kullanici"><input type="text" id="socialTwitter" class="qr-input" placeholder="Twitter/X @kullanici"><input type="text" id="socialLinkedin" class="qr-input" placeholder="LinkedIn URL"><input type="text" id="socialYoutube" class="qr-input" placeholder="YouTube URL">'
+};
+
+$('templateSelect').addEventListener('change', function() {
+  var val = this.value;
+  $('templateFields').innerHTML = templates[val] || templates.url;
+});
+
+function getContent() {
+  var mode = currentMode;
+  if (mode === 'qrpruf') {
+    var inv = ($('pruf-inventar') && $('pruf-inventar').value) || '';
+    var bez = ($('pruf-bezeichnung') && $('pruf-bezeichnung').value) || '';
+    var ort = ($('pruf-standort') && $('pruf-standort').value) || '';
+    var dat = ($('pruf-datum') && $('pruf-datum').value) || '';
+    return 'https://pacdi.store/pruefprotokoll.html?inv=' + encodeURIComponent(inv) + '&bez=' + encodeURIComponent(bez) + '&standort=' + encodeURIComponent(ort) + '&datum=' + encodeURIComponent(dat);
+  }
+  if (mode !== 'qr') {
+    return ($('urlInput') && $('urlInput').value.trim()) || '';
+  }
+  var tpl = $('templateSelect').value;
+  if (tpl === 'vcard') {
+    var name = ($('vcardName') && $('vcardName').value) || '';
+    var phone = ($('vcardPhone') && $('vcardPhone').value) || '';
+    var email = ($('vcardEmail') && $('vcardEmail').value) || '';
+    var company = ($('vcardCompany') && $('vcardCompany').value) || '';
+    var website = ($('vcardWebsite') && $('vcardWebsite').value) || '';
+    return 'BEGIN:VCARD\nVERSION:3.0\nFN:' + name + '\nTEL:' + phone + '\nEMAIL:' + email + '\nORG:' + company + '\nURL:' + website + '\nEND:VCARD';
+  }
+  if (tpl === 'wifi') {
+    var ssid = ($('wifiSSID') && $('wifiSSID').value) || '';
+    var pass = ($('wifiPassword') && $('wifiPassword').value) || '';
+    var enc = ($('wifiEncryption') && $('wifiEncryption').value) || 'WPA';
+    return 'WIFI:T:' + enc + ';S:' + ssid + ';P:' + pass + ';;';
+  }
+  if (tpl === 'social') {
+    var ig = ($('socialInstagram') && $('socialInstagram').value) || '';
+    var tw = ($('socialTwitter') && $('socialTwitter').value) || '';
+    var li = ($('socialLinkedin') && $('socialLinkedin').value) || '';
+    var yt = ($('socialYoutube') && $('socialYoutube').value) || '';
+    var parts = [];
+    if (ig) parts.push('Instagram: ' + ig);
+    if (tw) parts.push('Twitter: ' + tw);
+    if (li) parts.push('LinkedIn: ' + li);
+    if (yt) parts.push('YouTube: ' + yt);
+    return parts.join('\n');
+  }
+  return ($('urlInput') && $('urlInput').value.trim()) || 'https://pacdi.store';
+}
+
+function generate() {
+  var content = getContent();
+  if (!content) {
+    alert('İçerik girin.');
+    return;
+  }
+  currentText = content;
+  var display = $('qrDisplay');
+  display.innerHTML = '';
+
+  // Barcode modları (API)
+  if (currentMode !== 'qr' && currentMode !== 'qrpruf') {
+    var barcodeType = currentMode;
+    var img = document.createElement('img');
+    img.crossOrigin = 'anonymous';
+    img.style.maxWidth = '100%';
+    img.style.maxHeight = '180px';
+    img.src = 'https://barcode.tec-it.com/barcode.ashx?data=' + encodeURIComponent(content) + '&code=' + barcodeType.toUpperCase() + '&unit=Fit&dpi=150&imagetype=Png&rotation=0&color=%23000000&bgcolor=%23ffffff';
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || 300;
+      canvas.height = img.naturalHeight || 100;
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      currentCanvas = canvas;
+      showDownloads();
+    };
+    img.onerror = function() {
+      display.innerHTML = '<div style="color:#f87171;font-size:0.8rem;padding:20px;">Barkod üretilemedi. Geçerli bir değer girin.</div>';
+    };
+    display.appendChild(img);
+    return;
+  }
+
+  // QR mod
+  var fg = $('fgColor').disabled ? '#04162E' : $('fgColor').value;
+  var bg = $('bgColor').disabled ? '#FFFFFF' : $('bgColor').value;
+  var size = 200;
+
+  try {
+    qrCodeInstance = new QRCode(display, {
+      text: content,
+      width: size,
+      height: size,
+      colorDark: fg,
+      colorLight: bg,
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    // Canvas'ı yakalamak için bekle
+    setTimeout(function() {
+      var canvas = display.querySelector('canvas');
+      if (canvas) {
         currentCanvas = canvas;
         showDownloads();
-      };
-      img.onerror = function() {
-        display.innerHTML = '<div style="color:#f87171;font-size:0.8rem;padding:20px;">Barkod üretilemedi. Geçerli bir değer girin.</div>';
-      };
-      display.appendChild(img);
-      return;
-    }
+      } else {
+        // fallback: qrserver
+        var img2 = document.createElement('img');
+        img2.crossOrigin = 'anonymous';
+        img2.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(content);
+        img2.style.borderRadius = '6px';
+        img2.onload = function() {
+          currentCanvas = null;
+          showDownloads();
+        };
+        display.appendChild(img2);
+      }
+    }, 300);
+  } catch (e) {
+    // fallback
+    var img3 = document.createElement('img');
+    img3.crossOrigin = 'anonymous';
+    img3.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(content);
+    img3.style.borderRadius = '6px';
+    img3.onload = function() {
+      currentCanvas = null;
+      showDownloads();
+    };
+    display.appendChild(img3);
+  }
+}
 
-    // QR MOD
-    var fg = $('fgColor').disabled ? '#04162E' : $('fgColor').value;
-    var bg = $('bgColor').disabled ? '#FFFFFF' : $('bgColor').value;
-    var size = 200;
+function showDownloads() {
+  $('downloadSection').style.display = 'grid';
+  $('pdfPrintSection').style.display = 'grid';
+}
 
-    try {
-      new QRCode(display, { text: content, width: size, height: size, colorDark: fg, colorLight: bg, correctLevel: QRCode.CorrectLevel.M });
-      var canvas = display.querySelector('canvas');
-      if (canvas) { currentCanvas = canvas; showDownloads(); }
-    } catch(e) {
-      // Fallback
-      var img2 = document.createElement('img');
-      img2.crossOrigin = 'anonymous';
-      img2.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(content);
-      img2.style.borderRadius = '6px';
-      img2.onload = function() { currentCanvas = null; showDownloads(); };
-      display.appendChild(img2);
-    }
+// ── DOWNLOAD ──
+function downloadImage(format) {
+  // Canvas'ı taze al
+  var freshCanvas = $('qrDisplay').querySelector('canvas');
+  if (freshCanvas) currentCanvas = freshCanvas;
+
+  if (!currentCanvas && !currentText) {
+    alert('Önce QR oluşturun.');
+    return;
   }
 
-  function showDownloads() {
-    $('downloadSection').style.display = 'grid';
-    $('pdfPrintSection').style.display = 'grid';
+  // Canvas yoksa API fallback
+  if (!currentCanvas) {
+    var apiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&format=png&data=' + encodeURIComponent(currentText);
+    window.open(apiUrl, '_blank');
+    return;
   }
 
-  // ── PDF EXPORT ──
-  function exportPDF() {
-    if (!currentText) { alert('Önce bir QR/Barkod oluşturun.'); return; }
-    var doc = new jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    var pw = doc.internal.pageSize.getWidth();
+  var canvas = currentCanvas;
+  var mimeType = 'image/png';
+  var ext = 'png';
 
-    doc.setFontSize(16); doc.setFont('helvetica', 'bold');
-    doc.setTextColor(212, 175, 55);
-    doc.text('PACDI Store — QR / Barkod', pw/2, 20, { align: 'center' });
-
-    doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(100,100,100);
-    doc.text('İçerik: ' + currentText.substring(0, 80) + (currentText.length > 80 ? '...' : ''), pw/2, 28, { align: 'center' });
-    doc.text('Oluşturulma: ' + new Date().toLocaleString(), pw/2, 33, { align: 'center' });
-
-    // QR görselini canvas'dan al
-    var display = $('qrDisplay');
-    var canvas = display.querySelector('canvas');
-    var img = display.querySelector('img');
-    var imgData = null;
-
-    if (canvas) {
-      imgData = canvas.toDataURL('image/png');
-    } else if (img) {
-      // img varsa canvas'a çiz
-      var tmpCanvas = document.createElement('canvas');
-      tmpCanvas.width = img.naturalWidth || 200;
-      tmpCanvas.height = img.naturalHeight || 200;
-      var ctx = tmpCanvas.getContext('2d');
-      ctx.fillStyle = '#fff'; ctx.fillRect(0,0,tmpCanvas.width,tmpCanvas.height);
-      try { ctx.drawImage(img, 0, 0); imgData = tmpCanvas.toDataURL('image/png'); } catch(e) {}
-    }
-
-    if (imgData) {
-      var imgW = 80, imgH = 80;
-      doc.addImage(imgData, 'PNG', (pw - imgW)/2, 42, imgW, imgH);
-    }
-
-    doc.setFontSize(8); doc.setTextColor(150,150,150);
-    doc.text('pacdi.store · PACDI Global © 2026', pw/2, 140, { align: 'center' });
-
-    doc.save('pacdi-qr-' + new Date().getTime() + '.pdf');
+  if (format === 'jpg') {
+    var c2 = document.createElement('canvas');
+    c2.width = canvas.width;
+    c2.height = canvas.height;
+    var ctx2 = c2.getContext('2d');
+    ctx2.fillStyle = '#FFFFFF';
+    ctx2.fillRect(0, 0, c2.width, c2.height);
+    ctx2.drawImage(canvas, 0, 0);
+    canvas = c2;
+    mimeType = 'image/jpeg';
+    ext = 'jpg';
   }
 
-  // ── YAZDIR ──
-  function printQR() {
-    if (!currentText) { alert('Önce bir QR/Barkod oluşturun.'); return; }
-    $('print-label-text').textContent = currentText.substring(0, 60);
-    window.print();
-  }
-
-  // ── İNDİRME ──
-  function downloadImage(format) {
-    // Canvas'ı taze al - QRCode sonradan ekliyor olabilir
-    var freshCanvas = $('qrDisplay').querySelector('canvas');
-    if (freshCanvas) currentCanvas = freshCanvas;
-
-    if (!currentCanvas && !currentText) { alert('Önce QR oluşturun.'); return; }
-
-    // Canvas yoksa API fallback ile indir
-    if (!currentCanvas) {
-      var apiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&format=png&data=' + encodeURIComponent(currentText);
-      var link = document.createElement('a');
-      link.href = apiUrl;
-      link.download = 'pacdi-qr.' + (format === 'jpg' ? 'jpg' : 'png');
-      link.target = '_blank';
-      link.click();
-      return;
-    }
-    var canvas = currentCanvas;
-    if (format === 'jpg') {
-      var c2 = document.createElement('canvas');
-      c2.width = canvas.width; c2.height = canvas.height;
-      var ctx2 = c2.getContext('2d');
-      ctx2.fillStyle = '#fff'; ctx2.fillRect(0,0,c2.width,c2.height);
-      ctx2.drawImage(canvas,0,0);
-      canvas = c2;
-    }
+  var dataUrl = canvas.toDataURL(mimeType, 0.92);
+  // iOS Safari fix: window.open ile aç
+  var win = window.open(dataUrl, '_blank');
+  if (!win || win.closed || typeof win.closed === 'undefined') {
+    // fallback: link click
     var link = document.createElement('a');
-    link.download = 'pacdi-qr.' + (format === 'jpg' ? 'jpg' : 'png');
-    link.href = canvas.toDataURL(format === 'jpg' ? 'image/jpeg' : 'image/png', 0.95);
+    link.href = dataUrl;
+    link.download = 'pacdi-qr.' + ext;
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
+  }
+}
+
+function exportPDF() {
+  if (!currentText) {
+    alert('Önce bir QR/Barkod oluşturun.');
+    return;
+  }
+  var doc = new jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var pw = doc.internal.pageSize.getWidth();
+
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(212, 175, 55);
+  doc.text('PACDI Store — QR / Barkod', pw / 2, 20, { align: 'center' });
+
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(100, 100, 100);
+  doc.text('İçerik: ' + currentText.substring(0, 80) + (currentText.length > 80 ? '...' : ''), pw / 2, 28, { align: 'center' });
+  doc.text('Oluşturulma: ' + new Date().toLocaleString(), pw / 2, 33, { align: 'center' });
+
+  var display = $('qrDisplay');
+  var canvas = display.querySelector('canvas');
+  var img = display.querySelector('img');
+  var imgData = null;
+
+  if (canvas) {
+    imgData = canvas.toDataURL('image/png');
+  } else if (img) {
+    var tmpCanvas = document.createElement('canvas');
+    tmpCanvas.width = img.naturalWidth || 200;
+    tmpCanvas.height = img.naturalHeight || 200;
+    var ctx = tmpCanvas.getContext('2d');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height);
+    try { ctx.drawImage(img, 0, 0); imgData = tmpCanvas.toDataURL('image/png'); } catch (e) {}
   }
 
-  // ── E-POSTA ──
-  $('emailBtn').addEventListener('click', function() {
-    var email = $('emailInput').value.trim();
-    if (!email || email.indexOf('@') < 1) return;
-    fetch('/api/user/subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, purpose: selectedPurpose, lang: 'tr' })
-    }).catch(function() {});
-    $('emailSection').innerHTML = '<div style="color:#34D399;font-size:0.85rem;text-align:center;padding:10px;">✓ Teşekkürler!</div>';
-  });
-
-  // ── EVENT LISTENERS ──
-  $('generateBtn').addEventListener('click', generate);
-  $('dlPng').addEventListener('click', function() { downloadImage('png'); });
-  $('dlJpg').addEventListener('click', function() { downloadImage('jpg'); });
-  $('dlSvg').addEventListener('click', function() {
-    if (!currentText) { alert('Önce oluşturun.'); return; }
-    var link = document.createElement('a');
-    link.download = 'pacdi-qr.svg';
-    link.href = 'https://api.qrserver.com/v1/create-qr-code/?format=svg&size=300x300&data=' + encodeURIComponent(currentText);
-    link.target = '_blank'; link.click();
-  });
-  $('dlPdf').addEventListener('click', exportPDF);
-  $('dlPrint').addEventListener('click', printQR);
-
-  document.querySelectorAll('[data-purpose]').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      document.querySelectorAll('[data-purpose]').forEach(function(b) { b.classList.remove('active'); });
-      this.classList.add('active');
-      selectedPurpose = this.dataset.purpose;
-    });
-  });
-
-  // Pro özellikler
-  window.enableProFeatures = function(enable) {
-    $('fgColor').disabled = !enable;
-    $('bgColor').disabled = !enable;
-    document.querySelector('input[name="qrType"][value="dynamic"]').disabled = !enable;
-    $('proUpgrade').style.display = enable ? 'none' : 'block';
-  };
-
-  // Init - DOMContentLoaded garantisi
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() { setTimeout(generate, 300); });
-  } else {
-    setTimeout(generate, 300);
+  if (imgData) {
+    var imgW = 80, imgH = 80;
+    doc.addImage(imgData, 'PNG', (pw - imgW) / 2, 42, imgW, imgH);
   }
 
-})();
+  doc.setFontSize(8);
+  doc.setTextColor(150, 150, 150);
+  doc.text('pacdi.store · PACDI Global © 2026', pw / 2, 140, { align: 'center' });
+
+  doc.save('pacdi-qr-' + new Date().getTime() + '.pdf');
+}
+
+function printQR() {
+  if (!currentText) {
+    alert('Önce bir QR/Barkod oluşturun.');
+    return;
+  }
+  $('print-label-text').textContent = currentText.substring(0, 60);
+  window.print();
+}
+
+// ── EVENT BINDING ──
+$('generateBtn').addEventListener('click', generate);
+$('dlPng').addEventListener('click', function() { downloadImage('png'); });
+$('dlJpg').addEventListener('click', function() { downloadImage('jpg'); });
+$('dlSvg').addEventListener('click', function() {
+  if (!currentText) {
+    alert('Önce oluşturun.');
+    return;
+  }
+  var url = 'https://api.qrserver.com/v1/create-qr-code/?format=svg&size=300x300&data=' + encodeURIComponent(currentText);
+  window.open(url, '_blank');
+});
+$('dlPdf').addEventListener('click', exportPDF);
+$('dlPrint').addEventListener('click', printQR);
+
+// Purpose buttons
+var purposeBtns = document.querySelectorAll('[data-purpose]');
+for (var p = 0; p < purposeBtns.length; p++) {
+  purposeBtns[p].addEventListener('click', function() {
+    var btns = document.querySelectorAll('[data-purpose]');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].classList.remove('active');
+    }
+    this.classList.add('active');
+    selectedPurpose = this.dataset.purpose;
+  });
+}
+
+// Email
+$('emailBtn').addEventListener('click', function() {
+  var email = $('emailInput').value.trim();
+  if (!email || email.indexOf('@') < 1) return;
+  fetch('/api/user/subscribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, purpose: selectedPurpose, lang: currentLang })
+  }).catch(function() {});
+  $('emailSection').innerHTML = '<div style="color:#34D399;font-size:0.85rem;text-align:center;padding:10px;">✓ Teşekkürler!</div>';
+});
+
+// Pro upgrade
+window.enableProFeatures = function(enable) {
+  $('fgColor').disabled = !enable;
+  $('bgColor').disabled = !enable;
+  document.querySelector('input[name="qrType"][value="dynamic"]').disabled = !enable;
+  $('proUpgrade').style.display = enable ? 'none' : 'block';
+};
+
+// ── INIT ──
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    setLanguage('tr');
+    setTimeout(generate, 400);
+  });
+} else {
+  setLanguage('tr');
+  setTimeout(generate, 400);
+}
 </script>
-
 </body>
 </html>
