@@ -1,430 +1,1151 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <link rel="canonical" href="https://pacdi.store/index.html">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>QR Kod Oluşturucu | PACDI Store</title>
-  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-  <link rel="stylesheet" href="/assets/common.css">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DGUV V3 Prüfprotokoll – Kostenlos testen | PACDI Digital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0A1628;
+            color: #F5F2EC;
+            padding: 24px 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container { max-width: 1400px; width: 100%; margin: 0 auto; }
+
+        /* ––– HERO BANNER (NEU) ––– */
+        .hero {
+            background: linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(10,22,40,0) 60%);
+            border: 1px solid rgba(212,175,55,0.25);
+            border-radius: 14px;
+            padding: 28px 32px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .hero-text h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #D4AF37;
+            letter-spacing: 0.02em;
+            margin-bottom: 6px;
+        }
+        .hero-text p {
+            font-size: 15px;
+            color: #B0B5BF;
+            margin-bottom: 0;
+        }
+        .hero-text .badge-free {
+            display: inline-block;
+            margin-top: 10px;
+            background: rgba(52,211,153,0.15);
+            color: #34D399;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(52,211,153,0.25);
+            letter-spacing: 0.05em;
+        }
+        .hero-cta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        .hero-cta .btn-hero {
+            background: #D4AF37;
+            color: #0A1628;
+            border: none;
+            padding: 13px 28px;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .hero-cta .btn-hero:hover { background: #E8CC6A; transform: translateY(-1px); }
+        .hero-cta .hint {
+            font-size: 12px;
+            color: #8A8F9A;
+            text-align: right;
+        }
+
+        /* ––– PRICING BOX (NEU) ––– */
+        .pricing-strip {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .pricing-card {
+            flex: 1;
+            min-width: 200px;
+            border-radius: 10px;
+            padding: 16px 20px;
+            border: 1px solid rgba(212,175,55,0.10);
+            background: rgba(255,255,255,0.02);
+        }
+        .pricing-card.free { border-color: rgba(52,211,153,0.20); }
+        .pricing-card.pro { border-color: rgba(212,175,55,0.35); background: rgba(212,175,55,0.04); }
+        .pricing-card .plan-name {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 6px;
+        }
+        .pricing-card.free .plan-name { color: #34D399; }
+        .pricing-card.pro .plan-name { color: #D4AF37; }
+        .pricing-card .plan-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: #F5F2EC;
+            margin-bottom: 8px;
+        }
+        .pricing-card .plan-price span {
+            font-size: 13px;
+            font-weight: 400;
+            color: #8A8F9A;
+        }
+        .pricing-card ul {
+            list-style: none;
+            font-size: 12px;
+            color: #B0B5BF;
+            line-height: 1.8;
+        }
+        .pricing-card ul li::before { content: '✔  '; color: #34D399; }
+        .pricing-card.pro ul li::before { color: #D4AF37; }
+        .pricing-card .btn-upgrade {
+            margin-top: 12px;
+            width: 100%;
+            padding: 9px;
+            background: #D4AF37;
+            color: #0A1628;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        .pricing-card .btn-upgrade:hover { background: #E8CC6A; }
+
+        /* ––– PDF PAYWALL MODAL (NEU) ––– */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: #0F1E35;
+            border: 1px solid rgba(212,175,55,0.35);
+            border-radius: 14px;
+            padding: 32px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+        }
+        .modal .modal-icon { font-size: 40px; margin-bottom: 12px; }
+        .modal h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #D4AF37;
+            margin-bottom: 8px;
+        }
+        .modal p {
+            font-size: 14px;
+            color: #B0B5BF;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .modal .modal-price {
+            background: rgba(212,175,55,0.08);
+            border: 1px solid rgba(212,175,55,0.25);
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 20px;
+        }
+        .modal .modal-price strong {
+            font-size: 28px;
+            color: #D4AF37;
+        }
+        .modal .modal-price span {
+            font-size: 14px;
+            color: #8A8F9A;
+        }
+        .modal .modal-features {
+            list-style: none;
+            text-align: left;
+            font-size: 13px;
+            color: #B0B5BF;
+            margin-bottom: 20px;
+            line-height: 2;
+        }
+        .modal .modal-features li::before { content: '✔  '; color: #D4AF37; }
+        .modal .btn-modal-upgrade {
+            width: 100%;
+            padding: 13px;
+            background: #D4AF37;
+            color: #0A1628;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        .modal .btn-modal-upgrade:hover { background: #E8CC6A; }
+        .modal .btn-modal-cancel {
+            background: none;
+            border: none;
+            color: #8A8F9A;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            text-decoration: underline;
+        }
+
+        /* ––– PDF SUCCESS BANNER (NEU) ––– */
+        .pdf-success-banner {
+            display: none;
+            background: rgba(52,211,153,0.10);
+            border: 1px solid rgba(52,211,153,0.30);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .pdf-success-banner.active { display: flex; }
+        .pdf-success-banner .success-text {
+            font-size: 14px;
+            color: #34D399;
+            font-weight: 600;
+        }
+        .pdf-success-banner .success-hint {
+            font-size: 12px;
+            color: #8A8F9A;
+            margin-top: 2px;
+        }
+        .pdf-success-banner .btn-export-pro {
+            padding: 9px 20px;
+            background: #D4AF37;
+            color: #0A1628;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .pdf-success-banner .btn-export-pro:hover { background: #E8CC6A; }
+
+        /* ––– HEADER ––– */
+        .header {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(212,175,55,0.15);
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px 32px;
+            align-items: end;
+        }
+        .header .title-area {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(212,175,55,0.3);
+            padding-bottom: 12px;
+            margin-bottom: 8px;
+        }
+        .header .title-area h2 {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: #D4AF37;
+        }
+        .header .title-area span {
+            font-size: 13px;
+            color: #8A8F9A;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+        }
+        .header .field { display: flex; flex-direction: column; gap: 4px; }
+        .header .field label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #8A8F9A;
+        }
+        .header .field input {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(212,175,55,0.15);
+            color: #F5F2EC;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            border-radius: 4px;
+            transition: border-color 0.2s;
+            outline: none;
+            width: 100%;
+        }
+        .header .field input:focus { border-color: #D4AF37; }
+        .header .field input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8) sepia(1) hue-rotate(30deg) saturate(3);
+            cursor: pointer;
+        }
+
+        /* ––– TOOLBAR ––– */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .toolbar .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            font-family: 'Inter', sans-serif;
+            border: 1px solid rgba(212,175,55,0.15);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.06);
+            color: #F5F2EC;
+        }
+        .toolbar .btn:hover { background: rgba(212,175,55,0.12); border-color: #D4AF37; transform: translateY(-1px); }
+        .toolbar .btn--gold { background: #D4AF37; color: #0A1628; border-color: #D4AF37; }
+        .toolbar .btn--gold:hover { background: #E8CC6A; border-color: #E8CC6A; }
+        .toolbar .btn--danger { border-color: rgba(239,68,68,0.3); color: #EF4444; }
+        .toolbar .btn--danger:hover { background: rgba(239,68,68,0.12); border-color: #EF4444; }
+        .toolbar .spacer { flex: 1; }
+        .toolbar .badge {
+            font-size: 12px;
+            color: #8A8F9A;
+            background: rgba(255,255,255,0.04);
+            padding: 4px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        /* ––– TABLE ––– */
+        .table-wrap {
+            overflow-x: auto;
+            border: 1px solid rgba(212,175,55,0.10);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.02);
+            padding: 2px;
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 1100px; }
+        thead { background: rgba(212,175,55,0.06); border-bottom: 2px solid rgba(212,175,55,0.2); }
+        th {
+            text-align: left;
+            padding: 12px 10px;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #D4AF37;
+            white-space: nowrap;
+        }
+        td { padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        td input, td select {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(212,175,55,0.10);
+            color: #F5F2EC;
+            padding: 6px 8px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            border-radius: 4px;
+            width: 100%;
+            min-width: 60px;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+        td input:focus, td select:focus { border-color: #D4AF37; }
+        td input[type="date"] { min-width: 130px; }
+        td input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8) sepia(1) hue-rotate(30deg) saturate(3);
+            cursor: pointer;
+        }
+        td select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A8F9A'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            padding-right: 28px;
+            cursor: pointer;
+        }
+        td select option { background: #0A1628; color: #F5F2EC; }
+        .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.04);
+        }
+        .status-badge.ok { background: rgba(52,211,153,0.15); color: #34D399; }
+        .status-badge.fail { background: rgba(248,113,113,0.15); color: #F87171; }
+        .status-badge.neutral { background: rgba(138,143,154,0.15); color: #8A8F9A; }
+        .row-nr { font-weight: 600; color: #8A8F9A; font-size: 12px; text-align: center; min-width: 32px; }
+
+        /* ––– RESPONSIVE ––– */
+        @media (max-width: 768px) {
+            .hero { padding: 20px; }
+            .hero-text h1 { font-size: 20px; }
+            .hero-cta { align-items: stretch; }
+            .hero-cta .hint { text-align: left; }
+            .header { grid-template-columns: 1fr 1fr; padding: 16px 18px; gap: 12px; }
+            .header .title-area { grid-column: 1 / -1; flex-direction: column; align-items: flex-start; gap: 4px; }
+            .header .title-area h2 { font-size: 16px; }
+            .toolbar { gap: 8px; }
+            .toolbar .btn { font-size: 12px; padding: 8px 14px; }
+            td input, td select { font-size: 11px; padding: 4px 6px; min-width: 50px; }
+            td input[type="date"] { min-width: 100px; }
+            th { font-size: 10px; padding: 8px 6px; }
+        }
+        @media (max-width: 480px) {
+            .header { grid-template-columns: 1fr; }
+            .container { padding: 0; }
+            body { padding: 12px 8px; }
+            table { font-size: 11px; min-width: 900px; }
+        }
+
+        /* ––– PRINT ––– */
+        @media print {
+            body { background: #fff; color: #000; padding: 16px; }
+            .hero, .pricing-strip, .pdf-success-banner, .modal-overlay { display: none !important; }
+            .header { border-color: #ccc; background: #f5f5f5; }
+            .header .field input { border-color: #aaa; color: #000; background: #fff; }
+            .toolbar .btn { display: none; }
+            .table-wrap { border-color: #ccc; }
+            thead { background: #e0e0e0; border-bottom: 2px solid #999; }
+            th { color: #000; }
+            td input, td select { border-color: #aaa; color: #000; background: #fff; }
+            .status-badge.ok { background: #d1fae5; color: #065f46; }
+            .status-badge.fail { background: #fee2e2; color: #991b1b; }
+            .status-badge.neutral { background: #f3f4f6; color: #4b5563; }
+            .row-nr { color: #555; }
+        }
+    </style>
 </head>
 <body>
-<div class="app-container">
-  <nav id="mainNav"></nav>
-  <div class="user-panel" id="userPanel"></div>
 
-  <div class="top-bar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-    <div class="logo" id="gameTitle" style="font-size:1.3rem; font-weight:800; color:#F6B45F;">QR KOD</div>
-    <a href="https://pacdi.store" class="back-link" style="color:#F6B45F; text-decoration:none; font-weight:bold; font-size:0.78rem; background:#0a1018; padding:5px 12px; border-radius:40px; border:1px solid rgba(246,180,95,0.3);">← Geri</a>
-  </div>
-  <div class="lang-selector" style="display:flex; gap:6px; margin-bottom:12px; justify-content:flex-end;">
-    <button class="lang-btn active" data-lang="tr">TR</button>
-    <button class="lang-btn" data-lang="de">DE</button>
-    <button class="lang-btn" data-lang="en">EN</button>
-  </div>
-
-  <div class="qr-area">
-    <div class="template-section">
-      <select id="templateSelect">
-        <option value="url">🌐 URL / Link</option>
-        <option value="vcard">👤 vCard (Kartvizit)</option>
-        <option value="wifi">📶 WiFi Ağı</option>
-        <option value="social">📱 Sosyal Medya (Link-in-Bio)</option>
-      </select>
-    </div>
-    <div class="template-fields" id="templateFields">
-      <input type="text" id="urlInput" class="qr-input" placeholder="https://..." value="https://pacdi.store">
-    </div>
-
-    <button class="generate-btn" id="generateBtn">🔳 QR Kod Oluştur</button>
-    <div class="qr-display" id="qrDisplay">
-      <span style="color:#9bb7d4;">QR kod burada görünecek</span>
-    </div>
-
-    <div class="download-section" id="downloadSection">
-      <div class="download-label" id="downloadLabel">İndir</div>
-      <div class="download-btns">
-        <button class="dl-btn png" id="dlPng">⬇️ PNG</button>
-        <button class="dl-btn jpg" id="dlJpg">⬇️ JPG</button>
-        <button class="dl-btn svg" id="dlSvg">⬇️ SVG</button>
-      </div>
-    </div>
-
-    <div class="customize-section">
-      <div class="customize-row">
-        <div class="customize-item">
-          <label>Ön Renk</label>
-          <input type="color" id="fgColor" value="#04162E" disabled>
+<!-- PDF PAYWALL MODAL -->
+<div class="modal-overlay" id="paywallModal">
+    <div class="modal">
+        <!-- STATE 1: Paywall Info -->
+        <div id="modalStateInfo">
+            <div class="modal-icon">✅</div>
+            <h2>Ihr Prüfprotokoll ist fertig</h2>
+            <p>Für den Download benötigen Sie die Pro-Version.<br>
+            <strong style="color:#D4AF37;">🚀 Startet in Kürze</strong></p>
+            <div class="modal-price">
+                <strong>15€</strong> <span>/ Monat</span>
+            </div>
+            <ul class="modal-features">
+                <li>Unbegrenzte PDF-Exporte</li>
+                <li>Alle Prüfkategorien</li>
+                <li>Signaturfelder & Firmenlogo</li>
+                <li>Datensicherung in der Cloud</li>
+                <li>Prioritäts-Support</li>
+            </ul>
+            <button class="btn-modal-upgrade" onclick="showEarlyAccess()">🎯 Frühzugang + Rabatt sichern</button>
+            <br>
+            <button class="btn-modal-cancel" onclick="closePaywall()">Abbrechen</button>
         </div>
-        <div class="customize-item">
-          <label>Arka Renk</label>
-          <input type="color" id="bgColor" value="#FFFFFF" disabled>
+
+        <!-- STATE 2: Early Access Form -->
+        <div id="modalStateForm" style="display:none;">
+            <div class="modal-icon">🎯</div>
+            <h2>Early Access sichern</h2>
+            <div style="text-align:left; background:rgba(212,175,55,0.06); border:1px solid rgba(212,175,55,0.2); border-radius:8px; padding:14px; margin-bottom:18px; font-size:13px; color:#B0B5BF; line-height:1.9;">
+                <span style="color:#D4AF37; font-weight:600;">✔</span> Frühzugang vor allen anderen<br>
+                <span style="color:#D4AF37; font-weight:600;">✔</span> Rabatt zum offiziellen Start<br>
+                <span style="color:#D4AF37; font-weight:600;">✔</span> Unbegrenzte Nutzung im Pro-Plan
+            </div>
+            <input type="email" id="earlyAccessEmail" placeholder="Ihre E-Mail-Adresse"
+                style="width:100%; padding:12px 14px; border-radius:6px; border:1px solid rgba(212,175,55,0.3);
+                background:rgba(255,255,255,0.04); color:#F5F2EC; font-size:14px;
+                font-family:'Inter',sans-serif; outline:none; margin-bottom:10px;">
+            <div id="earlyAccessMsg" style="font-size:13px; min-height:20px; margin-bottom:10px;"></div>
+            <button class="btn-modal-upgrade" onclick="submitEarlyAccess()">✔ Jetzt Frühzugang sichern</button>
+            <br>
+            <button class="btn-modal-cancel" onclick="closePaywall()">Vielleicht später</button>
         </div>
-        <div class="customize-item">
-          <label>Boyut</label>
-          <select id="qrSize" disabled>
-            <option value="200">200px</option>
-            <option value="300">300px</option>
-            <option value="500">500px</option>
-          </select>
+
+        <!-- STATE 3: Success -->
+        <div id="modalStateSuccess" style="display:none;">
+            <div class="modal-icon">🎉</div>
+            <h2 style="color:#34D399;">Danke!</h2>
+            <p style="color:#B0B5BF; line-height:1.7;">
+                Wir haben Ihre E-Mail erhalten.<br>
+                Sie werden als Erste informiert, wenn die Pro-Version live geht —<br>
+                <strong style="color:#D4AF37;">inklusive Ihres Rabatts.</strong>
+            </p>
+            <div style="margin:18px 0; padding:14px; background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.2); border-radius:8px; font-size:13px; color:#34D399;">
+                ✔ Frühzugang registriert
+            </div>
+            <button class="btn-modal-upgrade" style="background:#34D399;" onclick="closePaywall()">Weiter arbeiten</button>
         </div>
-        <div class="customize-item">
-          <label>Logo</label>
-          <input type="file" id="logoUpload" accept="image/*" disabled>
-          <button class="logo-btn" id="logoBtn" disabled>📷 Seç</button>
-        </div>
-      </div>
-      <div class="plan-selector">
-        <label><input type="radio" name="qrType" value="static" checked> Statik (Ücretsiz)</label>
-        <label style="color:#F6B45F;"><input type="radio" name="qrType" value="dynamic" disabled> Dinamik (Pro) 🔒</label>
-      </div>
-      <div class="pro-upgrade" id="proUpgrade">
-        ⭐ Bu özellikler Pro aboneliği gerektirir. <a id="upgradeLink">Hemen yükseltin</a>
-      </div>
     </div>
-
-    <div class="purpose-section">
-      <div class="purpose-label" id="purposeLabel">Bu QR kodu ne için kullanıyorsunuz?</div>
-      <div class="purpose-btns">
-        <button class="purpose-btn" data-purpose="business" id="p1">🏪</button>
-        <button class="purpose-btn" data-purpose="event" id="p2">📅</button>
-        <button class="purpose-btn" data-purpose="personal" id="p3">👤</button>
-        <button class="purpose-btn" data-purpose="other" id="p4">🔧</button>
-      </div>
-    </div>
-
-    <div class="email-section" id="emailSection">
-      <div class="email-title" id="emailTitle">📧 Yeni araçlardan haberdar ol</div>
-      <div class="email-sub" id="emailSub">İsteğe bağlı — reklam yok, sadece faydalı güncellemeler.</div>
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px; text-align:left;">
-        <input type="checkbox" id="isBusinessCb" style="accent-color:#F6B45F; width:16px; height:16px; flex-shrink:0;">
-        <label for="isBusinessCb" id="businessLabel" style="color:#b8d0e8; font-size:0.72rem; line-height:1.4; cursor:pointer;"></label>
-      </div>
-      <div class="email-row">
-        <input type="email" class="email-input" id="emailInput" placeholder="e-posta@adresiniz.com">
-        <button class="email-btn" id="emailBtn">Katıl</button>
-      </div>
-      <div class="email-success" id="emailSuccess">✓ Teşekkürler! Sizi ekledik.</div>
-      <div class="email-skip" id="emailSkip" onclick="skipEmail()">Şimdi değil</div>
-      <div class="email-privacy" id="emailPrivacy">🔒 E-postanız saklanmaz, üçüncü taraflarla paylaşılmaz.</div>
-    </div>
-
-    <div class="dashboard-section" id="dashboardSection">
-      <h3>📊 QR Kodlarım</h3>
-      <div id="qrList"></div>
-    </div>
-  </div>
-
-  <div class="footer" id="footerText">PACDI Store · Hızlı QR kod oluşturucu. · <a href="/legal.html" style="color:rgba(246,180,95,0.6);text-decoration:none;font-size:0.65rem;">Impressum & Datenschutz</a></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<script src="/assets/common.js"></script>
+<div class="container" id="app">
+
+    <!-- HERO BANNER -->
+    <div class="hero">
+        <div class="hero-text">
+            <h1>⚡ DGUV V3 Prüfprotokoll in 2 Minuten</h1>
+            <p>Ohne Excel – direkt am Handy oder PC. Professioneller PDF-Export auf Knopfdruck.</p>
+            <span class="badge-free">✔ Erste Prüfung kostenlos</span>
+        </div>
+        <div class="hero-cta">
+            <button class="btn-hero" onclick="scrollToForm()">Jetzt kostenlos testen →</button>
+            <span class="hint">Kein Account erforderlich</span>
+        </div>
+    </div>
+
+    <!-- PRICING STRIP -->
+    <div class="pricing-strip">
+        <div class="pricing-card free">
+            <div class="plan-name">Free</div>
+            <div class="plan-price">0€ <span>/ dauerhaft</span></div>
+            <ul>
+                <li>1 PDF-Export pro Gerät</li>
+                <li>Bis zu 10 Geräte</li>
+                <li>Lokale Datenspeicherung</li>
+            </ul>
+        </div>
+        <div class="pricing-card pro">
+            <div class="plan-name">⭐ Pro</div>
+            <div class="plan-price">15€ <span>/ Monat</span></div>
+            <ul>
+                <li>Unbegrenzte PDF-Exporte</li>
+                <li>Unbegrenzte Geräte</li>
+                <li>Cloud-Backup</li>
+                <li>Firmenlogo im PDF</li>
+                <li>Prioritäts-Support</li>
+            </ul>
+            <button class="btn-upgrade" onclick="goUpgrade()">Upgrade auf Pro</button>
+        </div>
+        <div class="pricing-card" style="border-color:rgba(99,102,241,0.25); max-width:220px;">
+            <div class="plan-name" style="color:#818CF8;">Vergleich Markt</div>
+            <div class="plan-price" style="font-size:16px; color:#8A8F9A; text-decoration:line-through;">80€+</div>
+            <ul style="color:#6B7280; font-size:11px;">
+                <li>Klassische Anbieter</li>
+                <li>Unnötige Komplexität</li>
+                <li>Teure Jahreslizenzen</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PDF SUCCESS BANNER -->
+    <div class="pdf-success-banner" id="pdfSuccessBanner">
+        <div>
+            <div class="success-text">✅ Ihr Prüfprotokoll ist fertig!</div>
+            <div class="success-hint">Als PDF exportieren? (Pro erforderlich für weitere Exporte)</div>
+        </div>
+        <button class="btn-export-pro" onclick="handlePDF()">📄 Als PDF exportieren →</button>
+    </div>
+
+    <!-- HEADER / FORMULAR -->
+    <div class="header" id="formSection">
+        <div class="title-area">
+            <h2>Prüfprotokoll – Formular</h2>
+            <span>Formular Nr: 011/402</span>
+        </div>
+        <div class="field">
+            <label>Standort / Bereich</label>
+            <input type="text" id="standort" placeholder="z.B. Werkstatt A" value="Werkstatt A" data-store="standort">
+        </div>
+        <div class="field">
+            <label>Raum</label>
+            <input type="text" id="raum" placeholder="z.B. 2.03" value="2.03" data-store="raum">
+        </div>
+        <div class="field">
+            <label>Datum</label>
+            <input type="date" id="pruefdatum" data-store="pruefdatum">
+        </div>
+        <div class="field" style="grid-column: span 2;">
+            <label>Durch: / Prüfer</label>
+            <input type="text" id="pruefer" placeholder="Name des Prüfers" value="Max Mustermann" data-store="pruefer">
+        </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+        <button class="btn btn--gold" onclick="addRow()">➕ Gerät hinzufügen</button>
+        <button class="btn btn--danger" onclick="deleteLastRow()">🗑️ Letzte Zeile löschen</button>
+        <button class="btn" onclick="deleteSelectedRows()">🗑️ Ausgewählte löschen</button>
+        <span class="spacer"></span>
+        <button class="btn" onclick="saveToLocalStorage()">💾 Speichern</button>
+        <button class="btn" onclick="loadFromLocalStorage()">📂 Laden</button>
+        <button class="btn btn--gold" onclick="handlePDF()">📄 PDF erstellen</button>
+        <span class="badge" id="rowCounter">0 Geräte</span>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+        <table id="pruefTable">
+            <thead>
+                <tr>
+                    <th style="width:32px;">#</th>
+                    <th style="min-width:180px;">Inventarnummer / Bezeichnung</th>
+                    <th style="min-width:100px;">Sichtprüfung</th>
+                    <th style="min-width:110px;">Funktionsprüfung</th>
+                    <th style="min-width:70px;">R.PE (Ω)</th>
+                    <th style="min-width:70px;">R.ISO (MΩ)</th>
+                    <th style="min-width:70px;">I.EA (mA)</th>
+                    <th style="min-width:130px;">Letzte Prüfung</th>
+                    <th style="min-width:100px;">Prüfintervall</th>
+                    <th style="min-width:130px;">Nächste Prüfung</th>
+                    <th style="min-width:100px;">Bemerkung</th>
+                    <th style="width:40px;">✔</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="margin-top: 28px; text-align: center; font-size: 12px; color: #8A8F9A; border-top: 1px solid rgba(212,175,55,0.08); padding-top: 20px;">
+        Erstellt mit <span style="color:#D4AF37;">PACDI Digital</span> · pacdi.io
+        &nbsp;·&nbsp;
+        <a href="legal.html" style="color:#8A8F9A; text-decoration:underline;">Impressum &amp; Datenschutz</a>
+    </div>
+</div>
+
 <script>
-  (function() {
-    // ---------- QR İLE İLGİLİ TÜM MANTIK ----------
-    let currentCanvas = null;
-    let currentText = "";
-    let selectedPurpose = "";
+    (function() {
+        'use strict';
 
-    const $ = id => document.getElementById(id);
-    const generateBtn = $('generateBtn');
-    const qrDisplay = $('qrDisplay');
-    const dlSection = $('downloadSection');
-    const fgColor = $('fgColor');
-    const bgColor = $('bgColor');
-    const qrSize = $('qrSize');
-    const logoUpload = $('logoUpload');
-    const logoBtn = $('logoBtn');
-    const qrTypeRadios = document.querySelectorAll('input[name="qrType"]');
-    const proUpgrade = $('proUpgrade');
-    const upgradeLink = $('upgradeLink');
-    const templateSelect = $('templateSelect');
-    const templateFields = $('templateFields');
+        // Heutiges Datum setzen
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById('pruefdatum').value = today;
 
-    // ---------- PRO ÖZELLİKLERİNİ AKTİF ET (common.js override) ----------
-    window.enableProFeatures = function(enable) {
-      fgColor.disabled = !enable;
-      bgColor.disabled = !enable;
-      qrSize.disabled = !enable;
-      logoUpload.disabled = !enable;
-      logoBtn.disabled = !enable;
-      document.querySelector('input[name="qrType"][value="dynamic"]').disabled = !enable;
-      proUpgrade.style.display = enable ? 'none' : 'block';
-    };
+        var tableBody = document.getElementById('tableBody');
+        var rowCounter = document.getElementById('rowCounter');
+        var rowCount = 0;
+        var nextId = 1;
 
-    // ---------- ŞABLONLAR ----------
-    const templates = {
-      url: `<input type="text" id="urlInput" class="qr-input" placeholder="https://..." value="https://pacdi.store">`,
-      vcard: `
-        <input type="text" id="vcardName" placeholder="Ad Soyad" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="vcardPhone" placeholder="Telefon" class="qr-input" style="margin-bottom:6px;">
-        <input type="email" id="vcardEmail" placeholder="E-posta" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="vcardCompany" placeholder="Şirket" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="vcardWebsite" placeholder="Web Sitesi" class="qr-input">
-      `,
-      wifi: `
-        <input type="text" id="wifiSSID" placeholder="Ağ Adı (SSID)" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="wifiPassword" placeholder="Şifre" class="qr-input" style="margin-bottom:6px;">
-        <select id="wifiEncryption" class="qr-input" style="margin-bottom:6px;">
-          <option value="WPA">WPA/WPA2</option>
-          <option value="WEP">WEP</option>
-          <option value="nopass">Şifresiz</option>
-        </select>
-      `,
-      social: `
-        <input type="text" id="socialInstagram" placeholder="Instagram @kullanici" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="socialTwitter" placeholder="Twitter @kullanici" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="socialLinkedin" placeholder="LinkedIn URL" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="socialYoutube" placeholder="YouTube URL" class="qr-input">
-      `
-    };
+        // Beispieldaten für Auto-Fill
+        var BEISPIEL_DATEN = [
+            { inventar: 'Bohrmaschine Bosch PSB 750', rpe: '0.08', riso: '2.4', iea: '0.35', bemerkung: 'Beispiel – bitte anpassen' },
+            { inventar: 'Verlängerungskabel 10m', rpe: '0.05', riso: '5.0', iea: '0.12', bemerkung: '' },
+            { inventar: 'Winkelschleifer Metabo', rpe: '0.09', riso: '1.8', iea: '0.48', bemerkung: '' }
+        ];
 
-    templateSelect.addEventListener('change', function() {
-      templateFields.innerHTML = templates[this.value];
-    });
-
-    function getQRContent() {
-      const type = templateSelect.value;
-      if (type === 'url') {
-        const el = document.getElementById('urlInput');
-        return el ? el.value : '';
-      }
-      if (type === 'vcard') {
-        const name = document.getElementById('vcardName')?.value || '';
-        const phone = document.getElementById('vcardPhone')?.value || '';
-        const email = document.getElementById('vcardEmail')?.value || '';
-        const company = document.getElementById('vcardCompany')?.value || '';
-        const website = document.getElementById('vcardWebsite')?.value || '';
-        return `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL:${phone}\nEMAIL:${email}\nORG:${company}\nURL:${website}\nEND:VCARD`;
-      }
-      if (type === 'wifi') {
-        const ssid = document.getElementById('wifiSSID')?.value || '';
-        const pass = document.getElementById('wifiPassword')?.value || '';
-        const enc = document.getElementById('wifiEncryption')?.value || 'WPA';
-        return `WIFI:T:${enc};S:${ssid};P:${pass};;`;
-      }
-      if (type === 'social') {
-        return 'https://pacdi.store/bio/username';
-      }
-      return '';
-    }
-
-    // ---------- QR OLUŞTUR ----------
-    function generateQR() {
-      const content = getQRContent();
-      const display = qrDisplay;
-      const fg = fgColor.value;
-      const bg = bgColor.value;
-      const size = parseInt(qrSize.value) || 200;
-      const type = document.querySelector('input[name="qrType"]:checked').value;
-
-      if (!content) {
-        display.innerHTML = `<span style="color:#9bb7d4;">QR kod burada görünecek</span>`;
-        dlSection.style.display = 'none';
-        return;
-      }
-
-      currentText = content;
-
-      if (type === 'dynamic') {
-        if (!window.userToken || !window.isPro) {
-          alert(t('pro_feature'));
-          return;
+        function addMonths(dateStr, months) {
+            if (!dateStr) return '';
+            var parts = dateStr.split('-');
+            var d = new Date(parseInt(parts[0],10), parseInt(parts[1],10)-1, parseInt(parts[2],10));
+            d.setMonth(d.getMonth() + months);
+            return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
         }
-        fetch('/api/qr/dynamic', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + window.userToken
-          },
-          body: JSON.stringify({
-            destinationUrl: content,
-            fgColor: fg,
-            bgColor: bg,
-            size: size,
-            logo: localStorage.getItem('logoData') || null
-          })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            display.innerHTML = `<div style="text-align:center;">
-              <p style="color:#2ECC71; font-size:0.9rem;">✅ Dinamik QR oluşturuldu!</p>
-              <p style="color:#9bb7d4; font-size:0.7rem;">Kısa URL: ${data.qrUrl}</p>
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(data.qrUrl)}" style="border-radius:12px; background:white; padding:10px; max-width:100%;">
-            </div>`;
-            dlSection.style.display = 'block';
-            const img = display.querySelector('img');
-            if (img) {
-              const canvas = document.createElement('canvas');
-              canvas.width = size;
-              canvas.height = size;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(img, 0, 0, size, size);
-              currentCanvas = canvas;
+
+        function calculateNextPruefung(row) {
+            var lastInput = row.querySelector('.letzte-pruefung');
+            var intervallSelect = row.querySelector('.pruefintervall');
+            var nextInput = row.querySelector('.naechste-pruefung');
+            if (!lastInput || !intervallSelect || !nextInput) return;
+            var lastDate = lastInput.value;
+            var intervall = parseInt(intervallSelect.value, 10);
+            nextInput.value = (!lastDate || isNaN(intervall)) ? '' : addMonths(lastDate, intervall);
+        }
+
+        function createRow(id, beispielIdx) {
+            var tr = document.createElement('tr');
+            tr.dataset.id = id;
+            var beispiel = (beispielIdx !== undefined && BEISPIEL_DATEN[beispielIdx]) ? BEISPIEL_DATEN[beispielIdx] : null;
+
+            var tdNr = document.createElement('td');
+            tdNr.className = 'row-nr';
+            tdNr.textContent = id;
+            tr.appendChild(tdNr);
+
+            var tdInv = document.createElement('td');
+            var inpInv = document.createElement('input');
+            inpInv.type = 'text';
+            inpInv.placeholder = 'z.B. 4711 / Gerät';
+            inpInv.className = 'inventar';
+            if (beispiel) inpInv.value = beispiel.inventar;
+            tdInv.appendChild(inpInv);
+            tr.appendChild(tdInv);
+
+            // Sichtprüfung
+            var tdSicht = document.createElement('td');
+            var selSicht = document.createElement('select');
+            selSicht.className = 'sichtpruefung';
+            ['✓','✗'].forEach(function(v) {
+                var o = document.createElement('option'); o.value = v; o.textContent = v; selSicht.appendChild(o);
+            });
+            tdSicht.appendChild(selSicht); tr.appendChild(tdSicht);
+            selSicht.addEventListener('change', function() { updateStatusBadge(this); });
+            updateStatusBadge(selSicht);
+
+            // Funktionsprüfung
+            var tdFunk = document.createElement('td');
+            var selFunk = document.createElement('select');
+            selFunk.className = 'funktionspruefung';
+            ['✓','✗','-'].forEach(function(v) {
+                var o = document.createElement('option'); o.value = v; o.textContent = v; selFunk.appendChild(o);
+            });
+            tdFunk.appendChild(selFunk); tr.appendChild(tdFunk);
+            selFunk.addEventListener('change', function() { updateStatusBadge(this); });
+            updateStatusBadge(selFunk);
+
+            // R.PE
+            var tdRpe = document.createElement('td');
+            var inpRpe = document.createElement('input');
+            inpRpe.type = 'text'; inpRpe.placeholder = 'Ω'; inpRpe.className = 'rpe';
+            if (beispiel) inpRpe.value = beispiel.rpe;
+            tdRpe.appendChild(inpRpe); tr.appendChild(tdRpe);
+
+            // R.ISO
+            var tdRiso = document.createElement('td');
+            var inpRiso = document.createElement('input');
+            inpRiso.type = 'text'; inpRiso.placeholder = 'MΩ'; inpRiso.className = 'riso';
+            if (beispiel) inpRiso.value = beispiel.riso;
+            tdRiso.appendChild(inpRiso); tr.appendChild(tdRiso);
+
+            // I.EA
+            var tdIea = document.createElement('td');
+            var inpIea = document.createElement('input');
+            inpIea.type = 'text'; inpIea.placeholder = 'mA'; inpIea.className = 'iea';
+            if (beispiel) inpIea.value = beispiel.iea;
+            tdIea.appendChild(inpIea); tr.appendChild(tdIea);
+
+            // Letzte Prüfung
+            var tdLast = document.createElement('td');
+            var inpLast = document.createElement('input');
+            inpLast.type = 'date'; inpLast.className = 'letzte-pruefung';
+            if (beispiel) inpLast.value = today;
+            tdLast.appendChild(inpLast); tr.appendChild(tdLast);
+
+            // Prüfintervall
+            var tdIntervall = document.createElement('td');
+            var selIntervall = document.createElement('select');
+            selIntervall.className = 'pruefintervall';
+            [{value:6,label:'6 Monate'},{value:12,label:'12 Monate'},{value:24,label:'24 Monate'},{value:48,label:'48 Monate'}].forEach(function(item) {
+                var o = document.createElement('option'); o.value = item.value; o.textContent = item.label;
+                if (item.value === 24) o.selected = true;
+                selIntervall.appendChild(o);
+            });
+            tdIntervall.appendChild(selIntervall); tr.appendChild(tdIntervall);
+
+            // Nächste Prüfung
+            var tdNext = document.createElement('td');
+            var inpNext = document.createElement('input');
+            inpNext.type = 'date'; inpNext.className = 'naechste-pruefung'; inpNext.readOnly = true;
+            inpNext.style.backgroundColor = 'rgba(255,255,255,0.02)';
+            tdNext.appendChild(inpNext); tr.appendChild(tdNext);
+
+            // Bemerkung
+            var tdNote = document.createElement('td');
+            var inpNote = document.createElement('input');
+            inpNote.type = 'text'; inpNote.placeholder = 'Bemerkung'; inpNote.className = 'bemerkung';
+            if (beispiel) inpNote.value = beispiel.bemerkung || '';
+            tdNote.appendChild(inpNote); tr.appendChild(tdNote);
+
+            // Checkbox
+            var tdSel = document.createElement('td');
+            tdSel.style.textAlign = 'center';
+            var chk = document.createElement('input');
+            chk.type = 'checkbox'; chk.className = 'row-select';
+            tdSel.appendChild(chk); tr.appendChild(tdSel);
+
+            inpLast.addEventListener('change', function() { calculateNextPruefung(tr); });
+            selIntervall.addEventListener('change', function() { calculateNextPruefung(tr); });
+
+            return tr;
+        }
+
+        function updateStatusBadge(select) {
+            var td = select.parentNode;
+            var val = select.value;
+            var badge = td.querySelector('.status-badge');
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'status-badge';
+                td.insertBefore(badge, select);
+                select.style.display = 'none';
             }
-          } else {
-            alert('Hata: ' + data.error);
-          }
-        })
-        .catch(err => alert('Sunucu hatası: ' + err.message));
-        return;
-      }
-
-      // STATİK QR
-      if (typeof QRCode !== 'undefined') {
-        display.innerHTML = '';
-        new QRCode(display, {
-          text: content,
-          width: size,
-          height: size,
-          colorDark: fg,
-          colorLight: bg,
-          correctLevel: QRCode.CorrectLevel.M
-        });
-        const canvas = display.querySelector('canvas');
-        if (canvas) {
-          currentCanvas = canvas;
-          dlSection.style.display = 'block';
-        } else {
-          display.innerHTML = '<span style="color:#e74c3c;">QR oluşturulamadı.</span>';
-          dlSection.style.display = 'none';
+            badge.textContent = val;
+            badge.className = 'status-badge' + (val === '✓' ? ' ok' : val === '✗' ? ' fail' : ' neutral');
         }
-      } else {
-        // Fallback API
-        const img = document.createElement('img');
-        img.crossOrigin = 'anonymous';
-        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(content)}`;
-        img.style.borderRadius = '12px';
-        img.style.background = 'white';
-        img.style.padding = '10px';
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          canvas.width = size;
-          canvas.height = size;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, size, size);
-          currentCanvas = canvas;
-          dlSection.style.display = 'block';
-        };
-        display.innerHTML = '';
-        display.appendChild(img);
-      }
-    }
 
-    // ---------- İNDİRME ----------
-    function downloadImage(format) {
-      if (!currentCanvas) {
-        alert('Lütfen önce bir QR kodu oluşturun.');
-        return;
-      }
-      let canvas = currentCanvas;
-      if (format === 'jpg') {
-        const newCanvas = document.createElement('canvas');
-        newCanvas.width = canvas.width;
-        newCanvas.height = canvas.height;
-        const ctx = newCanvas.getContext('2d');
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
-        ctx.drawImage(canvas, 0, 0);
-        canvas = newCanvas;
-      }
-      const link = document.createElement('a');
-      link.download = `qr-code.${format === 'jpg' ? 'jpg' : 'png'}`;
-      link.href = canvas.toDataURL(`image/${format === 'jpg' ? 'jpeg' : 'png'}`, 0.95);
-      link.click();
-    }
-
-    $('dlPng').addEventListener('click', () => downloadImage('png'));
-    $('dlJpg').addEventListener('click', () => downloadImage('jpg'));
-    $('dlSvg').addEventListener('click', function() {
-      if (!currentText) { alert('Önce QR oluşturun.'); return; }
-      const link = document.createElement('a');
-      link.download = 'qr-code.svg';
-      link.href = `https://api.qrserver.com/v1/create-qr-code/?format=svg&size=300x300&data=${encodeURIComponent(currentText)}`;
-      link.target = '_blank';
-      link.click();
-    });
-
-    // ---------- AMAÇ SEÇİMİ ----------
-    document.querySelectorAll('.purpose-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        document.querySelectorAll('.purpose-btn').forEach(b => b.classList.remove('selected'));
-        this.classList.add('selected');
-        selectedPurpose = this.dataset.purpose;
-      });
-    });
-
-    // ---------- E-POSTA ----------
-    $('emailBtn').addEventListener('click', function() {
-      const email = $('emailInput').value.trim();
-      if (!email || email.indexOf('@') === -1) return;
-      fetch('/api/user/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, purpose: selectedPurpose, lang: window.currentLang })
-      })
-      .then(res => res.json())
-      .then(() => {
-        $('emailSuccess').style.display = 'block';
-        $('emailInput').value = '';
-        $('emailSkip').style.display = 'none';
-      })
-      .catch(err => console.error('E-posta hatası:', err));
-    });
-
-    window.skipEmail = function() {
-      $('emailSection').style.display = 'none';
-    };
-
-    // ---------- LOGO ----------
-    logoBtn.addEventListener('click', () => logoUpload.click());
-    logoUpload.addEventListener('change', function(e) {
-      if (this.files && this.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-          localStorage.setItem('logoData', ev.target.result);
-          alert('Logo yüklendi.');
-        };
-        reader.readAsDataURL(this.files[0]);
-      }
-    });
-
-    // ---------- QR TİPİ DEĞİŞİKLİĞİ ----------
-    qrTypeRadios.forEach(radio => {
-      radio.addEventListener('change', function() {
-        if (this.value === 'dynamic' && !window.isPro) {
-          alert(t('pro_feature'));
-          document.querySelector('input[name="qrType"][value="static"]').checked = true;
+        function addRow() {
+            var tr = createRow(nextId++);
+            tableBody.appendChild(tr);
+            rowCount++;
+            updateRowCounter();
+            calculateNextPruefung(tr);
+            var sicht = tr.querySelector('.sichtpruefung');
+            var funk = tr.querySelector('.funktionspruefung');
+            if (sicht) updateStatusBadge(sicht);
+            if (funk) updateStatusBadge(funk);
         }
-      });
-    });
 
-    // ---------- ABONELİK LİNKİ ----------
-    upgradeLink.addEventListener('click', window.openPaddleCheckout);
+        function deleteLastRow() {
+            var rows = tableBody.querySelectorAll('tr');
+            if (rows.length === 0) return;
+            rows[rows.length-1].remove();
+            rowCount--;
+            updateRowCounter();
+            renumberRows();
+        }
 
-    // ---------- DİL BUTONLARI ----------
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const lang = this.dataset.lang;
-        if (lang !== window.currentLang) window.setLanguage(lang);
-      });
-    });
+        function deleteSelectedRows() {
+            var checks = tableBody.querySelectorAll('.row-select:checked');
+            if (checks.length === 0) return;
+            if (!confirm(checks.length + ' Zeile(n) löschen?')) return;
+            checks.forEach(function(chk) { var tr = chk.closest('tr'); if (tr) tr.remove(); });
+            rowCount = tableBody.querySelectorAll('tr').length;
+            updateRowCounter();
+            renumberRows();
+        }
 
-    // ---------- OLAY BAĞLAMALARI ----------
-    generateBtn.addEventListener('click', generateQR);
-    templateFields.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') generateQR();
-    });
+        function renumberRows() {
+            tableBody.querySelectorAll('tr').forEach(function(tr, idx) {
+                var td = tr.querySelector('.row-nr');
+                if (td) td.textContent = idx + 1;
+            });
+        }
 
-    // ---------- BAŞLANGIÇ ----------
-    templateFields.innerHTML = templates.url;
-    // common.js yüklendikten sonra UI güncellenir, biz de QR oluşturalım
-    setTimeout(generateQR, 600);
-  })();
+        function updateRowCounter() {
+            rowCounter.textContent = tableBody.querySelectorAll('tr').length + ' Geräte';
+        }
+
+        function saveToLocalStorage() {
+            var data = {
+                standort: document.getElementById('standort').value,
+                raum: document.getElementById('raum').value,
+                pruefdatum: document.getElementById('pruefdatum').value,
+                pruefer: document.getElementById('pruefer').value,
+                rows: []
+            };
+            tableBody.querySelectorAll('tr').forEach(function(tr) {
+                data.rows.push({
+                    inventar: tr.querySelector('.inventar').value,
+                    sicht: tr.querySelector('.sichtpruefung').value,
+                    funktion: tr.querySelector('.funktionspruefung').value,
+                    rpe: tr.querySelector('.rpe').value,
+                    riso: tr.querySelector('.riso').value,
+                    iea: tr.querySelector('.iea').value,
+                    letzte: tr.querySelector('.letzte-pruefung').value,
+                    intervall: tr.querySelector('.pruefintervall').value,
+                    naechste: tr.querySelector('.naechste-pruefung').value,
+                    bemerkung: tr.querySelector('.bemerkung').value
+                });
+            });
+            localStorage.setItem('dguv_protokoll', JSON.stringify(data));
+            alert('Gespeichert!');
+        }
+
+        function loadFromLocalStorage() {
+            var raw = localStorage.getItem('dguv_protokoll');
+            if (!raw) { alert('Keine gespeicherten Daten gefunden.'); return; }
+            try {
+                var data = JSON.parse(raw);
+                document.getElementById('standort').value = data.standort || '';
+                document.getElementById('raum').value = data.raum || '';
+                document.getElementById('pruefdatum').value = data.pruefdatum || '';
+                document.getElementById('pruefer').value = data.pruefer || '';
+                tableBody.innerHTML = '';
+                nextId = 1;
+                if (data.rows && data.rows.length) {
+                    data.rows.forEach(function(r) {
+                        var tr = createRow(nextId++);
+                        tr.querySelector('.inventar').value = r.inventar || '';
+                        tr.querySelector('.sichtpruefung').value = r.sicht || '✓';
+                        tr.querySelector('.funktionspruefung').value = r.funktion || '✓';
+                        tr.querySelector('.rpe').value = r.rpe || '';
+                        tr.querySelector('.riso').value = r.riso || '';
+                        tr.querySelector('.iea').value = r.iea || '';
+                        tr.querySelector('.letzte-pruefung').value = r.letzte || '';
+                        tr.querySelector('.pruefintervall').value = r.intervall || '24';
+                        tr.querySelector('.naechste-pruefung').value = r.naechste || '';
+                        tr.querySelector('.bemerkung').value = r.bemerkung || '';
+                        tableBody.appendChild(tr);
+                        var sicht = tr.querySelector('.sichtpruefung');
+                        var funk = tr.querySelector('.funktionspruefung');
+                        if (sicht) updateStatusBadge(sicht);
+                        if (funk) updateStatusBadge(funk);
+                        calculateNextPruefung(tr);
+                    });
+                    rowCount = data.rows.length;
+                } else { rowCount = 0; }
+                updateRowCounter();
+                renumberRows();
+                alert('Geladen!');
+            } catch(e) { alert('Fehler beim Laden: ' + e.message); }
+        }
+
+        // ––– FREEMIUM PDF LOGIC –––
+        function handlePDF() {
+            var used = localStorage.getItem('pdf_export_used');
+            if (!used) {
+                // Erster Export: kostenlos
+                generatePDF();
+                localStorage.setItem('pdf_export_used', 'true');
+            } else {
+                // Paywall anzeigen
+                document.getElementById('paywallModal').classList.add('active');
+            }
+        }
+
+        function closePaywall() {
+            document.getElementById('paywallModal').classList.remove('active');
+            // Modal state reset
+            setTimeout(function() {
+                showModalState('info');
+            }, 300);
+        }
+
+        function showModalState(state) {
+            document.getElementById('modalStateInfo').style.display = state === 'info' ? 'block' : 'none';
+            document.getElementById('modalStateForm').style.display = state === 'form' ? 'block' : 'none';
+            document.getElementById('modalStateSuccess').style.display = state === 'success' ? 'block' : 'none';
+        }
+
+        function showEarlyAccess() {
+            showModalState('form');
+        }
+
+        function goUpgrade() {
+            showEarlyAccess();
+        }
+
+        function submitEarlyAccess() {
+            var emailInput = document.getElementById('earlyAccessEmail');
+            var msg = document.getElementById('earlyAccessMsg');
+            var email = emailInput.value.trim();
+
+            // Validierung
+            if (!email || email.indexOf('@') < 1 || email.indexOf('.') < 2) {
+                msg.style.color = '#F87171';
+                msg.textContent = '⚠ Bitte gültige E-Mail eingeben';
+                return;
+            }
+
+            msg.style.color = '#D4AF37';
+            msg.textContent = '⏳ Wird gespeichert...';
+
+            // EmailJS senden
+            // !! SETUP: emailjs.com → kostenlos anmelden → Service + Template ID eintragen
+            var EMAILJS_PUBLIC_KEY  = 'DEIN_PUBLIC_KEY';   // emailjs.com → Account → Public Key
+            var EMAILJS_SERVICE_ID  = 'DEIN_SERVICE_ID';   // emailjs.com → Email Services
+            var EMAILJS_TEMPLATE_ID = 'DEIN_TEMPLATE_ID';  // emailjs.com → Email Templates
+
+            emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                from_email: email,
+                to_name: 'PACDI Team',
+                message: 'Neuer Early Access Lead: ' + email,
+                reply_to: email
+            }).then(function() {
+                // Lokal speichern (Backup)
+                var leads = JSON.parse(localStorage.getItem('early_access_leads') || '[]');
+                leads.push({ email: email, ts: new Date().toISOString() });
+                localStorage.setItem('early_access_leads', JSON.stringify(leads));
+                showModalState('success');
+            }, function(error) {
+                // Fallback: nur lokal speichern
+                var leads = JSON.parse(localStorage.getItem('early_access_leads') || '[]');
+                leads.push({ email: email, ts: new Date().toISOString() });
+                localStorage.setItem('early_access_leads', JSON.stringify(leads));
+                console.log('Lead gespeichert (lokal):', email, '| EmailJS Fehler:', error);
+                showModalState('success');
+            });
+
+        function generatePDF() {
+            var doc = new jspdf.jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+            var pageWidth = doc.internal.pageSize.getWidth();
+            var pageHeight = doc.internal.pageSize.getHeight();
+            var margin = 14;
+            var startY = 30;
+
+            doc.setFontSize(16); doc.setFont('helvetica', 'bold');
+            doc.setTextColor(212, 175, 55);
+            doc.text('DGUV V3 Prüfprotokoll', pageWidth / 2, startY, { align: 'center' });
+            doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+            doc.setTextColor(100, 100, 100);
+            doc.text('Formular Nr: 011/402', pageWidth - margin, startY, { align: 'right' });
+
+            var standort = document.getElementById('standort').value || '—';
+            var raum = document.getElementById('raum').value || '—';
+            var datum = document.getElementById('pruefdatum').value || '—';
+            var pruefer = document.getElementById('pruefer').value || '—';
+
+            doc.setFontSize(9); doc.setTextColor(50, 50, 50);
+            var infoY = startY + 10;
+            doc.text('Standort: ' + standort, margin, infoY);
+            doc.text('Raum: ' + raum, margin + 70, infoY);
+            doc.text('Datum: ' + datum, margin + 130, infoY);
+            doc.text('Prüfer: ' + pruefer, margin + 200, infoY);
+
+            var rows = tableBody.querySelectorAll('tr');
+            var tableData = [];
+            rows.forEach(function(tr) {
+                tableData.push([
+                    tr.querySelector('.row-nr').textContent,
+                    tr.querySelector('.inventar').value || '',
+                    tr.querySelector('.sichtpruefung').value || '✓',
+                    tr.querySelector('.funktionspruefung').value || '✓',
+                    tr.querySelector('.rpe').value || '',
+                    tr.querySelector('.riso').value || '',
+                    tr.querySelector('.iea').value || '',
+                    tr.querySelector('.letzte-pruefung').value || '',
+                    tr.querySelector('.pruefintervall').value || '24',
+                    tr.querySelector('.naechste-pruefung').value || '',
+                    tr.querySelector('.bemerkung').value || ''
+                ]);
+            });
+
+            if (tableData.length === 0) { alert('Keine Geräte zum Exportieren.'); return; }
+
+            var intervallLabels = {'6':'6 Monate','12':'12 Monate','24':'24 Monate','48':'48 Monate'};
+            var formattedData = tableData.map(function(row) {
+                var newRow = row.slice();
+                newRow[8] = intervallLabels[row[8]] || row[8] + ' Monate';
+                return newRow;
+            });
+
+            doc.autoTable({
+                head: [['Nr','Inventarnummer / Bezeichnung','Sicht','Funktion','R.PE (Ω)','R.ISO (MΩ)','I.EA (mA)','Letzte Prüfung','Prüfintervall','Nächste Prüfung','Bemerkung']],
+                body: formattedData,
+                startY: infoY + 10,
+                theme: 'grid',
+                headStyles: { fillColor: [212,175,55], textColor: [10,22,40], fontStyle: 'bold', fontSize: 8, halign: 'center' },
+                bodyStyles: { fontSize: 7, textColor: [30,30,30], lineColor: [200,200,200], lineWidth: 0.1 },
+                columnStyles: {
+                    0:{cellWidth:8,halign:'center'}, 1:{cellWidth:35}, 2:{cellWidth:12,halign:'center'},
+                    3:{cellWidth:14,halign:'center'}, 4:{cellWidth:16,halign:'center'}, 5:{cellWidth:16,halign:'center'},
+                    6:{cellWidth:16,halign:'center'}, 7:{cellWidth:22,halign:'center'}, 8:{cellWidth:20,halign:'center'},
+                    9:{cellWidth:22,halign:'center'}, 10:{cellWidth:25}
+                },
+                margin: { left: margin, right: margin },
+                didDrawPage: function() {
+                    var pageCount = doc.internal.getNumberOfPages();
+                    for (var i = 1; i <= pageCount; i++) {
+                        doc.setPage(i);
+                        doc.setFontSize(7); doc.setTextColor(150,150,150);
+                        doc.text('Seite ' + i + ' / ' + pageCount, pageWidth - margin, pageHeight - 6, { align: 'right' });
+                    }
+                }
+            });
+
+            var finalY = doc.lastAutoTable.finalY + 14;
+            if (finalY > pageHeight - 30) { doc.addPage(); finalY = 30; }
+            doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(50,50,50);
+            doc.text('_________________________', margin + 30, finalY);
+            doc.text('_________________________', margin + 100, finalY);
+            doc.text('_________________________', margin + 170, finalY);
+            doc.setFontSize(8); doc.setTextColor(100,100,100);
+            doc.text('Datum', margin + 30, finalY + 6);
+            doc.text('Unterschrift Prüfer', margin + 100, finalY + 6);
+            doc.text('Unterschrift FASI', margin + 170, finalY + 6);
+
+            var footerY = finalY + 20;
+            if (footerY > pageHeight - 14) footerY = pageHeight - 14;
+            doc.setFontSize(7); doc.setTextColor(150,150,150);
+            doc.text('Erstellt mit PACDI Digital · pacdi.io', pageWidth / 2, footerY, { align: 'center' });
+
+            doc.save('DGUV_Pruefprotokoll.pdf');
+
+            // Erfolgs-Banner anzeigen
+            document.getElementById('pdfSuccessBanner').classList.add('active');
+        }
+
+        function scrollToForm() {
+            document.getElementById('formSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        }
+
+        window.addRow = addRow;
+        window.deleteLastRow = deleteLastRow;
+        window.deleteSelectedRows = deleteSelectedRows;
+        window.saveToLocalStorage = saveToLocalStorage;
+        window.loadFromLocalStorage = loadFromLocalStorage;
+        window.handlePDF = handlePDF;
+        window.calculateNextPruefung = calculateNextPruefung;
+        window.closePaywall = closePaywall;
+        window.goUpgrade = goUpgrade;
+        window.showEarlyAccess = showEarlyAccess;
+        window.submitEarlyAccess = submitEarlyAccess;
+        window.scrollToForm = scrollToForm;
+
+        // Init: Beispieldaten laden falls kein localStorage
+        function init() {
+            var raw = localStorage.getItem('dguv_protokoll');
+            if (raw) {
+                try {
+                    var data = JSON.parse(raw);
+                    if (data.rows && data.rows.length > 0) { loadFromLocalStorage(); return; }
+                } catch(e) {}
+            }
+            // Auto-Fill Beispiel-Zeilen
+            for (var i = 0; i < 3; i++) {
+                var tr = createRow(nextId++, i);
+                tableBody.appendChild(tr);
+                rowCount++;
+                calculateNextPruefung(tr);
+                var sicht = tr.querySelector('.sichtpruefung');
+                var funk = tr.querySelector('.funktionspruefung');
+                if (sicht) updateStatusBadge(sicht);
+                if (funk) updateStatusBadge(funk);
+            }
+            updateRowCounter();
+        }
+
+        init();
+
+    })();
 </script>
+
 </body>
 </html>
