@@ -411,7 +411,7 @@
         <label style="color:#F6B45F;"><input type="radio" name="qrType" value="dynamic" disabled> <span id="lb-dynamic">Dinamik (Pro) 🔒</span></label>
       </div>
       <div class="pro-note" id="proUpgrade">
-        ⭐ Renk, logo ve Dinamik QR için <a onclick="window.openPaddleCheckout && window.openPaddleCheckout()">Pro'ya geç</a>
+        ⭐ Renk, logo ve Dinamik QR için <a onclick="alert("Pro özelliği yakında!")">Pro'ya geç</a>
       </div>
 
     </div><!-- /panel-left -->
@@ -492,7 +492,26 @@
   <a href="/legal.html" style="color:rgba(246,180,95,0.5);text-decoration:none;margin:0 10px;">Impressum & Datenschutz</a>
 </footer>
 
-<script src="/assets/common.js"></script>
+<script>
+// Nav inline — common.js bağımlılığı yok
+(function buildNav() {
+  var nav = document.getElementById('mainNav');
+  if (!nav) return;
+  var page = (window.location.pathname.split('/').pop() || 'index.html');
+  var items = [
+    ['/', 'Ana Sayfa'],
+    ['/qr.html', '🔳 QR / Barkod'],
+    ['/pruefprotokoll.html', '⚡ Prüfprotokoll'],
+    ['/scanner.html', '📷 Scanner'],
+    ['/shortener.html', '🔗 Kısaltıcı'],
+    ['/password.html', '🔐 Şifre']
+  ];
+  nav.innerHTML = items.map(function(i) {
+    var active = (page === i[0].replace('/','') || (i[0]==='/' && page==='index.html')) ? ' style="border-color:#F6B45F;color:#F6B45F;"' : '';
+    return '<a href="' + i[0] + '"' + active + ' style="color:#7a9ab8;text-decoration:none;font-size:0.7rem;padding:4px 10px;border-radius:20px;border:1px solid transparent;">' + i[1] + '</a>';
+  }).join('');
+})();
+</script>
 <script>
 (function() {
   var currentCanvas = null;
@@ -706,7 +725,7 @@
     fetch('/api/user/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, purpose: selectedPurpose, lang: window.currentLang || 'tr' })
+      body: JSON.stringify({ email: email, purpose: selectedPurpose, lang: 'tr' })
     }).catch(function() {});
     $('emailSection').innerHTML = '<div style="color:#34D399;font-size:0.85rem;text-align:center;padding:10px;">✓ Teşekkürler!</div>';
   });
