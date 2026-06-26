@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DGUV V3 Prüfprotokoll</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        /* ––– PACDI BASE ––– */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0A1628;
+            color: #F5F2EC;
+            padding: 24px 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* ––– HEADER ––– */
+        .header {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(212,175,55,0.15);
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px 32px;
+            align-items: end;
+        }
+        .header .title-area {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(212,175,55,0.3);
+            padding-bottom: 12px;
+            margin-bottom: 8px;
+        }
+        .header .title-area h1 {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: #D4AF37;
+        }
+        .header .title-area span {
+            font-size: 13px;
+            color: #8A8F9A;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+        }
+        .header .field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .header .field label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #8A8F9A;
+        }
+        .header .field input {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(212,175,55,0.15);
+            color: #F5F2EC;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            border-radius: 4px;
+            transition: border-color 0.2s;
+            outline: none;
+            width: 100%;
+        }
+        .header .field input:focus {
+            border-color: #D4AF37;
+        }
+        .header .field input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8) sepia(1) hue-rotate(30deg) saturate(3);
+            cursor: pointer;
+        }
+
+        /* ––– TOOLBAR ––– */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .toolbar .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            font-family: 'Inter', sans-serif;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.06);
+            color: #F5F2EC;
+            border: 1px solid rgba(212,175,55,0.15);
+        }
+        .toolbar .btn:hover {
+            background: rgba(212,175,55,0.12);
+            border-color: #D4AF37;
+            transform: translateY(-1px);
+        }
+        .toolbar .btn--gold {
+            background: #D4AF37;
+            color: #0A1628;
+            border-color: #D4AF37;
+        }
+        .toolbar .btn--gold:hover {
+            background: #E8CC6A;
+            border-color: #E8CC6A;
+        }
+        .toolbar .btn--danger {
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #EF4444;
+        }
+        .toolbar .btn--danger:hover {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: #EF4444;
+        }
+        .toolbar .spacer {
+            flex: 1;
+        }
+        .toolbar .badge {
+            font-size: 12px;
+            color: #8A8F9A;
+            background: rgba(255,255,255,0.04);
+            padding: 4px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        /* ––– TABLE WRAP ––– */
+        .table-wrap {
+            overflow-x: auto;
+            border: 1px solid rgba(212,175,55,0.10);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.02);
+            padding: 2px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 1100px;
+        }
+        thead {
+            background: rgba(212,175,55,0.06);
+            border-bottom: 2px solid rgba(212,175,55,0.2);
+        }
+        th {
+            text-align: left;
+            padding: 12px 10px;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #D4AF37;
+            white-space: nowrap;
+        }
+        td {
+            padding: 6px 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            vertical-align: middle;
+        }
+        tr:last-child td { border-bottom: none; }
+
+        td input, td select {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(212,175,55,0.10);
+            color: #F5F2EC;
+            padding: 6px 8px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            border-radius: 4px;
+            width: 100%;
+            min-width: 60px;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+        td input:focus, td select:focus {
+            border-color: #D4AF37;
+        }
+        td input[type="date"] {
+            min-width: 130px;
+        }
+        td input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8) sepia(1) hue-rotate(30deg) saturate(3);
+            cursor: pointer;
+        }
+        td select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A8F9A'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            padding-right: 28px;
+            cursor: pointer;
+        }
+        td select option {
+            background: #0A1628;
+            color: #F5F2EC;
+        }
+
+        /* ––– STATUS BADGES ––– */
+        .status-ok {
+            color: #34D399;
+            font-weight: 700;
+        }
+        .status-fail {
+            color: #F87171;
+            font-weight: 700;
+        }
+        .status-neutral {
+            color: #8A8F9A;
+        }
+        td .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.04);
+        }
+        .status-badge.ok {
+            background: rgba(52, 211, 153, 0.15);
+            color: #34D399;
+        }
+        .status-badge.fail {
+            background: rgba(248, 113, 113, 0.15);
+            color: #F87171;
+        }
+        .status-badge.neutral {
+            background: rgba(138, 143, 154, 0.15);
+            color: #8A8F9A;
+        }
+
+        /* ––– ROW NUMBER ––– */
+        .row-nr {
+            font-weight: 600;
+            color: #8A8F9A;
+            font-size: 12px;
+            text-align: center;
+            min-width: 32px;
+        }
+
+        /* ––– RESPONSIVE ––– */
+        @media (max-width: 768px) {
+            .header {
+                grid-template-columns: 1fr 1fr;
+                padding: 16px 18px;
+                gap: 12px;
+            }
+            .header .title-area {
+                grid-column: 1 / -1;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+            .header .title-area h1 { font-size: 18px; }
+            .toolbar { gap: 8px; }
+            .toolbar .btn { font-size: 12px; padding: 8px 14px; }
+            td input, td select { font-size: 11px; padding: 4px 6px; min-width: 50px; }
+            td input[type="date"] { min-width: 100px; }
+            th { font-size: 10px; padding: 8px 6px; }
+            td { padding: 4px 4px; }
+        }
+        @media (max-width: 480px) {
+            .header { grid-template-columns: 1fr; }
+            .header .field input { font-size: 13px; }
+            .container { padding: 0; }
+            body { padding: 12px 8px; }
+            table { font-size: 11px; min-width: 900px; }
+        }
+
+        /* ––– PRINT ––– */
+        @media print {
+            body { background: #fff; color: #000; padding: 16px; }
+            .header { border-color: #ccc; background: #f5f5f5; }
+            .header .field input { border-color: #aaa; color: #000; background: #fff; }
+            .toolbar .btn { display: none; }
+            .table-wrap { border-color: #ccc; }
+            thead { background: #e0e0e0; border-bottom: 2px solid #999; }
+            th { color: #000; }
+            td input, td select { border-color: #aaa; color: #000; background: #fff; }
+            td select option { background: #fff; color: #000; }
+            .status-badge.ok { background: #d1fae5; color: #065f46; }
+            .status-badge.fail { background: #fee2e2; color: #991b1b; }
+            .status-badge.neutral { background: #f3f4f6; color: #4b5563; }
+            .row-nr { color: #555; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="title-area">
+            <h1>⚡ DGUV V3 Prüfprotokoll</h1>
+            <span>Formular Nr: 011/402</span>
+        </div>
+        <div class="field">
+            <label>Standort / Bereich</label>
+            <input type="text" id="standort" placeholder="z.B. Werkstatt A" data-store="standort">
+        </div>
+        <div class="field">
+            <label>Raum</label>
+            <input type="text" id="raum" placeholder="z.B. 2.03" data-store="raum">
+        </div>
+        <div class="field">
+            <label>Datum</label>
+            <input type="date" id="pruefdatum" data-store="pruefdatum">
+        </div>
+        <div class="field" style="grid-column: span 2;">
+            <label>Durch: / Prüfer</label>
+            <input type="text" id="pruefer" placeholder="Name des Prüfers" data-store="pruefer">
+        </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+        <button class="btn btn--gold" onclick="addRow()">➕ Gerät hinzufügen</button>
+        <button class="btn btn--danger" onclick="deleteLastRow()">🗑️ Letzte Zeile löschen</button>
+        <button class="btn" onclick="deleteSelectedRows()">🗑️ Ausgewählte löschen</button>
+        <span class="spacer"></span>
+        <button class="btn" onclick="saveToLocalStorage()">💾 Speichern</button>
+        <button class="btn" onclick="loadFromLocalStorage()">📂 Laden</button>
+        <button class="btn btn--gold" onclick="generatePDF()">📄 PDF erstellen</button>
+        <span class="badge" id="rowCounter">0 Geräte</span>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+        <table id="pruefTable">
+            <thead>
+                <tr>
+                    <th style="width:32px;">#</th>
+                    <th style="min-width:180px;">Inventarnummer / Bezeichnung</th>
+                    <th style="min-width:100px;">Sichtprüfung</th>
+                    <th style="min-width:110px;">Funktionsprüfung</th>
+                    <th style="min-width:70px;">R.PE (Ω)</th>
+                    <th style="min-width:70px;">R.ISO (MΩ)</th>
+                    <th style="min-width:70px;">I.EA (mA)</th>
+                    <th style="min-width:130px;">Letzte Prüfung</th>
+                    <th style="min-width:100px;">Prüfintervall</th>
+                    <th style="min-width:130px;">Nächste Prüfung</th>
+                    <th style="min-width:100px;">Bemerkung</th>
+                    <th style="width:40px;">✔</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Satırlar JS ile doldurulacak -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="margin-top: 28px; text-align: center; font-size: 12px; color: #8A8F9A; border-top: 1px solid rgba(212,175,55,0.08); padding-top: 20px;">
+        Erstellt mit <span style="color:#D4AF37;">PACDI Digital</span> · pacdi.io
+    </div>
+</div>
+
+<script>
+    (function() {
+        'use strict';
+
+        var tableBody = document.getElementById('tableBody');
+        var rowCounter = document.getElementById('rowCounter');
+        var rowCount = 0;
+        var nextId = 1;
+
+        // --- Helper: Monate addieren ---
+        function addMonths(dateStr, months) {
+            if (!dateStr) return '';
+            var parts = dateStr.split('-');
+            var year = parseInt(parts[0], 10);
+            var month = parseInt(parts[1], 10) - 1;
+            var day = parseInt(parts[2], 10);
+            var d = new Date(year, month, day);
+            d.setMonth(d.getMonth() + months);
+            var y = d.getFullYear();
+            var m = String(d.getMonth() + 1).padStart(2, '0');
+            var dd = String(d.getDate()).padStart(2, '0');
+            return y + '-' + m + '-' + dd;
+        }
+
+        // --- Nächste Prüfung berechnen ---
+        function calculateNextPruefung(row) {
+            var lastInput = row.querySelector('.letzte-pruefung');
+            var intervallSelect = row.querySelector('.pruefintervall');
+            var nextInput = row.querySelector('.naechste-pruefung');
+            if (!lastInput || !intervallSelect || !nextInput) return;
+            var lastDate = lastInput.value;
+            var intervall = parseInt(intervallSelect.value, 10);
+            if (!lastDate || isNaN(intervall)) {
+                nextInput.value = '';
+                return;
+            }
+            nextInput.value = addMonths(lastDate, intervall);
+        }
+
+        // --- Neue Zeile erstellen ---
+        function createRow(id) {
+            var tr = document.createElement('tr');
+            tr.dataset.id = id;
+
+            // Nr
+            var tdNr = document.createElement('td');
+            tdNr.className = 'row-nr';
+            tdNr.textContent = id;
+            tr.appendChild(tdNr);
+
+            // Inventarnummer
+            var tdInv = document.createElement('td');
+            var inpInv = document.createElement('input');
+            inpInv.type = 'text';
+            inpInv.placeholder = 'z.B. 4711 / Gerät';
+            inpInv.className = 'inventar';
+            tdInv.appendChild(inpInv);
+            tr.appendChild(tdInv);
+
+            // Sichtprüfung
+            var tdSicht = document.createElement('td');
+            var selSicht = document.createElement('select');
+            selSicht.className = 'sichtpruefung';
+            var opts = ['✓', '✗'];
+            opts.forEach(function(v) {
+                var o = document.createElement('option');
+                o.value = v;
+                o.textContent = v;
+                selSicht.appendChild(o);
+            });
+            tdSicht.appendChild(selSicht);
+            tr.appendChild(tdSicht);
+            // event: renk güncelle
+            selSicht.addEventListener('change', function() { updateStatusBadge(this); });
+            updateStatusBadge(selSicht);
+
+            // Funktionsprüfung
+            var tdFunk = document.createElement('td');
+            var selFunk = document.createElement('select');
+            selFunk.className = 'funktionspruefung';
+            var optsF = ['✓', '✗', '-'];
+            optsF.forEach(function(v) {
+                var o = document.createElement('option');
+                o.value = v;
+                o.textContent = v;
+                selFunk.appendChild(o);
+            });
+            tdFunk.appendChild(selFunk);
+            tr.appendChild(tdFunk);
+            selFunk.addEventListener('change', function() { updateStatusBadge(this); });
+            updateStatusBadge(selFunk);
+
+            // R.PE
+            var tdRpe = document.createElement('td');
+            var inpRpe = document.createElement('input');
+            inpRpe.type = 'text';
+            inpRpe.placeholder = 'Ω';
+            inpRpe.className = 'rpe';
+            tdRpe.appendChild(inpRpe);
+            tr.appendChild(tdRpe);
+
+            // R.ISO
+            var tdRiso = document.createElement('td');
+            var inpRiso = document.createElement('input');
+            inpRiso.type = 'text';
+            inpRiso.placeholder = 'MΩ';
+            inpRiso.className = 'riso';
+            tdRiso.appendChild(inpRiso);
+            tr.appendChild(tdRiso);
+
+            // I.EA
+            var tdIea = document.createElement('td');
+            var inpIea = document.createElement('input');
+            inpIea.type = 'text';
+            inpIea.placeholder = 'mA';
+            inpIea.className = 'iea';
+            tdIea.appendChild(inpIea);
+            tr.appendChild(tdIea);
+
+            // Letzte Prüfung
+            var tdLast = document.createElement('td');
+            var inpLast = document.createElement('input');
+            inpLast.type = 'date';
+            inpLast.className = 'letzte-pruefung';
+            tdLast.appendChild(inpLast);
+            tr.appendChild(tdLast);
+
+            // Prüfintervall (yeni kolon)
+            var tdIntervall = document.createElement('td');
+            var selIntervall = document.createElement('select');
+            selIntervall.className = 'pruefintervall';
+            var intervalle = [
+                { value: 6, label: '6 Monate' },
+                { value: 12, label: '12 Monate' },
+                { value: 24, label: '24 Monate' },
+                { value: 48, label: '48 Monate' }
+            ];
+            intervalle.forEach(function(item) {
+                var o = document.createElement('option');
+                o.value = item.value;
+                o.textContent = item.label;
+                if (item.value === 24) o.selected = true;
+                selIntervall.appendChild(o);
+            });
+            tdIntervall.appendChild(selIntervall);
+            tr.appendChild(tdIntervall);
+
+            // Nächste Prüfung
+            var tdNext = document.createElement('td');
+            var inpNext = document.createElement('input');
+            inpNext.type = 'date';
+            inpNext.className = 'naechste-pruefung';
+            inpNext.readOnly = true;
+            inpNext.style.backgroundColor = 'rgba(255,255,255,0.02)';
+            tdNext.appendChild(inpNext);
+            tr.appendChild(tdNext);
+
+            // Bemerkung
+            var tdNote = document.createElement('td');
+            var inpNote = document.createElement('input');
+            inpNote.type = 'text';
+            inpNote.placeholder = 'Bemerkung';
+            inpNote.className = 'bemerkung';
+            tdNote.appendChild(inpNote);
+            tr.appendChild(tdNote);
+
+            // Checkbox (auswählen)
+            var tdSel = document.createElement('td');
+            tdSel.style.textAlign = 'center';
+            var chk = document.createElement('input');
+            chk.type = 'checkbox';
+            chk.className = 'row-select';
+            tdSel.appendChild(chk);
+            tr.appendChild(tdSel);
+
+            // Event: Letzte Prüfung değişince -> Nächste berechnen
+            inpLast.addEventListener('change', function() {
+                calculateNextPruefung(tr);
+            });
+            selIntervall.addEventListener('change', function() {
+                calculateNextPruefung(tr);
+            });
+
+            return tr;
+        }
+
+        // --- Status Badge Güncelleme ---
+        function updateStatusBadge(select) {
+            var td = select.parentNode;
+            var val = select.value;
+            var badge = td.querySelector('.status-badge');
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'status-badge';
+                td.insertBefore(badge, select);
+                select.style.display = 'none';
+            }
+            badge.textContent = val;
+            badge.className = 'status-badge';
+            if (val === '✓') badge.classList.add('ok');
+            else if (val === '✗') badge.classList.add('fail');
+            else badge.classList.add('neutral');
+        }
+
+        // --- Zeile hinzufügen ---
+        function addRow() {
+            var tr = createRow(nextId++);
+            tableBody.appendChild(tr);
+            rowCount++;
+            updateRowCounter();
+            // Initial berechnen
+            calculateNextPruefung(tr);
+            // Status badges initialisieren
+            var sicht = tr.querySelector('.sichtpruefung');
+            var funk = tr.querySelector('.funktionspruefung');
+            if (sicht) updateStatusBadge(sicht);
+            if (funk) updateStatusBadge(funk);
+        }
+
+        // --- Letzte Zeile löschen ---
+        function deleteLastRow() {
+            var rows = tableBody.querySelectorAll('tr');
+            if (rows.length === 0) return;
+            rows[rows.length - 1].remove();
+            rowCount--;
+            updateRowCounter();
+            renumberRows();
+        }
+
+        // --- Ausgewählte Zeilen löschen ---
+        function deleteSelectedRows() {
+            var checks = tableBody.querySelectorAll('.row-select:checked');
+            if (checks.length === 0) return;
+            if (!confirm(checks.length + ' Zeile(n) löschen?')) return;
+            checks.forEach(function(chk) {
+                var tr = chk.closest('tr');
+                if (tr) tr.remove();
+            });
+            rowCount = tableBody.querySelectorAll('tr').length;
+            updateRowCounter();
+            renumberRows();
+        }
+
+        // --- Nummerierung aktualisieren ---
+        function renumberRows() {
+            var rows = tableBody.querySelectorAll('tr');
+            rows.forEach(function(tr, idx) {
+                var td = tr.querySelector('.row-nr');
+                if (td) td.textContent = idx + 1;
+            });
+        }
+
+        // --- Zähler aktualisieren ---
+        function updateRowCounter() {
+            var count = tableBody.querySelectorAll('tr').length;
+            rowCounter.textContent = count + ' Geräte';
+        }
+
+        // --- localStorage speichern ---
+        function saveToLocalStorage() {
+            var data = {
+                standort: document.getElementById('standort').value,
+                raum: document.getElementById('raum').value,
+                pruefdatum: document.getElementById('pruefdatum').value,
+                pruefer: document.getElementById('pruefer').value,
+                rows: []
+            };
+            var rows = tableBody.querySelectorAll('tr');
+            rows.forEach(function(tr) {
+                var row = {
+                    inventar: tr.querySelector('.inventar').value,
+                    sicht: tr.querySelector('.sichtpruefung').value,
+                    funktion: tr.querySelector('.funktionspruefung').value,
+                    rpe: tr.querySelector('.rpe').value,
+                    riso: tr.querySelector('.riso').value,
+                    iea: tr.querySelector('.iea').value,
+                    letzte: tr.querySelector('.letzte-pruefung').value,
+                    intervall: tr.querySelector('.pruefintervall').value,
+                    naechste: tr.querySelector('.naechste-pruefung').value,
+                    bemerkung: tr.querySelector('.bemerkung').value
+                };
+                data.rows.push(row);
+            });
+            localStorage.setItem('dguv_protokoll', JSON.stringify(data));
+            alert('Gespeichert!');
+        }
+
+        // --- localStorage laden ---
+        function loadFromLocalStorage() {
+            var raw = localStorage.getItem('dguv_protokoll');
+            if (!raw) { alert('Keine gespeicherten Daten gefunden.'); return; }
+            try {
+                var data = JSON.parse(raw);
+                document.getElementById('standort').value = data.standort || '';
+                document.getElementById('raum').value = data.raum || '';
+                document.getElementById('pruefdatum').value = data.pruefdatum || '';
+                document.getElementById('pruefer').value = data.pruefer || '';
+                // Tabelleninhalt ersetzen
+                tableBody.innerHTML = '';
+                nextId = 1;
+                if (data.rows && data.rows.length) {
+                    data.rows.forEach(function(r) {
+                        var tr = createRow(nextId++);
+                        tr.querySelector('.inventar').value = r.inventar || '';
+                        tr.querySelector('.sichtpruefung').value = r.sicht || '✓';
+                        tr.querySelector('.funktionspruefung').value = r.funktion || '✓';
+                        tr.querySelector('.rpe').value = r.rpe || '';
+                        tr.querySelector('.riso').value = r.riso || '';
+                        tr.querySelector('.iea').value = r.iea || '';
+                        tr.querySelector('.letzte-pruefung').value = r.letzte || '';
+                        tr.querySelector('.pruefintervall').value = r.intervall || '24';
+                        tr.querySelector('.naechste-pruefung').value = r.naechste || '';
+                        tr.querySelector('.bemerkung').value = r.bemerkung || '';
+                        tableBody.appendChild(tr);
+                        // Status badges
+                        var sicht = tr.querySelector('.sichtpruefung');
+                        var funk = tr.querySelector('.funktionspruefung');
+                        if (sicht) updateStatusBadge(sicht);
+                        if (funk) updateStatusBadge(funk);
+                        // Nächste Prüfung berechnen (falls Letzte existiert)
+                        calculateNextPruefung(tr);
+                    });
+                    rowCount = data.rows.length;
+                } else {
+                    rowCount = 0;
+                }
+                updateRowCounter();
+                renumberRows();
+                alert('Geladen!');
+            } catch(e) {
+                alert('Fehler beim Laden: ' + e.message);
+            }
+        }
+
+        // --- PDF generieren (jsPDF) ---
+        function generatePDF() {
+            var doc = new jspdf.jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            var pageWidth = doc.internal.pageSize.getWidth();
+            var pageHeight = doc.internal.pageSize.getHeight();
+            var margin = 14;
+            var startY = 30;
+
+            // Başlık
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(212, 175, 55);
+            doc.text('DGUV V3 Prüfprotokoll', pageWidth / 2, startY, { align: 'center' });
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(100, 100, 100);
+            doc.text('Formular Nr: 011/402', pageWidth - margin, startY, { align: 'right' });
+
+            // Header bilgileri
+            var standort = document.getElementById('standort').value || '—';
+            var raum = document.getElementById('raum').value || '—';
+            var datum = document.getElementById('pruefdatum').value || '—';
+            var pruefer = document.getElementById('pruefer').value || '—';
+
+            doc.setFontSize(9);
+            doc.setTextColor(50, 50, 50);
+            var infoY = startY + 10;
+            doc.text('Standort: ' + standort, margin, infoY);
+            doc.text('Raum: ' + raum, margin + 70, infoY);
+            doc.text('Datum: ' + datum, margin + 130, infoY);
+            doc.text('Prüfer: ' + pruefer, margin + 200, infoY);
+
+            // Tablo verileri
+            var rows = tableBody.querySelectorAll('tr');
+            var tableData = [];
+            rows.forEach(function(tr) {
+                var row = [
+                    tr.querySelector('.row-nr').textContent,
+                    tr.querySelector('.inventar').value || '',
+                    tr.querySelector('.sichtpruefung').value || '✓',
+                    tr.querySelector('.funktionspruefung').value || '✓',
+                    tr.querySelector('.rpe').value || '',
+                    tr.querySelector('.riso').value || '',
+                    tr.querySelector('.iea').value || '',
+                    tr.querySelector('.letzte-pruefung').value || '',
+                    tr.querySelector('.pruefintervall').value || '24',
+                    tr.querySelector('.naechste-pruefung').value || '',
+                    tr.querySelector('.bemerkung').value || ''
+                ];
+                tableData.push(row);
+            });
+
+            if (tableData.length === 0) {
+                alert('Keine Geräte zum Exportieren.');
+                return;
+            }
+
+            var intervallLabels = {
+                '6': '6 Monate',
+                '12': '12 Monate',
+                '24': '24 Monate',
+                '48': '48 Monate'
+            };
+
+            // Tablo başlıkları
+            var headers = [
+                'Nr', 'Inventarnummer / Bezeichnung', 'Sicht', 'Funktion',
+                'R.PE (Ω)', 'R.ISO (MΩ)', 'I.EA (mA)',
+                'Letzte Prüfung', 'Prüfintervall', 'Nächste Prüfung', 'Bemerkung'
+            ];
+
+            // Verileri formatla (Intervall'ı etiketle)
+            var formattedData = tableData.map(function(row) {
+                var intervallVal = row[8];
+                var label = intervallLabels[intervallVal] || intervallVal + ' Monate';
+                var newRow = row.slice();
+                newRow[8] = label;
+                return newRow;
+            });
+
+            // Tabloyu çiz
+            var tableStartY = infoY + 10;
+            doc.autoTable({
+                head: [headers],
+                body: formattedData,
+                startY: tableStartY,
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [212, 175, 55],
+                    textColor: [10, 22, 40],
+                    fontStyle: 'bold',
+                    fontSize: 8,
+                    halign: 'center',
+                },
+                bodyStyles: {
+                    fontSize: 7,
+                    textColor: [30, 30, 30],
+                    lineColor: [200, 200, 200],
+                    lineWidth: 0.1,
+                },
+                columnStyles: {
+                    0: { cellWidth: 8, halign: 'center' },
+                    1: { cellWidth: 35 },
+                    2: { cellWidth: 12, halign: 'center' },
+                    3: { cellWidth: 14, halign: 'center' },
+                    4: { cellWidth: 16, halign: 'center' },
+                    5: { cellWidth: 16, halign: 'center' },
+                    6: { cellWidth: 16, halign: 'center' },
+                    7: { cellWidth: 22, halign: 'center' },
+                    8: { cellWidth: 20, halign: 'center' },
+                    9: { cellWidth: 22, halign: 'center' },
+                    10: { cellWidth: 25 }
+                },
+                margin: { left: margin, right: margin },
+                didDrawPage: function(data) {
+                    // Sayfa numarası
+                    var pageCount = doc.internal.getNumberOfPages();
+                    for (var i = 1; i <= pageCount; i++) {
+                        doc.setPage(i);
+                        doc.setFontSize(7);
+                        doc.setTextColor(150, 150, 150);
+                        doc.text('Seite ' + i + ' / ' + pageCount, pageWidth - margin, pageHeight - 6, { align: 'right' });
+                    }
+                }
+            });
+
+            // İmza alanı
+            var finalY = doc.lastAutoTable.finalY + 14;
+            if (finalY > pageHeight - 30) {
+                doc.addPage();
+                finalY = 30;
+            }
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(50, 50, 50);
+            doc.text('_________________________', margin + 30, finalY);
+            doc.text('_________________________', margin + 100, finalY);
+            doc.text('_________________________', margin + 170, finalY);
+            doc.setFontSize(8);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Datum', margin + 30, finalY + 6);
+            doc.text('Unterschrift Prüfer', margin + 100, finalY + 6);
+            doc.text('Unterschrift FASI', margin + 170, finalY + 6);
+
+            // Footer
+            var footerY = finalY + 20;
+            if (footerY > pageHeight - 14) footerY = pageHeight - 14;
+            doc.setFontSize(7);
+            doc.setTextColor(150, 150, 150);
+            doc.text('Erstellt mit PACDI Digital · pacdi.io', pageWidth / 2, footerY, { align: 'center' });
+
+            // PDF indir
+            doc.save('DGUV_Pruefprotokoll.pdf');
+        }
+
+        // --- Expose functions ---
+        window.addRow = addRow;
+        window.deleteLastRow = deleteLastRow;
+        window.deleteSelectedRows = deleteSelectedRows;
+        window.saveToLocalStorage = saveToLocalStorage;
+        window.loadFromLocalStorage = loadFromLocalStorage;
+        window.generatePDF = generatePDF;
+        window.calculateNextPruefung = calculateNextPruefung;
+
+        // --- Initialisierung: 3 Satır mit Beispiel ---
+        function init() {
+            // Beispiel-Daten laden falls vorhanden
+            var raw = localStorage.getItem('dguv_protokoll');
+            if (raw) {
+                try {
+                    var data = JSON.parse(raw);
+                    if (data.rows && data.rows.length > 0) {
+                        loadFromLocalStorage();
+                        return;
+                    }
+                } catch(e) {}
+            }
+            // Sonst 3 leere Zeilen
+            for (var i = 0; i < 3; i++) {
+                addRow();
+            }
+        }
+
+        init();
+
+        // Auto-save after changes (optional)
+        document.addEventListener('change', function() {
+            // Nur wenn ein Input in der Tabelle oder Header geändert wurde
+            var target = event.target;
+            if (target.closest('#app')) {
+                // kein Auto-save, aber manuell bleibt
+            }
+        });
+
+    })();
+</script>
+
+</body>
+</html>
