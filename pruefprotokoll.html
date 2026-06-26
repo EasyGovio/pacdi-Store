@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -468,31 +469,66 @@
             .row-nr { color: #555; }
         }
     </style>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
-    <link rel="canonical" href="https://pacdi.store/pruefprotokoll.html" />
 </head>
 <body>
 
 <!-- PDF PAYWALL MODAL -->
 <div class="modal-overlay" id="paywallModal">
     <div class="modal">
-        <div class="modal-icon">🚀</div>
-        <h2>PDF Export – Pro erforderlich</h2>
-        <p>Ihr Prüfprotokoll ist fertig und bereit zum Export.<br>Für unbegrenzte PDF-Downloads upgraden Sie auf Pro.</p>
-        <div class="modal-price">
-            <strong>15€</strong> <span>/ Monat</span>
+        <!-- STATE 1: Paywall Info -->
+        <div id="modalStateInfo">
+            <div class="modal-icon">✅</div>
+            <h2>Ihr Prüfprotokoll ist fertig</h2>
+            <p>Für den Download benötigen Sie die Pro-Version.<br>
+            <strong style="color:#D4AF37;">🚀 Startet in Kürze</strong></p>
+            <div class="modal-price">
+                <strong>15€</strong> <span>/ Monat</span>
+            </div>
+            <ul class="modal-features">
+                <li>Unbegrenzte PDF-Exporte</li>
+                <li>Alle Prüfkategorien</li>
+                <li>Signaturfelder & Firmenlogo</li>
+                <li>Datensicherung in der Cloud</li>
+                <li>Prioritäts-Support</li>
+            </ul>
+            <button class="btn-modal-upgrade" onclick="showEarlyAccess()">🎯 Frühzugang + Rabatt sichern</button>
+            <br>
+            <button class="btn-modal-cancel" onclick="closePaywall()">Abbrechen</button>
         </div>
-        <ul class="modal-features">
-            <li>Unbegrenzte PDF-Exporte</li>
-            <li>Alle Prüfkategorien</li>
-            <li>Signaturfelder & Firmenlogo</li>
-            <li>Datensicherung in der Cloud</li>
-            <li>Prioritäts-Support</li>
-        </ul>
-        <button class="btn-modal-upgrade" onclick="goUpgrade()">✔ Jetzt auf Pro upgraden</button>
-        <br>
-        <button class="btn-modal-cancel" onclick="closePaywall()">Abbrechen</button>
+
+        <!-- STATE 2: Early Access Form -->
+        <div id="modalStateForm" style="display:none;">
+            <div class="modal-icon">🎯</div>
+            <h2>Early Access sichern</h2>
+            <div style="text-align:left; background:rgba(212,175,55,0.06); border:1px solid rgba(212,175,55,0.2); border-radius:8px; padding:14px; margin-bottom:18px; font-size:13px; color:#B0B5BF; line-height:1.9;">
+                <span style="color:#D4AF37; font-weight:600;">✔</span> Frühzugang vor allen anderen<br>
+                <span style="color:#D4AF37; font-weight:600;">✔</span> Rabatt zum offiziellen Start<br>
+                <span style="color:#D4AF37; font-weight:600;">✔</span> Unbegrenzte Nutzung im Pro-Plan
+            </div>
+            <input type="email" id="earlyAccessEmail" placeholder="Ihre E-Mail-Adresse"
+                style="width:100%; padding:12px 14px; border-radius:6px; border:1px solid rgba(212,175,55,0.3);
+                background:rgba(255,255,255,0.04); color:#F5F2EC; font-size:14px;
+                font-family:'Inter',sans-serif; outline:none; margin-bottom:10px;">
+            <div id="earlyAccessMsg" style="font-size:13px; min-height:20px; margin-bottom:10px;"></div>
+            <button class="btn-modal-upgrade" onclick="submitEarlyAccess()">✔ Jetzt Frühzugang sichern</button>
+            <br>
+            <button class="btn-modal-cancel" onclick="closePaywall()">Vielleicht später</button>
+        </div>
+
+        <!-- STATE 3: Success -->
+        <div id="modalStateSuccess" style="display:none;">
+            <div class="modal-icon">🎉</div>
+            <h2 style="color:#34D399;">Danke!</h2>
+            <p style="color:#B0B5BF; line-height:1.7;">
+                Wir haben Ihre E-Mail erhalten.<br>
+                Sie werden als Erste informiert, wenn die Pro-Version live geht —<br>
+                <strong style="color:#D4AF37;">inklusive Ihres Rabatts.</strong>
+            </p>
+            <div style="margin:18px 0; padding:14px; background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.2); border-radius:8px; font-size:13px; color:#34D399;">
+                ✔ Frühzugang registriert
+            </div>
+            <button class="btn-modal-upgrade" style="background:#34D399;" onclick="closePaywall()">Weiter arbeiten</button>
+        </div>
     </div>
 </div>
 
@@ -616,6 +652,8 @@
     <!-- FOOTER -->
     <div style="margin-top: 28px; text-align: center; font-size: 12px; color: #8A8F9A; border-top: 1px solid rgba(212,175,55,0.08); padding-top: 20px;">
         Erstellt mit <span style="color:#D4AF37;">PACDI Digital</span> · pacdi.io
+        &nbsp;·&nbsp;
+        <a href="legal.html" style="color:#8A8F9A; text-decoration:underline;">Impressum &amp; Datenschutz</a>
     </div>
 </div>
 
@@ -900,13 +938,68 @@
 
         function closePaywall() {
             document.getElementById('paywallModal').classList.remove('active');
+            // Modal state reset
+            setTimeout(function() {
+                showModalState('info');
+            }, 300);
+        }
+
+        function showModalState(state) {
+            document.getElementById('modalStateInfo').style.display = state === 'info' ? 'block' : 'none';
+            document.getElementById('modalStateForm').style.display = state === 'form' ? 'block' : 'none';
+            document.getElementById('modalStateSuccess').style.display = state === 'success' ? 'block' : 'none';
+        }
+
+        function showEarlyAccess() {
+            showModalState('form');
         }
 
         function goUpgrade() {
-            // Upgrade-Seite (Platzhalter)
-            alert('Pro-Version kommt bald! Schreiben Sie uns: info@pacdi.io');
-            closePaywall();
+            showEarlyAccess();
         }
+
+        function submitEarlyAccess() {
+            var emailInput = document.getElementById('earlyAccessEmail');
+            var msg = document.getElementById('earlyAccessMsg');
+            var email = emailInput.value.trim();
+
+            // Validierung
+            if (!email || email.indexOf('@') < 1 || email.indexOf('.') < 2) {
+                msg.style.color = '#F87171';
+                msg.textContent = '⚠ Bitte gültige E-Mail eingeben';
+                return;
+            }
+
+            msg.style.color = '#D4AF37';
+            msg.textContent = '⏳ Wird gespeichert...';
+
+            // EmailJS senden
+            // !! SETUP: emailjs.com → kostenlos anmelden → Service + Template ID eintragen
+            var EMAILJS_PUBLIC_KEY  = 'DEIN_PUBLIC_KEY';   // emailjs.com → Account → Public Key
+            var EMAILJS_SERVICE_ID  = 'DEIN_SERVICE_ID';   // emailjs.com → Email Services
+            var EMAILJS_TEMPLATE_ID = 'DEIN_TEMPLATE_ID';  // emailjs.com → Email Templates
+
+            emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                from_email: email,
+                to_name: 'PACDI Team',
+                message: 'Neuer Early Access Lead: ' + email,
+                reply_to: email
+            }).then(function() {
+                // Lokal speichern (Backup)
+                var leads = JSON.parse(localStorage.getItem('early_access_leads') || '[]');
+                leads.push({ email: email, ts: new Date().toISOString() });
+                localStorage.setItem('early_access_leads', JSON.stringify(leads));
+                showModalState('success');
+            }, function(error) {
+                // Fallback: nur lokal speichern
+                var leads = JSON.parse(localStorage.getItem('early_access_leads') || '[]');
+                leads.push({ email: email, ts: new Date().toISOString() });
+                localStorage.setItem('early_access_leads', JSON.stringify(leads));
+                console.log('Lead gespeichert (lokal):', email, '| EmailJS Fehler:', error);
+                showModalState('success');
+            });
 
         function generatePDF() {
             var doc = new jspdf.jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
@@ -1011,6 +1104,8 @@
             document.getElementById('formSection').scrollIntoView({ behavior: 'smooth' });
         }
 
+        }
+
         window.addRow = addRow;
         window.deleteLastRow = deleteLastRow;
         window.deleteSelectedRows = deleteSelectedRows;
@@ -1020,6 +1115,8 @@
         window.calculateNextPruefung = calculateNextPruefung;
         window.closePaywall = closePaywall;
         window.goUpgrade = goUpgrade;
+        window.showEarlyAccess = showEarlyAccess;
+        window.submitEarlyAccess = submitEarlyAccess;
         window.scrollToForm = scrollToForm;
 
         // Init: Beispieldaten laden falls kein localStorage
