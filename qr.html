@@ -15,6 +15,7 @@
   <!-- common.css kasıtlı kaldırıldı - stiller inline -->
   <style>
     /* ── PAGE OVERRIDES — PC layout ── */
+    html, body { overflow-x: hidden; max-width: 100vw; }
     @media (max-width: 600px) {
       .nav-label { display: none; }
     }
@@ -321,21 +322,55 @@
 </head>
 <body>
 
-<!-- HEADER — common.js buildMenu() bunu doldurur -->
-<div style="background:rgba(4,22,46,0.95);border-bottom:1px solid rgba(246,180,95,0.2);padding:0 24px;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px);">
-  <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px;gap:16px;">
-    <a href="/index.html" style="font-size:1rem;font-weight:800;color:#F6B45F;text-decoration:none;white-space:nowrap;">PACDI Store</a>
-    <nav id="mainNav" style="display:flex;gap:4px;flex-wrap:wrap;"></nav>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div style="display:flex;gap:4px;">
-        <button class="bc-btn" onclick="setLanguage('tr')" id="lbtr">TR</button>
-        <button class="bc-btn" onclick="setLanguage('de')" id="lbde">DE</button>
-        <button class="bc-btn" onclick="setLanguage('en')" id="lben">EN</button>
-      </div>
-      <div id="userPanel" style="display:flex;gap:6px;align-items:center;"></div>
+<!-- HEADER -->
+<div id="site-header" style="background:rgba(4,22,46,0.97);border-bottom:1px solid rgba(246,180,95,0.2);padding:0 16px;position:sticky;top:0;z-index:200;backdrop-filter:blur(8px);">
+  <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px;">
+    <a href="/index.html" style="font-size:0.95rem;font-weight:800;color:#F6B45F;text-decoration:none;white-space:nowrap;flex-shrink:0;">PACDI Store</a>
+
+    <!-- Hamburger butonu - sadece mobil -->
+    <button id="hamburger" onclick="toggleMenu()" style="display:none;background:none;border:1px solid rgba(246,180,95,0.3);color:#F6B45F;padding:6px 10px;border-radius:8px;font-size:1rem;cursor:pointer;flex-shrink:0;">☰</button>
+
+    <!-- PC nav -->
+    <nav id="mainNav" style="display:flex;gap:4px;align-items:center;flex-wrap:nowrap;overflow:hidden;"></nav>
+
+    <!-- Dil butonları -->
+    <div style="display:flex;gap:3px;flex-shrink:0;">
+      <button onclick="setLanguage('tr')" id="lbtr" style="background:none;border:1px solid rgba(246,180,95,0.3);color:#F6B45F;padding:4px 8px;border-radius:8px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;">TR</button>
+      <button onclick="setLanguage('de')" id="lbde" style="background:none;border:1px solid rgba(246,180,95,0.2);color:#7a9ab8;padding:4px 8px;border-radius:8px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;">DE</button>
+      <button onclick="setLanguage('en')" id="lben" style="background:none;border:1px solid rgba(246,180,95,0.2);color:#7a9ab8;padding:4px 8px;border-radius:8px;font-size:0.65rem;font-weight:700;cursor:pointer;font-family:inherit;">EN</button>
     </div>
   </div>
+
+  <!-- Mobil dropdown menü -->
+  <div id="mobile-menu" style="display:none;padding:8px 0 12px;border-top:1px solid rgba(246,180,95,0.1);">
+    <a href="/" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">🏠 Ana Sayfa</a>
+    <a href="/qr.html" style="display:block;padding:9px 16px;color:#F6B45F;text-decoration:none;font-size:0.85rem;background:rgba(246,180,95,0.06);">🔳 QR & Barkod</a>
+    <a href="/pruefprotokoll.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">⚡ Prüfprotokoll</a>
+    <a href="/scanner.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">📷 Scanner</a>
+    <a href="/shortener.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">🔗 Kısaltıcı</a>
+    <a href="/password.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">🔐 Şifre</a>
+  </div>
 </div>
+
+<style>
+@media (max-width: 640px) {
+  #hamburger { display:block !important; }
+  #mainNav { display:none !important; }
+}
+</style>
+
+<script>
+function toggleMenu() {
+  var m = document.getElementById('mobile-menu');
+  m.style.display = m.style.display === 'block' ? 'none' : 'block';
+}
+// Dışarı tıklayınca kapat
+document.addEventListener('click', function(e) {
+  if (!document.getElementById('site-header').contains(e.target)) {
+    document.getElementById('mobile-menu').style.display = 'none';
+  }
+});
+</script>
 
 <div class="page-wrap">
 
@@ -703,17 +738,23 @@
 
   // ── İNDİRME ──
   function downloadImage(format) {
-    if (!currentCanvas && !$('qrDisplay').querySelector('img')) { alert('Önce oluşturun.'); return; }
-    var canvas = currentCanvas;
-    if (!canvas) {
-      var img = $('qrDisplay').querySelector('img');
-      canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth || 200;
-      canvas.height = img.naturalHeight || 200;
-      var ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
-      try { ctx.drawImage(img,0,0); } catch(e) { alert('PNG/JPG indirimi için doğrudan API bağlantısı kullanın.'); return; }
+    // Canvas'ı taze al - QRCode sonradan ekliyor olabilir
+    var freshCanvas = $('qrDisplay').querySelector('canvas');
+    if (freshCanvas) currentCanvas = freshCanvas;
+
+    if (!currentCanvas && !currentText) { alert('Önce QR oluşturun.'); return; }
+
+    // Canvas yoksa API fallback ile indir
+    if (!currentCanvas) {
+      var apiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&format=png&data=' + encodeURIComponent(currentText);
+      var link = document.createElement('a');
+      link.href = apiUrl;
+      link.download = 'pacdi-qr.' + (format === 'jpg' ? 'jpg' : 'png');
+      link.target = '_blank';
+      link.click();
+      return;
     }
+    var canvas = currentCanvas;
     if (format === 'jpg') {
       var c2 = document.createElement('canvas');
       c2.width = canvas.width; c2.height = canvas.height;
