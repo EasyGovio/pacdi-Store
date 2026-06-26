@@ -9,7 +9,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
-  </script>
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -444,12 +444,12 @@
   </div>
 
   <div id="mobile-menu" style="display:none;padding:8px 0 12px;border-top:1px solid rgba(246,180,95,0.1);">
-    <a href="/" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">🏠 Ana Sayfa</a>
-    <a href="/qr.html" style="display:block;padding:9px 16px;color:#F6B45F;text-decoration:none;font-size:0.85rem;background:rgba(246,180,95,0.06);">🔳 QR & Barkod</a>
-    <a href="/pruefprotokoll.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">⚡ Prüfprotokoll</a>
-    <a href="/scanner.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">📷 Scanner</a>
-    <a href="/shortener.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">🔗 Kısaltıcı</a>
-    <a href="/password.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">🔐 Şifre</a>
+    <a id="mm-home" href="/" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">🏠 Ana Sayfa</a>
+    <a id="mm-qr" href="/qr.html" style="display:block;padding:9px 16px;color:#F6B45F;text-decoration:none;font-size:0.85rem;background:rgba(246,180,95,0.06);">🔳 QR & Barkod</a>
+    <a id="mm-pruef" href="/pruefprotokoll.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">⚡ Prüfprotokoll</a>
+    <a id="mm-scan" href="/scanner.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">📷 Scanner</a>
+    <a id="mm-short" href="/shortener.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">🔗 Kısaltıcı</a>
+    <a id="mm-pass" href="/password.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">🔐 Şifre</a>
   </div>
 </div>
 
@@ -560,7 +560,7 @@
           <div style="font-size:0.7rem;color:#7a9ab8;margin-bottom:10px;" id="lb-email-sub">Reklam yok — sadece faydalı güncellemeler.</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <input type="email" class="qr-input" id="emailInput" placeholder="e-posta@adresiniz.com" style="margin-bottom:0;flex:1;min-width:120px;">
-            <button class="bc-btn active" id="emailBtn" style="white-space:nowrap;">Katıl</button>
+            <button class="bc-btn active" id="emailBtn" style="white-space:nowrap;" id="lb-email-btn">Katıl</button>
           </div>
           <div style="font-size:0.65rem;color:#4a6a88;margin-top:6px;cursor:pointer;" onclick="document.getElementById('emailSection').style.display='none'" id="lb-email-skip">Şimdi değil</div>
         </div>
@@ -658,7 +658,13 @@ var translations = {
     email_sub: 'Reklam yok — sadece faydalı güncellemeler.',
     email_btn: 'Katıl',
     email_skip: 'Şimdi değil',
-    blog: 'İLGİLİ MAKALELER'
+    blog: 'İLGİLİ MAKALELER',
+    mm_home: '🏠 Ana Sayfa',
+    mm_qr: '🔳 QR & Barkod',
+    mm_pruef: '⚡ Prüfprotokoll',
+    mm_scan: '📷 Scanner',
+    mm_short: '🔗 Kısaltıcı',
+    mm_pass: '🔐 Şifre'
   },
   de: {
     title: '🔳 QR & Barcode Generator',
@@ -676,7 +682,13 @@ var translations = {
     email_sub: 'Keine Werbung — nur nützliche Updates.',
     email_btn: 'Beitreten',
     email_skip: 'Jetzt nicht',
-    blog: 'VERWANDTE ARTIKEL'
+    blog: 'VERWANDTE ARTIKEL',
+    mm_home: '🏠 Startseite',
+    mm_qr: '🔳 QR & Barcode',
+    mm_pruef: '⚡ Prüfprotokoll',
+    mm_scan: '📷 Scanner',
+    mm_short: '🔗 Link-Kürzer',
+    mm_pass: '🔐 Passwort'
   },
   en: {
     title: '🔳 QR & Barcode Generator',
@@ -694,7 +706,13 @@ var translations = {
     email_sub: 'No ads — just useful updates.',
     email_btn: 'Join',
     email_skip: 'Not now',
-    blog: 'RELATED ARTICLES'
+    blog: 'RELATED ARTICLES',
+    mm_home: '🏠 Home',
+    mm_qr: '🔳 QR & Barcode',
+    mm_pruef: '⚡ Inspection Protocol',
+    mm_scan: '📷 Scanner',
+    mm_short: '🔗 Link Shortener',
+    mm_pass: '🔐 Password'
   }
 };
 
@@ -719,6 +737,20 @@ function setLanguage(lang) {
   document.getElementById('lb-email-btn').textContent = t.email_btn;
   document.getElementById('lb-email-skip').textContent = t.email_skip;
   document.getElementById('lb-blog').textContent = t.blog;
+
+  // Mobil menü çevirileri
+  var mmMap = {
+    'mm-home': t.mm_home,
+    'mm-qr': t.mm_qr,
+    'mm-pruef': t.mm_pruef,
+    'mm-scan': t.mm_scan,
+    'mm-short': t.mm_short,
+    'mm-pass': t.mm_pass
+  };
+  for (var k in mmMap) {
+    var el = document.getElementById(k);
+    if (el) el.textContent = mmMap[k];
+  }
 
   // Dil butonlarını vurgula
   var btns = ['lbtr', 'lbde', 'lben'];
@@ -861,51 +893,56 @@ function generate() {
     return;
   }
 
-  // QR mod
-  var fg = $('fgColor').disabled ? '#04162E' : $('fgColor').value;
-  var bg = $('bgColor').disabled ? '#FFFFFF' : $('bgColor').value;
-  var size = 200;
+  // QR mod – FIX: tainted canvas sorunu için gizli div'de siyah-beyaz üretip temiz kopyala
+  var hiddenDiv = document.createElement('div');
+  hiddenDiv.style.position = 'absolute';
+  hiddenDiv.style.left = '-9999px';
+  document.body.appendChild(hiddenDiv);
 
   try {
-    qrCodeInstance = new QRCode(display, {
+    new QRCode(hiddenDiv, {
       text: content,
-      width: size,
-      height: size,
-      colorDark: fg,
-      colorLight: bg,
+      width: 300,
+      height: 300,
+      colorDark: '#000000',
+      colorLight: '#FFFFFF',
       correctLevel: QRCode.CorrectLevel.M
     });
-    // Canvas'ı yakalamak için bekle
-    setTimeout(function() {
-      var canvas = display.querySelector('canvas');
-      if (canvas) {
-        currentCanvas = canvas;
-        showDownloads();
-      } else {
-        // fallback: qrserver
-        var img2 = document.createElement('img');
-        img2.crossOrigin = 'anonymous';
-        img2.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(content);
-        img2.style.borderRadius = '6px';
-        img2.onload = function() {
-          currentCanvas = null;
-          showDownloads();
-        };
-        display.appendChild(img2);
-      }
-    }, 300);
   } catch (e) {
+    document.body.removeChild(hiddenDiv);
     // fallback
-    var img3 = document.createElement('img');
-    img3.crossOrigin = 'anonymous';
-    img3.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(content);
-    img3.style.borderRadius = '6px';
-    img3.onload = function() {
+    var fallbackImg = document.createElement('img');
+    fallbackImg.crossOrigin = 'anonymous';
+    fallbackImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(content);
+    fallbackImg.style.borderRadius = '6px';
+    fallbackImg.onload = function() {
       currentCanvas = null;
+      display.appendChild(fallbackImg);
       showDownloads();
     };
-    display.appendChild(img3);
+    return;
   }
+
+  setTimeout(function() {
+    var srcCanvas = hiddenDiv.querySelector('canvas');
+    if (srcCanvas) {
+      // Temiz canvas kopyala
+      var cleanCanvas = document.createElement('canvas');
+      cleanCanvas.width = srcCanvas.width;
+      cleanCanvas.height = srcCanvas.height;
+      var ctx = cleanCanvas.getContext('2d');
+      ctx.drawImage(srcCanvas, 0, 0);
+      currentCanvas = cleanCanvas;
+
+      // Görüntüleme için orijinal canvas'ı göster (kopya değil, ama tainted değil)
+      display.innerHTML = '';
+      display.appendChild(srcCanvas);
+    } else {
+      currentCanvas = null;
+    }
+    document.body.removeChild(hiddenDiv);
+    showDownloads();
+  }, 300);
 }
 
 function showDownloads() {
@@ -913,26 +950,17 @@ function showDownloads() {
   $('pdfPrintSection').style.display = 'grid';
 }
 
-// ── DOWNLOAD ──
+// ── DOWNLOAD (FIX: toBlob kullan) ──
 function downloadImage(format) {
-  // Canvas'ı taze al
-  var freshCanvas = $('qrDisplay').querySelector('canvas');
-  if (freshCanvas) currentCanvas = freshCanvas;
-
-  if (!currentCanvas && !currentText) {
-    alert('Önce QR oluşturun.');
-    return;
-  }
-
-  // Canvas yoksa API fallback
   if (!currentCanvas) {
+    // fallback API
     var apiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&format=png&data=' + encodeURIComponent(currentText);
     window.open(apiUrl, '_blank');
     return;
   }
 
   var canvas = currentCanvas;
-  var mimeType = 'image/png';
+  var mime = 'image/png';
   var ext = 'png';
 
   if (format === 'jpg') {
@@ -944,22 +972,26 @@ function downloadImage(format) {
     ctx2.fillRect(0, 0, c2.width, c2.height);
     ctx2.drawImage(canvas, 0, 0);
     canvas = c2;
-    mimeType = 'image/jpeg';
+    mime = 'image/jpeg';
     ext = 'jpg';
   }
 
-  var dataUrl = canvas.toDataURL(mimeType, 0.92);
-  // iOS Safari fix: window.open ile aç
-  var win = window.open(dataUrl, '_blank');
-  if (!win || win.closed || typeof win.closed === 'undefined') {
-    // fallback: link click
-    var link = document.createElement('a');
-    link.href = dataUrl;
-    link.download = 'pacdi-qr.' + ext;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
+  // toBlob ile indir
+  canvas.toBlob(function(blob) {
+    if (!blob) {
+      // fallback
+      window.open(canvas.toDataURL(mime, 0.95), '_blank');
+      return;
+    }
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'pacdi-qr.' + ext;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+  }, mime, 0.95);
 }
 
 function exportPDF() {
