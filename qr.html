@@ -664,7 +664,41 @@ var translations = {
     mm_pruef: '⚡ Prüfprotokoll',
     mm_scan: '📷 Scanner',
     mm_short: '🔗 Kısaltıcı',
-    mm_pass: '🔐 Şifre'
+    mm_pass: '🔐 Şifre',
+    // Tip butonları
+    type_qr: '🔳 QR Kod',
+    type_ean13: '📦 EAN-13',
+    type_ean8: '📦 EAN-8',
+    type_code128: '▌▌ Code 128',
+    type_code39: '▌▌ Code 39',
+    type_qrpruf: '⚡ Prüfprotokoll QR',
+    // Oluştur butonu
+    btn_generate: '🔳 Oluştur',
+    btn_generate_pruf: '⚡ Prüfprotokoll QR Oluştur',
+    // Barkod placeholder
+    barcode_placeholder: 'Barkod içeriği...',
+    // vCard alanları
+    vcard_name: 'Ad Soyad',
+    vcard_phone: 'Telefon',
+    vcard_email: 'E-posta',
+    vcard_company: 'Şirket',
+    vcard_website: 'Web Sitesi',
+    wifi_ssid: 'Ağ Adı (SSID)',
+    wifi_password: 'Şifre',
+    wifi_encryption: 'Şifreleme',
+    wifi_enc_wpa: 'WPA/WPA2',
+    wifi_enc_wep: 'WEP',
+    wifi_enc_nopass: 'Şifresiz',
+    social_instagram: 'Instagram @kullanici',
+    social_twitter: 'Twitter/X @kullanici',
+    social_linkedin: 'LinkedIn URL',
+    social_youtube: 'YouTube URL',
+    pruf_inventar: 'Inventarnummer',
+    pruf_bezeichnung: 'Bezeichnung',
+    pruf_standort: 'Standort / Raum',
+    pruf_datum: 'Tarih',
+    pruf_hint: '→ QR kod üretilir, protokol sayfasına link verir',
+    placeholder_url: 'https://...'
   },
   de: {
     title: '🔳 QR & Barcode Generator',
@@ -688,7 +722,37 @@ var translations = {
     mm_pruef: '⚡ Prüfprotokoll',
     mm_scan: '📷 Scanner',
     mm_short: '🔗 Link-Kürzer',
-    mm_pass: '🔐 Passwort'
+    mm_pass: '🔐 Passwort',
+    type_qr: '🔳 QR Code',
+    type_ean13: '📦 EAN-13',
+    type_ean8: '📦 EAN-8',
+    type_code128: '▌▌ Code 128',
+    type_code39: '▌▌ Code 39',
+    type_qrpruf: '⚡ Prüfprotokoll QR',
+    btn_generate: '🔳 Erstellen',
+    btn_generate_pruf: '⚡ Prüfprotokoll QR erstellen',
+    barcode_placeholder: 'Barcode Inhalt...',
+    vcard_name: 'Name',
+    vcard_phone: 'Telefon',
+    vcard_email: 'E-Mail',
+    vcard_company: 'Firma',
+    vcard_website: 'Webseite',
+    wifi_ssid: 'SSID',
+    wifi_password: 'Passwort',
+    wifi_encryption: 'Verschlüsselung',
+    wifi_enc_wpa: 'WPA/WPA2',
+    wifi_enc_wep: 'WEP',
+    wifi_enc_nopass: 'Offen',
+    social_instagram: 'Instagram @benutzer',
+    social_twitter: 'Twitter/X @benutzer',
+    social_linkedin: 'LinkedIn URL',
+    social_youtube: 'YouTube URL',
+    pruf_inventar: 'Inventarnummer',
+    pruf_bezeichnung: 'Bezeichnung',
+    pruf_standort: 'Standort / Raum',
+    pruf_datum: 'Datum',
+    pruf_hint: '→ QR-Code erstellt Link zur Protokollseite',
+    placeholder_url: 'https://...'
   },
   en: {
     title: '🔳 QR & Barcode Generator',
@@ -712,7 +776,37 @@ var translations = {
     mm_pruef: '⚡ Inspection Protocol',
     mm_scan: '📷 Scanner',
     mm_short: '🔗 Link Shortener',
-    mm_pass: '🔐 Password'
+    mm_pass: '🔐 Password',
+    type_qr: '🔳 QR Code',
+    type_ean13: '📦 EAN-13',
+    type_ean8: '📦 EAN-8',
+    type_code128: '▌▌ Code 128',
+    type_code39: '▌▌ Code 39',
+    type_qrpruf: '⚡ Inspection QR',
+    btn_generate: '🔳 Generate',
+    btn_generate_pruf: '⚡ Generate Inspection QR',
+    barcode_placeholder: 'Barcode content...',
+    vcard_name: 'Full Name',
+    vcard_phone: 'Phone',
+    vcard_email: 'Email',
+    vcard_company: 'Company',
+    vcard_website: 'Website',
+    wifi_ssid: 'SSID',
+    wifi_password: 'Password',
+    wifi_encryption: 'Encryption',
+    wifi_enc_wpa: 'WPA/WPA2',
+    wifi_enc_wep: 'WEP',
+    wifi_enc_nopass: 'Open',
+    social_instagram: 'Instagram @user',
+    social_twitter: 'Twitter/X @user',
+    social_linkedin: 'LinkedIn URL',
+    social_youtube: 'YouTube URL',
+    pruf_inventar: 'Inventory Number',
+    pruf_bezeichnung: 'Designation',
+    pruf_standort: 'Location / Room',
+    pruf_datum: 'Date',
+    pruf_hint: '→ QR code links to protocol page',
+    placeholder_url: 'https://...'
   }
 };
 
@@ -738,7 +832,7 @@ function setLanguage(lang) {
   document.getElementById('lb-email-skip').textContent = t.email_skip;
   document.getElementById('lb-blog').textContent = t.blog;
 
-  // Mobil menü çevirileri
+  // Mobil menü
   var mmMap = {
     'mm-home': t.mm_home,
     'mm-qr': t.mm_qr,
@@ -752,14 +846,90 @@ function setLanguage(lang) {
     if (el) el.textContent = mmMap[k];
   }
 
-  // Dil butonlarını vurgula
+  // Tip butonları
+  var typeMap = {
+    'qr': t.type_qr,
+    'ean13': t.type_ean13,
+    'ean8': t.type_ean8,
+    'code128': t.type_code128,
+    'code39': t.type_code39,
+    'qrpruf': t.type_qrpruf
+  };
+  var typeBtns = document.querySelectorAll('#typeSelector .bc-btn');
+  for (var i = 0; i < typeBtns.length; i++) {
+    var btn = typeBtns[i];
+    var mode = btn.getAttribute('data-mode');
+    if (mode && typeMap[mode]) {
+      btn.textContent = typeMap[mode];
+    }
+  }
+
+  // Oluştur butonu
+  var genBtn = document.getElementById('generateBtn');
+  if (currentMode === 'qrpruf') {
+    genBtn.textContent = t.btn_generate_pruf;
+  } else {
+    genBtn.textContent = t.btn_generate;
+  }
+
+  // Diğer dinamik alanlar (placeholder'lar vs) templateFields içinde güncellenir
+  updateTemplateFields();
+
+  // Dil butonları vurgu
   var btns = ['lbtr', 'lbde', 'lben'];
-  for (var i = 0; i < btns.length; i++) {
-    var btn = document.getElementById(btns[i]);
-    if (!btn) continue;
-    var isActive = (btns[i] === 'lb' + lang);
-    btn.style.borderColor = isActive ? '#F6B45F' : 'rgba(246,180,95,0.2)';
-    btn.style.color = isActive ? '#F6B45F' : '#7a9ab8';
+  for (var j = 0; j < btns.length; j++) {
+    var b = document.getElementById(btns[j]);
+    if (!b) continue;
+    var isActive = (btns[j] === 'lb' + lang);
+    b.style.borderColor = isActive ? '#F6B45F' : 'rgba(246,180,95,0.2)';
+    b.style.color = isActive ? '#F6B45F' : '#7a9ab8';
+  }
+}
+
+function updateTemplateFields() {
+  var t = translations[currentLang] || translations.tr;
+  var fields = document.getElementById('templateFields');
+  var tpl = document.getElementById('templateSelect').value;
+  var html = '';
+  if (tpl === 'url') {
+    html = '<input type="text" id="urlInput" class="qr-input" placeholder="' + t.placeholder_url + '" value="https://pacdi.store">';
+  } else if (tpl === 'vcard') {
+    html = '<div class="input-grid">' +
+      '<input type="text" id="vcardName" class="qr-input" placeholder="' + t.vcard_name + '">' +
+      '<input type="text" id="vcardPhone" class="qr-input" placeholder="' + t.vcard_phone + '">' +
+      '<input type="email" id="vcardEmail" class="qr-input" placeholder="' + t.vcard_email + '">' +
+      '<input type="text" id="vcardCompany" class="qr-input" placeholder="' + t.vcard_company + '">' +
+      '</div><input type="text" id="vcardWebsite" class="qr-input" placeholder="' + t.vcard_website + '" style="margin-top:10px;">';
+  } else if (tpl === 'wifi') {
+    html = '<input type="text" id="wifiSSID" class="qr-input" placeholder="' + t.wifi_ssid + '">' +
+      '<input type="text" id="wifiPassword" class="qr-input" placeholder="' + t.wifi_password + '">' +
+      '<select id="wifiEncryption" class="qr-select">' +
+      '<option value="WPA">' + t.wifi_enc_wpa + '</option>' +
+      '<option value="WEP">' + t.wifi_enc_wep + '</option>' +
+      '<option value="nopass">' + t.wifi_enc_nopass + '</option>' +
+      '</select>';
+  } else if (tpl === 'social') {
+    html = '<input type="text" id="socialInstagram" class="qr-input" placeholder="' + t.social_instagram + '">' +
+      '<input type="text" id="socialTwitter" class="qr-input" placeholder="' + t.social_twitter + '">' +
+      '<input type="text" id="socialLinkedin" class="qr-input" placeholder="' + t.social_linkedin + '">' +
+      '<input type="text" id="socialYoutube" class="qr-input" placeholder="' + t.social_youtube + '">';
+  }
+  fields.innerHTML = html;
+
+  // Prüf helper alanları
+  var prufHelpers = document.querySelectorAll('#pruf-helper .section-label, #pruf-helper .qr-input, #pruf-helper div');
+  if (prufHelpers.length) {
+    var labels = document.querySelectorAll('#pruf-helper .section-label');
+    if (labels.length) labels[0].textContent = 'CİHAZ BİLGİSİ'; // sabit
+    var inputs = document.querySelectorAll('#pruf-helper .qr-input');
+    if (inputs.length >= 3) {
+      inputs[0].placeholder = t.pruf_inventar;
+      inputs[1].placeholder = t.pruf_bezeichnung;
+      inputs[2].placeholder = t.pruf_standort;
+      // tarih placeholder yok
+    }
+    var hint = document.querySelector('#pruf-helper div:last-child');
+    if (hint) hint.textContent = t.pruf_hint;
   }
 }
 
@@ -768,7 +938,6 @@ var currentCanvas = null;
 var currentText = '';
 var currentMode = 'qr';
 var selectedPurpose = '';
-var qrCodeInstance = null;
 
 function $(id) { return document.getElementById(id); }
 
@@ -794,13 +963,16 @@ function switchMode(mode, btn) {
   }
 
   if (mode !== 'qr' && mode !== 'qrpruf') {
-    $('templateFields').innerHTML = '<input type="text" id="urlInput" class="qr-input" placeholder="Barkod içeriği..." value="">';
+    var t = translations[currentLang] || translations.tr;
+    $('templateFields').innerHTML = '<input type="text" id="urlInput" class="qr-input" placeholder="' + t.barcode_placeholder + '" value="">';
   } else if (mode === 'qr') {
     var tpl = $('templateSelect').value;
-    $('templateFields').innerHTML = templates[tpl] || templates.url;
+    // templateFields güncellenecek
+    updateTemplateFields();
   }
   var genBtn = $('generateBtn');
-  genBtn.textContent = (mode === 'qrpruf') ? '⚡ Prüfprotokoll QR Oluştur' : '🔳 Oluştur';
+  var t = translations[currentLang] || translations.tr;
+  genBtn.textContent = (mode === 'qrpruf') ? t.btn_generate_pruf : t.btn_generate;
 }
 
 var templates = {
@@ -811,8 +983,8 @@ var templates = {
 };
 
 $('templateSelect').addEventListener('change', function() {
-  var val = this.value;
-  $('templateFields').innerHTML = templates[val] || templates.url;
+  // Şablon değişince içeriği güncelle
+  updateTemplateFields();
 });
 
 function getContent() {
@@ -876,6 +1048,7 @@ function generate() {
     img.style.maxHeight = '180px';
     img.src = 'https://barcode.tec-it.com/barcode.ashx?data=' + encodeURIComponent(content) + '&code=' + barcodeType.toUpperCase() + '&unit=Fit&dpi=150&imagetype=Png&rotation=0&color=%23000000&bgcolor=%23ffffff';
     img.onload = function() {
+      // Görüntüleme için canvas oluştur
       var canvas = document.createElement('canvas');
       canvas.width = img.naturalWidth || 300;
       canvas.height = img.naturalHeight || 100;
@@ -884,12 +1057,14 @@ function generate() {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0);
       currentCanvas = canvas;
+      display.innerHTML = '';
+      display.appendChild(canvas);
       showDownloads();
     };
     img.onerror = function() {
       display.innerHTML = '<div style="color:#f87171;font-size:0.8rem;padding:20px;">Barkod üretilemedi. Geçerli bir değer girin.</div>';
     };
-    display.appendChild(img);
+    // Eğer img hemen yüklenmezse, display'e ekleme (onload'da ekleyeceğiz)
     return;
   }
 
@@ -917,6 +1092,7 @@ function generate() {
     fallbackImg.style.borderRadius = '6px';
     fallbackImg.onload = function() {
       currentCanvas = null;
+      display.innerHTML = '';
       display.appendChild(fallbackImg);
       showDownloads();
     };
@@ -934,7 +1110,7 @@ function generate() {
       ctx.drawImage(srcCanvas, 0, 0);
       currentCanvas = cleanCanvas;
 
-      // Görüntüleme için orijinal canvas'ı göster (kopya değil, ama tainted değil)
+      // Görüntüleme için orijinal canvas'ı göster
       display.innerHTML = '';
       display.appendChild(srcCanvas);
     } else {
@@ -950,10 +1126,15 @@ function showDownloads() {
   $('pdfPrintSection').style.display = 'grid';
 }
 
-// ── DOWNLOAD (FIX: toBlob kullan) ──
+// ── DOWNLOAD (FIX: toBlob + fallback) ──
 function downloadImage(format) {
+  if (!currentCanvas && !currentText) {
+    alert('Önce QR oluşturun.');
+    return;
+  }
+
+  // Canvas yoksa API fallback
   if (!currentCanvas) {
-    // fallback API
     var apiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&format=png&data=' + encodeURIComponent(currentText);
     window.open(apiUrl, '_blank');
     return;
@@ -976,22 +1157,48 @@ function downloadImage(format) {
     ext = 'jpg';
   }
 
-  // toBlob ile indir
-  canvas.toBlob(function(blob) {
-    if (!blob) {
-      // fallback
-      window.open(canvas.toDataURL(mime, 0.95), '_blank');
-      return;
+  // Önce toBlob dene
+  try {
+    canvas.toBlob(function(blob) {
+      if (blob) {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'pacdi-qr.' + ext;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+      } else {
+        // blob oluşmadı, fallback toDataURL
+        fallbackToDataURL(canvas, mime, ext);
+      }
+    }, mime, 0.95);
+  } catch (e) {
+    // toBlob desteklenmiyor veya hata
+    fallbackToDataURL(canvas, mime, ext);
+  }
+}
+
+function fallbackToDataURL(canvas, mime, ext) {
+  try {
+    var dataUrl = canvas.toDataURL(mime, 0.95);
+    // iOS Safari'de window.open ile aç
+    var win = window.open(dataUrl, '_blank');
+    if (!win || win.closed || typeof win.closed === 'undefined') {
+      // fallback: link click
+      var a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = 'pacdi-qr.' + ext;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = 'pacdi-qr.' + ext;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
-  }, mime, 0.95);
+  } catch (e) {
+    // Son çare API
+    var apiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&format=' + (ext === 'jpg' ? 'jpg' : 'png') + '&data=' + encodeURIComponent(currentText);
+    window.open(apiUrl, '_blank');
+  }
 }
 
 function exportPDF() {
@@ -1103,10 +1310,13 @@ window.enableProFeatures = function(enable) {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
     setLanguage('tr');
+    // Varsayılan şablon alanlarını güncelle
+    updateTemplateFields();
     setTimeout(generate, 400);
   });
 } else {
   setLanguage('tr');
+  updateTemplateFields();
   setTimeout(generate, 400);
 }
 </script>
