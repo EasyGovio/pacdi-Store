@@ -181,6 +181,7 @@ function buildMenu() {
     <a href="/scanner.html" class="${currentPage === 'scanner.html' ? 'active' : ''}">${t('menu_scanner')}</a>
     <a href="/shortener.html" class="${currentPage === 'shortener.html' ? 'active' : ''}">${t('menu_shortener')}</a>
     <a href="/password.html" class="${currentPage === 'password.html' ? 'active' : ''}">${t('menu_password')}</a>
+    <a href="/qr.html" class="${currentPage === 'qr.html' ? 'active' : ''">${t('menu_qr')}</a>
     <a href="/pruefprotokoll.html" class="${currentPage === 'pruefprotokoll.html' ? 'active' : ''}">${t('menu_pruef')}</a>
   `;
 }
