@@ -12,9 +12,11 @@
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <link rel="stylesheet" href="/assets/common.css">
+  <!-- common.css kasıtlı kaldırıldı - stiller inline -->
   <style>
     /* ── PAGE OVERRIDES — PC layout ── */
+    * { user-select: auto !important; -webkit-tap-highlight-color: rgba(246,180,95,0.2); }
+    button, a, input, select { cursor: pointer; }
     body {
       align-items: flex-start;
       padding: 0;
@@ -155,7 +157,7 @@
       gap: 8px;
       width: 100%;
     }
-    .dl-btn {
+    .pacdi-dl-btn {
       background: #0a1828;
       border: 1px solid rgba(246,180,95,0.25);
       color: #F6B45F;
@@ -168,7 +170,7 @@
       transition: 0.2s;
       text-align: center;
     }
-    .dl-btn:hover { background: rgba(246,180,95,0.1); border-color: #F6B45F; }
+    .pacdi-dl-btn:hover { background: rgba(246,180,95,0.1); border-color: #F6B45F; }
 
     .dl-row-full {
       display: grid;
@@ -176,7 +178,7 @@
       gap: 8px;
       width: 100%;
     }
-    .dl-btn-pdf {
+    .pacdi-dl-btn-pdf {
       background: rgba(212,50,50,0.12);
       border: 1px solid rgba(212,80,80,0.3);
       color: #f87171;
@@ -188,8 +190,8 @@
       font-family: inherit;
       transition: 0.2s;
     }
-    .dl-btn-pdf:hover { background: rgba(212,50,50,0.2); }
-    .dl-btn-print {
+    .pacdi-dl-btn-pdf:hover { background: rgba(212,50,50,0.2); }
+    .pacdi-dl-btn-print {
       background: rgba(52,211,153,0.08);
       border: 1px solid rgba(52,211,153,0.25);
       color: #34D399;
@@ -201,7 +203,7 @@
       font-family: inherit;
       transition: 0.2s;
     }
-    .dl-btn-print:hover { background: rgba(52,211,153,0.15); }
+    .pacdi-dl-btn-print:hover { background: rgba(52,211,153,0.15); }
 
     /* ── CUSTOMIZE ── */
     .customize-grid {
@@ -425,13 +427,13 @@
 
         <!-- İNDİR -->
         <div class="dl-row" id="downloadSection" style="display:none;">
-          <button class="dl-btn" id="dlPng">⬇ PNG</button>
-          <button class="dl-btn" id="dlJpg">⬇ JPG</button>
-          <button class="dl-btn" id="dlSvg">⬇ SVG</button>
+          <button class="pacdi-dl-btn" id="dlPng">⬇ PNG</button>
+          <button class="pacdi-dl-btn" id="dlJpg">⬇ JPG</button>
+          <button class="pacdi-dl-btn" id="dlSvg">⬇ SVG</button>
         </div>
         <div class="dl-row-full" id="pdfPrintSection" style="display:none;">
-          <button class="dl-btn-pdf" id="dlPdf">📄 PDF İndir</button>
-          <button class="dl-btn-print" id="dlPrint">🖨️ Yazdır</button>
+          <button class="pacdi-dl-btn-pdf" id="dlPdf">📄 PDF İndir</button>
+          <button class="pacdi-dl-btn-print" id="dlPrint">🖨️ Yazdır</button>
         </div>
 
         <!-- AMAÇ -->
@@ -739,8 +741,12 @@
     $('proUpgrade').style.display = enable ? 'none' : 'block';
   };
 
-  // Init
-  setTimeout(generate, 500);
+  // Init - DOMContentLoaded garantisi
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { setTimeout(generate, 300); });
+  } else {
+    setTimeout(generate, 300);
+  }
 
 })();
 </script>
