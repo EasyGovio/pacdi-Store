@@ -8,6 +8,7 @@ const langData = {
     menu_scanner: "📷 Tarayıcı",
     menu_shortener: "🔗 Kısa Link",
     menu_password: "🔐 Şifre",
+    menu_pruef: "⚡ Prüfprotokoll",
     login: "Giriş Yap",
     logout: "Çıkış",
     pro: "⭐ PRO",
@@ -33,6 +34,7 @@ const langData = {
     menu_scanner: "📷 Scanner",
     menu_shortener: "🔗 Kurzlink",
     menu_password: "🔐 Passwort",
+    menu_pruef: "⚡ Prüfprotokoll",
     login: "Anmelden",
     logout: "Abmelden",
     pro: "⭐ PRO",
@@ -58,6 +60,7 @@ const langData = {
     menu_scanner: "📷 Scanner",
     menu_shortener: "🔗 Short Link",
     menu_password: "🔐 Password",
+    menu_pruef: "⚡ Protocol",
     login: "Login",
     logout: "Logout",
     pro: "⭐ PRO",
@@ -178,6 +181,7 @@ function buildMenu() {
     <a href="/scanner.html" class="${currentPage === 'scanner.html' ? 'active' : ''}">${t('menu_scanner')}</a>
     <a href="/shortener.html" class="${currentPage === 'shortener.html' ? 'active' : ''}">${t('menu_shortener')}</a>
     <a href="/password.html" class="${currentPage === 'password.html' ? 'active' : ''}">${t('menu_password')}</a>
+    <a href="/pruefprotokoll.html" class="${currentPage === 'pruefprotokoll.html' ? 'active' : ''}">${t('menu_pruef')}</a>
   `;
 }
 
