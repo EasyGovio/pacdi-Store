@@ -2,429 +2,525 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <link rel="canonical" href="https://pacdi.store/index.html">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>QR Kod Oluşturucu | PACDI Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PACDI Store — QR Kod, Bağlantı Kısaltıcı, Şifre Üretici ve DGUV Prüfprotokoll araçları. Ücretsiz ve Pro.">
+  <title>PACDI Store | Dijital Araçlar</title>
+  <link rel="canonical" href="https://pacdi.store/" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-  <link rel="stylesheet" href="/assets/common.css">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #04162E;
+      --surface: #0a1a30;
+      --border: rgba(246,180,95,0.2);
+      --gold: #F6B45F;
+      --gold-dark: #d4941f;
+      --text: #e8edf2;
+      --muted: #7a9ab8;
+      --green: #34D399;
+      --radius: 16px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: rgba(4,22,46,0.95);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 24px;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      gap: 16px;
+    }
+    .logo-mark {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .logo-mark span { color: var(--muted); font-weight: 400; font-size: 0.85rem; margin-left: 4px; }
+
+    nav {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.72rem;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid transparent;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    nav a:hover, nav a.active {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(246,180,95,0.06);
+    }
+
+    .header-user {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .header-user span { color: var(--muted); font-size: 0.72rem; }
+    .btn-sm {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .btn-sm:hover { background: rgba(246,180,95,0.1); }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, rgba(246,180,95,0.07) 0%, transparent 60%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      margin-bottom: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--gold);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 480px;
+      line-height: 1.6;
+    }
+    .hero-badges { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .badge-free { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+    .badge-new  { background: rgba(246,180,95,0.12); color: var(--gold); border: 1px solid rgba(246,180,95,0.3); }
+
+    /* ── TOOLS GRID ── */
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .tool-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(246,180,95,0.04) 0%, transparent 60%);
+      opacity: 0;
+      transition: 0.2s;
+    }
+    .tool-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+    .tool-card:hover::before { opacity: 1; }
+
+    .tool-card.featured { border-color: rgba(246,180,95,0.4); }
+    .tool-card.featured .card-badge {
+      position: absolute;
+      top: 14px; right: 14px;
+      background: rgba(246,180,95,0.15);
+      color: var(--gold);
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: 1px solid rgba(246,180,95,0.3);
+    }
+
+    .tool-icon { font-size: 2rem; line-height: 1; }
+    .tool-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .tool-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
+      flex: 1;
+    }
+    .tool-meta {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .tag {
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      color: var(--muted);
+    }
+    .tag-free { color: var(--green); background: rgba(52,211,153,0.08); }
+    .tag-pro  { color: var(--gold); background: rgba(246,180,95,0.08); }
+
+    /* ── PRUEF FEATURED STRIP ── */
+    .featured-strip {
+      background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(246,180,95,0.04));
+      border: 1px solid rgba(246,180,95,0.35);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .featured-strip .fs-icon { font-size: 2.8rem; flex-shrink: 0; }
+    .featured-strip .fs-body { flex: 1; min-width: 200px; }
+    .featured-strip h2 { font-size: 1.3rem; font-weight: 700; color: var(--gold); margin-bottom: 6px; }
+    .featured-strip p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+    .featured-strip .fs-cta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+    .btn-primary {
+      background: var(--gold);
+      color: #04162E;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-primary:hover { background: #f0c870; transform: translateY(-1px); }
+    .fs-hint { font-size: 0.7rem; color: var(--muted); }
+
+    /* ── LANG BAR ── */
+    .lang-bar {
+      display: flex;
+      gap: 4px;
+    }
+    .lang-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      transition: 0.2s;
+    }
+    .lang-btn.active, .lang-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    footer a { color: rgba(246,180,95,0.6); text-decoration: none; margin: 0 8px; }
+    footer a:hover { color: var(--gold); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      main { padding: 20px 16px 48px; }
+      .hero { padding: 24px 20px; }
+      .hero h1 { font-size: 1.5rem; }
+      .featured-strip { padding: 20px; }
+      .featured-strip .fs-cta { align-items: flex-start; }
+      .tools-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .tool-card { padding: 16px; }
+    }
+    @media (max-width: 420px) {
+      .tools-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-<div class="app-container">
-  <nav id="mainNav"></nav>
-  <div class="user-panel" id="userPanel"></div>
 
-  <div class="top-bar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-    <div class="logo" id="gameTitle" style="font-size:1.3rem; font-weight:800; color:#F6B45F;">QR KOD</div>
-    <a href="https://pacdi.store" class="back-link" style="color:#F6B45F; text-decoration:none; font-weight:bold; font-size:0.78rem; background:#0a1018; padding:5px 12px; border-radius:40px; border:1px solid rgba(246,180,95,0.3);">← Geri</a>
+<header>
+  <div class="header-inner">
+    <div class="logo-mark">PACDI Store <span>Dijital Araçlar</span></div>
+    <nav id="mainNav"></nav>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="lang-bar">
+        <button class="lang-btn active" onclick="setLanguage('tr')">TR</button>
+        <button class="lang-btn" onclick="setLanguage('de')">DE</button>
+        <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+      </div>
+      <div id="userPanel" class="header-user"></div>
+    </div>
   </div>
-  <div class="lang-selector" style="display:flex; gap:6px; margin-bottom:12px; justify-content:flex-end;">
-    <button class="lang-btn active" data-lang="tr">TR</button>
-    <button class="lang-btn" data-lang="de">DE</button>
-    <button class="lang-btn" data-lang="en">EN</button>
-  </div>
+</header>
 
-  <div class="qr-area">
-    <div class="template-section">
-      <select id="templateSelect">
-        <option value="url">🌐 URL / Link</option>
-        <option value="vcard">👤 vCard (Kartvizit)</option>
-        <option value="wifi">📶 WiFi Ağı</option>
-        <option value="social">📱 Sosyal Medya (Link-in-Bio)</option>
-      </select>
-    </div>
-    <div class="template-fields" id="templateFields">
-      <input type="text" id="urlInput" class="qr-input" placeholder="https://..." value="https://pacdi.store">
-    </div>
+<main>
 
-    <button class="generate-btn" id="generateBtn">🔳 QR Kod Oluştur</button>
-    <div class="qr-display" id="qrDisplay">
-      <span style="color:#9bb7d4;">QR kod burada görünecek</span>
-    </div>
-
-    <div class="download-section" id="downloadSection">
-      <div class="download-label" id="downloadLabel">İndir</div>
-      <div class="download-btns">
-        <button class="dl-btn png" id="dlPng">⬇️ PNG</button>
-        <button class="dl-btn jpg" id="dlJpg">⬇️ JPG</button>
-        <button class="dl-btn svg" id="dlSvg">⬇️ SVG</button>
+  <!-- HERO -->
+  <div class="hero">
+    <div>
+      <h1 id="hero-title">Dijital Araçlar</h1>
+      <p id="hero-sub">QR kod, bağlantı kısaltıcı, güçlü şifre üretici ve profesyonel Prüfprotokoll — hepsi burada, ücretsiz.</p>
+      <div class="hero-badges">
+        <span class="badge badge-free">Ücretsiz Araçlar</span>
+        <span class="badge badge-new" id="hero-new-badge">⚡ Yeni: DGUV Prüfprotokoll</span>
       </div>
-    </div>
-
-    <div class="customize-section">
-      <div class="customize-row">
-        <div class="customize-item">
-          <label>Ön Renk</label>
-          <input type="color" id="fgColor" value="#04162E" disabled>
-        </div>
-        <div class="customize-item">
-          <label>Arka Renk</label>
-          <input type="color" id="bgColor" value="#FFFFFF" disabled>
-        </div>
-        <div class="customize-item">
-          <label>Boyut</label>
-          <select id="qrSize" disabled>
-            <option value="200">200px</option>
-            <option value="300">300px</option>
-            <option value="500">500px</option>
-          </select>
-        </div>
-        <div class="customize-item">
-          <label>Logo</label>
-          <input type="file" id="logoUpload" accept="image/*" disabled>
-          <button class="logo-btn" id="logoBtn" disabled>📷 Seç</button>
-        </div>
-      </div>
-      <div class="plan-selector">
-        <label><input type="radio" name="qrType" value="static" checked> Statik (Ücretsiz)</label>
-        <label style="color:#F6B45F;"><input type="radio" name="qrType" value="dynamic" disabled> Dinamik (Pro) 🔒</label>
-      </div>
-      <div class="pro-upgrade" id="proUpgrade">
-        ⭐ Bu özellikler Pro aboneliği gerektirir. <a id="upgradeLink">Hemen yükseltin</a>
-      </div>
-    </div>
-
-    <div class="purpose-section">
-      <div class="purpose-label" id="purposeLabel">Bu QR kodu ne için kullanıyorsunuz?</div>
-      <div class="purpose-btns">
-        <button class="purpose-btn" data-purpose="business" id="p1">🏪</button>
-        <button class="purpose-btn" data-purpose="event" id="p2">📅</button>
-        <button class="purpose-btn" data-purpose="personal" id="p3">👤</button>
-        <button class="purpose-btn" data-purpose="other" id="p4">🔧</button>
-      </div>
-    </div>
-
-    <div class="email-section" id="emailSection">
-      <div class="email-title" id="emailTitle">📧 Yeni araçlardan haberdar ol</div>
-      <div class="email-sub" id="emailSub">İsteğe bağlı — reklam yok, sadece faydalı güncellemeler.</div>
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px; text-align:left;">
-        <input type="checkbox" id="isBusinessCb" style="accent-color:#F6B45F; width:16px; height:16px; flex-shrink:0;">
-        <label for="isBusinessCb" id="businessLabel" style="color:#b8d0e8; font-size:0.72rem; line-height:1.4; cursor:pointer;"></label>
-      </div>
-      <div class="email-row">
-        <input type="email" class="email-input" id="emailInput" placeholder="e-posta@adresiniz.com">
-        <button class="email-btn" id="emailBtn">Katıl</button>
-      </div>
-      <div class="email-success" id="emailSuccess">✓ Teşekkürler! Sizi ekledik.</div>
-      <div class="email-skip" id="emailSkip" onclick="skipEmail()">Şimdi değil</div>
-      <div class="email-privacy" id="emailPrivacy">🔒 E-postanız saklanmaz, üçüncü taraflarla paylaşılmaz.</div>
-    </div>
-
-    <div class="dashboard-section" id="dashboardSection">
-      <h3>📊 QR Kodlarım</h3>
-      <div id="qrList"></div>
     </div>
   </div>
 
-  <div class="footer" id="footerText">PACDI Store · Hızlı QR kod oluşturucu. · <a href="/legal.html" style="color:rgba(246,180,95,0.6);text-decoration:none;font-size:0.65rem;">Impressum & Datenschutz</a></div>
-</div>
+  <!-- FEATURED: DGUV PRUEFPROTOKOLL -->
+  <div class="featured-strip">
+    <div class="fs-icon">⚡</div>
+    <div class="fs-body">
+      <h2 id="fs-title">DGUV V3 Prüfprotokoll</h2>
+      <p id="fs-desc">Elektrische Betriebsmittel prüfen, dokumentieren und als PDF exportieren. Kostenlos testen — kein Login, keine Installation. Rakipler 80€+ alırken biz 15€'dan başlıyoruz.</p>
+    </div>
+    <div class="fs-cta">
+      <a href="/pruefprotokoll.html" class="btn-primary" id="fs-btn">Jetzt testen →</a>
+      <span class="fs-hint" id="fs-hint">✔ Ücretsiz · PDF çıktı · Mobil uyumlu</span>
+    </div>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <!-- TOOLS GRID -->
+  <div class="section-title" id="tools-label">ARAÇLAR</div>
+  <div class="tools-grid">
+
+    <a href="/index.html" class="tool-card active">
+      <div class="tool-icon">🔳</div>
+      <div class="tool-name" id="t1-name">QR Kod Oluşturucu</div>
+      <div class="tool-desc" id="t1-desc">URL, vCard, WiFi ve sosyal medya için anında QR kod üret. PNG, JPG veya SVG olarak indir.</div>
+      <div class="tool-meta">
+        <span class="tag tag-free">Ücretsiz</span>
+        <span class="tag tag-pro">Pro: Dinamik QR</span>
+      </div>
+    </a>
+
+    <a href="/pruefprotokoll.html" class="tool-card featured">
+      <div class="card-badge" id="cb-new">YENİ</div>
+      <div class="tool-icon">⚡</div>
+      <div class="tool-name">DGUV Prüfprotokoll</div>
+      <div class="tool-desc" id="t2-desc">BGV A3 / DGUV Vorschrift 3 uyumlu elektro muayene protokolü. PDF export, imza, renk kodlu sonuçlar.</div>
+      <div class="tool-meta">
+        <span class="tag tag-free">3 Protokol Ücretsiz</span>
+        <span class="tag tag-pro">Pro: Sınırsız</span>
+      </div>
+    </a>
+
+    <a href="/scanner.html" class="tool-card">
+      <div class="tool-icon">📷</div>
+      <div class="tool-name" id="t3-name">QR Tarayıcı</div>
+      <div class="tool-desc" id="t3-desc">Kamera veya görsel yükleyerek QR kodları ve barkodları anında okut.</div>
+      <div class="tool-meta">
+        <span class="tag tag-free">Ücretsiz</span>
+      </div>
+    </a>
+
+    <a href="/shortener.html" class="tool-card">
+      <div class="tool-icon">🔗</div>
+      <div class="tool-name" id="t4-name">Bağlantı Kısaltıcı</div>
+      <div class="tool-desc" id="t4-desc">Uzun URL'leri kısa ve paylaşılabilir bağlantılara dönüştür.</div>
+      <div class="tool-meta">
+        <span class="tag tag-free">Ücretsiz</span>
+        <span class="tag tag-pro">Pro: İstatistik</span>
+      </div>
+    </a>
+
+    <a href="/password.html" class="tool-card">
+      <div class="tool-icon">🔐</div>
+      <div class="tool-name" id="t5-name">Şifre Üretici</div>
+      <div class="tool-desc" id="t5-desc">Güvenli, özelleştirilebilir şifreler üret. Uzunluk, karakter seti, özel karakterler ayarlanabilir.</div>
+      <div class="tool-meta">
+        <span class="tag tag-free">Ücretsiz</span>
+      </div>
+    </a>
+
+  </div>
+
+</main>
+
+<footer>
+  <span>© 2026 PACDI Global · pacdi.store</span>
+  <a href="/legal.html">Impressum & Datenschutz</a>
+  <a href="https://pacdi.de" target="_blank">pacdi.de</a>
+</footer>
+
 <script src="/assets/common.js"></script>
 <script>
-  (function() {
-    // ---------- QR İLE İLGİLİ TÜM MANTIK ----------
-    let currentCanvas = null;
-    let currentText = "";
-    let selectedPurpose = "";
-
-    const $ = id => document.getElementById(id);
-    const generateBtn = $('generateBtn');
-    const qrDisplay = $('qrDisplay');
-    const dlSection = $('downloadSection');
-    const fgColor = $('fgColor');
-    const bgColor = $('bgColor');
-    const qrSize = $('qrSize');
-    const logoUpload = $('logoUpload');
-    const logoBtn = $('logoBtn');
-    const qrTypeRadios = document.querySelectorAll('input[name="qrType"]');
-    const proUpgrade = $('proUpgrade');
-    const upgradeLink = $('upgradeLink');
-    const templateSelect = $('templateSelect');
-    const templateFields = $('templateFields');
-
-    // ---------- PRO ÖZELLİKLERİNİ AKTİF ET (common.js override) ----------
-    window.enableProFeatures = function(enable) {
-      fgColor.disabled = !enable;
-      bgColor.disabled = !enable;
-      qrSize.disabled = !enable;
-      logoUpload.disabled = !enable;
-      logoBtn.disabled = !enable;
-      document.querySelector('input[name="qrType"][value="dynamic"]').disabled = !enable;
-      proUpgrade.style.display = enable ? 'none' : 'block';
-    };
-
-    // ---------- ŞABLONLAR ----------
-    const templates = {
-      url: `<input type="text" id="urlInput" class="qr-input" placeholder="https://..." value="https://pacdi.store">`,
-      vcard: `
-        <input type="text" id="vcardName" placeholder="Ad Soyad" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="vcardPhone" placeholder="Telefon" class="qr-input" style="margin-bottom:6px;">
-        <input type="email" id="vcardEmail" placeholder="E-posta" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="vcardCompany" placeholder="Şirket" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="vcardWebsite" placeholder="Web Sitesi" class="qr-input">
-      `,
-      wifi: `
-        <input type="text" id="wifiSSID" placeholder="Ağ Adı (SSID)" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="wifiPassword" placeholder="Şifre" class="qr-input" style="margin-bottom:6px;">
-        <select id="wifiEncryption" class="qr-input" style="margin-bottom:6px;">
-          <option value="WPA">WPA/WPA2</option>
-          <option value="WEP">WEP</option>
-          <option value="nopass">Şifresiz</option>
-        </select>
-      `,
-      social: `
-        <input type="text" id="socialInstagram" placeholder="Instagram @kullanici" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="socialTwitter" placeholder="Twitter @kullanici" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="socialLinkedin" placeholder="LinkedIn URL" class="qr-input" style="margin-bottom:6px;">
-        <input type="text" id="socialYoutube" placeholder="YouTube URL" class="qr-input">
-      `
-    };
-
-    templateSelect.addEventListener('change', function() {
-      templateFields.innerHTML = templates[this.value];
-    });
-
-    function getQRContent() {
-      const type = templateSelect.value;
-      if (type === 'url') {
-        const el = document.getElementById('urlInput');
-        return el ? el.value : '';
-      }
-      if (type === 'vcard') {
-        const name = document.getElementById('vcardName')?.value || '';
-        const phone = document.getElementById('vcardPhone')?.value || '';
-        const email = document.getElementById('vcardEmail')?.value || '';
-        const company = document.getElementById('vcardCompany')?.value || '';
-        const website = document.getElementById('vcardWebsite')?.value || '';
-        return `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL:${phone}\nEMAIL:${email}\nORG:${company}\nURL:${website}\nEND:VCARD`;
-      }
-      if (type === 'wifi') {
-        const ssid = document.getElementById('wifiSSID')?.value || '';
-        const pass = document.getElementById('wifiPassword')?.value || '';
-        const enc = document.getElementById('wifiEncryption')?.value || 'WPA';
-        return `WIFI:T:${enc};S:${ssid};P:${pass};;`;
-      }
-      if (type === 'social') {
-        return 'https://pacdi.store/bio/username';
-      }
-      return '';
+(function() {
+  var i18n = {
+    tr: {
+      heroTitle: "Dijital Araçlar",
+      heroSub: "QR kod, bağlantı kısaltıcı, güçlü şifre üretici ve profesyonel Prüfprotokoll — hepsi burada, ücretsiz.",
+      heroNew: "⚡ Yeni: DGUV Prüfprotokoll",
+      fsTitle: "DGUV V3 Prüfprotokoll",
+      fsDesc: "Elektrikli cihazları kayıt altına al, ölçüm değerlerini gir, PDF olarak dışa aktar. Rakipler 80€+ alırken biz 15€'dan başlıyoruz.",
+      fsBtn: "Hemen dene →",
+      fsHint: "✔ Ücretsiz · PDF çıktı · Mobil uyumlu",
+      toolsLabel: "ARAÇLAR",
+      t1: "QR Kod Oluşturucu",
+      t1d: "URL, vCard, WiFi ve sosyal medya için anında QR kod üret. PNG, JPG veya SVG olarak indir.",
+      t3: "QR Tarayıcı",
+      t3d: "Kamera veya görsel yükleyerek QR kodları ve barkodları anında okut.",
+      t4: "Bağlantı Kısaltıcı",
+      t4d: "Uzun URL'leri kısa ve paylaşılabilir bağlantılara dönüştür.",
+      t5: "Şifre Üretici",
+      t5d: "Güvenli, özelleştirilebilir şifreler üret.",
+      cbNew: "YENİ",
+      t2d: "BGV A3 / DGUV Vorschrift 3 uyumlu elektro muayene protokolü. PDF export, imza, renk kodlu sonuçlar."
+    },
+    de: {
+      heroTitle: "Digitale Werkzeuge",
+      heroSub: "QR-Code-Generator, Link-Shortener, Passwort-Generator und professionelles Prüfprotokoll — alles kostenlos.",
+      heroNew: "⚡ Neu: DGUV Prüfprotokoll",
+      fsTitle: "DGUV V3 Prüfprotokoll",
+      fsDesc: "Elektrische Betriebsmittel prüfen, dokumentieren und als PDF exportieren. Kostenlos testen — kein Login, keine Installation. Ab 15 € statt 80 €+ bei Mitbewerbern.",
+      fsBtn: "Jetzt testen →",
+      fsHint: "✔ Kostenlos · PDF-Export · Mobilfreundlich",
+      toolsLabel: "WERKZEUGE",
+      t1: "QR-Code-Generator",
+      t1d: "Erstelle sofort QR-Codes für URL, vCard, WLAN und Social Media. Als PNG, JPG oder SVG herunterladen.",
+      t3: "QR-Scanner",
+      t3d: "QR-Codes und Barcodes per Kamera oder Bilddatei scannen.",
+      t4: "Link-Shortener",
+      t4d: "Lange URLs in kurze, teilbare Links umwandeln.",
+      t5: "Passwort-Generator",
+      t5d: "Sichere, anpassbare Passwörter generieren.",
+      cbNew: "NEU",
+      t2d: "BGV A3 / DGUV Vorschrift 3 konformes Prüfprotokoll. PDF-Export, Unterschriftenfeld, farbkodierte Ergebnisse."
+    },
+    en: {
+      heroTitle: "Digital Tools",
+      heroSub: "QR code generator, link shortener, password generator and professional inspection protocol — all free.",
+      heroNew: "⚡ New: DGUV Inspection Protocol",
+      fsTitle: "DGUV V3 Inspection Protocol",
+      fsDesc: "Test and document electrical equipment, export as PDF. Free to try — no login, no installation. From €15 vs. competitors charging €80+.",
+      fsBtn: "Try now →",
+      fsHint: "✔ Free · PDF export · Mobile friendly",
+      toolsLabel: "TOOLS",
+      t1: "QR Code Generator",
+      t1d: "Generate QR codes for URL, vCard, WiFi and social media. Download as PNG, JPG or SVG.",
+      t3: "QR Scanner",
+      t3d: "Scan QR codes and barcodes via camera or image upload.",
+      t4: "Link Shortener",
+      t4d: "Convert long URLs into short, shareable links.",
+      t5: "Password Generator",
+      t5d: "Generate secure, customizable passwords.",
+      cbNew: "NEW",
+      t2d: "BGV A3 / DGUV Vorschrift 3 compliant inspection protocol. PDF export, signature field, color-coded results."
     }
+  };
 
-    // ---------- QR OLUŞTUR ----------
-    function generateQR() {
-      const content = getQRContent();
-      const display = qrDisplay;
-      const fg = fgColor.value;
-      const bg = bgColor.value;
-      const size = parseInt(qrSize.value) || 200;
-      const type = document.querySelector('input[name="qrType"]:checked').value;
-
-      if (!content) {
-        display.innerHTML = `<span style="color:#9bb7d4;">QR kod burada görünecek</span>`;
-        dlSection.style.display = 'none';
-        return;
-      }
-
-      currentText = content;
-
-      if (type === 'dynamic') {
-        if (!window.userToken || !window.isPro) {
-          alert(t('pro_feature'));
-          return;
-        }
-        fetch('/api/qr/dynamic', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + window.userToken
-          },
-          body: JSON.stringify({
-            destinationUrl: content,
-            fgColor: fg,
-            bgColor: bg,
-            size: size,
-            logo: localStorage.getItem('logoData') || null
-          })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            display.innerHTML = `<div style="text-align:center;">
-              <p style="color:#2ECC71; font-size:0.9rem;">✅ Dinamik QR oluşturuldu!</p>
-              <p style="color:#9bb7d4; font-size:0.7rem;">Kısa URL: ${data.qrUrl}</p>
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(data.qrUrl)}" style="border-radius:12px; background:white; padding:10px; max-width:100%;">
-            </div>`;
-            dlSection.style.display = 'block';
-            const img = display.querySelector('img');
-            if (img) {
-              const canvas = document.createElement('canvas');
-              canvas.width = size;
-              canvas.height = size;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(img, 0, 0, size, size);
-              currentCanvas = canvas;
-            }
-          } else {
-            alert('Hata: ' + data.error);
-          }
-        })
-        .catch(err => alert('Sunucu hatası: ' + err.message));
-        return;
-      }
-
-      // STATİK QR
-      if (typeof QRCode !== 'undefined') {
-        display.innerHTML = '';
-        new QRCode(display, {
-          text: content,
-          width: size,
-          height: size,
-          colorDark: fg,
-          colorLight: bg,
-          correctLevel: QRCode.CorrectLevel.M
-        });
-        const canvas = display.querySelector('canvas');
-        if (canvas) {
-          currentCanvas = canvas;
-          dlSection.style.display = 'block';
-        } else {
-          display.innerHTML = '<span style="color:#e74c3c;">QR oluşturulamadı.</span>';
-          dlSection.style.display = 'none';
-        }
-      } else {
-        // Fallback API
-        const img = document.createElement('img');
-        img.crossOrigin = 'anonymous';
-        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(content)}`;
-        img.style.borderRadius = '12px';
-        img.style.background = 'white';
-        img.style.padding = '10px';
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          canvas.width = size;
-          canvas.height = size;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, size, size);
-          currentCanvas = canvas;
-          dlSection.style.display = 'block';
-        };
-        display.innerHTML = '';
-        display.appendChild(img);
-      }
-    }
-
-    // ---------- İNDİRME ----------
-    function downloadImage(format) {
-      if (!currentCanvas) {
-        alert('Lütfen önce bir QR kodu oluşturun.');
-        return;
-      }
-      let canvas = currentCanvas;
-      if (format === 'jpg') {
-        const newCanvas = document.createElement('canvas');
-        newCanvas.width = canvas.width;
-        newCanvas.height = canvas.height;
-        const ctx = newCanvas.getContext('2d');
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
-        ctx.drawImage(canvas, 0, 0);
-        canvas = newCanvas;
-      }
-      const link = document.createElement('a');
-      link.download = `qr-code.${format === 'jpg' ? 'jpg' : 'png'}`;
-      link.href = canvas.toDataURL(`image/${format === 'jpg' ? 'jpeg' : 'png'}`, 0.95);
-      link.click();
-    }
-
-    $('dlPng').addEventListener('click', () => downloadImage('png'));
-    $('dlJpg').addEventListener('click', () => downloadImage('jpg'));
-    $('dlSvg').addEventListener('click', function() {
-      if (!currentText) { alert('Önce QR oluşturun.'); return; }
-      const link = document.createElement('a');
-      link.download = 'qr-code.svg';
-      link.href = `https://api.qrserver.com/v1/create-qr-code/?format=svg&size=300x300&data=${encodeURIComponent(currentText)}`;
-      link.target = '_blank';
-      link.click();
+  function applyLang(lang) {
+    var d = i18n[lang] || i18n.de;
+    document.getElementById('hero-title').textContent = d.heroTitle;
+    document.getElementById('hero-sub').textContent = d.heroSub;
+    document.getElementById('hero-new-badge').textContent = d.heroNew;
+    document.getElementById('fs-title').textContent = d.fsTitle;
+    document.getElementById('fs-desc').textContent = d.fsDesc;
+    document.getElementById('fs-btn').textContent = d.fsBtn;
+    document.getElementById('fs-hint').textContent = d.fsHint;
+    document.getElementById('tools-label').textContent = d.toolsLabel;
+    document.getElementById('t1-name').textContent = d.t1;
+    document.getElementById('t1-desc').textContent = d.t1d;
+    document.getElementById('t2-desc').textContent = d.t2d;
+    document.getElementById('t3-name').textContent = d.t3;
+    document.getElementById('t3-desc').textContent = d.t3d;
+    document.getElementById('t4-name').textContent = d.t4;
+    document.getElementById('t4-desc').textContent = d.t4d;
+    document.getElementById('t5-name').textContent = d.t5;
+    document.getElementById('t5-desc').textContent = d.t5d;
+    document.getElementById('cb-new').textContent = d.cbNew;
+    document.querySelectorAll('.lang-btn').forEach(function(b) {
+      b.classList.toggle('active', b.textContent === lang.toUpperCase());
     });
+    if (typeof window.setLanguage === 'function') window.setLanguage(lang);
+    document.documentElement.lang = lang;
+  }
 
-    // ---------- AMAÇ SEÇİMİ ----------
-    document.querySelectorAll('.purpose-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        document.querySelectorAll('.purpose-btn').forEach(b => b.classList.remove('selected'));
-        this.classList.add('selected');
-        selectedPurpose = this.dataset.purpose;
-      });
-    });
+  window.setLanguage = function(lang) { applyLang(lang); };
 
-    // ---------- E-POSTA ----------
-    $('emailBtn').addEventListener('click', function() {
-      const email = $('emailInput').value.trim();
-      if (!email || email.indexOf('@') === -1) return;
-      fetch('/api/user/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, purpose: selectedPurpose, lang: window.currentLang })
-      })
-      .then(res => res.json())
-      .then(() => {
-        $('emailSuccess').style.display = 'block';
-        $('emailInput').value = '';
-        $('emailSkip').style.display = 'none';
-      })
-      .catch(err => console.error('E-posta hatası:', err));
-    });
-
-    window.skipEmail = function() {
-      $('emailSection').style.display = 'none';
-    };
-
-    // ---------- LOGO ----------
-    logoBtn.addEventListener('click', () => logoUpload.click());
-    logoUpload.addEventListener('change', function(e) {
-      if (this.files && this.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-          localStorage.setItem('logoData', ev.target.result);
-          alert('Logo yüklendi.');
-        };
-        reader.readAsDataURL(this.files[0]);
-      }
-    });
-
-    // ---------- QR TİPİ DEĞİŞİKLİĞİ ----------
-    qrTypeRadios.forEach(radio => {
-      radio.addEventListener('change', function() {
-        if (this.value === 'dynamic' && !window.isPro) {
-          alert(t('pro_feature'));
-          document.querySelector('input[name="qrType"][value="static"]').checked = true;
-        }
-      });
-    });
-
-    // ---------- ABONELİK LİNKİ ----------
-    upgradeLink.addEventListener('click', window.openPaddleCheckout);
-
-    // ---------- DİL BUTONLARI ----------
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const lang = this.dataset.lang;
-        if (lang !== window.currentLang) window.setLanguage(lang);
-      });
-    });
-
-    // ---------- OLAY BAĞLAMALARI ----------
-    generateBtn.addEventListener('click', generateQR);
-    templateFields.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') generateQR();
-    });
-
-    // ---------- BAŞLANGIÇ ----------
-    templateFields.innerHTML = templates.url;
-    // common.js yüklendikten sonra UI güncellenir, biz de QR oluşturalım
-    setTimeout(generateQR, 600);
-  })();
+  var ul = (navigator.language || 'de').toLowerCase();
+  if (ul.startsWith('tr')) applyLang('tr');
+  else if (ul.startsWith('en')) applyLang('en');
+  else applyLang('de');
+})();
 </script>
+
 </body>
 </html>
