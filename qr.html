@@ -15,6 +15,9 @@
   <!-- common.css kasıtlı kaldırıldı - stiller inline -->
   <style>
     /* ── PAGE OVERRIDES — PC layout ── */
+    @media (max-width: 600px) {
+      .nav-label { display: none; }
+    }
     * { user-select: auto !important; -webkit-tap-highlight-color: rgba(246,180,95,0.2); }
     button, a, input, select { cursor: pointer; }
     body {
@@ -498,17 +501,24 @@
   var nav = document.getElementById('mainNav');
   if (!nav) return;
   var page = (window.location.pathname.split('/').pop() || 'index.html');
+  // Mobilde sadece ikon, PC'de ikon+metin
   var items = [
-    ['/', 'Ana Sayfa'],
-    ['/qr.html', '🔳 QR / Barkod'],
-    ['/pruefprotokoll.html', '⚡ Prüfprotokoll'],
-    ['/scanner.html', '📷 Scanner'],
-    ['/shortener.html', '🔗 Kısaltıcı'],
-    ['/password.html', '🔐 Şifre']
+    ['/', '🏠', 'Ana Sayfa'],
+    ['/qr.html', '🔳', 'QR'],
+    ['/pruefprotokoll.html', '⚡', 'Prüf'],
+    ['/scanner.html', '📷', 'Scan'],
+    ['/shortener.html', '🔗', 'Link'],
+    ['/password.html', '🔐', 'Şifre']
   ];
   nav.innerHTML = items.map(function(i) {
-    var active = (page === i[0].replace('/','') || (i[0]==='/' && page==='index.html')) ? ' style="border-color:#F6B45F;color:#F6B45F;"' : '';
-    return '<a href="' + i[0] + '"' + active + ' style="color:#7a9ab8;text-decoration:none;font-size:0.7rem;padding:4px 10px;border-radius:20px;border:1px solid transparent;">' + i[1] + '</a>';
+    var href = i[0], icon = i[1], label = i[2];
+    var isActive = (page === href.replace('/','') || (href==='/' && (page===''||page==='index.html')));
+    var color = isActive ? '#F6B45F' : '#7a9ab8';
+    var border = isActive ? '#F6B45F' : 'transparent';
+    return '<a href="' + href + '" style="color:' + color + ';text-decoration:none;font-size:0.7rem;padding:5px 8px;border-radius:16px;border:1px solid ' + border + ';white-space:nowrap;display:inline-flex;align-items:center;gap:3px;">'
+      + '<span>' + icon + '</span>'
+      + '<span class="nav-label">' + label + '</span>'
+      + '</a>';
   }).join('');
 })();
 </script>
