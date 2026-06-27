@@ -40,16 +40,20 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      padding: 0 24px;
+      padding: 8px 24px;
     }
     .header-inner {
       max-width: 1200px;
       margin: 0 auto;
       display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .header-top {
+      display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 60px;
-      gap: 16px;
+      width: 100%;
     }
     .logo-mark {
       font-size: 1.1rem;
@@ -81,6 +85,12 @@
       background: rgba(246,180,95,0.06);
     }
 
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
     .header-user {
       display: flex;
       gap: 8px;
@@ -307,6 +317,8 @@
       .featured-strip .fs-cta { align-items: flex-start; }
       .tools-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
       .tool-card { padding: 16px; }
+      .header-inner { gap: 6px; }
+      .header-top { flex-wrap: wrap; gap: 6px; }
     }
     @media (max-width: 420px) {
       .tools-grid { grid-template-columns: 1fr; }
@@ -317,18 +329,25 @@
 
 <header>
   <div class="header-inner">
-    <div class="logo-mark">PACDI Store <span>Dijital Araçlar</span></div>
+    <div class="header-top">
+      <div class="logo-mark">PACDI Store <span>Dijital Araçlar</span></div>
+      <div class="header-right">
+        <div class="lang-bar">
+          <button class="lang-btn active" onclick="setLanguage('tr')">TR</button>
+          <button class="lang-btn" onclick="setLanguage('de')">DE</button>
+          <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+        </div>
+        <div id="userPanel" class="header-user"></div>
+      </div>
+    </div>
     <nav id="mainNav">
+      <a href="/qr.html">🔳 QR</a>
+      <a href="/scanner.html">📷 Tarayıcı</a>
+      <a href="/shortener.html">🔗 Kısaltıcı</a>
+      <a href="/password.html">🔐 Şifre</a>
+      <a href="/pruefprotokoll.html">⚡ Prüfprotokoll</a>
       <a href="/blog/">📚 Blog</a>
     </nav>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div class="lang-bar">
-        <button class="lang-btn active" onclick="setLanguage('tr')">TR</button>
-        <button class="lang-btn" onclick="setLanguage('de')">DE</button>
-        <button class="lang-btn" onclick="setLanguage('en')">EN</button>
-      </div>
-      <div id="userPanel" class="header-user"></div>
-    </div>
   </div>
 </header>
 
@@ -351,10 +370,10 @@
     <div class="fs-icon">⚡</div>
     <div class="fs-body">
       <h2 id="fs-title">DGUV V3 Prüfprotokoll</h2>
-      <p id="fs-desc">Elektrische Betriebsmittel prüfen, dokumentieren und als PDF exportieren. Kostenlos testen — kein Login, keine Installation. Rakipler 80€+ alırken biz 15€'dan başlıyoruz.</p>
+      <p id="fs-desc">Elektrikli cihazları kayıt altına al, ölçüm değerlerini gir, PDF olarak dışa aktar. Rakipler 80€+ alırken biz 15€'dan başlıyoruz.</p>
     </div>
     <div class="fs-cta">
-      <a href="/pruefprotokoll.html" class="btn-primary" id="fs-btn">Jetzt testen →</a>
+      <a href="/pruefprotokoll.html" class="btn-primary" id="fs-btn">Hemen dene →</a>
       <span class="fs-hint" id="fs-hint">✔ Ücretsiz · PDF çıktı · Mobil uyumlu</span>
     </div>
   </div>
