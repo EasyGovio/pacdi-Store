@@ -16,13 +16,12 @@
             font-family: 'Inter', sans-serif;
             background: #0A1628;
             color: #F5F2EC;
-            padding: 24px 16px;
+            padding: 0;
+            margin: 0;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            overflow-x: hidden;
         }
-        .container { max-width: 1400px; width: 100%; margin: 0 auto; }
+        .container { max-width: 1400px; width: 100%; margin: 0 auto; padding: 16px; box-sizing: border-box; }
 
         /* ––– HERO BANNER (NEU) ––– */
         .hero {
@@ -447,9 +446,13 @@
         }
         @media (max-width: 480px) {
             .header { grid-template-columns: 1fr; }
-            .container { padding: 0; }
-            body { padding: 12px 8px; }
-            table { font-size: 11px; min-width: 900px; }
+            .container { padding: 8px; }
+            body { padding: 0; }
+            table { font-size: 11px; min-width: 700px; }
+            .hero { padding: 16px; }
+            .hero-text h1 { font-size: 18px; }
+            .pricing-strip { flex-direction: column; }
+            .pricing-card { min-width: unset; }
         }
 
         /* ––– PRINT ––– */
@@ -469,9 +472,6 @@
             .row-nr { color: #555; }
         }
     </style>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
-    <link rel="canonical" href="https://pacdi.store/pruefprotokoll.html" />
 </head>
 <body>
 
