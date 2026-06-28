@@ -28,7 +28,7 @@
   <div class="footer" style="margin-top:24px;">PACDI Store · <a href="/legal.html" style="color:rgba(246,180,95,0.6);text-decoration:none;font-size:0.65rem;">Impressum & Datenschutz</a></div>
 </div>
 
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="/assets/common.js"></script>
 <script>
   (function() {
@@ -39,18 +39,35 @@
       if (html5QrCode) {
         html5QrCode.stop().then(() => {
           html5QrCode.clear();
+          html5QrCode = null;
+          startScanner();
+        }).catch(err => {
+          console.error('Durdurma hatası:', err);
+          html5QrCode = null;
           startScanner();
         });
         return;
       }
-      html5QrCode = new Html5Qrcode("reader");
-      const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-      html5QrCode.start(
-        { facingMode: "environment" },
-        config,
-        onScanSuccess,
-        onScanError
-      );
+
+      try {
+        html5QrCode = new Html5Qrcode("reader");
+        const config = { 
+          fps: 10, 
+          qrbox: { width: 250, height: 250 } 
+        };
+        html5QrCode.start(
+          { facingMode: "environment" },
+          config,
+          onScanSuccess,
+          onScanError
+        ).catch(err => {
+          console.error('Kamera başlatma hatası:', err);
+          document.getElementById('result').innerHTML = `<div style="color:#F87171;">❌ Kamera başlatılamadı: ${err}</div>`;
+        });
+      } catch (e) {
+        console.error('Html5Qrcode oluşturma hatası:', e);
+        document.getElementById('result').innerHTML = `<div style="color:#F87171;">❌ Tarayıcı başlatılamadı: ${e.message}</div>`;
+      }
     }
 
     function onScanSuccess(decodedText, decodedResult) {
@@ -62,11 +79,14 @@
         </div>
       `;
       document.getElementById('scanAgainBtn').style.display = 'inline-block';
-      if (html5QrCode) html5QrCode.stop();
+      if (html5QrCode) {
+        html5QrCode.stop().catch(err => console.warn('Durdurma hatası:', err));
+      }
     }
 
     function onScanError(err) {
-      // sessiz
+      // Sessiz, sadece debug için
+      // console.warn(err);
     }
 
     window.saveHistory = function(text) {
@@ -96,7 +116,6 @@
       startScanner();
     });
 
-    // Pro özelliklerini override (scanner'da pro özelliği yok)
     window.enableProFeatures = function(enable) {};
 
     document.addEventListener('DOMContentLoaded', function() {
