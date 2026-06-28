@@ -153,7 +153,6 @@
       padding-top: 16px;
     }
     .footer a { color: rgba(246,180,95,0.5); text-decoration: none; }
-    /* mobil düzeltmeler */
     @media (max-width: 480px) {
       nav a { font-size: 0.6rem; padding: 4px 8px; }
       h1 { font-size: 1.1rem; }
@@ -194,6 +193,7 @@
   var scanHistory = JSON.parse(localStorage.getItem('scanHistory') || '[]');
   var isScanning = false;
   var readerElement = document.getElementById('reader');
+  var isStopping = false; // Durdurma işleminin devam ettiğini belirtir
 
   // Geçmişi göster
   function renderHistory() {
@@ -231,84 +231,128 @@
       '<div class="error-box">❌ ' + msg + '</div>';
   }
 
-  // Kamerayı durdur
+  // Kamerayı durdur - düzeltilmiş asenkron yönetim
   function stopScanner() {
-    if (html5QrCode && isScanning) {
+    return new Promise(function(resolve, reject) {
+      if (!html5QrCode || !isScanning) {
+        isScanning = false;
+        resolve();
+        return;
+      }
+      // Durdurma işlemi başladı
+      isStopping = true;
       html5QrCode.stop().then(function() {
         isScanning = false;
+        isStopping = false;
+        resolve();
       }).catch(function(err) {
         console.warn('Durdurma hatası:', err);
         isScanning = false;
+        isStopping = false;
+        resolve(); // Hata olsa bile devam et
       });
-    }
+    });
   }
 
   // Tarayıcıyı başlat
   function startScanner() {
+    // Eğer durdurma işlemi devam ediyorsa bekle
+    if (isStopping) {
+      setTimeout(startScanner, 500);
+      return;
+    }
+
     if (isScanning) {
-      stopScanner();
-      setTimeout(startScanner, 400);
+      stopScanner().then(function() {
+        setTimeout(startScanner, 400);
+      });
       return;
     }
 
     // Eski içeriği temizle
     readerElement.innerHTML = '';
 
-    try {
-      html5QrCode = new Html5Qrcode("reader");
-
-      // Arka kamera ile başlat (facingMode)
-      var config = {
-        fps: 15,
-        qrbox: { width: 260, height: 200 },
-        aspectRatio: 1.0
-      };
-
-      // ÖNEMLİ: formatsToSupport eklemeden çalıştır (kütüphane çoğu formatı destekler)
-      html5QrCode.start(
-        { facingMode: "environment" },
-        config,
-        function(decodedText) {
-          // Başarılı okuma
-          isScanning = false;
-          stopScanner();
-          showResult(decodedText);
-        },
-        function(errorMessage) {
-          // Sessiz hata, sadece debug
-          // console.debug(errorMessage);
+    // Önce kamera listesini al, arka kamera seç
+    Html5Qrcode.getCameras().then(function(cameras) {
+      if (!cameras || !cameras.length) {
+        showError('Kamera bulunamadı. Lütfen cihazınızın kamerasını kontrol edin.');
+        return;
+      }
+      var cameraId = cameras[0].id;
+      // Arka kamera seç (environment)
+      for (var i = 0; i < cameras.length; i++) {
+        var label = cameras[i].label.toLowerCase();
+        if (label.indexOf('back') !== -1 || label.indexOf('environment') !== -1) {
+          cameraId = cameras[i].id;
+          break;
         }
-      ).then(function() {
-        isScanning = true;
-        document.getElementById('result').innerHTML = '';
-        document.getElementById('scanAgainBtn').style.display = 'none';
-      }).catch(function(err) {
-        showError('Kamera başlatılamadı: ' + err);
-      });
-    } catch (e) {
-      showError('Tarayıcı oluşturulamadı: ' + e.message);
-    }
+      }
+
+      try {
+        html5QrCode = new Html5Qrcode("reader");
+        var config = {
+          fps: 15,
+          qrbox: { width: 260, height: 200 },
+          aspectRatio: 1.0
+        };
+
+        html5QrCode.start(
+          { deviceId: cameraId },
+          config,
+          function(decodedText) {
+            // Başarılı okuma - önce kamerayı durdur
+            if (isScanning) {
+              stopScanner().then(function() {
+                showResult(decodedText);
+              });
+            } else {
+              showResult(decodedText);
+            }
+          },
+          function(errorMessage) {
+            // Sessiz hata, sadece debug
+            // console.debug(errorMessage);
+          }
+        ).then(function() {
+          isScanning = true;
+          document.getElementById('result').innerHTML = '';
+          document.getElementById('scanAgainBtn').style.display = 'none';
+        }).catch(function(err) {
+          showError('Kamera başlatılamadı: ' + err);
+        });
+      } catch (e) {
+        showError('Tarayıcı oluşturulamadı: ' + e.message);
+      }
+    }).catch(function(err) {
+      showError('Kamera erişim hatası: ' + err);
+    });
   }
 
-  // Resim dosyasından okuma
+  // Resim dosyasından okuma - önce kamerayı durdur
   function scanImageFile(file) {
     if (!file) return;
-    // Geçici bir div oluştur
-    var tempDiv = document.createElement('div');
-    tempDiv.id = 'tempReader';
-    tempDiv.style.display = 'none';
-    document.body.appendChild(tempDiv);
 
-    var tempScanner = new Html5Qrcode('tempReader');
-    tempScanner.scanFile(file, true)
-      .then(function(decodedText) {
-        showResult(decodedText);
-        document.body.removeChild(tempDiv);
-      })
-      .catch(function(err) {
-        showError('Resim okunamadı: ' + err);
-        document.body.removeChild(tempDiv);
-      });
+    // Önce kamerayı durdur
+    stopScanner().then(function() {
+      // Geçici bir div oluştur
+      var tempDiv = document.createElement('div');
+      tempDiv.id = 'tempReader';
+      tempDiv.style.display = 'none';
+      document.body.appendChild(tempDiv);
+
+      var tempScanner = new Html5Qrcode('tempReader');
+      tempScanner.scanFile(file, true)
+        .then(function(decodedText) {
+          showResult(decodedText);
+          document.body.removeChild(tempDiv);
+        })
+        .catch(function(err) {
+          showError('Resim okunamadı: ' + err);
+          document.body.removeChild(tempDiv);
+        });
+    }).catch(function(err) {
+      showError('Kamera durdurulamadı, dosya okuma iptal: ' + err);
+    });
   }
 
   // ── Event Listeners ──
@@ -346,7 +390,9 @@
 
   // Sayfa kapatılırken kamerayı durdur
   window.addEventListener('beforeunload', function() {
-    stopScanner();
+    if (isScanning) {
+      stopScanner();
+    }
   });
 
 })();
