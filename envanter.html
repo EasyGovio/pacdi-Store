@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<!--
+╔═══════════════════════════════════════════════════════════════╗
+║  🛡️  PACDI FRAMEWORK — PROTECTED WORK | FSEK: 2026/18897    ║
+║  Operated by AskMeAI Teknoloji Ltd. Şti. (TR: 23837)        ║
+╚═══════════════════════════════════════════════════════════════╝
+-->
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Geräte-Inventar | PACDI Store</title>
+  <link rel="canonical" href="https://pacdi.store/envanter.html">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #04162E; color: #eaf2fb; font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; padding: 16px 16px 80px; }
+    .app { max-width: 600px; margin: 0 auto; }
+
+    /* Nav */
+    nav { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 20px; background: rgba(4,22,46,0.8); border-radius: 12px; padding: 8px; }
+    nav a { color: #7a9ab8; text-decoration: none; font-size: 0.7rem; padding: 5px 10px; border-radius: 16px; border: 1px solid transparent; transition: 0.2s; white-space: nowrap; }
+    nav a:hover, nav a.active { border-color: #F6B45F; color: #F6B45F; background: rgba(246,180,95,0.06); }
+
+    h1 { color: #F6B45F; font-size: 1.3rem; margin-bottom: 4px; font-weight: 700; }
+    .subtitle { color: #7a9ab8; font-size: 0.8rem; margin-bottom: 20px; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 6px; margin-bottom: 20px; }
+    .tab-btn { flex: 1; padding: 10px 8px; border: 1px solid rgba(246,180,95,0.2); background: transparent; color: #7a9ab8; border-radius: 10px; font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: 0.2s; text-align: center; }
+    .tab-btn.active { background: rgba(246,180,95,0.1); border-color: #F6B45F; color: #F6B45F; }
+
+    /* Content */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Card */
+    .card { background: #0a1828; border: 1px solid rgba(246,180,95,0.15); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+    .card-title { font-size: 0.85rem; font-weight: 700; color: #F6B45F; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+
+    /* Form */
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.78rem; color: #7a9ab8; margin-bottom: 6px; font-weight: 600; }
+    .form-group input { width: 100%; padding: 10px 14px; background: #04162E; border: 1px solid rgba(246,180,95,0.2); border-radius: 10px; color: #eaf2fb; font-size: 0.88rem; font-family: inherit; outline: none; transition: border-color 0.2s; }
+    .form-group input:focus { border-color: #F6B45F; }
+
+    /* Buttons */
+    .btn { width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 0.88rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: 0.2s; }
+    .btn-gold { background: #F6B45F; color: #04162E; }
+    .btn-gold:hover { background: #f0c870; }
+    .btn-outline { background: transparent; border: 1px solid #F6B45F; color: #F6B45F; margin-top: 8px; }
+    .btn-outline:hover { background: rgba(246,180,95,0.08); }
+    .btn-green { background: #34D399; color: #04162E; }
+    .btn-green:hover { background: #6ee7b7; }
+    .btn-red { background: transparent; border: 1px solid rgba(248,113,113,0.4); color: #f87171; padding: 5px 12px; width: auto; font-size: 0.72rem; border-radius: 8px; }
+
+    /* QR Label Preview */
+    .label-preview { display: flex; justify-content: center; margin: 16px 0; }
+    .label-card { background: #fff; border-radius: 8px; padding: 20px; text-align: center; width: 280px; }
+    .label-card .device-name { font-size: 0.95rem; font-weight: 800; color: #000; margin-top: 10px; font-family: sans-serif; }
+    .label-card .device-id { font-size: 0.65rem; color: #555; margin-top: 4px; font-family: monospace; word-break: break-all; }
+    #qrcode-output { display: flex; justify-content: center; }
+    #qrcode-output canvas, #qrcode-output img { border-radius: 4px; }
+
+    /* Inventory List */
+    .inv-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid rgba(246,180,95,0.08); gap: 8px; cursor: pointer; transition: background 0.15s; }
+    .inv-item:last-child { border-bottom: none; }
+    .inv-item:hover { background: rgba(246,180,95,0.04); border-radius: 8px; }
+    .inv-item .info { flex: 1; min-width: 0; }
+    .inv-item .name { font-size: 0.85rem; font-weight: 600; color: #eaf2fb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .inv-item .code { font-size: 0.68rem; color: #7a9ab8; margin-top: 2px; font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .inv-item .actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .badge { font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; flex-shrink: 0; }
+    .badge-pending { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+    .badge-ok { background: rgba(52,211,153,0.15); color: #34D399; border: 1px solid rgba(52,211,153,0.3); }
+
+    /* Search box */
+    .search-wrap { position: relative; margin-bottom: 14px; }
+    .search-wrap input { padding-left: 36px; }
+    .search-wrap .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #7a9ab8; font-size: 0.85rem; pointer-events: none; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #34D399; color: #04162E; padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 0.82rem; z-index: 9999; box-shadow: 0 4px 16px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s; pointer-events: none; text-align: center; max-width: 90vw; }
+    .toast.show { opacity: 1; }
+    .toast.error { background: #f87171; }
+
+    /* Manual verify */
+    .verify-result { margin-top: 12px; padding: 12px 16px; border-radius: 10px; font-size: 0.85rem; display: none; }
+    .verify-result.success { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: #34D399; }
+    .verify-result.error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #f87171; }
+
+    /* Info box */
+    .info-box { background: rgba(246,180,95,0.05); border: 1px solid rgba(246,180,95,0.15); border-left: 4px solid #F6B45F; border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; font-size: 0.8rem; color: #b0b5bf; line-height: 1.7; }
+    .info-box strong { color: #F6B45F; }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+    .stat-box { background: #0a1828; border: 1px solid rgba(246,180,95,0.1); border-radius: 10px; padding: 10px; text-align: center; }
+    .stat-num { font-size: 1.4rem; font-weight: 800; color: #F6B45F; }
+    .stat-label { font-size: 0.62rem; color: #7a9ab8; margin-top: 2px; }
+
+    /* Print */
+    @media print {
+      body * { visibility: hidden; }
+      #print-section, #print-section * { visibility: visible; }
+      #print-section { position: absolute; left: 0; top: 0; width: 100%; }
+    }
+
+    /* Footer */
+    .footer { margin-top: 28px; font-size: 0.65rem; color: #4a6a88; text-align: center; border-top: 1px solid rgba(246,180,95,0.08); padding-top: 16px; }
+    .footer a { color: rgba(246,180,95,0.5); text-decoration: none; }
+
+    .empty-state { text-align: center; color: #4a6a88; font-size: 0.85rem; padding: 24px; }
+    .empty-state .icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <nav>
+    <a href="/">&#127968; Home</a>
+    <a href="/qr.html">&#9643; QR</a>
+    <a href="/pruefprotokoll.html">&#9889; Pr&uuml;f</a>
+    <a href="/scanner.html">&#128247; Scan</a>
+    <a href="/envanter.html" class="active">&#128230; Inventar</a>
+    <a href="/password.html">&#128272; Pass</a>
+  </nav>
+
+  <h1>&#128230; Geräte-Inventar</h1>
+  <p class="subtitle">QR erstellen &bull; Inventar verwalten &bull; Manuell verifizieren</p>
+
+  <!-- Stats -->
+  <div class="stats" id="statsBar">
+    <div class="stat-box"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Gesamt</div></div>
+    <div class="stat-box"><div class="stat-num" id="statPending" style="color:#f59e0b;">0</div><div class="stat-label">Ausstehend</div></div>
+    <div class="stat-box"><div class="stat-num" id="statDone" style="color:#34D399;">0</div><div class="stat-label">Gepr&uuml;ft</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('tab-kayit', this)">&#10010; Gerät erfassen</button>
+    <button class="tab-btn" onclick="switchTab('tab-liste', this)">&#128221; Inventarliste</button>
+    <button class="tab-btn" onclick="switchTab('tab-verify', this)">&#10003; Verifizieren</button>
+  </div>
+
+  <!-- TAB 1: Cihaz Kayıt + QR -->
+  <div id="tab-kayit" class="tab-content active">
+
+    <div class="info-box">
+      <strong>Workflow:</strong><br>
+      1. Ger&auml;t eingeben &rarr; <strong>Speichern &amp; QR generieren</strong><br>
+      2. Etikett ausdrucken &rarr; am Ger&auml;t befestigen<br>
+      3. Beim n&auml;chsten Pr&uuml;ftermin: <a href="/scanner.html" style="color:#F6B45F;">Scanner</a> &rarr; Foto aus Galerie &rarr; automatische Zuordnung
+    </div>
+
+    <div class="card">
+      <div class="card-title">&#9881;&#65039; Neues Ger&auml;t</div>
+      <div class="form-group">
+        <label>Ger&auml;tebezeichnung</label>
+        <input type="text" id="inp-name" placeholder="z.B. Bosch Winkelschleifer GWS 700" oninput="updatePreview()">
+      </div>
+      <div class="form-group">
+        <label>Standort / Abteilung</label>
+        <input type="text" id="inp-standort" placeholder="z.B. Werkstatt, Keller, Büro" oninput="updatePreview(); updateSerial()">
+      </div>
+      <div class="form-group">
+        <label>Inventar-ID (automatisch generiert)</label>
+        <input type="text" id="inp-serial" readonly style="opacity:0.6;cursor:not-allowed;font-family:monospace;font-size:0.78rem;">
+      </div>
+      <button class="btn btn-gold" onclick="saveDevice()">&#128190; Speichern &amp; QR generieren</button>
+    </div>
+
+    <!-- QR Etiket Önizleme -->
+    <div class="card" id="previewCard" style="display:none;">
+      <div class="card-title">&#128247; Etikett-Vorschau</div>
+      <div class="label-preview">
+        <div class="label-card" id="print-section">
+          <div id="qrcode-output"></div>
+          <div class="device-name" id="lbl-name">—</div>
+          <div class="device-id" id="lbl-id">—</div>
+        </div>
+      </div>
+      <button class="btn btn-outline" onclick="window.print()">&#128438; Etikett drucken</button>
+      <button class="btn btn-outline" style="margin-top:6px;" onclick="downloadQR()">&#11015; QR als PNG speichern</button>
+    </div>
+
+  </div>
+
+  <!-- TAB 2: Envanter Listesi -->
+  <div id="tab-liste" class="tab-content">
+    <div class="search-wrap">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInp" placeholder="Ger&auml;t suchen..." oninput="renderList()" style="width:100%;padding:10px 14px 10px 36px;background:#0a1828;border:1px solid rgba(246,180,95,0.2);border-radius:10px;color:#eaf2fb;font-size:0.88rem;font-family:inherit;outline:none;">
+    </div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div id="inv-list-container"></div>
+    </div>
+    <button class="btn btn-outline" style="margin-top:8px;" onclick="clearAll()">&#128465; Alle löschen</button>
+  </div>
+
+  <!-- TAB 3: Manuel Doğrulama -->
+  <div id="tab-verify" class="tab-content">
+    <div class="info-box">
+      Bis das Kamera-Scanning auf allen Ger&auml;ten stabil läuft: Inventar-ID vom Etikett ablesen und hier eingeben — oder aus der Liste unten ausw&auml;hlen.
+    </div>
+    <div class="card">
+      <div class="card-title">&#128270; Manuelle Verifizierung</div>
+      <div class="form-group">
+        <label>Inventar-ID vom Etikett</label>
+        <input type="text" id="verify-inp" placeholder="PACDI-WERKST-001-..." style="font-family:monospace;font-size:0.82rem;" oninput="this.value=this.value.toUpperCase()">
+      </div>
+      <button class="btn btn-green" onclick="verifyDevice()">&#10003; Eintrag verifizieren</button>
+      <div class="verify-result" id="verify-result"></div>
+    </div>
+
+    <!-- Listeden seç -->
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div class="card-title" style="padding:12px 16px 0;">&#128221; Aus Liste ausw&auml;hlen</div>
+      <div id="verify-list-container"></div>
+    </div>
+  </div>
+
+  <div class="footer">PACDI Store &middot; <a href="/legal.html">Legal &amp; Privacy</a> &middot; <a href="/pruefprotokoll.html">&#9889; Pr&uuml;fprotokoll</a></div>
+
+</div><!-- /app -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+(function() {
+
+  var STORAGE_KEY = 'pacdi_inventory';
+  var inventory = [];
+  var qrInstance = null;
+  var currentSerial = '';
+
+  // ── Load ──
+  function load() {
+    try { inventory = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { inventory = []; }
+  }
+
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(inventory)); } catch(e) { toast('Speicherfehler!', true); }
+  }
+
+  // ── Toast ──
+  function toast(msg, isError) {
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show' + (isError ? ' error' : '');
+    clearTimeout(el._t);
+    el._t = setTimeout(function() { el.className = 'toast'; }, 3000);
+  }
+
+  // ── Serial Generator ──
+  function genSerial(standort) {
+    var loc = (standort || 'PACDI').replace(/[^a-zA-Z0-9]/g,'').toUpperCase().substring(0,6);
+    var nr = String(inventory.length + 1).padStart(3,'0');
+    var rand = Date.now().toString(36).toUpperCase().slice(-6);
+    return 'PACDI-' + loc + '-' + nr + '-' + rand;
+  }
+
+  // ── Update serial on standort change ──
+  window.updateSerial = function() {
+    var standort = document.getElementById('inp-standort').value;
+    currentSerial = genSerial(standort);
+    document.getElementById('inp-serial').value = currentSerial;
+    updatePreview();
+  };
+
+  // ── QR Preview ──
+  window.updatePreview = function() {
+    var name = document.getElementById('inp-name').value.trim();
+    var serial = document.getElementById('inp-serial').value.trim();
+    if (!serial) return;
+
+    document.getElementById('lbl-name').textContent = name || '—';
+    document.getElementById('lbl-id').textContent = serial;
+
+    var container = document.getElementById('qrcode-output');
+    container.innerHTML = '';
+    try {
+      qrInstance = new QRCode(container, {
+        text: JSON.stringify({ id: serial, name: name }),
+        width: 180, height: 180,
+        colorDark: '#000000', colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } catch(e) {}
+  };
+
+  // ── Save Device ──
+  window.saveDevice = function() {
+    var name    = document.getElementById('inp-name').value.trim();
+    var standort= document.getElementById('inp-standort').value.trim();
+    var serial  = document.getElementById('inp-serial').value.trim();
+
+    if (!name) { toast('Bitte Gerätebezeichnung eingeben!', true); return; }
+    if (!serial) { updateSerial(); serial = document.getElementById('inp-serial').value.trim(); }
+
+    var existing = inventory.findIndex(function(x) { return x.uid === serial; });
+    var entry = {
+      uid: serial,
+      name: name,
+      standort: standort,
+      status: 'pending',
+      ts: new Date().toISOString(),
+      qrPng: null
+    };
+
+    // Save QR as base64
+    setTimeout(function() {
+      var canvas = document.querySelector('#qrcode-output canvas');
+      if (canvas) {
+        entry.qrPng = canvas.toDataURL('image/png');
+      }
+      if (existing >= 0) {
+        inventory[existing] = entry;
+        toast('Gerät aktualisiert ✓');
+      } else {
+        inventory.push(entry);
+        toast('Gerät gespeichert & QR generiert ✓');
+      }
+      save();
+      updateStats();
+      renderList();
+      renderVerifyList();
+
+      // Sonraki cihaza hazırla
+      document.getElementById('inp-name').value = '';
+      document.getElementById('inp-standort').value = standort;
+      updateSerial();
+    }, 400);
+
+    // Önizlemeyi göster
+    document.getElementById('previewCard').style.display = 'block';
+    updatePreview();
+  };
+
+  // ── Download QR ──
+  window.downloadQR = function() {
+    var canvas = document.querySelector('#qrcode-output canvas');
+    if (!canvas) { toast('Kein QR vorhanden', true); return; }
+    var name = document.getElementById('inp-name').value.trim().replace(/[^a-zA-Z0-9]/g,'_').substring(0,25);
+    var a = document.createElement('a');
+    a.download = 'PACDI-QR-' + name + '.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+    toast('PNG gespeichert ✓');
+  };
+
+  // ── Tab Switch ──
+  window.switchTab = function(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(function(el){ el.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(el){ el.classList.remove('active'); });
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+    if (tabId === 'tab-liste') renderList();
+    if (tabId === 'tab-verify') renderVerifyList();
+  };
+
+  // ── Render List ──
+  window.renderList = function() {
+    var container = document.getElementById('inv-list-container');
+    var query = (document.getElementById('searchInp').value || '').toLowerCase();
+    var items = inventory.filter(function(x) {
+      return !query || x.name.toLowerCase().indexOf(query) >= 0 || x.uid.toLowerCase().indexOf(query) >= 0;
+    });
+    if (!items.length) {
+      container.innerHTML = '<div class="empty-state"><span class="icon">&#128230;</span>Kein Eintrag gefunden.</div>';
+      return;
+    }
+    container.innerHTML = '';
+    items.forEach(function(item) {
+      var div = document.createElement('div');
+      div.className = 'inv-item';
+      var badge = item.status === 'ok'
+        ? '<span class="badge badge-ok">&#10003; Gepr&uuml;ft</span>'
+        : '<span class="badge badge-pending">Ausstehend</span>';
+      div.innerHTML =
+        '<div class="info">' +
+          '<div class="name">' + item.name + '</div>' +
+          '<div class="code">' + item.uid + (item.standort ? ' &bull; ' + item.standort : '') + '</div>' +
+        '</div>' +
+        '<div class="actions">' + badge +
+          '<button class="btn btn-red" onclick="deleteItem(\'' + item.uid + '\', event)">&#128465;</button>' +
+        '</div>';
+      container.appendChild(div);
+    });
+  };
+
+  // ── Render Verify List ──
+  function renderVerifyList() {
+    var container = document.getElementById('verify-list-container');
+    if (!inventory.length) {
+      container.innerHTML = '<div class="empty-state">Kein Eintrag vorhanden.</div>';
+      return;
+    }
+    container.innerHTML = '';
+    inventory.forEach(function(item) {
+      var div = document.createElement('div');
+      div.className = 'inv-item';
+      div.style.cursor = 'pointer';
+      var badge = item.status === 'ok'
+        ? '<span class="badge badge-ok">&#10003;</span>'
+        : '<span class="badge badge-pending">?</span>';
+      div.innerHTML =
+        '<div class="info">' +
+          '<div class="name">' + item.name + '</div>' +
+          '<div class="code">' + item.uid + '</div>' +
+        '</div>' + badge;
+      div.addEventListener('click', function() {
+        document.getElementById('verify-inp').value = item.uid;
+        toast('ID übernommen — jetzt verifizieren');
+      });
+      container.appendChild(div);
+    });
+  }
+
+  // ── Verify ──
+  window.verifyDevice = function() {
+    var code = document.getElementById('verify-inp').value.trim().toUpperCase();
+    var resultEl = document.getElementById('verify-result');
+    if (!code) { toast('Bitte ID eingeben!', true); return; }
+
+    var found = inventory.find(function(x) { return x.uid.toUpperCase() === code; });
+    if (found) {
+      found.status = 'ok';
+      found.verifiedAt = new Date().toISOString();
+      save();
+      updateStats();
+      renderVerifyList();
+      resultEl.className = 'verify-result success';
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = '&#10003; <strong>' + found.name + '</strong><br><span style="font-size:0.75rem;opacity:0.8;">' + found.uid + ' &mdash; Verifiziert um ' + new Date().toLocaleTimeString() + '</span>';
+      document.getElementById('verify-inp').value = '';
+      toast('Verifiziert: ' + found.name + ' ✓');
+    } else {
+      resultEl.className = 'verify-result error';
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = '&#10060; Kein Eintrag mit dieser ID gefunden.';
+      toast('Nicht gefunden!', true);
+    }
+  };
+
+  // ── Delete ──
+  window.deleteItem = function(uid, e) {
+    e.stopPropagation();
+    if (!confirm('Eintrag löschen?')) return;
+    inventory = inventory.filter(function(x){ return x.uid !== uid; });
+    save();
+    updateStats();
+    renderList();
+    renderVerifyList();
+    toast('Gelöscht');
+  };
+
+  // ── Clear All ──
+  window.clearAll = function() {
+    if (!confirm('Gesamtes Inventar löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
+    inventory = [];
+    save();
+    updateStats();
+    renderList();
+    renderVerifyList();
+    toast('Inventar geleert');
+  };
+
+  // ── Stats ──
+  function updateStats() {
+    var total   = inventory.length;
+    var done    = inventory.filter(function(x){ return x.status === 'ok'; }).length;
+    var pending = total - done;
+    document.getElementById('statTotal').textContent   = total;
+    document.getElementById('statPending').textContent = pending;
+    document.getElementById('statDone').textContent    = done;
+  }
+
+  // ── Init ──
+  load();
+  updateSerial();
+  updateStats();
+  renderList();
+  renderVerifyList();
+
+})();
+</script>
+</body>
+</html>
