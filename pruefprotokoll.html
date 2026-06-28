@@ -626,6 +626,16 @@
     </div>
 
     <!-- HEADER / FORMULAR -->
+    <!-- Kullanım Rehberi -->
+    <div style="max-width:1200px;margin:16px auto 0;padding:0 16px;">
+        <div style="background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.2);border-left:4px solid #34D399;border-radius:10px;padding:14px 18px;font-size:0.82rem;color:#b0b5bf;line-height:1.8;">
+            <strong style="color:#34D399;display:block;margin-bottom:6px;">&#128247; QR-Scanner Workflow</strong>
+            <strong style="color:#e8edf2;">1.</strong> Gerät eingeben &rarr; <strong style="color:#F6B45F;">&#11015; QR</strong> dr&uuml;cken &rarr; QR wird automatisch im Inventar gespeichert<br>
+            <strong style="color:#e8edf2;">2.</strong> Zum Scannen: <a href="/scanner.html" style="color:#F6B45F;text-decoration:none;">&#128247; Scanner &ouml;ffnen</a> &rarr; <strong style="color:#F6B45F;">Choose from Gallery</strong> &rarr; gespeichertes QR-PNG w&auml;hlen<br>
+            <strong style="color:#e8edf2;">3.</strong> Ger&auml;t wird automatisch erkannt und zugeordnet &#10003;
+        </div>
+    </div>
+
     <div class="header" id="formSection">
         <div class="title-area">
             <h2>Prüfprotokoll – Formular</h2>
@@ -1205,12 +1215,34 @@
                 ctx.fillStyle = '#555555';
                 ctx.fillText(uid, 150, 345);
 
-                // Download
-                var link = document.createElement('a');
-                var safeName = name.replace(/[^a-zA-Z0-9äöüÄÖÜß\-_]/g,'_').substring(0,30);
-                link.download = 'PACDI-QR-' + safeName + '.png';
-                link.href = finalCanvas.toDataURL('image/png', 1.0);
-                link.click();
+                var pngBase64 = finalCanvas.toDataURL('image/png', 1.0);
+
+                // Envantere base64 kaydet
+                var inv = JSON.parse(localStorage.getItem('pacdi_inventory') || '[]');
+                var existIdx = inv.findIndex(function(x){ return x.uid === uid; });
+                var entry = { uid: uid, name: name, qrPng: pngBase64, ts: new Date().toISOString() };
+                if (existIdx >= 0) inv[existIdx] = entry; else inv.push(entry);
+                localStorage.setItem('pacdi_inventory', JSON.stringify(inv));
+
+                // Bilgi mesajı
+                var msg = document.createElement('div');
+                msg.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#34D399;color:#04162E;padding:12px 24px;border-radius:12px;font-weight:700;font-size:0.85rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.3);';
+                msg.innerHTML = '&#10003; QR gespeichert: ' + name.substring(0,25) + '<br><span style="font-weight:400;font-size:0.75rem;">Im Inventar verfügbar · optional herunterladen</span>';
+                document.body.appendChild(msg);
+
+                // Optionaler Download
+                var dlBtn = document.createElement('button');
+                dlBtn.textContent = '⬇ PNG herunterladen';
+                dlBtn.style.cssText = 'display:block;margin:6px auto 0;background:rgba(0,0,0,0.2);border:1px solid rgba(0,0,0,0.3);color:#04162E;padding:4px 12px;border-radius:8px;cursor:pointer;font-size:0.72rem;font-family:inherit;';
+                dlBtn.addEventListener('click', function() {
+                    var link = document.createElement('a');
+                    var safeName = name.replace(/[^a-zA-Z0-9]/g,'_').substring(0,30);
+                    link.download = 'PACDI-QR-' + safeName + '.png';
+                    link.href = pngBase64;
+                    link.click();
+                });
+                msg.appendChild(dlBtn);
+                setTimeout(function() { if (msg.parentNode) msg.parentNode.removeChild(msg); }, 5000);
 
                 document.body.removeChild(hiddenDiv);
             }, 300);
