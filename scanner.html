@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <link rel="canonical" href="https://pacdi.store/scanner.html">
-  <title>QR / Barkod Tarayıcı | PACDI Store</title>
+  <title>QR / Barcode Scanner | PACDI Store</title>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
-  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,10 +20,7 @@
       display: flex;
       justify-content: center;
     }
-    .app-container {
-      max-width: 600px;
-      width: 100%;
-    }
+    .app-container { max-width: 600px; width: 100%; }
     nav {
       display: flex;
       flex-wrap: wrap;
@@ -49,30 +45,17 @@
       color: #F6B45F;
       background: rgba(246,180,95,0.06);
     }
-    h1 {
-      color: #F6B45F;
-      font-size: 1.3rem;
-      margin-bottom: 14px;
-      font-weight: 700;
-    }
+    h1 { color: #F6B45F; font-size: 1.3rem; margin-bottom: 14px; font-weight: 700; }
     #reader {
       width: 100%;
-      max-width: 100%;
       background: #0a1828;
       border-radius: 16px;
       overflow: hidden;
       border: 1px solid rgba(246,180,95,0.2);
-      position: relative;
       min-height: 280px;
     }
-    #reader video {
-      width: 100%;
-      display: block;
-    }
-    #result {
-      margin-top: 14px;
-      min-height: 40px;
-    }
+    #reader video { width: 100%; display: block; }
+    #result { margin-top: 14px; min-height: 40px; }
     .result-card {
       background: #0a1828;
       padding: 14px 16px;
@@ -85,7 +68,7 @@
       gap: 12px;
     }
     .result-card strong { color: #34D399; margin-right: 6px; }
-    .result-card span { color: #eaf2fb; flex: 1; }
+    .result-card span { color: #eaf2fb; flex: 1; min-width: 0; }
     .error-box {
       background: rgba(248,113,113,0.15);
       border: 1px solid rgba(248,113,113,0.3);
@@ -94,12 +77,7 @@
       color: #f87171;
       font-size: 0.9rem;
     }
-    .btn-group {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
     .btn {
       background: #F6B45F;
       border: none;
@@ -112,24 +90,18 @@
       transition: 0.2s;
       font-family: inherit;
     }
-    .btn:hover { background: #f0c870; transform: scale(1.02); }
+    .btn:hover { background: #f0c870; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-outline {
       background: transparent;
       border: 1px solid #F6B45F;
       color: #F6B45F;
     }
-    .btn-outline:hover { background: rgba(246,180,95,0.08); transform: none; }
+    .btn-outline:hover { background: rgba(246,180,95,0.08); }
     #scanAgainBtn { display: none; }
     #fileInput { display: none; }
-    #history {
-      margin-top: 22px;
-    }
-    #history h3 {
-      color: #F6B45F;
-      font-size: 0.9rem;
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
+    #history { margin-top: 22px; }
+    #history h3 { color: #F6B45F; font-size: 0.9rem; margin-bottom: 10px; font-weight: 600; }
     .history-item {
       background: #0a1828;
       padding: 6px 12px;
@@ -138,10 +110,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(246,180,95,0.06);
       font-size: 0.85rem;
     }
-    .history-item .text { color: #eaf2fb; word-break: break-all; }
+    .history-item .text { color: #eaf2fb; word-break: break-all; flex: 1; }
     .history-item .date { color: #7a9ab8; font-size: 0.6rem; margin-left: 10px; flex-shrink: 0; }
     .empty-history { color: #7a9ab8; font-size: 0.85rem; }
     .footer {
@@ -161,199 +132,247 @@
 </head>
 <body>
 <div class="app-container">
-  <nav id="mainNav">
-    <a href="/">🏠 Ana Sayfa</a>
-    <a href="/qr.html">🔳 QR</a>
-    <a href="/pruefprotokoll.html">⚡ Prüf</a>
-    <a href="/scanner.html" class="active">📷 Scan</a>
-    <a href="/shortener.html">🔗 Link</a>
-    <a href="/password.html">🔐 Pass</a>
+  <nav>
+    <a href="/">&#127968; Home</a>
+    <a href="/qr.html">&#9643; QR</a>
+    <a href="/pruefprotokoll.html">&#9889; Prüf</a>
+    <a href="/scanner.html" class="active">&#128247; Scan</a>
+    <a href="/shortener.html">&#128279; Link</a>
+    <a href="/password.html">&#128272; Pass</a>
   </nav>
 
-  <h1>📷 QR / Barkod Tarayıcı</h1>
+  <h1>&#128247; QR / Barcode Scanner</h1>
 
   <div id="reader"></div>
-
   <div id="result"></div>
 
   <div class="btn-group">
-    <button id="scanAgainBtn" class="btn">🔄 Yeniden Tara</button>
-    <button id="uploadBtn" class="btn btn-outline">📤 Resim Yükle</button>
+    <button id="scanAgainBtn" class="btn">&#128260; Scan Again</button>
+    <button id="uploadBtn" class="btn btn-outline">&#128228; Upload Image</button>
     <input type="file" id="fileInput" accept="image/*">
   </div>
 
   <div id="history"></div>
 
-  <div class="footer">PACDI Store · <a href="/legal.html">Impressum & Datenschutz</a></div>
+  <div class="footer">PACDI Store &middot; <a href="/legal.html">Legal &amp; Privacy</a></div>
 </div>
 
 <script>
 (function() {
-  'use strict';
-  var html5QrCode = null;
-  var scanHistory = JSON.parse(localStorage.getItem('scanHistory') || '[]');
-  var isScanning = false;
-  var readerElement = document.getElementById('reader');
 
+  var scanner = null;
+  var isScanning = false;
+  var isStopping = false;
+  var scanHistory = [];
+
+  try {
+    scanHistory = JSON.parse(localStorage.getItem('pacdi_scan_history') || '[]');
+  } catch(e) { scanHistory = []; }
+
+  // ── DOM refs ──
+  var readerEl    = document.getElementById('reader');
+  var resultEl    = document.getElementById('result');
+  var scanAgainBtn = document.getElementById('scanAgainBtn');
+  var uploadBtn   = document.getElementById('uploadBtn');
+  var fileInput   = document.getElementById('fileInput');
+
+  // ── History ──
   function renderHistory() {
     var container = document.getElementById('history');
     if (!scanHistory.length) {
-      container.innerHTML = '<div class="empty-history">📭 Henüz tarama yok.</div>';
+      container.innerHTML = '<div class="empty-history">&#128237; No scans yet.</div>';
       return;
     }
-    var html = '<h3>📜 Geçmiş</h3>';
-    var reversed = scanHistory.slice(-10).reverse();
-    for (var i = 0; i < reversed.length; i++) {
-      var item = reversed[i];
+    var html = '<h3>&#128220; History</h3>';
+    var items = scanHistory.slice(-10).reverse();
+    for (var i = 0; i < items.length; i++) {
+      var item = items[i];
+      // escape for display only
+      var safeText = item.text
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;');
       html += '<div class="history-item">' +
-        '<span class="text">' + item.text + '</span>' +
+        '<span class="text">' + safeText + '</span>' +
         '<span class="date">' + new Date(item.date).toLocaleString() + '</span>' +
         '</div>';
     }
     container.innerHTML = html;
   }
 
+  function saveToHistory(text) {
+    // dedupe within 5s
+    var now = Date.now();
+    var last = scanHistory[scanHistory.length - 1];
+    if (last && last.text === text && (now - new Date(last.date).getTime()) < 5000) return;
+    scanHistory.push({ text: text, date: new Date().toISOString() });
+    try { localStorage.setItem('pacdi_scan_history', JSON.stringify(scanHistory)); } catch(e) {}
+    renderHistory();
+  }
+
+  // ── UI helpers ──
   function showResult(text) {
-    var resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = 
-      '<div class="result-card">' +
-        '<strong>✅ Okundu:</strong>' +
-        '<span>' + text + '</span>' +
-        '<button id="instantSaveBtn" class="btn" style="font-size:0.75rem; padding:4px 14px; margin-left:auto;">💾 Kaydet</button>' +
-      '</div>';
-    
-    document.getElementById('instantSaveBtn').addEventListener('click', function() {
-      window.saveHistory(text);
-      this.textContent = '🔒 Kaydedildi';
-      this.disabled = true;
-      this.style.background = '#34D399';
-      this.style.color = '#04162E';
+    // escape for display
+    var safeText = text
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;');
+
+    var card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML =
+      '<strong>&#10003; Scanned:</strong>' +
+      '<span>' + safeText + '</span>';
+
+    var saveBtn = document.createElement('button');
+    saveBtn.className = 'btn';
+    saveBtn.style.cssText = 'font-size:0.75rem;padding:4px 14px;margin-left:auto;flex-shrink:0;';
+    saveBtn.textContent = 'Save';
+
+    // closure over text — no inline onclick, no string escaping issues
+    saveBtn.addEventListener('click', function() {
+      saveToHistory(text);
+      saveBtn.textContent = 'Saved \u2713';
+      saveBtn.disabled = true;
+      saveBtn.style.background = '#34D399';
     });
 
-    document.getElementById('scanAgainBtn').style.display = 'inline-block';
+    card.appendChild(saveBtn);
+    resultEl.innerHTML = '';
+    resultEl.appendChild(card);
+    scanAgainBtn.style.display = 'inline-block';
   }
 
   function showError(msg) {
-    document.getElementById('result').innerHTML = 
-      '<div class="error-box">❌ ' + msg + '</div>';
+    resultEl.innerHTML = '<div class="error-box">&#10060; ' + msg + '</div>';
   }
 
-  function stopScanner(callback) {
-    if (html5QrCode && isScanning) {
-      html5QrCode.stop().then(function() {
+  function showStatus(msg) {
+    resultEl.innerHTML = '<div style="color:#7a9ab8;font-size:0.85rem;padding:8px 0;">' + msg + '</div>';
+  }
+
+  // ── Scanner control ──
+  function stopScanner() {
+    return new Promise(function(resolve) {
+      if (!scanner || !isScanning) {
         isScanning = false;
-        if (callback) callback();
-      }).catch(function(err) {
-        console.warn('Durdurma hatası:', err);
+        isStopping = false;
+        resolve();
+        return;
+      }
+      isStopping = true;
+      scanner.stop().then(function() {
         isScanning = false;
-        if (callback) callback();
+        isStopping = false;
+        resolve();
+      }).catch(function() {
+        isScanning = false;
+        isStopping = false;
+        resolve(); // always resolve
       });
-    } else {
-      if (callback) callback();
-    }
-  }
-
-  function startScanner() {
-    if (isScanning) {
-      stopScanner(function() {
-        setTimeout(startScanner, 300);
-      });
-      return;
-    }
-
-    readerElement.innerHTML = '';
-
-    try {
-      html5QrCode = new Html5Qrcode("reader");
-      var config = {
-        fps: 15,
-        qrbox: { width: 260, height: 200 },
-        aspectRatio: 1.0
-      };
-
-      html5QrCode.start(
-        { facingMode: "environment" },
-        config,
-        function(decodedText) {
-          stopScanner(function() {
-            showResult(decodedText);
-          });
-        },
-        function(errorMessage) {}
-      ).then(function() {
-        isScanning = true;
-        document.getElementById('result').innerHTML = '';
-        document.getElementById('scanAgainBtn').style.display = 'none';
-      }).catch(function(err) {
-        showError('Kamera başlatılamadı: ' + err);
-      });
-    } catch (e) {
-      showError('Tarayıcı oluşturulamadı: ' + e.message);
-    }
-  }
-
-  function scanImageFile(file) {
-    if (!file) return;
-
-    stopScanner(function() {
-      var tempDiv = document.createElement('div');
-      tempDiv.id = 'tempReader';
-      tempDiv.style.display = 'none';
-      document.body.appendChild(tempDiv);
-
-      var tempScanner = new Html5Qrcode('tempReader');
-      tempScanner.scanFile(file, true)
-        .then(function(decodedText) {
-          showResult(decodedText);
-          document.body.removeChild(tempDiv);
-        })
-        .catch(function(err) {
-          showError('Resim okunamadı: ' + err);
-          document.body.removeChild(tempDiv);
-        });
     });
   }
 
-  document.getElementById('scanAgainBtn').addEventListener('click', function() {
-    document.getElementById('result').innerHTML = '';
-    this.style.display = 'none';
+  function startScanner() {
+    if (isStopping) {
+      setTimeout(startScanner, 300);
+      return;
+    }
+    if (isScanning) {
+      stopScanner().then(function() { setTimeout(startScanner, 300); });
+      return;
+    }
+
+    readerEl.innerHTML = '';
+    showStatus('Starting camera...');
+
+    Html5Qrcode.getCameras().then(function(cameras) {
+      if (!cameras || !cameras.length) {
+        showError('No camera found.');
+        return;
+      }
+
+      // prefer back/environment camera
+      var camId = cameras[0].id;
+      for (var i = 0; i < cameras.length; i++) {
+        var lbl = (cameras[i].label || '').toLowerCase();
+        if (lbl.indexOf('back') !== -1 || lbl.indexOf('environment') !== -1 || lbl.indexOf('rear') !== -1) {
+          camId = cameras[i].id;
+          break;
+        }
+      }
+
+      scanner = new Html5Qrcode('reader');
+
+      scanner.start(
+        { deviceId: { exact: camId } },
+        { fps: 12, qrbox: { width: 250, height: 200 }, aspectRatio: 1.2 },
+        function onSuccess(decodedText) {
+          // stop first, then show — avoids double-fire
+          stopScanner().then(function() {
+            showResult(decodedText);
+          });
+        },
+        function onError() { /* silent */ }
+      ).then(function() {
+        isScanning = true;
+        resultEl.innerHTML = '';
+      }).catch(function(err) {
+        showError('Camera error: ' + err);
+      });
+
+    }).catch(function(err) {
+      showError('Camera access denied: ' + err);
+    });
+  }
+
+  // ── File scan ──
+  function scanFile(file) {
+    if (!file) return;
+    stopScanner().then(function() {
+      showStatus('Reading image...');
+      var tempId = 'pacdi-temp-reader-' + Date.now();
+      var tempDiv = document.createElement('div');
+      tempDiv.id = tempId;
+      tempDiv.style.display = 'none';
+      document.body.appendChild(tempDiv);
+
+      var tempScanner = new Html5Qrcode(tempId);
+      tempScanner.scanFile(file, true).then(function(text) {
+        showResult(text);
+        document.body.removeChild(tempDiv);
+      }).catch(function(err) {
+        showError('Could not read image: ' + err);
+        document.body.removeChild(tempDiv);
+      });
+    });
+  }
+
+  // ── Events ──
+  scanAgainBtn.addEventListener('click', function() {
+    resultEl.innerHTML = '';
+    scanAgainBtn.style.display = 'none';
     startScanner();
   });
 
-  document.getElementById('uploadBtn').addEventListener('click', function() {
-    document.getElementById('fileInput').click();
+  uploadBtn.addEventListener('click', function() {
+    fileInput.click();
   });
 
-  document.getElementById('fileInput').addEventListener('change', function(e) {
-    if (this.files && this.files.length > 0) {
-      scanImageFile(this.files[0]);
+  fileInput.addEventListener('change', function() {
+    if (this.files && this.files.length) {
+      scanFile(this.files[0]);
     }
     this.value = '';
   });
 
-  window.saveHistory = function(text) {
-    var isDuplicate = scanHistory.some(function(item) {
-      return item.text === text && (new Date() - new Date(item.date)) < 5000;
-    });
-    if (isDuplicate) return;
-
-    scanHistory.push({ text: text, date: new Date().toISOString() });
-    localStorage.setItem('scanHistory', JSON.stringify(scanHistory));
-    renderHistory();
-  };
-
-  window.enableProFeatures = function(enable) {};
-
-  document.addEventListener('DOMContentLoaded', function() {
-    renderHistory();
-    startScanner();
-  });
-
   window.addEventListener('beforeunload', function() {
-    if (html5QrCode && isScanning) {
-      html5QrCode.stop().catch(function(e) {});
-    }
+    if (isScanning) stopScanner();
   });
+
+  // ── Init ──
+  renderHistory();
+  startScanner();
 
 })();
 </script>
