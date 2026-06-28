@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!--
+╔═══════════════════════════════════════════════════════════════╗
+║  🛡️  PACDI FRAMEWORK — PROTECTED WORK | FSEK: 2026/18897    ║
+╚═══════════════════════════════════════════════════════════════╝
+-->
 <html lang="de">
 <head>
   <meta charset="UTF-8">
@@ -11,149 +16,52 @@
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: #04162E;
-      color: #eaf2fb;
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      min-height: 100vh;
-      padding: 16px;
-      display: flex;
-      justify-content: center;
-    }
-    .app-container { max-width: 600px; width: 100%; }
-    nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-bottom: 20px;
-      background: rgba(4,22,46,0.8);
-      border-radius: 12px;
-      padding: 8px;
-    }
-    nav a {
-      color: #7a9ab8;
-      text-decoration: none;
-      font-size: 0.7rem;
-      padding: 5px 10px;
-      border-radius: 16px;
-      border: 1px solid transparent;
-      transition: 0.2s;
-      white-space: nowrap;
-    }
-    nav a:hover, nav a.active {
-      border-color: #F6B45F;
-      color: #F6B45F;
-      background: rgba(246,180,95,0.06);
-    }
+    body { background: #04162E; color: #eaf2fb; font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; padding: 16px; display: flex; justify-content: center; }
+    .app { max-width: 600px; width: 100%; }
+    nav { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 20px; background: rgba(4,22,46,0.8); border-radius: 12px; padding: 8px; }
+    nav a { color: #7a9ab8; text-decoration: none; font-size: 0.7rem; padding: 5px 10px; border-radius: 16px; border: 1px solid transparent; transition: 0.2s; white-space: nowrap; }
+    nav a:hover, nav a.active { border-color: #F6B45F; color: #F6B45F; background: rgba(246,180,95,0.06); }
     h1 { color: #F6B45F; font-size: 1.3rem; margin-bottom: 14px; font-weight: 700; }
-    #reader {
-      width: 100%;
-      background: #0a1828;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(246,180,95,0.2);
-      min-height: 280px;
-    }
-    #reader video { width: 100%; display: block; }
+    #reader { width: 100%; background: #0a1828; border-radius: 16px; overflow: hidden; border: 1px solid rgba(246,180,95,0.2); min-height: 280px; }
     #result { margin-top: 14px; min-height: 40px; }
-    .result-card {
-      background: #0a1828;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border-left: 4px solid #34D399;
-      word-break: break-all;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 12px;
-    }
-    .result-card strong { color: #34D399; margin-right: 6px; }
-    .result-card span { color: #eaf2fb; flex: 1; min-width: 0; }
-    .error-box {
-      background: rgba(248,113,113,0.15);
-      border: 1px solid rgba(248,113,113,0.3);
-      padding: 10px 14px;
-      border-radius: 8px;
-      color: #f87171;
-      font-size: 0.9rem;
-    }
+    .result-card { background: #0a1828; padding: 14px 16px; border-radius: 12px; border-left: 4px solid #34D399; word-break: break-all; }
+    .result-card .label { color: #34D399; font-weight: 700; font-size: 0.85rem; margin-bottom: 6px; }
+    .result-card .value { color: #eaf2fb; font-size: 0.88rem; margin-bottom: 10px; }
+    .error-box { background: rgba(248,113,113,0.15); border: 1px solid rgba(248,113,113,0.3); padding: 10px 14px; border-radius: 8px; color: #f87171; font-size: 0.85rem; }
+    .status-box { color: #7a9ab8; font-size: 0.85rem; padding: 8px 0; }
     .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
-    .btn {
-      background: #F6B45F;
-      border: none;
-      padding: 8px 20px;
-      border-radius: 40px;
-      font-weight: 700;
-      color: #04162E;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: 0.2s;
-      font-family: inherit;
-    }
+    .btn { background: #F6B45F; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 700; color: #04162E; cursor: pointer; font-size: 0.85rem; transition: 0.2s; font-family: inherit; }
     .btn:hover { background: #f0c870; }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-outline {
-      background: transparent;
-      border: 1px solid #F6B45F;
-      color: #F6B45F;
-    }
+    .btn-outline { background: transparent; border: 1px solid #F6B45F; color: #F6B45F; }
     .btn-outline:hover { background: rgba(246,180,95,0.08); }
+    .btn-green { background: #34D399; color: #04162E; }
+    .btn-green:hover { background: #6ee7b7; }
     #scanAgainBtn { display: none; }
     #fileInput { display: none; }
+    /* File drop zone */
+    #dropZone { border: 2px dashed rgba(246,180,95,0.3); border-radius: 12px; padding: 20px; text-align: center; color: #7a9ab8; font-size: 0.82rem; margin-top: 12px; display: none; cursor: pointer; transition: 0.2s; }
+    #dropZone.active { border-color: #F6B45F; color: #F6B45F; background: rgba(246,180,95,0.04); }
     #history { margin-top: 22px; }
     #history h3 { color: #F6B45F; font-size: 0.9rem; margin-bottom: 10px; font-weight: 600; }
-    .history-item {
-      background: #0a1828;
-      padding: 6px 12px;
-      border-radius: 8px;
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.85rem;
-    }
+    .history-item { background: #0a1828; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; }
     .history-item .text { color: #eaf2fb; word-break: break-all; flex: 1; }
-    .history-item .date { color: #7a9ab8; font-size: 0.6rem; margin-left: 10px; flex-shrink: 0; }
+    .history-item .date { color: #7a9ab8; font-size: 0.65rem; margin-left: 10px; flex-shrink: 0; }
     .empty-history { color: #7a9ab8; font-size: 0.85rem; }
-    .footer {
-      margin-top: 28px;
-      font-size: 0.65rem;
-      color: #4a6a88;
-      text-align: center;
-      border-top: 1px solid rgba(246,180,95,0.08);
-      padding-top: 16px;
-    }
+    .footer { margin-top: 28px; font-size: 0.65rem; color: #4a6a88; text-align: center; border-top: 1px solid rgba(246,180,95,0.08); padding-top: 16px; }
     .footer a { color: rgba(246,180,95,0.5); text-decoration: none; }
-    @media (max-width: 480px) {
-      nav a { font-size: 0.6rem; padding: 4px 8px; }
-      h1 { font-size: 1.1rem; }
-    }
+    /* Temp reader for file scan — visible but off-screen */
+    #tempReaderContainer { position: fixed; left: -9999px; top: 0; width: 1px; height: 1px; overflow: hidden; }
+    @media (max-width: 480px) { nav a { font-size: 0.6rem; padding: 4px 8px; } h1 { font-size: 1.1rem; } }
   </style>
 </head>
 <body>
-<!--
-╬═══════════════════════════════════════════════════════════════╮
-║         🛡️  PACDI FRAMEWORK — PROTECTED WORK                  ║
-║                                                               ║
-║  © 2026 PACDI Global Yazılım Ltd. Şti.                       ║
-║  FSEK Registration No : 2026/18897                            ║
-║  Trade Registry      : 23836 · Yunusemre / Manisa, TR       ║
-║                                                               ║
-║  This work and its modular software architecture are          ║
-║  protected under PACDI Software Library FSEK registration.   ║
-║  Unauthorized copying is subject to legal action.            ║
-║                                                               ║
-║  pacdi.eu · pacdi.de · info@pacdi.eu                         ║
-╠═══════════════════════════════════════════════════════════════╣
--->
-
-<div class="app-container">
+<div class="app">
   <nav>
     <a href="/">&#127968; Home</a>
     <a href="/qr.html">&#9643; QR</a>
-    <a href="/pruefprotokoll.html">&#9889; Prüf</a>
+    <a href="/pruefprotokoll.html">&#9889; Pr&uuml;f</a>
     <a href="/scanner.html" class="active">&#128247; Scan</a>
-    <a href="/shortener.html">&#128279; Link</a>
     <a href="/password.html">&#128272; Pass</a>
   </nav>
 
@@ -168,29 +76,36 @@
     <input type="file" id="fileInput" accept="image/*">
   </div>
 
-  <div id="history"></div>
+  <!-- Drop zone -->
+  <div id="dropZone">
+    &#128247; Drop image here or click Upload Image
+  </div>
 
+  <div id="history"></div>
   <div class="footer">PACDI Store &middot; <a href="/legal.html">Legal &amp; Privacy</a></div>
 </div>
 
+<!-- Temp reader container — off-screen but visible (Firefox canvas fix) -->
+<div id="tempReaderContainer">
+  <div id="tempReader"></div>
+</div>
+
 <script>
-(function() {
+(function () {
 
   var scanner = null;
   var isScanning = false;
   var isStopping = false;
   var scanHistory = [];
 
-  try {
-    scanHistory = JSON.parse(localStorage.getItem('pacdi_scan_history') || '[]');
-  } catch(e) { scanHistory = []; }
+  try { scanHistory = JSON.parse(localStorage.getItem('pacdi_scan_history') || '[]'); } catch(e) {}
 
-  // ── DOM refs ──
   var readerEl    = document.getElementById('reader');
   var resultEl    = document.getElementById('result');
   var scanAgainBtn = document.getElementById('scanAgainBtn');
   var uploadBtn   = document.getElementById('uploadBtn');
   var fileInput   = document.getElementById('fileInput');
+  var dropZone    = document.getElementById('dropZone');
 
   // ── History ──
   function renderHistory() {
@@ -202,22 +117,13 @@
     var html = '<h3>&#128220; History</h3>';
     var items = scanHistory.slice(-10).reverse();
     for (var i = 0; i < items.length; i++) {
-      var item = items[i];
-      // escape for display only
-      var safeText = item.text
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;');
-      html += '<div class="history-item">' +
-        '<span class="text">' + safeText + '</span>' +
-        '<span class="date">' + new Date(item.date).toLocaleString() + '</span>' +
-        '</div>';
+      var safe = items[i].text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      html += '<div class="history-item"><span class="text">' + safe + '</span><span class="date">' + new Date(items[i].date).toLocaleString() + '</span></div>';
     }
     container.innerHTML = html;
   }
 
-  function saveToHistory(text) {
-    // dedupe within 5s
+  function saveHistory(text) {
     var now = Date.now();
     var last = scanHistory[scanHistory.length - 1];
     if (last && last.text === text && (now - new Date(last.date).getTime()) < 5000) return;
@@ -226,34 +132,50 @@
     renderHistory();
   }
 
-  // ── UI helpers ──
+  // ── UI ──
   function showResult(text) {
-    // escape for display
-    var safeText = text
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;');
-
+    var safe = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     var card = document.createElement('div');
     card.className = 'result-card';
-    card.innerHTML =
-      '<strong>&#10003; Scanned:</strong>' +
-      '<span>' + safeText + '</span>';
+
+    var label = document.createElement('div');
+    label.className = 'label';
+    label.textContent = '\u2713 Scanned:';
+
+    var value = document.createElement('div');
+    value.className = 'value';
+    value.textContent = text;
+
+    var btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;';
 
     var saveBtn = document.createElement('button');
-    saveBtn.className = 'btn';
-    saveBtn.style.cssText = 'font-size:0.75rem;padding:4px 14px;margin-left:auto;flex-shrink:0;';
+    saveBtn.className = 'btn btn-green';
+    saveBtn.style.cssText = 'font-size:0.75rem;padding:5px 14px;';
     saveBtn.textContent = 'Save';
-
-    // closure over text — no inline onclick, no string escaping issues
     saveBtn.addEventListener('click', function() {
-      saveToHistory(text);
+      saveHistory(text);
       saveBtn.textContent = 'Saved \u2713';
       saveBtn.disabled = true;
-      saveBtn.style.background = '#34D399';
     });
 
-    card.appendChild(saveBtn);
+    // If URL — open link button
+    if (/^https?:\/\//i.test(text)) {
+      var openBtn = document.createElement('a');
+      openBtn.className = 'btn';
+      openBtn.href = text;
+      openBtn.target = '_blank';
+      openBtn.rel = 'noopener noreferrer';
+      openBtn.style.cssText = 'font-size:0.75rem;padding:5px 14px;text-decoration:none;';
+      openBtn.textContent = 'Open URL \u2192';
+      btnRow.appendChild(openBtn);
+    }
+
+    btnRow.appendChild(saveBtn);
+    card.appendChild(label);
+    card.appendChild(value);
+    card.appendChild(btnRow);
+
     resultEl.innerHTML = '';
     resultEl.appendChild(card);
     scanAgainBtn.style.display = 'inline-block';
@@ -264,10 +186,10 @@
   }
 
   function showStatus(msg) {
-    resultEl.innerHTML = '<div style="color:#7a9ab8;font-size:0.85rem;padding:8px 0;">' + msg + '</div>';
+    resultEl.innerHTML = '<div class="status-box">' + msg + '</div>';
   }
 
-  // ── Scanner control ──
+  // ── Scanner stop ──
   function stopScanner() {
     return new Promise(function(resolve) {
       if (!scanner || !isScanning) {
@@ -284,83 +206,88 @@
       }).catch(function() {
         isScanning = false;
         isStopping = false;
-        resolve(); // always resolve
+        resolve();
       });
     });
   }
 
+  // ── Camera start ──
+  // Firefox fix: don't use exact deviceId — use facingMode environment directly
   function startScanner() {
-    if (isStopping) {
-      setTimeout(startScanner, 300);
-      return;
-    }
-    if (isScanning) {
-      stopScanner().then(function() { setTimeout(startScanner, 300); });
-      return;
-    }
+    if (isStopping) { setTimeout(startScanner, 300); return; }
+    if (isScanning) { stopScanner().then(function() { setTimeout(startScanner, 300); }); return; }
 
     readerEl.innerHTML = '';
     showStatus('Starting camera...');
 
-    Html5Qrcode.getCameras().then(function(cameras) {
-      if (!cameras || !cameras.length) {
-        showError('No camera found.');
-        return;
-      }
-
-      // prefer back/environment camera
-      var camId = cameras[0].id;
-      for (var i = 0; i < cameras.length; i++) {
-        var lbl = (cameras[i].label || '').toLowerCase();
-        if (lbl.indexOf('back') !== -1 || lbl.indexOf('environment') !== -1 || lbl.indexOf('rear') !== -1) {
-          camId = cameras[i].id;
-          break;
-        }
-      }
-
+    try {
       scanner = new Html5Qrcode('reader');
 
+      // Firefox & cross-browser: use facingMode constraint directly, no deviceId
+      var cameraConstraint = { facingMode: { ideal: 'environment' } };
+
       scanner.start(
-        { deviceId: { exact: camId } },
-        { fps: 12, qrbox: { width: 250, height: 200 }, aspectRatio: 1.2 },
-        function onSuccess(decodedText) {
-          // stop first, then show — avoids double-fire
-          stopScanner().then(function() {
-            showResult(decodedText);
-          });
+        cameraConstraint,
+        { fps: 12, qrbox: { width: 250, height: 200 } },
+        function onSuccess(text) {
+          stopScanner().then(function() { showResult(text); });
         },
         function onError() { /* silent */ }
       ).then(function() {
         isScanning = true;
         resultEl.innerHTML = '';
+        dropZone.style.display = 'none';
       }).catch(function(err) {
-        showError('Camera error: ' + err);
+        // Fallback: try without constraint
+        showStatus('Retrying with default camera...');
+        scanner = new Html5Qrcode('reader');
+        scanner.start(
+          { facingMode: 'user' },
+          { fps: 12, qrbox: { width: 250, height: 200 } },
+          function onSuccess(text) {
+            stopScanner().then(function() { showResult(text); });
+          },
+          function onError() {}
+        ).then(function() {
+          isScanning = true;
+          resultEl.innerHTML = '<div class="status-box">&#9888;&#65039; Front camera active — point at QR code</div>';
+          dropZone.style.display = 'block';
+        }).catch(function(err2) {
+          showError('Camera not available: ' + err2 + '. Use Upload Image instead.');
+          dropZone.style.display = 'block';
+        });
       });
-
-    }).catch(function(err) {
-      showError('Camera access denied: ' + err);
-    });
+    } catch(e) {
+      showError('Scanner error: ' + e.message);
+      dropZone.style.display = 'block';
+    }
   }
 
   // ── File scan ──
+  // Firefox fix: tempReader div must be in DOM and visible (not display:none)
+  // We use off-screen positioning instead
   function scanFile(file) {
     if (!file) return;
     stopScanner().then(function() {
       showStatus('Reading image...');
-      var tempId = 'pacdi-temp-reader-' + Date.now();
-      var tempDiv = document.createElement('div');
-      tempDiv.id = tempId;
-      tempDiv.style.display = 'none';
-      document.body.appendChild(tempDiv);
+      dropZone.style.display = 'none';
 
-      var tempScanner = new Html5Qrcode(tempId);
-      tempScanner.scanFile(file, true).then(function(text) {
-        showResult(text);
-        document.body.removeChild(tempDiv);
-      }).catch(function(err) {
-        showError('Could not read image: ' + err);
-        document.body.removeChild(tempDiv);
-      });
+      // Clear temp reader
+      var tempEl = document.getElementById('tempReader');
+      tempEl.innerHTML = '';
+
+      var tempScanner = new Html5Qrcode('tempReader');
+      tempScanner.scanFile(file, /* showImage= */ false)
+        .then(function(text) {
+          showResult(text);
+          tempEl.innerHTML = '';
+        })
+        .catch(function(err) {
+          // Try canvas fallback with ZXing-style approach
+          showError('Could not read image. Tips: ensure good lighting, QR code fills most of the image, try a screenshot instead of photo.');
+          dropZone.style.display = 'block';
+          tempEl.innerHTML = '';
+        });
     });
   }
 
@@ -368,18 +295,26 @@
   scanAgainBtn.addEventListener('click', function() {
     resultEl.innerHTML = '';
     scanAgainBtn.style.display = 'none';
+    dropZone.style.display = 'none';
     startScanner();
   });
 
-  uploadBtn.addEventListener('click', function() {
-    fileInput.click();
-  });
+  uploadBtn.addEventListener('click', function() { fileInput.click(); });
 
   fileInput.addEventListener('change', function() {
-    if (this.files && this.files.length) {
-      scanFile(this.files[0]);
-    }
+    if (this.files && this.files.length) { scanFile(this.files[0]); }
     this.value = '';
+  });
+
+  // Drag & drop
+  dropZone.addEventListener('click', function() { fileInput.click(); });
+  dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('active'); });
+  dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('active'); });
+  dropZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dropZone.classList.remove('active');
+    var file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) { scanFile(file); }
   });
 
   window.addEventListener('beforeunload', function() {
@@ -392,14 +327,5 @@
 
 })();
 </script>
-<div id="pacdi-fsek" style="text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-  <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.25);border-radius:24px;padding:8px 20px;margin-bottom:12px;">
-    <span style="font-size:1rem;">🛡️</span>
-    <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#D4AF37;text-transform:uppercase;">FSEK Registered · PACDI Framework</span>
-  </div>
-  <div style="font-size:0.78rem;color:#8A8F9A;margin-bottom:4px;">© 2026 PACDI Global Yazılım Ltd. Şti.</div>
-  <div style="font-size:0.72rem;color:#6B7280;margin-bottom:10px;">Protected under FSEK Copyright Registration No: <a href="https://pacdi.eu" style="color:#D4AF37;text-decoration:none;">2026/18897</a></div>
-  <div style="font-size:0.82rem;font-style:italic;color:#6B7280;">&ldquo;Technology in the service of humanity.&rdquo;</div>
-</div>
 </body>
 </html>
