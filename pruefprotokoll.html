@@ -475,6 +475,7 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
     <link rel="canonical" href="https://pacdi.store/pruefprotokoll.html" />
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 <!--
@@ -676,6 +677,7 @@
                     <th style="min-width:100px;">Prüfintervall</th>
                     <th style="min-width:130px;">Nächste Prüfung</th>
                     <th style="min-width:100px;">Bemerkung</th>
+                    <th style="width:60px;font-size:0.72rem;">⬇ QR</th>
                     <th style="width:40px;">✔</th>
                 </tr>
             </thead>
@@ -822,6 +824,32 @@
             inpNote.type = 'text'; inpNote.placeholder = 'Bemerkung'; inpNote.className = 'bemerkung';
             if (beispiel) inpNote.value = beispiel.bemerkung || '';
             tdNote.appendChild(inpNote); tr.appendChild(tdNote);
+
+            // QR Button
+            var tdQr = document.createElement('td');
+            tdQr.style.textAlign = 'center';
+            var qrBtn = document.createElement('button');
+            qrBtn.textContent = '⬇ QR';
+            qrBtn.title = 'QR Code generieren & herunterladen';
+            qrBtn.style.cssText = 'background:#D4AF37;border:none;color:#04162E;font-weight:700;font-size:0.65rem;padding:4px 8px;border-radius:8px;cursor:pointer;font-family:inherit;white-space:nowrap;';
+            qrBtn.addEventListener('click', function() {
+                var inventar = tr.querySelector('.inventar').value.trim();
+                if (!inventar) { alert('Bitte Inventarnummer / Bezeichnung eingeben.'); return; }
+                var rowNr = tr.querySelector('.row-nr').textContent;
+                var standort = document.getElementById('standort').value.trim() || 'PACDI';
+                // Unique ID
+                var uid = 'PACDI-' + standort.substring(0,6).replace(/[^a-zA-Z0-9]/g,'').toUpperCase() + '-' + String(rowNr).padStart(3,'0') + '-' + Date.now().toString(36).toUpperCase();
+                var qrData = JSON.stringify({ id: uid, name: inventar, ts: new Date().toISOString().split('T')[0] });
+                generateAndDownloadQR(uid, inventar, qrData);
+                // Save to inventory
+                var inv = JSON.parse(localStorage.getItem('pacdi_inventory') || '[]');
+                var existing = inv.findIndex(function(x){ return x.rowNr == rowNr; });
+                var entry = { uid: uid, rowNr: rowNr, name: inventar, ts: new Date().toISOString() };
+                if (existing >= 0) inv[existing] = entry; else inv.push(entry);
+                localStorage.setItem('pacdi_inventory', JSON.stringify(inv));
+            });
+            tdQr.appendChild(qrBtn);
+            tr.appendChild(tdQr);
 
             // Checkbox
             var tdSel = document.createElement('td');
@@ -1137,6 +1165,55 @@
 
         function scrollToForm() {
             document.getElementById('formSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateAndDownloadQR(uid, name, qrData) {
+            // Gizli div oluştur
+            var hiddenDiv = document.createElement('div');
+            hiddenDiv.style.cssText = 'position:fixed;left:-9999px;top:0;width:200px;height:200px;';
+            document.body.appendChild(hiddenDiv);
+
+            new QRCode(hiddenDiv, {
+                text: qrData,
+                width: 300,
+                height: 300,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+
+            setTimeout(function() {
+                var srcCanvas = hiddenDiv.querySelector('canvas');
+                if (!srcCanvas) { document.body.removeChild(hiddenDiv); alert('QR Fehler'); return; }
+
+                // Label ekle
+                var finalCanvas = document.createElement('canvas');
+                finalCanvas.width = 300;
+                finalCanvas.height = 360;
+                var ctx = finalCanvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, 300, 360);
+                ctx.drawImage(srcCanvas, 0, 0, 300, 300);
+
+                // Cihaz adı
+                ctx.fillStyle = '#000000';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                var shortName = name.length > 30 ? name.substring(0,28) + '..' : name;
+                ctx.fillText(shortName, 150, 325);
+                ctx.font = '11px Arial';
+                ctx.fillStyle = '#555555';
+                ctx.fillText(uid, 150, 345);
+
+                // Download
+                var link = document.createElement('a');
+                var safeName = name.replace(/[^a-zA-Z0-9äöüÄÖÜß\-_]/g,'_').substring(0,30);
+                link.download = 'PACDI-QR-' + safeName + '.png';
+                link.href = finalCanvas.toDataURL('image/png', 1.0);
+                link.click();
+
+                document.body.removeChild(hiddenDiv);
+            }, 300);
         }
 
         window.addRow = addRow;
