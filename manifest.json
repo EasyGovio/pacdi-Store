@@ -1,0 +1,25 @@
+{
+  "name": "PACDI Inventar & Prüfkontrolle",
+  "short_name": "PACDI",
+  "description": "Premium Inventarverwaltung und Prüfprotokoll System",
+  "start_url": "./envanter.html",
+  "display": "standalone",
+  "background_color": "#04162E",
+  "theme_color": "#04162E",
+  "orientation": "portrait",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/6849/6849232.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/6849/6849232.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
