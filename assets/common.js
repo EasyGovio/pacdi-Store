@@ -112,6 +112,22 @@ function openPaddleCheckout() {
   });
 }
 
+// ── HAMBURGER MENÜ ──
+window.toggleMenu = function() {
+  var m = document.getElementById('mobile-menu');
+  if (!m) return;
+  m.style.display = m.style.display === 'block' ? 'none' : 'block';
+};
+
+document.addEventListener('click', function(e) {
+  var header = document.getElementById('site-header');
+  if (!header) return;
+  if (!header.contains(e.target)) {
+    var m = document.getElementById('mobile-menu');
+    if (m) m.style.display = 'none';
+  }
+});
+
 // ── MENÜ — envanter.html eklendi ──
 function buildMenu() {
   const nav = document.getElementById('mainNav');
