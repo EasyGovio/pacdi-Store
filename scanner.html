@@ -13,107 +13,25 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: #04162E;
-      color: #eaf2fb;
-      font-family: system-ui, -apple-system, sans-serif;
-      min-height: 100vh;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .app { max-width: 600px; width: 100%; }
+    body { background: #04162E; color: #eaf2fb; font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; padding: 16px; }
+    .app { max-width: 560px; margin: 0 auto; }
     nav { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 20px; background: rgba(4,22,46,0.8); border-radius: 12px; padding: 8px; }
     nav a { color: #7a9ab8; text-decoration: none; font-size: 0.7rem; padding: 5px 10px; border-radius: 16px; border: 1px solid transparent; transition: 0.2s; white-space: nowrap; }
     nav a:hover, nav a.active { border-color: #F6B45F; color: #F6B45F; background: rgba(246,180,95,0.06); }
     h1 { color: #F6B45F; font-size: 1.3rem; margin-bottom: 14px; font-weight: 700; }
-
-    /* Camera view */
-    .cam-wrap {
-      position: relative;
-      width: 100%;
-      background: #0a1828;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(246,180,95,0.2);
-      min-height: 300px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    #video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      border-radius: 16px;
-    }
-    /* Scan overlay */
-    .scan-overlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-    .scan-frame {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 220px;
-      height: 220px;
-      border: 2px solid rgba(246,180,95,0.6);
-      border-radius: 12px;
-    }
-    .scan-frame::before, .scan-frame::after {
-      content: '';
-      position: absolute;
-      width: 30px;
-      height: 30px;
-      border-color: #F6B45F;
-      border-style: solid;
-    }
-    .scan-frame::before { top: -2px; left: -2px; border-width: 3px 0 0 3px; border-radius: 8px 0 0 0; }
-    .scan-frame::after  { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; border-radius: 0 0 8px 0; }
-    .scan-line {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: 200px;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #F6B45F, transparent);
-      animation: scanline 2s ease-in-out infinite;
-    }
-    @keyframes scanline {
-      0%   { top: 30%; }
-      50%  { top: 70%; }
-      100% { top: 30%; }
-    }
-    .cam-placeholder {
-      color: #4a6a88;
-      font-size: 0.85rem;
-      text-align: center;
-      padding: 40px 20px;
-    }
-    .cam-placeholder .icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
-
-    /* Result */
-    #result { margin-top: 14px; width: 100%; }
+    #reader { width: 100%; border-radius: 16px; overflow: hidden; background: #0a1828; border: 1px solid rgba(246,180,95,0.2); min-height: 280px; }
+    #result { margin-top: 14px; }
     .result-card { background: #0a1828; padding: 14px 16px; border-radius: 12px; border-left: 4px solid #34D399; word-break: break-all; }
     .result-label { color: #34D399; font-weight: 700; font-size: 0.82rem; margin-bottom: 6px; }
     .result-value { color: #eaf2fb; font-size: 0.88rem; margin-bottom: 10px; line-height: 1.5; }
     .result-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-    .error-box { background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.3); padding: 12px 16px; border-radius: 10px; color: #f87171; font-size: 0.85rem; line-height: 1.5; }
-    .status-box { color: #7a9ab8; font-size: 0.85rem; padding: 8px 0; display: flex; align-items: center; gap: 8px; }
-    .spinner { width: 14px; height: 14px; border: 2px solid rgba(246,180,95,0.3); border-top-color: #F6B45F; border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Buttons */
-    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; width: 100%; }
-    .btn { background: #F6B45F; border: none; padding: 9px 20px; border-radius: 40px; font-weight: 700; color: #04162E; cursor: pointer; font-size: 0.85rem; transition: 0.2s; font-family: inherit; }
+    .error-box { background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.3); padding: 12px 16px; border-radius: 10px; color: #f87171; font-size: 0.85rem; line-height: 1.6; }
+    .status-box { color: #7a9ab8; font-size: 0.85rem; padding: 8px 0; }
+    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .btn { background: #F6B45F; border: none; padding: 9px 20px; border-radius: 40px; font-weight: 700; color: #04162E; cursor: pointer; font-size: 0.85rem; transition: 0.2s; font-family: inherit; white-space: nowrap; }
     .btn:hover { background: #f0c870; }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-outline { background: transparent; border: 1px solid #F6B45F; color: #F6B45F; }
@@ -121,21 +39,17 @@
     .btn-green { background: #34D399; color: #04162E; }
     .btn-sm { font-size: 0.75rem; padding: 5px 14px; }
     #fileInput { display: none; }
-
-    /* History */
-    #history { margin-top: 22px; width: 100%; }
-    #history h3 { color: #F6B45F; font-size: 0.9rem; margin-bottom: 10px; font-weight: 600; }
+    #scanAgainBtn { display: none; }
+    #stopBtn { display: none; }
+    #history { margin-top: 22px; }
+    #history h3 { color: #F6B45F; font-size: 0.9rem; margin-bottom: 10px; }
     .history-item { background: #0a1828; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; gap: 8px; }
     .history-item .text { color: #eaf2fb; word-break: break-all; flex: 1; }
     .history-item .date { color: #7a9ab8; font-size: 0.65rem; flex-shrink: 0; }
     .empty-history { color: #7a9ab8; font-size: 0.85rem; }
-
-    /* Info box */
-    .info-box { background: rgba(129,140,248,0.06); border: 1px solid rgba(129,140,248,0.2); border-radius: 10px; padding: 10px 14px; margin-top: 10px; font-size: 0.78rem; color: #7a9ab8; line-height: 1.6; }
-
-    .footer { margin-top: 28px; font-size: 0.65rem; color: #4a6a88; text-align: center; border-top: 1px solid rgba(246,180,95,0.08); padding-top: 16px; width: 100%; }
+    .footer { margin-top: 28px; font-size: 0.65rem; color: #4a6a88; text-align: center; border-top: 1px solid rgba(246,180,95,0.08); padding-top: 16px; }
     .footer a { color: rgba(246,180,95,0.5); text-decoration: none; }
-    @media (max-width: 480px) { nav a { font-size: 0.6rem; padding: 4px 8px; } h1 { font-size: 1.1rem; } }
+    #tempReader { position: fixed; left: -9999px; top: 0; width: 300px; height: 300px; }
   </style>
 </head>
 <body>
@@ -150,344 +64,181 @@
 
   <h1>&#128247; QR / Barcode Scanner</h1>
 
-  <div class="cam-wrap" id="camWrap">
-    <video id="video" autoplay playsinline muted></video>
-    <div class="scan-overlay" id="scanOverlay" style="display:none;">
-      <div class="scan-frame">
-        <div class="scan-line"></div>
-      </div>
-    </div>
-    <div class="cam-placeholder" id="camPlaceholder">
-      <span class="icon">&#128247;</span>
-      Tap "Start Camera" to begin scanning
-    </div>
-  </div>
-
+  <div id="reader"></div>
   <div id="result"></div>
 
   <div class="btn-group">
     <button id="startBtn" class="btn">&#9654; Start Camera</button>
-    <button id="stopBtn"  class="btn btn-outline" style="display:none;">&#9646;&#9646; Stop</button>
-    <button id="scanAgainBtn" class="btn" style="display:none;">&#128260; Scan Again</button>
+    <button id="stopBtn" class="btn btn-outline">&#9646;&#9646; Stop</button>
+    <button id="scanAgainBtn" class="btn">&#128260; Scan Again</button>
     <button id="uploadBtn" class="btn btn-outline">&#128228; Upload Image</button>
     <input type="file" id="fileInput" accept="image/*">
-  </div>
-
-  <div class="info-box" id="infoBox">
-    &#128161; Hold the QR or barcode steady within the frame. Works best in good lighting.<br>
-    &#128247; For best results on iPhone: use Safari and allow camera access when prompted.
   </div>
 
   <div id="history"></div>
   <div class="footer">PACDI Store &middot; <a href="/legal.html">Legal &amp; Privacy</a></div>
 </div>
 
+<div id="tempReader"></div>
+
 <script>
-(function () {
-'use strict';
+(function() {
 
-var video       = document.getElementById('video');
-var camWrap     = document.getElementById('camWrap');
-var scanOverlay = document.getElementById('scanOverlay');
-var camPH       = document.getElementById('camPlaceholder');
-var resultEl    = document.getElementById('result');
-var startBtn    = document.getElementById('startBtn');
-var stopBtn     = document.getElementById('stopBtn');
-var scanAgainBtn= document.getElementById('scanAgainBtn');
-var uploadBtn   = document.getElementById('uploadBtn');
-var fileInput   = document.getElementById('fileInput');
-var infoBox     = document.getElementById('infoBox');
+  // ── Gemini'nin çalışan yaklaşımı:
+  // html5QrCode.start({ facingMode: "environment" }, config, cb)
+  // getCameras() YOK, deviceId YOK — sadece string facingMode
 
-var stream      = null;
-var detector    = null;
-var rafId       = null;
-var scanHistory = [];
-var scanning    = false;
+  var scanner = null;
+  var isScanning = false;
+  var scanHistory = [];
 
-try { scanHistory = JSON.parse(localStorage.getItem('pacdi_scan_history') || '[]'); } catch(e) {}
+  try { scanHistory = JSON.parse(localStorage.getItem('pacdi_scan_history') || '[]'); } catch(e) {}
 
-// ── Check BarcodeDetector support ──
-var hasBarcodeDetector = ('BarcodeDetector' in window);
+  var resultEl    = document.getElementById('result');
+  var startBtn    = document.getElementById('startBtn');
+  var stopBtn     = document.getElementById('stopBtn');
+  var scanAgainBtn= document.getElementById('scanAgainBtn');
+  var uploadBtn   = document.getElementById('uploadBtn');
+  var fileInput   = document.getElementById('fileInput');
 
-// ── Init detector ──
-function initDetector() {
-  if (!hasBarcodeDetector) return Promise.resolve(false);
-  return BarcodeDetector.getSupportedFormats().then(function(formats) {
-    detector = new BarcodeDetector({ formats: formats });
-    return true;
-  }).catch(function() {
-    detector = new BarcodeDetector();
-    return true;
-  });
-}
+  var config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-// ── History ──
-function renderHistory() {
-  var container = document.getElementById('history');
-  if (!scanHistory.length) {
-    container.innerHTML = '<div class="empty-history">&#128237; No scans yet.</div>';
-    return;
-  }
-  var html = '<h3>&#128220; History</h3>';
-  scanHistory.slice(-10).reverse().forEach(function(item) {
-    var safe = item.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    html += '<div class="history-item"><span class="text">' + safe + '</span><span class="date">' + new Date(item.date).toLocaleString() + '</span></div>';
-  });
-  container.innerHTML = html;
-}
-
-function saveHistory(text) {
-  var last = scanHistory[scanHistory.length - 1];
-  if (last && last.text === text && (Date.now() - new Date(last.date).getTime()) < 5000) return;
-  scanHistory.push({ text: text, date: new Date().toISOString() });
-  try { localStorage.setItem('pacdi_scan_history', JSON.stringify(scanHistory)); } catch(e) {}
-  renderHistory();
-}
-
-// ── UI ──
-function showStatus(msg, spinner) {
-  resultEl.innerHTML = '<div class="status-box">' + (spinner ? '<div class="spinner"></div>' : '') + msg + '</div>';
-}
-
-function showError(msg) {
-  resultEl.innerHTML = '<div class="error-box">&#10060; ' + msg + '</div>';
-}
-
-function showResult(text) {
-  stopScan();
-  var safe = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  var isUrl = /^https?:\/\//i.test(text);
-
-  var card = document.createElement('div');
-  card.className = 'result-card';
-  card.innerHTML =
-    '<div class="result-label">&#10003; Scanned:</div>' +
-    '<div class="result-value">' + safe + '</div>' +
-    '<div class="result-actions"></div>';
-
-  var actions = card.querySelector('.result-actions');
-
-  var saveBtn = document.createElement('button');
-  saveBtn.className = 'btn btn-green btn-sm';
-  saveBtn.textContent = 'Save';
-  saveBtn.addEventListener('click', function() {
-    saveHistory(text);
-    saveBtn.textContent = 'Saved \u2713';
-    saveBtn.disabled = true;
-  });
-  actions.appendChild(saveBtn);
-
-  var copyBtn = document.createElement('button');
-  copyBtn.className = 'btn btn-outline btn-sm';
-  copyBtn.textContent = 'Copy';
-  copyBtn.addEventListener('click', function() {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(text).then(function() { copyBtn.textContent = 'Copied \u2713'; });
-    } else {
-      var ta = document.createElement('textarea');
-      ta.value = text; document.body.appendChild(ta); ta.select();
-      document.execCommand('copy'); document.body.removeChild(ta);
-      copyBtn.textContent = 'Copied \u2713';
-    }
-  });
-  actions.appendChild(copyBtn);
-
-  if (isUrl) {
-    var openBtn = document.createElement('a');
-    openBtn.className = 'btn btn-sm';
-    openBtn.href = text; openBtn.target = '_blank'; openBtn.rel = 'noopener noreferrer';
-    openBtn.style.textDecoration = 'none';
-    openBtn.textContent = 'Open \u2192';
-    actions.appendChild(openBtn);
+  // ── History ──
+  function renderHistory() {
+    var el = document.getElementById('history');
+    if (!scanHistory.length) { el.innerHTML = '<div class="empty-history">&#128237; No scans yet.</div>'; return; }
+    var h = '<h3>&#128220; History</h3>';
+    scanHistory.slice(-10).reverse().forEach(function(item) {
+      var s = item.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      h += '<div class="history-item"><span class="text">'+s+'</span><span class="date">'+new Date(item.date).toLocaleString()+'</span></div>';
+    });
+    el.innerHTML = h;
   }
 
-  resultEl.innerHTML = '';
-  resultEl.appendChild(card);
-  scanAgainBtn.style.display = 'inline-block';
-  stopBtn.style.display = 'none';
-}
+  function saveHistory(text) {
+    var last = scanHistory[scanHistory.length-1];
+    if (last && last.text===text && Date.now()-new Date(last.date).getTime()<5000) return;
+    scanHistory.push({text:text, date:new Date().toISOString()});
+    try { localStorage.setItem('pacdi_scan_history', JSON.stringify(scanHistory)); } catch(e) {}
+    renderHistory();
+  }
 
-// ── Camera ──
-function startCamera() {
-  showStatus('Requesting camera...', true);
-  startBtn.style.display = 'none';
-  infoBox.style.display = 'none';
+  // ── UI ──
+  function showStatus(msg) { resultEl.innerHTML = '<div class="status-box">'+msg+'</div>'; }
+  function showError(msg)  { resultEl.innerHTML = '<div class="error-box">&#10060; '+msg+'</div>'; }
 
-  // iOS / all browsers: environment camera
-  var constraints = {
-    video: {
-      facingMode: { ideal: 'environment' },
-      width:  { ideal: 1280 },
-      height: { ideal: 720 }
+  function showResult(text) {
+    stopCamera();
+    var isUrl = /^https?:\/\//i.test(text);
+    var card = document.createElement('div');
+    card.className = 'result-card';
+    var lbl = document.createElement('div'); lbl.className='result-label'; lbl.textContent='\u2713 Scanned:';
+    var val = document.createElement('div'); val.className='result-value'; val.textContent=text;
+    var acts = document.createElement('div'); acts.className='result-actions';
+
+    var saveBtn = document.createElement('button');
+    saveBtn.className='btn btn-green btn-sm'; saveBtn.textContent='Save';
+    saveBtn.addEventListener('click', function(){ saveHistory(text); saveBtn.textContent='Saved \u2713'; saveBtn.disabled=true; });
+
+    var copyBtn = document.createElement('button');
+    copyBtn.className='btn btn-outline btn-sm'; copyBtn.textContent='Copy';
+    copyBtn.addEventListener('click', function(){
+      if (navigator.clipboard) { navigator.clipboard.writeText(text).then(function(){ copyBtn.textContent='Copied \u2713'; }); }
+      else { var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); copyBtn.textContent='Copied \u2713'; }
+    });
+    acts.appendChild(saveBtn);
+    acts.appendChild(copyBtn);
+
+    if (isUrl) {
+      var a = document.createElement('a');
+      a.className='btn btn-sm'; a.href=text; a.target='_blank'; a.rel='noopener noreferrer';
+      a.style.textDecoration='none'; a.textContent='Open \u2192';
+      acts.appendChild(a);
     }
-  };
 
-  navigator.mediaDevices.getUserMedia(constraints)
-    .then(function(s) {
-      stream = s;
-      video.srcObject = s;
-      return video.play();
-    })
-    .then(function() {
-      camPH.style.display = 'none';
-      scanOverlay.style.display = 'block';
-      stopBtn.style.display = 'inline-block';
+    card.appendChild(lbl); card.appendChild(val); card.appendChild(acts);
+    resultEl.innerHTML=''; resultEl.appendChild(card);
+    scanAgainBtn.style.display='inline-block';
+    stopBtn.style.display='none';
+
+    if (navigator.vibrate) navigator.vibrate(100);
+  }
+
+  // ── Camera ──
+  function startCamera() {
+    document.getElementById('reader').innerHTML = '';
+    scanner = new Html5Qrcode('reader');
+    showStatus('Starting camera...');
+    startBtn.style.display = 'none';
+    scanAgainBtn.style.display = 'none';
+
+    // Gemini'nin çalışan yaklaşımı — string facingMode, no getCameras()
+    scanner.start(
+      { facingMode: "environment" },
+      config,
+      function onSuccess(text) { showResult(text); },
+      function onError() { /* silent */ }
+    ).then(function() {
+      isScanning = true;
       resultEl.innerHTML = '';
-      scanning = true;
-      scanLoop();
-    })
-    .catch(function(err) {
-      // Fallback: try without facingMode constraint
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function(s) {
-          stream = s;
-          video.srcObject = s;
-          return video.play();
-        })
-        .then(function() {
-          camPH.style.display = 'none';
-          scanOverlay.style.display = 'block';
-          stopBtn.style.display = 'inline-block';
-          showStatus('&#9888;&#65039; Camera active — may be front camera');
-          scanning = true;
-          scanLoop();
-        })
-        .catch(function(err2) {
-          startBtn.style.display = 'inline-block';
-          infoBox.style.display = 'block';
-          showError('Camera access denied or not available.<br>Please use <strong>Upload Image</strong> instead, or check camera permissions in your browser settings.<br><small>' + err2 + '</small>');
-        });
+      stopBtn.style.display = 'inline-block';
+    }).catch(function(err) {
+      showError('Camera error: ' + err + '<br>Please allow camera access and try again.');
+      startBtn.style.display = 'inline-block';
     });
-}
-
-function stopScan() {
-  scanning = false;
-  if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-  if (stream) {
-    stream.getTracks().forEach(function(t) { t.stop(); });
-    stream = null;
-  }
-  video.srcObject = null;
-  scanOverlay.style.display = 'none';
-  camPH.style.display = 'flex';
-  stopBtn.style.display = 'none';
-  startBtn.style.display = 'inline-block';
-  infoBox.style.display = 'block';
-}
-
-// ── Scan loop using BarcodeDetector ──
-function scanLoop() {
-  if (!scanning) return;
-  if (!detector) {
-    // BarcodeDetector not supported — show message
-    showError('Your browser does not support native barcode detection.<br>Please use <strong>Upload Image</strong>, or try Safari 17+ on iOS / Chrome on Android.');
-    stopScan();
-    return;
-  }
-  if (video.readyState < 2) {
-    rafId = requestAnimationFrame(scanLoop);
-    return;
-  }
-  detector.detect(video)
-    .then(function(barcodes) {
-      if (!scanning) return;
-      if (barcodes && barcodes.length > 0) {
-        showResult(barcodes[0].rawValue);
-      } else {
-        rafId = requestAnimationFrame(scanLoop);
-      }
-    })
-    .catch(function() {
-      if (scanning) rafId = requestAnimationFrame(scanLoop);
-    });
-}
-
-// ── File scan ──
-function scanFile(file) {
-  if (!file) return;
-  stopScan();
-  showStatus('Reading image...', true);
-
-  if (!hasBarcodeDetector) {
-    // Fallback: use canvas + ZXing via CDN
-    showError('Barcode detection not supported in this browser.<br>Try Chrome on Android or Safari 17+ on iPhone.');
-    return;
   }
 
-  var img = new Image();
-  var url = URL.createObjectURL(file);
-  img.onload = function() {
-    detector.detect(img)
-      .then(function(barcodes) {
-        URL.revokeObjectURL(url);
-        if (barcodes && barcodes.length > 0) {
-          showResult(barcodes[0].rawValue);
-        } else {
-          showError('No QR code or barcode found in image.<br>Tips: ensure good lighting, code fills most of the image, try a cleaner screenshot.');
-          infoBox.style.display = 'block';
-        }
-      })
-      .catch(function(err) {
-        URL.revokeObjectURL(url);
-        showError('Could not process image: ' + err);
+  function stopCamera() {
+    if (!scanner || !isScanning) return;
+    scanner.stop().catch(function(){});
+    isScanning = false;
+    stopBtn.style.display = 'none';
+    startBtn.style.display = 'inline-block';
+  }
+
+  // ── File scan ──
+  function scanFile(file) {
+    if (!file) return;
+    stopCamera();
+    showStatus('Reading image...');
+    var tempEl = document.getElementById('tempReader');
+    tempEl.innerHTML = '';
+    var tempScanner = new Html5Qrcode('tempReader');
+    tempScanner.scanFile(file, false)
+      .then(function(text) { showResult(text); tempEl.innerHTML = ''; })
+      .catch(function() {
+        showError('No QR/barcode found.<br>&#128161; Tip: ensure code fills most of the image and lighting is good.');
+        tempEl.innerHTML = '';
       });
-  };
-  img.onerror = function() {
-    URL.revokeObjectURL(url);
-    showError('Could not load image file.');
-  };
-  img.src = url;
-}
-
-// ── Events ──
-startBtn.addEventListener('click', function() {
-  scanAgainBtn.style.display = 'none';
-  initDetector().then(startCamera);
-});
-
-stopBtn.addEventListener('click', function() {
-  stopScan();
-  resultEl.innerHTML = '';
-});
-
-scanAgainBtn.addEventListener('click', function() {
-  scanAgainBtn.style.display = 'none';
-  resultEl.innerHTML = '';
-  initDetector().then(startCamera);
-});
-
-uploadBtn.addEventListener('click', function() { fileInput.click(); });
-
-fileInput.addEventListener('change', function() {
-  if (this.files && this.files.length) {
-    initDetector().then(function() { scanFile(fileInput.files[0]); });
   }
-  fileInput.value = '';
-});
 
-window.addEventListener('beforeunload', function() { stopScan(); });
+  // ── Events ──
+  startBtn.addEventListener('click', startCamera);
 
-// ── Init ──
-renderHistory();
-initDetector();
+  stopBtn.addEventListener('click', function() {
+    stopCamera();
+    resultEl.innerHTML = '';
+  });
 
-// Show browser support info
-if (!hasBarcodeDetector) {
-  infoBox.innerHTML = '&#9888;&#65039; Your browser does not support native barcode scanning.<br>' +
-    'Please use <strong>Safari 17+</strong> on iPhone, or <strong>Chrome</strong> on Android for camera scanning.<br>' +
-    'You can still use <strong>Upload Image</strong> on supported browsers.';
-}
+  scanAgainBtn.addEventListener('click', function() {
+    scanAgainBtn.style.display = 'none';
+    resultEl.innerHTML = '';
+    startCamera();
+  });
+
+  uploadBtn.addEventListener('click', function() { fileInput.click(); });
+  fileInput.addEventListener('change', function() {
+    if (this.files && this.files.length) scanFile(this.files[0]);
+    this.value = '';
+  });
+
+  window.addEventListener('beforeunload', function() { stopCamera(); });
+
+  // ── Auto-start ──
+  renderHistory();
+  startCamera();
 
 })();
 </script>
-<div id="pacdi-fsek" style="clear:both;width:100%;display:block;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-sizing:border-box;">
-  <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.25);border-radius:24px;padding:8px 20px;margin-bottom:12px;flex-wrap:wrap;justify-content:center;">
-    <span style="font-size:1rem;">🛡️</span>
-    <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#D4AF37;text-transform:uppercase;">FSEK Registered · PACDI Framework</span>
-  </div>
-  <div style="font-size:0.78rem;color:#8A8F9A;margin-bottom:4px;">Operated by AskMeAI Teknoloji Ltd. Şti. (TR: 23837)</div>
-  <div style="font-size:0.72rem;color:#6B7280;margin-bottom:10px;">Intellectual property owned by © 2026 PACDI Global Yazılım Ltd. Şti. &mdash; FSEK No: <a href="https://pacdi.eu/legal.html" style="color:#D4AF37;text-decoration:none;">2026/18897</a></div>
-  <div style="font-size:0.82rem;font-style:italic;color:#6B7280;">&ldquo;Technology in the service of humanity.&rdquo;</div>
-</div>
 </body>
 </html>
