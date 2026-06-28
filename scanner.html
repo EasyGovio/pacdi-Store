@@ -233,8 +233,41 @@ function showError(msg)  { resultEl.innerHTML = '<div class="error-box">&#10060;
 
 function showResult(text) {
   stopLive();
+
+  // Inventory lookup — PACDI QR eşleştir
+  var deviceInfo = null;
+  try {
+    var parsed = JSON.parse(text);
+    if (parsed && parsed.id && parsed.id.indexOf('PACDI-') === 0) {
+      var inv = JSON.parse(localStorage.getItem('pacdi_inventory') || '[]');
+      var found = inv.find(function(x){ return x.uid === parsed.id; });
+      if (found) deviceInfo = found;
+    }
+  } catch(e) { /* not JSON, normal QR/barcode */ }
+
   var isUrl = /^https?:\/\//i.test(text);
   var card = document.createElement('div'); card.className='result-card';
+
+  // Eğer PACDI cihazı tanındıysa farklı göster
+  if (deviceInfo) {
+    card.style.borderLeftColor = '#F6B45F';
+    var lbl = document.createElement('div'); lbl.className='result-label';
+    lbl.style.color = '#F6B45F';
+    lbl.innerHTML = '&#9889; Ger&auml;t erkannt:';
+    var val = document.createElement('div'); val.className='result-value';
+    val.innerHTML = '<strong style="color:#e8edf2;font-size:1rem;">' + deviceInfo.name + '</strong><br>' +
+      '<span style="font-size:0.75rem;color:#7a9ab8;">ID: ' + deviceInfo.uid + '</span>';
+    card.appendChild(lbl); card.appendChild(val);
+    var acts = document.createElement('div'); acts.className='result-actions';
+    var saveBtn = document.createElement('button'); saveBtn.className='btn-sm-green'; saveBtn.textContent='Speichern';
+    saveBtn.addEventListener('click', function(){ saveHistory(deviceInfo.name + ' | ' + deviceInfo.uid); saveBtn.textContent='Gespeichert \u2713'; saveBtn.disabled=true; });
+    acts.appendChild(saveBtn);
+    card.appendChild(acts);
+    resultEl.innerHTML=''; resultEl.appendChild(card);
+    if(navigator.vibrate) navigator.vibrate(100);
+    return;
+  }
+
   var lbl = document.createElement('div'); lbl.className='result-label'; lbl.textContent='\u2713 Scanned:';
   var val = document.createElement('div'); val.className='result-value'; val.textContent=text;
   var acts = document.createElement('div'); acts.className='result-actions';
@@ -392,14 +425,5 @@ renderHistory();
 
 })();
 </script>
-<div id="pacdi-fsek" style="clear:both;width:100%;display:block;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-sizing:border-box;">
-  <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.25);border-radius:24px;padding:8px 20px;margin-bottom:12px;flex-wrap:wrap;justify-content:center;">
-    <span style="font-size:1rem;">🛡️</span>
-    <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#D4AF37;text-transform:uppercase;">FSEK Registered · PACDI Framework</span>
-  </div>
-  <div style="font-size:0.78rem;color:#8A8F9A;margin-bottom:4px;">Operated by AskMeAI Teknoloji Ltd. Şti. (TR: 23837)</div>
-  <div style="font-size:0.72rem;color:#6B7280;margin-bottom:10px;">Intellectual property owned by © 2026 PACDI Global Yazılım Ltd. Şti. &mdash; FSEK No: <a href="https://pacdi.eu/legal.html" style="color:#D4AF37;text-decoration:none;">2026/18897</a></div>
-  <div style="font-size:0.82rem;font-style:italic;color:#6B7280;">&ldquo;Technology in the service of humanity.&rdquo;</div>
-</div>
 </body>
 </html>
