@@ -465,7 +465,6 @@
     <a id="mm-pruef" href="/pruefprotokoll.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">⚡ Prüfprotokoll</a>
     <a id="mm-scan" href="/scanner.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">📷 Scanner</a>
     <a id="mm-short" href="/shortener.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">🔗 Kısaltıcı</a>
-    <a id="mm-inv" href="/envanter.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">📦 Inventar</a>
     <a id="mm-pass" href="/password.html" style="display:block;padding:9px 16px;color:#7a9ab8;text-decoration:none;font-size:0.85rem;">🔐 Şifre</a>
   </div>
 </div>
@@ -620,8 +619,6 @@
 (function buildNav() {
   var nav = document.getElementById('mainNav');
   if (!nav) return;
-  nav.style.webkitOverflowScrolling = 'touch';
-  nav.style.overflowX = 'auto';
   var page = (window.location.pathname.split('/').pop() || 'index.html');
   var items = [
     ['/', '🏠', 'Ana Sayfa'],
@@ -629,7 +626,6 @@
     ['/pruefprotokoll.html', '⚡', 'Prüf'],
     ['/scanner.html', '📷', 'Scan'],
     ['/shortener.html', '🔗', 'Link'],
-    ['/envanter.html', '📦', 'Inventar'],
     ['/password.html', '🔐', 'Şifre']
   ];
   var html = '';
@@ -684,7 +680,6 @@ var translations = {
     mm_pruef: '⚡ Prüfprotokoll',
     mm_scan: '📷 Scanner',
     mm_short: '🔗 Kısaltıcı',
-    mm_inv: '📦 Envanter',
     mm_pass: '🔐 Şifre',
     type_qr: '🔳 QR Kod',
     type_ean13: '📦 EAN-13',
@@ -742,7 +737,6 @@ var translations = {
     mm_pruef: '⚡ Prüfprotokoll',
     mm_scan: '📷 Scanner',
     mm_short: '🔗 Link-Kürzer',
-    mm_inv: '📦 Inventar',
     mm_pass: '🔐 Passwort',
     type_qr: '🔳 QR Code',
     type_ean13: '📦 EAN-13',
@@ -799,8 +793,8 @@ var translations = {
     mm_qr: '🔳 QR & Barcode',
     mm_pruef: '⚡ Inspection Protocol',
     mm_scan: '📷 Scanner',
-    mm_short: '🔗 Link Shortener'
-    mm_inv: '📦 Inventar',
+    mm_short: '🔗 Link Shortener',
+    mm_inv: '📦 Inventory',
     mm_pass: '🔐 Password',
     type_qr: '🔳 QR Code',
     type_ean13: '📦 EAN-13',
@@ -869,7 +863,6 @@ function setLanguage(lang) {
     'mm-pruef': t.mm_pruef,
     'mm-scan': t.mm_scan,
     'mm-short': t.mm_short,
-    'mm-inv': t.mm_inv,
     'mm-pass': t.mm_pass
   };
   for (var k in mmMap) {
