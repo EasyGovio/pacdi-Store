@@ -620,6 +620,8 @@
 (function buildNav() {
   var nav = document.getElementById('mainNav');
   if (!nav) return;
+  nav.style.webkitOverflowScrolling = 'touch';
+  nav.style.overflowX = 'auto';
   var page = (window.location.pathname.split('/').pop() || 'index.html');
   var items = [
     ['/', '🏠', 'Ana Sayfa'],
