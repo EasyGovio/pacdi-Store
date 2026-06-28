@@ -2,21 +2,22 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <link rel="canonical" href="https://pacdi.store/scanner.html">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>QR Tarayıcı | PACDI Store</title>
-  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <link rel="canonical" href="https://pacdi.store/scanner.html">
+  <title>QR / Barkod Tarayıcı | PACDI Store</title>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: #04162E;
       color: #eaf2fb;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       min-height: 100vh;
-      padding: 20px;
+      padding: 16px;
       display: flex;
       justify-content: center;
     }
@@ -26,101 +27,72 @@
     }
     nav {
       display: flex;
-      gap: 8px;
       flex-wrap: wrap;
+      gap: 4px;
       margin-bottom: 20px;
+      background: rgba(4,22,46,0.8);
+      border-radius: 12px;
+      padding: 8px;
     }
     nav a {
       color: #7a9ab8;
       text-decoration: none;
-      font-size: 0.75rem;
-      padding: 6px 12px;
-      border-radius: 20px;
-      border: 1px solid rgba(246,180,95,0.2);
+      font-size: 0.7rem;
+      padding: 5px 10px;
+      border-radius: 16px;
+      border: 1px solid transparent;
       transition: 0.2s;
+      white-space: nowrap;
     }
     nav a:hover, nav a.active {
       border-color: #F6B45F;
       color: #F6B45F;
+      background: rgba(246,180,95,0.06);
     }
-    h1 { color: #F6B45F; margin-bottom: 16px; font-size: 1.4rem; }
+    h1 {
+      color: #F6B45F;
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+      font-weight: 700;
+    }
     #reader {
       width: 100%;
-      max-width: 500px;
-      margin: 0 auto;
+      max-width: 100%;
       background: #0a1828;
       border-radius: 16px;
       overflow: hidden;
       border: 1px solid rgba(246,180,95,0.2);
+      position: relative;
+      min-height: 280px;
     }
     #reader video {
       width: 100%;
       display: block;
     }
     #result {
-      margin-top: 16px;
-      color: #eaf2fb;
+      margin-top: 14px;
+      min-height: 40px;
     }
     .result-card {
       background: #0a1828;
-      padding: 16px;
+      padding: 14px 16px;
       border-radius: 12px;
       border-left: 4px solid #34D399;
       word-break: break-all;
-    }
-    .result-card strong { color: #34D399; }
-    .btn {
-      background: #F6B45F;
-      border: none;
-      padding: 10px 24px;
-      border-radius: 40px;
-      font-weight: 700;
-      color: #04162E;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: 0.2s;
-      display: inline-block;
-    }
-    .btn:hover { background: #f0c870; transform: scale(1.02); }
-    .btn-secondary {
-      background: transparent;
-      border: 1px solid #F6B45F;
-      color: #F6B45F;
-    }
-    .btn-secondary:hover { background: rgba(246,180,95,0.1); }
-    #scanAgainBtn { display: none; margin-top: 12px; }
-    #history {
-      margin-top: 24px;
-      text-align: left;
-    }
-    #history h3 { color: #F6B45F; margin-bottom: 10px; font-size: 1rem; }
-    .history-item {
-      background: #0a1828;
-      padding: 8px 12px;
-      border-radius: 8px;
-      margin-bottom: 6px;
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
       align-items: center;
-      border-bottom: 1px solid rgba(246,180,95,0.1);
+      gap: 12px;
     }
-    .history-item .text { font-size: 0.85rem; color: #eaf2fb; }
-    .history-item .date { font-size: 0.6rem; color: #7a9ab8; }
-    .empty-history { color: #7a9ab8; font-size: 0.85rem; }
-    .footer {
-      margin-top: 32px;
-      font-size: 0.65rem;
-      color: #4a6a88;
-      text-align: center;
-    }
-    .footer a { color: rgba(246,180,95,0.6); text-decoration: none; }
+    .result-card strong { color: #34D399; margin-right: 6px; }
+    .result-card span { color: #eaf2fb; flex: 1; }
     .error-box {
       background: rgba(248,113,113,0.15);
       border: 1px solid rgba(248,113,113,0.3);
-      padding: 12px 16px;
+      padding: 10px 14px;
       border-radius: 8px;
       color: #f87171;
-      margin-top: 12px;
+      font-size: 0.9rem;
     }
     .btn-group {
       display: flex;
@@ -128,7 +100,64 @@
       flex-wrap: wrap;
       margin-top: 12px;
     }
+    .btn {
+      background: #F6B45F;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 700;
+      color: #04162E;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: 0.2s;
+      font-family: inherit;
+    }
+    .btn:hover { background: #f0c870; transform: scale(1.02); }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #F6B45F;
+      color: #F6B45F;
+    }
+    .btn-outline:hover { background: rgba(246,180,95,0.08); transform: none; }
+    #scanAgainBtn { display: none; }
     #fileInput { display: none; }
+    #history {
+      margin-top: 22px;
+    }
+    #history h3 {
+      color: #F6B45F;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .history-item {
+      background: #0a1828;
+      padding: 6px 12px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(246,180,95,0.06);
+      font-size: 0.85rem;
+    }
+    .history-item .text { color: #eaf2fb; word-break: break-all; }
+    .history-item .date { color: #7a9ab8; font-size: 0.6rem; margin-left: 10px; flex-shrink: 0; }
+    .empty-history { color: #7a9ab8; font-size: 0.85rem; }
+    .footer {
+      margin-top: 28px;
+      font-size: 0.65rem;
+      color: #4a6a88;
+      text-align: center;
+      border-top: 1px solid rgba(246,180,95,0.08);
+      padding-top: 16px;
+    }
+    .footer a { color: rgba(246,180,95,0.5); text-decoration: none; }
+    /* mobil düzeltmeler */
+    @media (max-width: 480px) {
+      nav a { font-size: 0.6rem; padding: 4px 8px; }
+      h1 { font-size: 1.1rem; }
+    }
   </style>
 </head>
 <body>
@@ -150,7 +179,7 @@
 
   <div class="btn-group">
     <button id="scanAgainBtn" class="btn">🔄 Yeniden Tara</button>
-    <button id="uploadBtn" class="btn btn-secondary">📤 Resim Yükle</button>
+    <button id="uploadBtn" class="btn btn-outline">📤 Resim Yükle</button>
     <input type="file" id="fileInput" accept="image/*">
   </div>
 
@@ -159,205 +188,168 @@
   <div class="footer">PACDI Store · <a href="/legal.html">Impressum & Datenschutz</a></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script>
-  (function() {
-    var html5QrCode = null;
-    var scanHistory = JSON.parse(localStorage.getItem('scanHistory') || '[]');
-    var isScanning = false;
+(function() {
+  var html5QrCode = null;
+  var scanHistory = JSON.parse(localStorage.getItem('scanHistory') || '[]');
+  var isScanning = false;
+  var readerElement = document.getElementById('reader');
 
-    function renderHistory() {
-      var container = document.getElementById('history');
-      if (!scanHistory.length) {
-        container.innerHTML = '<div class="empty-history">📭 Henüz tarama yok.</div>';
-        return;
-      }
-      var html = '<h3>📜 Geçmiş</h3>';
-      var reversed = scanHistory.slice(-10).reverse();
-      for (var i = 0; i < reversed.length; i++) {
-        var item = reversed[i];
-        html += '<div class="history-item">' +
-          '<span class="text">' + item.text + '</span>' +
-          '<span class="date">' + new Date(item.date).toLocaleString() + '</span>' +
-          '</div>';
-      }
-      container.innerHTML = html;
+  // Geçmişi göster
+  function renderHistory() {
+    var container = document.getElementById('history');
+    if (!scanHistory.length) {
+      container.innerHTML = '<div class="empty-history">📭 Henüz tarama yok.</div>';
+      return;
     }
-
-    function showResult(text) {
-      document.getElementById('result').innerHTML = 
-        '<div class="result-card">' +
-          '<strong>✅ Okundu:</strong> <span>' + text + '</span>' +
-          '<button onclick="saveHistory(\'' + text.replace(/'/g, "\\'") + '\')" class="btn" style="margin-top:8px; font-size:0.8rem; padding:6px 16px;">💾 Kaydet</button>' +
+    var html = '<h3>📜 Geçmiş</h3>';
+    var reversed = scanHistory.slice(-10).reverse();
+    for (var i = 0; i < reversed.length; i++) {
+      var item = reversed[i];
+      html += '<div class="history-item">' +
+        '<span class="text">' + item.text + '</span>' +
+        '<span class="date">' + new Date(item.date).toLocaleString() + '</span>' +
         '</div>';
-      document.getElementById('scanAgainBtn').style.display = 'inline-block';
     }
+    container.innerHTML = html;
+  }
 
-    function showError(msg) {
-      document.getElementById('result').innerHTML = 
-        '<div class="error-box">❌ ' + msg + '</div>';
+  // Sonuç gösterimi
+  function showResult(text) {
+    var resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = 
+      '<div class="result-card">' +
+        '<strong>✅ Okundu:</strong>' +
+        '<span>' + text + '</span>' +
+        '<button onclick="saveHistory(\'' + text.replace(/'/g, "\\'") + '\')" class="btn" style="font-size:0.75rem; padding:4px 14px; margin-left:auto;">💾 Kaydet</button>' +
+      '</div>';
+    document.getElementById('scanAgainBtn').style.display = 'inline-block';
+  }
+
+  function showError(msg) {
+    document.getElementById('result').innerHTML = 
+      '<div class="error-box">❌ ' + msg + '</div>';
+  }
+
+  // Kamerayı durdur
+  function stopScanner() {
+    if (html5QrCode && isScanning) {
+      html5QrCode.stop().then(function() {
+        isScanning = false;
+      }).catch(function(err) {
+        console.warn('Durdurma hatası:', err);
+        isScanning = false;
+      });
     }
+  }
 
-    function stopScanner() {
-      if (html5QrCode && isScanning) {
-        html5QrCode.stop().then(function() {
-          html5QrCode.clear();
-          isScanning = false;
-        }).catch(function(err) {
-          console.warn('Durdurma hatası:', err);
-          isScanning = false;
-        });
-      }
-    }
-
-    function startScanner() {
-      if (isScanning) {
-        stopScanner();
-        // Kısa bir bekleme ile yeniden başlat
-        setTimeout(startScanner, 500);
-        return;
-      }
-
-      var readerElement = document.getElementById('reader');
-      // Eski video varsa temizle
-      readerElement.innerHTML = '';
-
-      try {
-        html5QrCode = new Html5Qrcode("reader");
-
-        // Kamera listesini al ve arka kamerayı seç
-        Html5Qrcode.getCameras().then(function(cameras) {
-          if (!cameras || !cameras.length) {
-            showError('Kamera bulunamadı. Lütfen cihazınızın kamerasını kontrol edin.');
-            return;
-          }
-          var cameraId = cameras[0].id;
-          // Arka kamera seç
-          for (var i = 0; i < cameras.length; i++) {
-            if (cameras[i].label.toLowerCase().indexOf('back') !== -1 ||
-                cameras[i].label.toLowerCase().indexOf('environment') !== -1) {
-              cameraId = cameras[i].id;
-              break;
-            }
-          }
-
-          // Yapılandırma: QR + barkod formatlarını destekle
-          var config = {
-            fps: 15,
-            qrbox: { width: 280, height: 200 }, // barkod için daha geniş
-            aspectRatio: 1.0,
-            // ÖNEMLİ: Barkod desteği için experimentalFeatures
-            experimentalFeatures: {
-              useBarCodeDetector: true  // barkod dedektörünü etkinleştir
-            },
-            // Hangi formatların okunacağını belirt (opsiyonel ama iyi olur)
-            formatsToSupport: [
-              Html5QrcodeSupportedFormats.QR_CODE,
-              Html5QrcodeSupportedFormats.EAN_13,
-              Html5QrcodeSupportedFormats.EAN_8,
-              Html5QrcodeSupportedFormats.CODE_128,
-              Html5QrcodeSupportedFormats.CODE_39,
-              Html5QrcodeSupportedFormats.UPC_A,
-              Html5QrcodeSupportedFormats.UPC_E,
-              Html5QrcodeSupportedFormats.ISBN,
-              Html5QrcodeSupportedFormats.ISSN,
-              Html5QrcodeSupportedFormats.ITF,
-              Html5QrcodeSupportedFormats.AZTEC,
-              Html5QrcodeSupportedFormats.DATA_MATRIX
-            ]
-          };
-
-          html5QrCode.start(
-            { deviceId: cameraId },
-            config,
-            function(decodedText, decodedResult) {
-              // Başarılı okuma
-              isScanning = false;
-              stopScanner();
-              showResult(decodedText);
-            },
-            function(errorMessage) {
-              // Hata mesajlarını gösterme (sessiz)
-              // console.debug(errorMessage);
-            }
-          ).then(function() {
-            isScanning = true;
-            document.getElementById('result').innerHTML = '';
-            document.getElementById('scanAgainBtn').style.display = 'none';
-          }).catch(function(err) {
-            showError('Kamera başlatılamadı: ' + err);
-          });
-        }).catch(function(err) {
-          showError('Kamera erişim hatası: ' + err);
-        });
-      } catch (e) {
-        showError('Tarayıcı başlatılamadı: ' + e.message);
-      }
-    }
-
-    // Resim yükleme ile okuma
-    function scanImageFile(file) {
-      if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var imgData = e.target.result;
-        // Geçici bir div oluştur
-        var tempDiv = document.createElement('div');
-        tempDiv.id = 'tempReader';
-        tempDiv.style.display = 'none';
-        document.body.appendChild(tempDiv);
-        var tempScanner = new Html5Qrcode('tempReader');
-        tempScanner.scanFile(file, true)
-          .then(function(decodedText) {
-            showResult(decodedText);
-            document.body.removeChild(tempDiv);
-          })
-          .catch(function(err) {
-            showError('Resim okunamadı: ' + err);
-            document.body.removeChild(tempDiv);
-          });
-      };
-      reader.readAsDataURL(file);
-    }
-
-    // ── Event Listeners ──
-    document.getElementById('scanAgainBtn').addEventListener('click', function() {
-      document.getElementById('result').innerHTML = '';
-      this.style.display = 'none';
-      startScanner();
-    });
-
-    document.getElementById('uploadBtn').addEventListener('click', function() {
-      document.getElementById('fileInput').click();
-    });
-    document.getElementById('fileInput').addEventListener('change', function(e) {
-      if (this.files && this.files.length > 0) {
-        scanImageFile(this.files[0]);
-      }
-      this.value = ''; // tekrar aynı dosya seçilebilir
-    });
-
-    // Kaydetme fonksiyonu (global olarak erişilebilir)
-    window.saveHistory = function(text) {
-      scanHistory.push({ text: text, date: new Date().toISOString() });
-      localStorage.setItem('scanHistory', JSON.stringify(scanHistory));
-      renderHistory();
-    };
-
-    // Pro özellikleri (boş)
-    window.enableProFeatures = function(enable) {};
-
-    // ── Başlat ──
-    document.addEventListener('DOMContentLoaded', function() {
-      renderHistory();
-      startScanner();
-    });
-
-    // Sayfa kapatılırken kamerayı durdur
-    window.addEventListener('beforeunload', function() {
+  // Tarayıcıyı başlat
+  function startScanner() {
+    if (isScanning) {
       stopScanner();
-    });
-  })();
+      setTimeout(startScanner, 400);
+      return;
+    }
+
+    // Eski içeriği temizle
+    readerElement.innerHTML = '';
+
+    try {
+      html5QrCode = new Html5Qrcode("reader");
+
+      // Arka kamera ile başlat (facingMode)
+      var config = {
+        fps: 15,
+        qrbox: { width: 260, height: 200 },
+        aspectRatio: 1.0
+      };
+
+      // ÖNEMLİ: formatsToSupport eklemeden çalıştır (kütüphane çoğu formatı destekler)
+      html5QrCode.start(
+        { facingMode: "environment" },
+        config,
+        function(decodedText) {
+          // Başarılı okuma
+          isScanning = false;
+          stopScanner();
+          showResult(decodedText);
+        },
+        function(errorMessage) {
+          // Sessiz hata, sadece debug
+          // console.debug(errorMessage);
+        }
+      ).then(function() {
+        isScanning = true;
+        document.getElementById('result').innerHTML = '';
+        document.getElementById('scanAgainBtn').style.display = 'none';
+      }).catch(function(err) {
+        showError('Kamera başlatılamadı: ' + err);
+      });
+    } catch (e) {
+      showError('Tarayıcı oluşturulamadı: ' + e.message);
+    }
+  }
+
+  // Resim dosyasından okuma
+  function scanImageFile(file) {
+    if (!file) return;
+    // Geçici bir div oluştur
+    var tempDiv = document.createElement('div');
+    tempDiv.id = 'tempReader';
+    tempDiv.style.display = 'none';
+    document.body.appendChild(tempDiv);
+
+    var tempScanner = new Html5Qrcode('tempReader');
+    tempScanner.scanFile(file, true)
+      .then(function(decodedText) {
+        showResult(decodedText);
+        document.body.removeChild(tempDiv);
+      })
+      .catch(function(err) {
+        showError('Resim okunamadı: ' + err);
+        document.body.removeChild(tempDiv);
+      });
+  }
+
+  // ── Event Listeners ──
+  document.getElementById('scanAgainBtn').addEventListener('click', function() {
+    document.getElementById('result').innerHTML = '';
+    this.style.display = 'none';
+    startScanner();
+  });
+
+  document.getElementById('uploadBtn').addEventListener('click', function() {
+    document.getElementById('fileInput').click();
+  });
+  document.getElementById('fileInput').addEventListener('change', function(e) {
+    if (this.files && this.files.length > 0) {
+      scanImageFile(this.files[0]);
+    }
+    this.value = '';
+  });
+
+  // Kaydetme fonksiyonu (global)
+  window.saveHistory = function(text) {
+    scanHistory.push({ text: text, date: new Date().toISOString() });
+    localStorage.setItem('scanHistory', JSON.stringify(scanHistory));
+    renderHistory();
+  };
+
+  // Pro özellikleri (boş)
+  window.enableProFeatures = function(enable) {};
+
+  // ── Başlat ──
+  document.addEventListener('DOMContentLoaded', function() {
+    renderHistory();
+    startScanner();
+  });
+
+  // Sayfa kapatılırken kamerayı durdur
+  window.addEventListener('beforeunload', function() {
+    stopScanner();
+  });
+
+})();
 </script>
 </body>
 </html>
