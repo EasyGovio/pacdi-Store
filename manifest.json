@@ -1,13 +1,17 @@
 {
-  "name": "PACDI Inventar & Prüfkontrolle",
+  "name": "PACDI — pacdi.store",
   "short_name": "PACDI",
-  "description": "Premium Inventarverwaltung und Prüfprotokoll System",
-  "start_url": "./envanter.html",
+  "description": "PACDI Digital — Technology in the service of humanity.",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#04162E",
   "theme_color": "#04162E",
   "orientation": "portrait",
-  "categories": ["business", "productivity"],
+  "categories": [
+    "business",
+    "productivity",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/6849/6849232.png",
