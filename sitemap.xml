@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://pacdi.store/</loc><lastmod>2026-06-28</lastmod><priority>1.0</priority></url>
-  <url><loc>https://pacdi.store/pruefprotokoll.html</loc><lastmod>2026-06-28</lastmod><priority>0.9</priority></url>
-  <url><loc>https://pacdi.store/qr.html</loc><lastmod>2026-06-28</lastmod><priority>0.8</priority></url>
-  <url><loc>https://pacdi.store/scanner.html</loc><lastmod>2026-06-28</lastmod><priority>0.8</priority></url>
-  <url><loc>https://pacdi.store/envanter.html</loc><lastmod>2026-06-28</lastmod><priority>0.8</priority></url>
-  <url><loc>https://pacdi.store/password.html</loc><lastmod>2026-06-28</lastmod><priority>0.7</priority></url>
-  <url><loc>https://pacdi.store/legal.html</loc><lastmod>2026-06-28</lastmod><priority>0.3</priority></url>
+  <url><loc>https://pacdi.store/</loc><lastmod>2026-06-29</lastmod><priority>1.0</priority></url>
+  <url><loc>https://pacdi.store/pruefprotokoll.html</loc><lastmod>2026-06-29</lastmod><priority>0.9</priority></url>
+  <url><loc>https://pacdi.store/qr.html</loc><lastmod>2026-06-29</lastmod><priority>0.8</priority></url>
+  <url><loc>https://pacdi.store/scanner.html</loc><lastmod>2026-06-29</lastmod><priority>0.8</priority></url>
+  <url><loc>https://pacdi.store/envanter.html</loc><lastmod>2026-06-29</lastmod><priority>0.8</priority></url>
+  <url><loc>https://pacdi.store/password.html</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
+  <url><loc>https://pacdi.store/shortener.html</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
+  <url><loc>https://pacdi.store/legal.html</loc><lastmod>2026-06-29</lastmod><priority>0.3</priority></url>
+  <url><loc>https://pacdi.store/blog/ucretsiz-qr-kod-olusturucu.html</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
+  <url><loc>https://pacdi.store/blog/wifi-qr-kod-olusturma.html</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
+  <url><loc>https://pacdi.store/blog/vcard-qr-dijital-kartvizit.html</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
+  <url><loc>https://pacdi.store/blog/etkinlik-qr-kodu-takvime-ekle.html</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
+  <url><loc>https://pacdi.store/blog/barkod-olusturucu-ucretsiz.html</loc><lastmod>2026-06-29</lastmod><priority>0.7</priority></url>
 </urlset>
