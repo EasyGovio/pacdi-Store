@@ -503,6 +503,7 @@
           <option value="url">🌐 URL / Link</option>
           <option value="vcard">👤 vCard (Kartvizit)</option>
           <option value="wifi">📶 WiFi Ağı</option>
+          <option value="event">📅 Etkinlik (Takvim)</option>
           <option value="social">📱 Sosyal Medya</option>
         </select>
       </div>
@@ -705,6 +706,11 @@ var translations = {
     wifi_enc_wpa: 'WPA/WPA2',
     wifi_enc_wep: 'WEP',
     wifi_enc_nopass: 'Şifresiz',
+    event_title: 'Etkinlik Adı',
+    event_start: 'Başlangıç Tarihi/Saati',
+    event_end: 'Bitiş Tarihi/Saati',
+    event_location: 'Konum / Adres',
+    event_desc: 'Açıklama',
     social_instagram: 'Instagram @kullanici',
     social_twitter: 'Twitter/X @kullanici',
     social_linkedin: 'LinkedIn URL',
@@ -762,6 +768,11 @@ var translations = {
     wifi_enc_wpa: 'WPA/WPA2',
     wifi_enc_wep: 'WEP',
     wifi_enc_nopass: 'Offen',
+    event_title: 'Veranstaltungsname',
+    event_start: 'Startdatum/-uhrzeit',
+    event_end: 'Enddatum/-uhrzeit',
+    event_location: 'Ort / Adresse',
+    event_desc: 'Beschreibung',
     social_instagram: 'Instagram @benutzer',
     social_twitter: 'Twitter/X @benutzer',
     social_linkedin: 'LinkedIn URL',
@@ -820,6 +831,11 @@ var translations = {
     wifi_enc_wpa: 'WPA/WPA2',
     wifi_enc_wep: 'WEP',
     wifi_enc_nopass: 'Open',
+    event_title: 'Event Name',
+    event_start: 'Start Date/Time',
+    event_end: 'End Date/Time',
+    event_location: 'Location / Address',
+    event_desc: 'Description',
     social_instagram: 'Instagram @user',
     social_twitter: 'Twitter/X @user',
     social_linkedin: 'LinkedIn URL',
@@ -953,6 +969,14 @@ function updateTemplateFields() {
       '<option value="WEP">' + t.wifi_enc_wep + '</option>' +
       '<option value="nopass">' + t.wifi_enc_nopass + '</option>' +
       '</select>';
+  } else if (tpl === 'event') {
+    html = '<input type="text" id="eventTitle" class="qr-input" placeholder="' + (t.event_title || 'Etkinlik Adı') + '">' +
+      '<div class="input-grid">' +
+      '<input type="datetime-local" id="eventStart" class="qr-input" placeholder="' + (t.event_start || 'Başlangıç') + '">' +
+      '<input type="datetime-local" id="eventEnd" class="qr-input" placeholder="' + (t.event_end || 'Bitiş') + '">' +
+      '</div>' +
+      '<input type="text" id="eventLocation" class="qr-input" placeholder="' + (t.event_location || 'Konum') + '">' +
+      '<input type="text" id="eventDesc" class="qr-input" placeholder="' + (t.event_desc || 'Açıklama') + '">';
   } else if (tpl === 'social') {
     html = '<input type="text" id="socialInstagram" class="qr-input" placeholder="' + t.social_instagram + '">' +
       '<input type="text" id="socialTwitter" class="qr-input" placeholder="' + t.social_twitter + '">' +
@@ -1040,6 +1064,23 @@ function getContent() {
     var pass = ($('wifiPassword') && $('wifiPassword').value) || '';
     var enc = ($('wifiEncryption') && $('wifiEncryption').value) || 'WPA';
     return 'WIFI:T:' + enc + ';S:' + ssid + ';P:' + pass + ';;';
+  }
+  if (tpl === 'event') {
+    var title = ($('eventTitle') && $('eventTitle').value) || '';
+    var start = ($('eventStart') && $('eventStart').value) || '';
+    var end = ($('eventEnd') && $('eventEnd').value) || '';
+    var location = ($('eventLocation') && $('eventLocation').value) || '';
+    var desc = ($('eventDesc') && $('eventDesc').value) || '';
+    function toICS(dt) {
+      if (!dt) return '';
+      return dt.replace(/[-:]/g, '').replace('T', 'T').substring(0, 15) + '00';
+    }
+    return 'BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:' + title +
+      '\nDTSTART:' + toICS(start) +
+      '\nDTEND:' + toICS(end) +
+      '\nLOCATION:' + location +
+      '\nDESCRIPTION:' + desc +
+      '\nEND:VEVENT\nEND:VCALENDAR';
   }
   if (tpl === 'social') {
     var ig = ($('socialInstagram') && $('socialInstagram').value) || '';
