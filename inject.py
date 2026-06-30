@@ -43,6 +43,19 @@ LANG_DETECT_SCRIPT = """<script>
 </script>
 """
 
+BETA_UNLOCK_SCRIPT = """<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('beta') === 'pacdi2026') {
+    try { sessionStorage.setItem('betaUnlock', '1'); } catch(e) {}
+  }
+  window.isBetaUnlocked = function() {
+    try { return sessionStorage.getItem('betaUnlock') === '1'; } catch(e) { return false; }
+  };
+})();
+</script>
+"""
+
 # ── FIXED: tek tırnak kaçışı düzgün, daha önce defalarca tespit edilen bug giderildi ──
 PWA_SCRIPT = """<script>
 (function() {
@@ -291,6 +304,8 @@ for root, dirs, files in os.walk('.'):
                 insert += PWA_HEAD
             if 'autoLang' not in content and fname not in SKIP:
                 insert += '    ' + LANG_DETECT_SCRIPT
+            if 'betaUnlock' not in content and fname not in SKIP:
+                insert += '    ' + BETA_UNLOCK_SCRIPT
 
             # ── ÖZEL: index.html giriş butonu CSS düzeltmesi ──
             if fname == 'index.html' and '#userPanel .btn-sm' not in content:
@@ -304,7 +319,10 @@ for root, dirs, files in os.walk('.'):
                 override_script = '''<script>
 (function() {
   var params = new URLSearchParams(window.location.search);
-  if (params.get('beta') !== 'pacdi2026') return;
+  var urlBeta = params.get('beta') === 'pacdi2026';
+  var sessionBeta = false;
+  try { sessionBeta = sessionStorage.getItem('betaUnlock') === '1'; } catch(e) {}
+  if (!urlBeta && !sessionBeta) return;
   var origHandle = window.handlePDF;
   window.handlePDF = function() {
     if (typeof generatePDF === 'function') { generatePDF(); return; }
