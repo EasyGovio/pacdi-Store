@@ -20,10 +20,13 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #04162E; color: #e8edf2; padding: 40px 20px 80px; line-height: 1.75; }
         .wrap { max-width: 800px; margin: 0 auto; }
-        .site-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 48px; padding-bottom: 20px; border-bottom: 1px solid rgba(246,180,95,0.12); }
+        .site-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 48px; padding-bottom: 20px; border-bottom: 1px solid rgba(246,180,95,0.12); flex-wrap: wrap; gap: 12px; }
         .logo { color: #F6B45F; font-weight: 800; font-size: 1.1rem; text-decoration: none; }
         .back { color: #7a9ab8; text-decoration: none; font-size: 0.82rem; }
         .back:hover { color: #F6B45F; }
+        .lang-bar { display: flex; gap: 4px; }
+        .lang-btn { background: transparent; border: 1px solid rgba(246,180,95,0.2); color: #7a9ab8; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .lang-btn.active, .lang-btn:hover { border-color: #F6B45F; color: #F6B45F; }
         h1 { font-size: 1.8rem; color: #F6B45F; margin-bottom: 6px; }
         .subtitle { font-size: 0.85rem; color: #7a9ab8; margin-bottom: 8px; }
         .last-updated { font-size: 0.75rem; color: #4a6a88; margin-bottom: 40px; }
@@ -40,143 +43,115 @@
         ul { padding-left: 20px; margin-bottom: 10px; }
         li { font-size: 0.88rem; color: #8a9ab0; margin-bottom: 4px; }
         hr { border: none; border-top: 1px solid rgba(246,180,95,0.08); margin: 36px 0; }
-
-        /* DGUV highlight box */
-        .dguv-box {
-            background: rgba(248,113,113,0.05);
-            border: 1px solid rgba(248,113,113,0.2);
-            border-left: 4px solid #f87171;
-            border-radius: 10px;
-            padding: 20px 22px;
-            margin: 16px 0;
-        }
-        .dguv-box .dguv-label {
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #f87171;
-            margin-bottom: 10px;
-            display: block;
-        }
+        .dguv-box { background: rgba(248,113,113,0.05); border: 1px solid rgba(248,113,113,0.2); border-left: 4px solid #f87171; border-radius: 10px; padding: 20px 22px; margin: 16px 0; }
+        .dguv-box .dguv-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #f87171; margin-bottom: 10px; display: block; }
         .dguv-box p { color: #c8cdd5; font-size: 0.88rem; margin-bottom: 8px; }
         .dguv-box p:last-child { margin-bottom: 0; }
-
-        /* Warning box */
         .warn { background: rgba(246,180,95,0.05); border: 1px solid rgba(246,180,95,0.2); border-left: 4px solid #F6B45F; border-radius: 8px; padding: 14px 18px; margin: 14px 0; }
         .warn strong { color: #F6B45F; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px; }
         .warn p { color: #c8cdd5; font-size: 0.85rem; margin: 0; }
-
-        /* Company boxes */
         .company-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
         .company-box { background: rgba(255,255,255,0.02); border: 1px solid rgba(246,180,95,0.12); border-radius: 12px; padding: 18px 20px; }
         .company-box.primary { border-color: rgba(246,180,95,0.3); }
         .company-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #F6B45F; margin-bottom: 10px; }
         .company-box p { font-size: 0.82rem; color: #b0b5bf; margin-bottom: 4px; }
         .company-box strong { color: #e8edf2; }
-
-        /* Contact box */
         .contact-box { background: rgba(255,255,255,0.02); border: 1px solid rgba(246,180,95,0.15); border-radius: 12px; padding: 24px; margin-top: 16px; }
         .contact-box p { color: #b0b5bf; margin-bottom: 6px; }
         .contact-box .email { font-size: 1rem; color: #F6B45F; font-weight: 600; }
-
-        /* Checkbox preview */
-        .checkbox-preview {
-            background: rgba(246,180,95,0.05);
-            border: 1px solid rgba(246,180,95,0.2);
-            border-radius: 10px;
-            padding: 16px 18px;
-            margin: 14px 0;
-            font-size: 0.82rem;
-            color: #b0b5bf;
-            line-height: 1.6;
-        }
+        .checkbox-preview { background: rgba(246,180,95,0.05); border: 1px solid rgba(246,180,95,0.2); border-radius: 10px; padding: 16px 18px; margin: 14px 0; font-size: 0.82rem; color: #b0b5bf; line-height: 1.6; }
         .checkbox-preview strong { color: #F6B45F; }
-
-        /* FSEK badge */
         .fsek-block { text-align: center; padding: 32px 0 0; }
         .fsek-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.25); border-radius: 24px; padding: 8px 22px; margin-bottom: 14px; }
         .fsek-badge span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: #D4AF37; text-transform: uppercase; }
         .fsek-copy { font-size: 0.78rem; color: #6B7280; margin-bottom: 4px; }
         .fsek-tagline { font-size: 0.82rem; font-style: italic; color: #4a6a88; }
-
         @media (max-width: 600px) {
             h1 { font-size: 1.4rem; }
             .company-grid { grid-template-columns: 1fr; }
             .site-header { flex-direction: column; align-items: flex-start; gap: 12px; }
         }
     </style>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PACDI">
 </head>
 <body>
 <div class="wrap">
 
 <div class="site-header">
     <a href="/index.html" class="logo">PACDI Store</a>
-    <a href="/index.html" class="back">&larr; Back to Store</a>
+    <div style="display:flex;align-items:center;gap:16px;">
+        <a href="/index.html" class="back" id="back-link">&larr; Back to Store</a>
+        <div class="lang-bar">
+            <button class="lang-btn" data-lang="tr" onclick="setLanguage('tr')">TR</button>
+            <button class="lang-btn active" data-lang="de" onclick="setLanguage('de')">DE</button>
+            <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+        </div>
+    </div>
 </div>
 
-<h1>Legal Notice &amp; Privacy Policy</h1>
-<p class="subtitle">PACDI Store &mdash; pacdi.store &mdash; QR, Barcode, DGUV V3 Pr&uuml;fprotokoll &amp; more</p>
-<p class="last-updated">Last updated: June 2026 &mdash; Full ecosystem legal: <a href="https://pacdi.eu/legal.html">pacdi.eu/legal.html</a></p>
+<h1 id="page-title">Legal Notice &amp; Privacy Policy</h1>
+<p class="subtitle" id="page-sub">PACDI Store &mdash; pacdi.store &mdash; QR, Barcode, DGUV V3 Pr&uuml;fprotokoll &amp; more</p>
+<p class="last-updated" id="last-updated">Last updated: June 2026 &mdash; Full ecosystem legal: <a href="https://pacdi.eu/legal.html">pacdi.eu/legal.html</a></p>
 
-<!-- TOC -->
 <div class="toc">
-    <h3>Contents</h3>
-    <a href="#dguv">1. DGUV V3 Pr&uuml;fprotokoll — Haftungsausschluss</a>
-    <a href="#structure">2. Company Structure</a>
-    <a href="#impressum">3. Legal Notice (Impressum)</a>
-    <a href="#privacy">4. Privacy Policy</a>
-    <a href="#cookies">5. Cookies &amp; Tracking</a>
-    <a href="#ip">6. Intellectual Property</a>
-    <a href="#contact">7. Contact</a>
+    <h3 id="toc-title">Contents</h3>
+    <a href="#dguv" id="toc1">1. DGUV V3 Pr&uuml;fprotokoll — Haftungsausschluss</a>
+    <a href="#structure" id="toc2">2. Company Structure</a>
+    <a href="#impressum" id="toc3">3. Legal Notice (Impressum)</a>
+    <a href="#privacy" id="toc4">4. Privacy Policy</a>
+    <a href="#cookies" id="toc5">5. Cookies &amp; Tracking</a>
+    <a href="#ip" id="toc6">6. Intellectual Property</a>
+    <a href="#contact" id="toc7">7. Contact</a>
 </div>
 
-<!-- 1. DGUV — MOST IMPORTANT FIRST -->
+<!-- 1. DGUV -->
 <section id="dguv">
-    <h2>1. DGUV V3 Pr&uuml;fprotokoll &mdash; Haftungsausschluss</h2>
-
+    <h2 id="h2-dguv">1. DGUV V3 Pr&uuml;fprotokoll &mdash; Haftungsausschluss</h2>
     <div class="dguv-box">
-        <span class="dguv-label">&#9888;&#65039; Wichtiger Hinweis / Important Notice</span>
-        <p><strong style="color:#f87171;">PACDI Digital ist ein reines Dokumentationswerkzeug.</strong> Die Verantwortung f&uuml;r die korrekte Durchf&uuml;hrung der Messungen, die Einhaltung der Pr&uuml;ffristen und die fachliche Beurteilung liegt ausschlie&szlig;lich bei der pr&uuml;fenden Elektrofachkraft (Bef&auml;higte Person nach TRBS&nbsp;1203).</p>
-        <p>Die Pr&uuml;ffristen wurden auf Basis der betriebsinternen Gef&auml;hrdungsbeurteilung des Betreibers gem&auml;&szlig; &sect;&nbsp;3 BetrSichV festgelegt. PACDI &uuml;bernimmt keine Haftung f&uuml;r Sch&auml;den, die durch fehlerhafte Messwerte, falsche Intervallwahl oder unsachgem&auml;&szlig;e Anwendung entstehen.</p>
-        <p>PACDI Digital is a documentation tool only. It does not perform electrical measurements, assess safety conditions, or provide legal compliance guarantees. All inspection results, interval decisions, and technical assessments are the sole responsibility of the qualified electrical professional (Elektrofachkraft / Bef&auml;higte Person gem&auml;&szlig; TRBS&nbsp;1203) conducting the inspection.</p>
+        <span class="dguv-label" id="dguv-label">&#9888;&#65039; Wichtiger Hinweis / Important Notice</span>
+        <p id="dguv-p1"><strong style="color:#f87171;">PACDI Digital ist ein reines Dokumentationswerkzeug.</strong> Die Verantwortung f&uuml;r die korrekte Durchf&uuml;hrung der Messungen, die Einhaltung der Pr&uuml;ffristen und die fachliche Beurteilung liegt ausschlie&szlig;lich bei der pr&uuml;fenden Elektrofachkraft (Bef&auml;higte Person nach TRBS&nbsp;1203).</p>
+        <p id="dguv-p2">Die Pr&uuml;ffristen wurden auf Basis der betriebsinternen Gef&auml;hrdungsbeurteilung des Betreibers gem&auml;&szlig; &sect;&nbsp;3 BetrSichV festgelegt. PACDI &uuml;bernimmt keine Haftung f&uuml;r Sch&auml;den, die durch fehlerhafte Messwerte, falsche Intervallwahl oder unsachgem&auml;&szlig;e Anwendung entstehen.</p>
+        <p id="dguv-p3">PACDI Digital is a documentation tool only. It does not perform electrical measurements, assess safety conditions, or provide legal compliance guarantees. All inspection results, interval decisions, and technical assessments are the sole responsibility of the qualified electrical professional (Elektrofachkraft / Bef&auml;higte Person gem&auml;&szlig; TRBS&nbsp;1203) conducting the inspection.</p>
     </div>
 
-    <h3>Bef&auml;higte Person — User Declaration</h3>
-    <p>When generating a DGUV V3 inspection report, users are required to confirm the following declaration:</p>
+    <h3 id="h3-declaration">Bef&auml;higte Person — User Declaration</h3>
+    <p id="p-declaration">When generating a DGUV V3 inspection report, users are required to confirm the following declaration:</p>
     <div class="checkbox-preview">
-        &#9745; <strong>Ich best&auml;tige, eine bef&auml;higte Person im Sinne der TRBS&nbsp;1203 zu sein</strong> und die Pr&uuml;fung ordnungsgem&auml;&szlig; durchgef&uuml;hrt zu haben.<br>
-        <span style="font-size:0.75rem; color:#6B7280; margin-top:4px; display:block;">I confirm that I am a qualified electrical professional (TRBS&nbsp;1203) and have conducted this inspection properly.</span>
+        &#9745; <strong id="checkbox-text">Ich best&auml;tige, eine bef&auml;higte Person im Sinne der TRBS&nbsp;1203 zu sein</strong> und die Pr&uuml;fung ordnungsgem&auml;&szlig; durchgef&uuml;hrt zu haben.<br>
+        <span style="font-size:0.75rem; color:#6B7280; margin-top:4px; display:block;" id="checkbox-sub">I confirm that I am a qualified electrical professional (TRBS&nbsp;1203) and have conducted this inspection properly.</span>
     </div>
-    <p>By checking this box, the user accepts full professional and legal responsibility for the accuracy of the inspection data entered.</p>
+    <p id="p-declaration2">By checking this box, the user accepts full professional and legal responsibility for the accuracy of the inspection data entered.</p>
 
-    <h3>Pr&uuml;fintervall &amp; Gef&auml;hrdungsbeurteilung</h3>
-    <p>The inspection intervals suggested by PACDI are based on DGUV Vorschrift 3 guidelines. The operator is solely responsible for adapting these intervals to site-specific risk assessments (Gef&auml;hrdungsbeurteilung) as required by BetrSichV &sect;&nbsp;3. PACDI assumes no liability for incorrect interval selection.</p>
+    <h3 id="h3-interval">Pr&uuml;fintervall &amp; Gef&auml;hrdungsbeurteilung</h3>
+    <p id="p-interval">The inspection intervals suggested by PACDI are based on DGUV Vorschrift 3 guidelines. The operator is solely responsible for adapting these intervals to site-specific risk assessments (Gef&auml;hrdungsbeurteilung) as required by BetrSichV &sect;&nbsp;3. PACDI assumes no liability for incorrect interval selection.</p>
 
-    <h3>Keine Zertifizierungsstelle</h3>
-    <p>PACDI Store is not an accredited testing or certification body. Inspection protocols generated via PACDI do not replace official certifications or audits required by law.</p>
+    <h3 id="h3-cert">Keine Zertifizierungsstelle</h3>
+    <p id="p-cert">PACDI Store is not an accredited testing or certification body. Inspection protocols generated via PACDI do not replace official certifications or audits required by law.</p>
 </section>
 
 <hr>
 
-<!-- 2. COMPANY STRUCTURE -->
+<!-- 2. STRUCTURE -->
 <section id="structure">
-    <h2>2. Company Structure</h2>
-    <p>PACDI Store operates through a two-entity structure:</p>
+    <h2 id="h2-structure">2. Company Structure</h2>
+    <p id="p-structure">PACDI Store operates through a two-entity structure:</p>
     <div class="company-grid">
         <div class="company-box primary">
-            <div class="company-label">&#9889; Operational Entity</div>
+            <div class="company-label">&#9889; <span id="op-entity-label">Operational Entity</span></div>
             <p><strong>AskMeAI Teknoloji Ltd. &#350;ti.</strong></p>
-            <p>Trade Registry No: 23837</p>
+            <p><span id="trade-no-1">Trade Registry No</span>: 23837</p>
             <p>Yunusemre / Manisa, T&uuml;rkiye</p>
-            <p style="margin-top:8px; font-size:0.75rem; color:#4a6a88;">Responsible for operations, customer relations, data processing, and all legal obligations toward users.</p>
+            <p style="margin-top:8px; font-size:0.75rem; color:#4a6a88;" id="op-entity-desc">Responsible for operations, customer relations, data processing, and all legal obligations toward users.</p>
         </div>
         <div class="company-box">
-            <div class="company-label">&#128737;&#65039; IP Holding Entity</div>
+            <div class="company-label">&#128737;&#65039; <span id="ip-entity-label">IP Holding Entity</span></div>
             <p><strong>PACDI Global Yaz&#305;l&#305;m Ltd. &#350;ti.</strong></p>
-            <p>Trade Registry No: 23836</p>
+            <p><span id="trade-no-2">Trade Registry No</span>: 23836</p>
             <p>Yunusemre / Manisa, T&uuml;rkiye</p>
-            <p style="margin-top:8px; font-size:0.75rem; color:#4a6a88;">Holds all intellectual property, trademarks, FSEK registrations, and domain portfolio.</p>
+            <p style="margin-top:8px; font-size:0.75rem; color:#4a6a88;" id="ip-entity-desc">Holds all intellectual property, trademarks, FSEK registrations, and domain portfolio.</p>
         </div>
     </div>
 </section>
@@ -185,14 +160,14 @@
 
 <!-- 3. IMPRESSUM -->
 <section id="impressum">
-    <h2>3. Legal Notice (Impressum)</h2>
+    <h2 id="h2-impressum">3. Legal Notice (Impressum)</h2>
     <div class="contact-box">
         <p><strong style="color:#e8edf2; font-size:0.95rem;">AskMeAI Teknoloji Ltd. &#350;ti.</strong></p>
-        <p>Trade Registry No: 23837 &mdash; NACE: 62.10.00</p>
+        <p><span id="trade-no-3">Trade Registry No</span>: 23837 &mdash; NACE: 62.10.00</p>
         <p>Yunusemre / Manisa, T&uuml;rkiye</p>
-        <p style="margin-top:12px;">Authorized contact for legal correspondence:</p>
+        <p style="margin-top:12px;" id="p-auth-contact">Authorized contact for legal correspondence:</p>
         <p class="email"><a href="mailto:info@pacdi.eu">info@pacdi.eu</a></p>
-        <p style="margin-top:8px; font-size:0.78rem; color:#4a6a88;">Response time: within 7 business days.</p>
+        <p style="margin-top:8px; font-size:0.78rem; color:#4a6a88;" id="p-response">Response time: within 7 business days.</p>
     </div>
 </section>
 
@@ -200,57 +175,57 @@
 
 <!-- 4. PRIVACY -->
 <section id="privacy">
-    <h2>4. Privacy Policy</h2>
+    <h2 id="h2-privacy">4. Privacy Policy</h2>
 
-    <h3>Data Controller</h3>
-    <p><strong>AskMeAI Teknoloji Ltd. &#350;ti.</strong> (TR: 23837) is the data controller for all personal data processed through PACDI Store.</p>
+    <h3 id="h3-controller">Data Controller</h3>
+    <p id="p-controller"><strong>AskMeAI Teknoloji Ltd. &#350;ti.</strong> (TR: 23837) is the data controller for all personal data processed through PACDI Store.</p>
 
-    <h3>Local Data Storage</h3>
-    <p>The DGUV Pr&uuml;fprotokoll tool stores all entered inspection data exclusively in your browser&apos;s local storage (localStorage). <strong style="color:#e8edf2;">No inspection data is transmitted to our servers.</strong> You retain full control over your data at all times.</p>
+    <h3 id="h3-localstorage">Local Data Storage</h3>
+    <p id="p-localstorage">The DGUV Pr&uuml;fprotokoll tool stores all entered inspection data exclusively in your browser&apos;s local storage (localStorage). <strong style="color:#e8edf2;">No inspection data is transmitted to our servers.</strong> You retain full control over your data at all times.</p>
 
-    <h3>Early Access E-Mail</h3>
-    <p>If you submit your e-mail address for Early Access, it is used solely to notify you of the Pro launch. Legal basis: Art.&nbsp;6(1)(a) GDPR. Withdraw consent anytime: <a href="mailto:info@pacdi.eu">info@pacdi.eu</a></p>
+    <h3 id="h3-earlyaccess">Early Access E-Mail</h3>
+    <p id="p-earlyaccess">If you submit your e-mail address for Early Access, it is used solely to notify you of the Pro launch. Legal basis: Art.&nbsp;6(1)(a) GDPR. Withdraw consent anytime: <a href="mailto:info@pacdi.eu">info@pacdi.eu</a></p>
 
-    <h3>Your Rights (GDPR Art. 15&ndash;21)</h3>
-    <p>Access, rectification, erasure, restriction, portability, objection. Contact <a href="mailto:info@pacdi.eu">info@pacdi.eu</a> &mdash; response within 30 days.</p>
+    <h3 id="h3-rights">Your Rights (GDPR Art. 15&ndash;21)</h3>
+    <p id="p-rights">Access, rectification, erasure, restriction, portability, objection. Contact <a href="mailto:info@pacdi.eu">info@pacdi.eu</a> &mdash; response within 30 days.</p>
 </section>
 
 <hr>
 
 <!-- 5. COOKIES -->
 <section id="cookies">
-    <h2>5. Cookies &amp; Tracking</h2>
-    <h3>Google Analytics</h3>
-    <p>We use Google Analytics to understand website traffic. IP addresses are anonymised. Opt out: <a href="https://tools.google.com/dlpage/gaoptout" target="_blank">Google Analytics Opt-out Add-on</a>.</p>
-    <h3>Google AdSense</h3>
-    <p>This website displays advertisements via Google AdSense. AdSense may use cookies for interest-based ads. See <a href="https://policies.google.com/privacy" target="_blank">Google&apos;s Privacy Policy</a>.</p>
-    <h3>Local Storage</h3>
-    <p>PACDI tools use browser localStorage only. No data leaves your device unless you explicitly export a PDF.</p>
+    <h2 id="h2-cookies">5. Cookies &amp; Tracking</h2>
+    <h3 id="h3-ga">Google Analytics</h3>
+    <p id="p-ga">We use Google Analytics to understand website traffic. IP addresses are anonymised. Opt out: <a href="https://tools.google.com/dlpage/gaoptout" target="_blank">Google Analytics Opt-out Add-on</a>.</p>
+    <h3 id="h3-adsense">Google AdSense</h3>
+    <p id="p-adsense">This website displays advertisements via Google AdSense. AdSense may use cookies for interest-based ads. See <a href="https://policies.google.com/privacy" target="_blank">Google&apos;s Privacy Policy</a>.</p>
+    <h3 id="h3-localstorage2">Local Storage</h3>
+    <p id="p-localstorage2">PACDI tools use browser localStorage only. No data leaves your device unless you explicitly export a PDF.</p>
 </section>
 
 <hr>
 
 <!-- 6. IP -->
 <section id="ip">
-    <h2>6. Intellectual Property</h2>
-    <p>All software architectures, UI frameworks, and content structures on PACDI Store are owned by <strong>PACDI Global Yaz&#305;l&#305;m Ltd. &#350;ti.</strong> and protected under FSEK Registration No: <strong>2026/18897</strong> and applicable international copyright law.</p>
-    <p>Operated by AskMeAI Teknoloji Ltd. &#350;ti. under sublicense. Unauthorized copying is subject to legal action.</p>
+    <h2 id="h2-ip">6. Intellectual Property</h2>
+    <p id="p-ip1">All software architectures, UI frameworks, and content structures on PACDI Store are owned by <strong>PACDI Global Yaz&#305;l&#305;m Ltd. &#350;ti.</strong> and protected under FSEK Registration No: <strong>2026/18897</strong> and applicable international copyright law.</p>
+    <p id="p-ip2">Operated by AskMeAI Teknoloji Ltd. &#350;ti. under sublicense. Unauthorized copying is subject to legal action.</p>
 </section>
 
 <hr>
 
 <!-- 7. CONTACT -->
 <section id="contact">
-    <h2>7. Contact</h2>
+    <h2 id="h2-contact">7. Contact</h2>
     <div class="contact-box">
-        <p>For all legal, privacy, or DGUV-related inquiries:</p>
+        <p id="p-contact1">For all legal, privacy, or DGUV-related inquiries:</p>
         <p class="email"><a href="mailto:info@pacdi.eu">info@pacdi.eu</a></p>
-        <p style="margin-top:12px; font-size:0.82rem; color:#6B7280;">
+        <p style="margin-top:12px; font-size:0.82rem; color:#6B7280;" id="p-contact-companies">
             AskMeAI Teknoloji Ltd. &#350;ti. (Operations) &mdash; TR: 23837<br>
             PACDI Global Yaz&#305;l&#305;m Ltd. &#350;ti. (IP) &mdash; TR: 23836<br>
             Yunusemre / Manisa, T&uuml;rkiye
         </p>
-        <p style="margin-top:10px; font-size:0.78rem; color:#4a6a88;">
+        <p style="margin-top:10px; font-size:0.78rem; color:#4a6a88;" id="p-fullecosystem">
             Full ecosystem legal notice: <a href="https://pacdi.eu/legal.html">pacdi.eu/legal.html</a>
         </p>
     </div>
@@ -258,7 +233,6 @@
 
 <hr style="margin-top:48px;">
 
-<!-- FSEK BADGE -->
 <div id="pacdi-fsek" class="fsek-block">
     <div class="fsek-badge">
         <span>&#128737;&#65039;</span>
@@ -270,5 +244,285 @@
 </div>
 
 </div>
+
+<script>
+(function() {
+  var i18n = {
+    tr: {
+      back_link: '&larr; Mağazaya Dön',
+      page_title: 'Yasal Uyarı & Gizlilik Politikası',
+      page_sub: 'PACDI Store — pacdi.store — QR, Barkod, DGUV V3 Prüfprotokoll ve daha fazlası',
+      last_updated: 'Son güncelleme: Haziran 2026 — Tam ekosistem yasal: ',
+      toc_title: 'İçindekiler',
+      toc1: '1. DGUV V3 Prüfprotokoll — Sorumluluk reddi',
+      toc2: '2. Şirket Yapısı',
+      toc3: '3. Yasal Uyarı (Künye)',
+      toc4: '4. Gizlilik Politikası',
+      toc5: '5. Çerezler ve İzleme',
+      toc6: '6. Fikri Mülkiyet',
+      toc7: '7. İletişim',
+      h2_dguv: '1. DGUV V3 Prüfprotokoll — Sorumluluk Reddi',
+      dguv_label: '⚠️ Önemli Uyarı',
+      dguv_p1: 'PACDI Digital yalnızca bir belgelendirme aracıdır. Ölçümlerin doğru yapılması, kontrol periyotlarına uyulması ve teknik değerlendirme sorumluluğu tamamen denetimi yapan elektrik uzmanına aittir (TRBS 1203 uyarınca Yetkili Kişi).',
+      dguv_p2: 'Kontrol periyotları, işletmecinin BetrSichV § 3 uyarınca yaptığı risk değerlendirmesine göre belirlenmiştir. PACDI, hatalı ölçüm değerleri, yanlış aralık seçimi veya hatalı kullanımdan kaynaklanan zararlardan sorumlu tutulamaz.',
+      dguv_p3: 'PACDI Digital sadece bir belgelendirme aracıdır. Elektriksel ölçüm yapmaz, güvenlik koşullarını değerlendirmez ve yasal uyumluluk garantisi vermez. Tüm kontrol sonuçları, periyot kararları ve teknik değerlendirmeler denetimi yapan nitelikli elektrik uzmanının (TRBS 1203 uyarınca Elektrofachkraft / Yetkili Kişi) tek sorumluluğundadır.',
+      h3_declaration: 'Yetkili Kişi — Kullanıcı Beyanı',
+      p_declaration: 'Bir DGUV V3 kontrol raporu oluşturulurken, kullanıcıların aşağıdaki beyanı onaylaması gerekir:',
+      checkbox_text: 'TRBS 1203 anlamında yetkili bir kişi olduğumu onaylıyorum',
+      checkbox_sub: 've kontrolü usulüne uygun şekilde gerçekleştirdiğimi beyan ediyorum.',
+      p_declaration2: 'Bu kutuyu işaretleyerek, kullanıcı girilen kontrol verilerinin doğruluğu için tam mesleki ve yasal sorumluluğu kabul eder.',
+      h3_interval: 'Kontrol Periyodu & Risk Değerlendirmesi',
+      p_interval: 'PACDI tarafından önerilen kontrol periyotları DGUV Vorschrift 3 yönergelerine dayanmaktadır. İşletmeci, bu periyotları BetrSichV § 3 gereği sahaya özgü risk değerlendirmelerine uyarlamaktan tek başına sorumludur. PACDI yanlış periyot seçiminden sorumlu tutulamaz.',
+      h3_cert: 'Sertifikasyon Kuruluşu Değildir',
+      p_cert: 'PACDI Store akredite bir test veya sertifikasyon kuruluşu değildir. PACDI üzerinden oluşturulan kontrol protokolleri, yasal olarak gerekli resmi sertifikasyonların veya denetimlerin yerini tutmaz.',
+      h2_structure: '2. Şirket Yapısı',
+      p_structure: 'PACDI Store iki şirketli bir yapı ile faaliyet göstermektedir:',
+      op_entity_label: 'Operasyonel Şirket',
+      trade_no: 'Ticaret Sicil No',
+      op_entity_desc: 'Operasyonlardan, müşteri ilişkilerinden, veri işlemeden ve kullanıcılara karşı tüm yasal yükümlülüklerden sorumludur.',
+      ip_entity_label: 'IP Sahibi Şirket',
+      ip_entity_desc: 'Tüm fikri mülkiyeti, ticari markaları, FSEK tescillerini ve domain portföyünü elinde bulundurur.',
+      h2_impressum: '3. Yasal Uyarı (Künye)',
+      p_auth_contact: 'Yasal yazışmalar için yetkili iletişim:',
+      p_response: 'Yanıt süresi: 7 iş günü içinde.',
+      h2_privacy: '4. Gizlilik Politikası',
+      h3_controller: 'Veri Sorumlusu',
+      p_controller: 'AskMeAI Teknoloji Ltd. Şti. (TR: 23837), PACDI Store üzerinden işlenen tüm kişisel veriler için veri sorumlusudur.',
+      h3_localstorage: 'Yerel Veri Depolama',
+      p_localstorage: 'DGUV Prüfprotokoll aracı, girilen tüm kontrol verilerini yalnızca tarayıcınızın yerel depolamasında (localStorage) saklar. Hiçbir kontrol verisi sunucularımıza iletilmez. Verileriniz üzerinde her zaman tam kontrole sahipsiniz.',
+      h3_earlyaccess: 'Erken Erişim E-postası',
+      p_earlyaccess: 'Erken Erişim için e-posta adresinizi gönderirseniz, bu yalnızca Pro lansmanından sizi haberdar etmek için kullanılır. Yasal dayanak: GDPR Madde 6(1)(a). Onayı istediğiniz zaman geri çekebilirsiniz: info@pacdi.eu',
+      h3_rights: 'Haklarınız (GDPR Madde 15–21)',
+      p_rights: 'Erişim, düzeltme, silme, kısıtlama, taşınabilirlik, itiraz. İletişim: info@pacdi.eu — 30 gün içinde yanıt verilir.',
+      h2_cookies: '5. Çerezler & İzleme',
+      h3_ga: 'Google Analytics',
+      p_ga: 'Web sitesi trafiğini anlamak için Google Analytics kullanıyoruz. IP adresleri anonimleştirilir. Devre dışı bırakma: Google Analytics Devre Dışı Bırakma Eklentisi.',
+      h3_adsense: 'Google AdSense',
+      p_adsense: 'Bu web sitesi Google AdSense aracılığıyla reklam gösterir. AdSense, ilgi alanına dayalı reklamlar için çerez kullanabilir. Bkz: Google Gizlilik Politikası.',
+      h3_localstorage2: 'Yerel Depolama',
+      p_localstorage2: 'PACDI araçları yalnızca tarayıcı localStorage kullanır. PDF olarak dışa aktarmadığınız sürece hiçbir veri cihazınızdan ayrılmaz.',
+      h2_ip: '6. Fikri Mülkiyet',
+      p_ip1: 'PACDI Store üzerindeki tüm yazılım mimarileri, kullanıcı arayüzü çerçeveleri ve içerik yapıları PACDI Global Yazılım Ltd. Şti. mülkiyetindedir ve FSEK Tescil No: 2026/18897 ile geçerli uluslararası telif hakkı kanunu kapsamında korunmaktadır.',
+      p_ip2: 'AskMeAI Teknoloji Ltd. Şti. tarafından alt lisans ile işletilmektedir. İzinsiz kopyalama hukuki işleme tabidir.',
+      h2_contact: '7. İletişim',
+      p_contact1: 'Tüm yasal, gizlilik veya DGUV ile ilgili sorularınız için:',
+      p_contact_companies: 'AskMeAI Teknoloji Ltd. Şti. (Operasyon) — TR: 23837<br>PACDI Global Yazılım Ltd. Şti. (IP) — TR: 23836<br>Yunusemre / Manisa, Türkiye',
+      p_fullecosystem: 'Tam ekosistem yasal bildirimi: '
+    },
+    de: {
+      back_link: '&larr; Zur&uuml;ck zum Store',
+      page_title: 'Legal Notice &amp; Privacy Policy',
+      page_sub: 'PACDI Store &mdash; pacdi.store &mdash; QR, Barcode, DGUV V3 Pr&uuml;fprotokoll &amp; more',
+      last_updated: 'Letzte Aktualisierung: Juni 2026 &mdash; Vollst&auml;ndiges &Ouml;kosystem-Recht: ',
+      toc_title: 'Inhalt',
+      toc1: '1. DGUV V3 Pr&uuml;fprotokoll — Haftungsausschluss',
+      toc2: '2. Unternehmensstruktur',
+      toc3: '3. Impressum',
+      toc4: '4. Datenschutzerkl&auml;rung',
+      toc5: '5. Cookies & Tracking',
+      toc6: '6. Geistiges Eigentum',
+      toc7: '7. Kontakt',
+      h2_dguv: '1. DGUV V3 Pr&uuml;fprotokoll &mdash; Haftungsausschluss',
+      dguv_label: '⚠️ Wichtiger Hinweis',
+      dguv_p1: 'PACDI Digital ist ein reines Dokumentationswerkzeug. Die Verantwortung f&uuml;r die korrekte Durchf&uuml;hrung der Messungen, die Einhaltung der Pr&uuml;ffristen und die fachliche Beurteilung liegt ausschlie&szlig;lich bei der pr&uuml;fenden Elektrofachkraft (Bef&auml;higte Person nach TRBS 1203).',
+      dguv_p2: 'Die Pr&uuml;ffristen wurden auf Basis der betriebsinternen Gef&auml;hrdungsbeurteilung des Betreibers gem&auml;&szlig; § 3 BetrSichV festgelegt. PACDI &uuml;bernimmt keine Haftung f&uuml;r Sch&auml;den, die durch fehlerhafte Messwerte, falsche Intervallwahl oder unsachgem&auml;&szlig;e Anwendung entstehen.',
+      dguv_p3: 'PACDI Digital ist ausschlie&szlig;lich ein Dokumentationswerkzeug. Es f&uuml;hrt keine elektrischen Messungen durch, bewertet keine Sicherheitsbedingungen und gibt keine rechtliche Konformit&auml;tsgarantie. Alle Pr&uuml;fergebnisse, Intervallentscheidungen und technischen Bewertungen liegen in der alleinigen Verantwortung der pr&uuml;fenden Elektrofachkraft (Bef&auml;higte Person gem&auml;&szlig; TRBS 1203).',
+      h3_declaration: 'Bef&auml;higte Person — Nutzererkl&auml;rung',
+      p_declaration: 'Beim Erstellen eines DGUV V3 Pr&uuml;fberichts m&uuml;ssen Nutzer folgende Erkl&auml;rung best&auml;tigen:',
+      checkbox_text: 'Ich best&auml;tige, eine bef&auml;higte Person im Sinne der TRBS 1203 zu sein',
+      checkbox_sub: 'und die Pr&uuml;fung ordnungsgem&auml;&szlig; durchgef&uuml;hrt zu haben.',
+      p_declaration2: 'Mit Aktivierung dieser Checkbox &uuml;bernimmt der Nutzer die volle fachliche und rechtliche Verantwortung f&uuml;r die Richtigkeit der eingegebenen Pr&uuml;fdaten.',
+      h3_interval: 'Pr&uuml;fintervall &amp; Gef&auml;hrdungsbeurteilung',
+      p_interval: 'Die von PACDI vorgeschlagenen Pr&uuml;fintervalle basieren auf den DGUV Vorschrift 3 Richtlinien. Der Betreiber ist allein verantwortlich daf&uuml;r, diese Intervalle an die standortspezifische Gef&auml;hrdungsbeurteilung gem&auml;&szlig; § 3 BetrSichV anzupassen. PACDI &uuml;bernimmt keine Haftung f&uuml;r eine falsche Intervallwahl.',
+      h3_cert: 'Keine Zertifizierungsstelle',
+      p_cert: 'PACDI Store ist keine akkreditierte Pr&uuml;f- oder Zertifizierungsstelle. &Uuml;ber PACDI erstellte Pr&uuml;fprotokolle ersetzen keine gesetzlich vorgeschriebenen offiziellen Zertifizierungen oder Audits.',
+      h2_structure: '2. Unternehmensstruktur',
+      p_structure: 'PACDI Store wird durch eine Zwei-Unternehmens-Struktur betrieben:',
+      op_entity_label: 'Operative Gesellschaft',
+      trade_no: 'Handelsregisternummer',
+      op_entity_desc: 'Verantwortlich f&uuml;r Betrieb, Kundenbeziehungen, Datenverarbeitung und alle rechtlichen Verpflichtungen gegen&uuml;ber Nutzern.',
+      ip_entity_label: 'IP-Holding-Gesellschaft',
+      ip_entity_desc: 'H&auml;lt s&auml;mtliches geistiges Eigentum, Marken, FSEK-Registrierungen und das Domain-Portfolio.',
+      h2_impressum: '3. Impressum',
+      p_auth_contact: 'Autorisierter Kontakt f&uuml;r rechtliche Korrespondenz:',
+      p_response: 'Antwortzeit: innerhalb von 7 Werktagen.',
+      h2_privacy: '4. Datenschutzerkl&auml;rung',
+      h3_controller: 'Verantwortlicher',
+      p_controller: 'Die AskMeAI Teknoloji Ltd. &#350;ti. (TR: 23837) ist verantwortlich f&uuml;r alle &uuml;ber PACDI Store verarbeiteten personenbezogenen Daten.',
+      h3_localstorage: 'Lokale Datenspeicherung',
+      p_localstorage: 'Das DGUV Pr&uuml;fprotokoll-Tool speichert alle eingegebenen Pr&uuml;fdaten ausschlie&szlig;lich im lokalen Speicher Ihres Browsers (localStorage). Es werden keine Pr&uuml;fdaten an unsere Server &uuml;bermittelt. Sie behalten jederzeit die volle Kontrolle &uuml;ber Ihre Daten.',
+      h3_earlyaccess: 'Early-Access-E-Mail',
+      p_earlyaccess: 'Wenn Sie Ihre E-Mail-Adresse f&uuml;r Early Access angeben, wird diese ausschlie&szlig;lich zur Benachrichtigung &uuml;ber den Pro-Launch verwendet. Rechtsgrundlage: Art. 6(1)(a) DSGVO. Widerruf jederzeit m&ouml;glich: info@pacdi.eu',
+      h3_rights: 'Ihre Rechte (DSGVO Art. 15–21)',
+      p_rights: 'Auskunft, Berichtigung, L&ouml;schung, Einschr&auml;nkung, Daten&uuml;bertragbarkeit, Widerspruch. Kontakt: info@pacdi.eu — Antwort innerhalb von 30 Tagen.',
+      h2_cookies: '5. Cookies & Tracking',
+      h3_ga: 'Google Analytics',
+      p_ga: 'Wir nutzen Google Analytics, um den Website-Traffic zu verstehen. IP-Adressen werden anonymisiert. Opt-out: Google Analytics Opt-out Add-on.',
+      h3_adsense: 'Google AdSense',
+      p_adsense: 'Diese Website zeigt Werbung &uuml;ber Google AdSense an. AdSense kann Cookies f&uuml;r interessenbasierte Werbung verwenden. Siehe Google-Datenschutzerkl&auml;rung.',
+      h3_localstorage2: 'Lokaler Speicher',
+      p_localstorage2: 'PACDI-Tools verwenden ausschlie&szlig;lich den Browser-localStorage. Es verlassen keine Daten Ihr Ger&auml;t, es sei denn, Sie exportieren ausdr&uuml;cklich ein PDF.',
+      h2_ip: '6. Geistiges Eigentum',
+      p_ip1: 'Alle Softwarearchitekturen, UI-Frameworks und Inhaltsstrukturen auf PACDI Store sind Eigentum der PACDI Global Yaz&#305;l&#305;m Ltd. &#350;ti. und gesch&uuml;tzt unter der FSEK-Registrierungsnummer 2026/18897 sowie geltendem internationalem Urheberrecht.',
+      p_ip2: 'Betrieben von der AskMeAI Teknoloji Ltd. &#350;ti. unter Unterlizenz. Unbefugtes Kopieren wird rechtlich verfolgt.',
+      h2_contact: '7. Kontakt',
+      p_contact1: 'F&uuml;r alle rechtlichen, datenschutzbezogenen oder DGUV-bezogenen Anfragen:',
+      p_contact_companies: 'AskMeAI Teknoloji Ltd. &#350;ti. (Betrieb) &mdash; TR: 23837<br>PACDI Global Yaz&#305;l&#305;m Ltd. &#350;ti. (IP) &mdash; TR: 23836<br>Yunusemre / Manisa, T&uuml;rkiye',
+      p_fullecosystem: 'Vollst&auml;ndiges &Ouml;kosystem-Impressum: '
+    },
+    en: {
+      back_link: '&larr; Back to Store',
+      page_title: 'Legal Notice & Privacy Policy',
+      page_sub: 'PACDI Store — pacdi.store — QR, Barcode, DGUV V3 Inspection Protocol & more',
+      last_updated: 'Last updated: June 2026 — Full ecosystem legal: ',
+      toc_title: 'Contents',
+      toc1: '1. DGUV V3 Inspection Protocol — Disclaimer',
+      toc2: '2. Company Structure',
+      toc3: '3. Legal Notice (Imprint)',
+      toc4: '4. Privacy Policy',
+      toc5: '5. Cookies & Tracking',
+      toc6: '6. Intellectual Property',
+      toc7: '7. Contact',
+      h2_dguv: '1. DGUV V3 Inspection Protocol — Disclaimer',
+      dguv_label: '⚠️ Important Notice',
+      dguv_p1: 'PACDI Digital is a documentation tool only. The responsibility for correctly performing measurements, complying with inspection deadlines, and providing professional assessment lies solely with the inspecting electrical professional (Qualified Person per TRBS 1203).',
+      dguv_p2: 'The inspection intervals were determined based on the operator\'s internal risk assessment in accordance with § 3 BetrSichV. PACDI assumes no liability for damages resulting from incorrect measurement values, wrong interval selection, or improper use.',
+      dguv_p3: 'PACDI Digital is a documentation tool only. It does not perform electrical measurements, assess safety conditions, or provide legal compliance guarantees. All inspection results, interval decisions, and technical assessments are the sole responsibility of the qualified electrical professional (Elektrofachkraft / Qualified Person per TRBS 1203) conducting the inspection.',
+      h3_declaration: 'Qualified Person — User Declaration',
+      p_declaration: 'When generating a DGUV V3 inspection report, users are required to confirm the following declaration:',
+      checkbox_text: 'I confirm that I am a qualified person within the meaning of TRBS 1203',
+      checkbox_sub: 'and have conducted this inspection properly.',
+      p_declaration2: 'By checking this box, the user accepts full professional and legal responsibility for the accuracy of the inspection data entered.',
+      h3_interval: 'Inspection Interval & Risk Assessment',
+      p_interval: 'The inspection intervals suggested by PACDI are based on DGUV Vorschrift 3 guidelines. The operator is solely responsible for adapting these intervals to site-specific risk assessments as required by BetrSichV § 3. PACDI assumes no liability for incorrect interval selection.',
+      h3_cert: 'Not a Certification Body',
+      p_cert: 'PACDI Store is not an accredited testing or certification body. Inspection protocols generated via PACDI do not replace official certifications or audits required by law.',
+      h2_structure: '2. Company Structure',
+      p_structure: 'PACDI Store operates through a two-entity structure:',
+      op_entity_label: 'Operational Entity',
+      trade_no: 'Trade Registry No',
+      op_entity_desc: 'Responsible for operations, customer relations, data processing, and all legal obligations toward users.',
+      ip_entity_label: 'IP Holding Entity',
+      ip_entity_desc: 'Holds all intellectual property, trademarks, FSEK registrations, and domain portfolio.',
+      h2_impressum: '3. Legal Notice (Imprint)',
+      p_auth_contact: 'Authorized contact for legal correspondence:',
+      p_response: 'Response time: within 7 business days.',
+      h2_privacy: '4. Privacy Policy',
+      h3_controller: 'Data Controller',
+      p_controller: 'AskMeAI Teknoloji Ltd. &#350;ti. (TR: 23837) is the data controller for all personal data processed through PACDI Store.',
+      h3_localstorage: 'Local Data Storage',
+      p_localstorage: 'The DGUV inspection protocol tool stores all entered inspection data exclusively in your browser\'s local storage (localStorage). No inspection data is transmitted to our servers. You retain full control over your data at all times.',
+      h3_earlyaccess: 'Early Access E-Mail',
+      p_earlyaccess: 'If you submit your e-mail address for Early Access, it is used solely to notify you of the Pro launch. Legal basis: Art. 6(1)(a) GDPR. Withdraw consent anytime: info@pacdi.eu',
+      h3_rights: 'Your Rights (GDPR Art. 15–21)',
+      p_rights: 'Access, rectification, erasure, restriction, portability, objection. Contact info@pacdi.eu — response within 30 days.',
+      h2_cookies: '5. Cookies & Tracking',
+      h3_ga: 'Google Analytics',
+      p_ga: 'We use Google Analytics to understand website traffic. IP addresses are anonymised. Opt out: Google Analytics Opt-out Add-on.',
+      h3_adsense: 'Google AdSense',
+      p_adsense: 'This website displays advertisements via Google AdSense. AdSense may use cookies for interest-based ads. See Google\'s Privacy Policy.',
+      h3_localstorage2: 'Local Storage',
+      p_localstorage2: 'PACDI tools use browser localStorage only. No data leaves your device unless you explicitly export a PDF.',
+      h2_ip: '6. Intellectual Property',
+      p_ip1: 'All software architectures, UI frameworks, and content structures on PACDI Store are owned by PACDI Global Yaz&#305;l&#305;m Ltd. &#350;ti. and protected under FSEK Registration No: 2026/18897 and applicable international copyright law.',
+      p_ip2: 'Operated by AskMeAI Teknoloji Ltd. &#350;ti. under sublicense. Unauthorized copying is subject to legal action.',
+      h2_contact: '7. Contact',
+      p_contact1: 'For all legal, privacy, or DGUV-related inquiries:',
+      p_contact_companies: 'AskMeAI Teknoloji Ltd. &#350;ti. (Operations) &mdash; TR: 23837<br>PACDI Global Yaz&#305;l&#305;m Ltd. &#350;ti. (IP) &mdash; TR: 23836<br>Yunusemre / Manisa, T&uuml;rkiye',
+      p_fullecosystem: 'Full ecosystem legal notice: '
+    }
+  };
+
+  var currentLang = 'de';
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    var t = i18n[lang] || i18n.de;
+
+    document.getElementById('back-link').innerHTML = t.back_link;
+    document.getElementById('page-title').textContent = t.page_title;
+    document.getElementById('page-sub').textContent = t.page_sub;
+    document.getElementById('last-updated').innerHTML = t.last_updated + '<a href="https://pacdi.eu/legal.html">pacdi.eu/legal.html</a>';
+    document.getElementById('toc-title').textContent = t.toc_title;
+    document.getElementById('toc1').textContent = t.toc1;
+    document.getElementById('toc2').textContent = t.toc2;
+    document.getElementById('toc3').textContent = t.toc3;
+    document.getElementById('toc4').textContent = t.toc4;
+    document.getElementById('toc5').textContent = t.toc5;
+    document.getElementById('toc6').textContent = t.toc6;
+    document.getElementById('toc7').textContent = t.toc7;
+
+    document.getElementById('h2-dguv').textContent = t.h2_dguv;
+    document.getElementById('dguv-label').innerHTML = t.dguv_label;
+    document.getElementById('dguv-p1').innerHTML = '<strong style="color:#f87171;">' + t.dguv_p1.split('. ')[0] + '.</strong> ' + t.dguv_p1.split('. ').slice(1).join('. ');
+    document.getElementById('dguv-p2').textContent = t.dguv_p2;
+    document.getElementById('dguv-p3').textContent = t.dguv_p3;
+    document.getElementById('h3-declaration').textContent = t.h3_declaration;
+    document.getElementById('p-declaration').textContent = t.p_declaration;
+    document.getElementById('checkbox-text').innerHTML = t.checkbox_text;
+    document.getElementById('checkbox-sub').innerHTML = t.checkbox_sub;
+    document.getElementById('p-declaration2').textContent = t.p_declaration2;
+    document.getElementById('h3-interval').textContent = t.h3_interval;
+    document.getElementById('p-interval').textContent = t.p_interval;
+    document.getElementById('h3-cert').textContent = t.h3_cert;
+    document.getElementById('p-cert').textContent = t.p_cert;
+
+    document.getElementById('h2-structure').textContent = t.h2_structure;
+    document.getElementById('p-structure').textContent = t.p_structure;
+    document.getElementById('op-entity-label').textContent = t.op_entity_label;
+    document.getElementById('op-entity-desc').textContent = t.op_entity_desc;
+    document.getElementById('ip-entity-label').textContent = t.ip_entity_label;
+    document.getElementById('ip-entity-desc').textContent = t.ip_entity_desc;
+    document.getElementById('trade-no-1').textContent = t.trade_no;
+    document.getElementById('trade-no-2').textContent = t.trade_no;
+    document.getElementById('trade-no-3').textContent = t.trade_no;
+
+    document.getElementById('h2-impressum').textContent = t.h2_impressum;
+    document.getElementById('p-auth-contact').textContent = t.p_auth_contact;
+    document.getElementById('p-response').textContent = t.p_response;
+
+    document.getElementById('h2-privacy').textContent = t.h2_privacy;
+    document.getElementById('h3-controller').textContent = t.h3_controller;
+    document.getElementById('p-controller').innerHTML = t.p_controller;
+    document.getElementById('h3-localstorage').textContent = t.h3_localstorage;
+    document.getElementById('p-localstorage').innerHTML = t.p_localstorage;
+    document.getElementById('h3-earlyaccess').textContent = t.h3_earlyaccess;
+    document.getElementById('p-earlyaccess').innerHTML = t.p_earlyaccess.replace('info@pacdi.eu', '<a href="mailto:info@pacdi.eu">info@pacdi.eu</a>');
+    document.getElementById('h3-rights').textContent = t.h3_rights;
+    document.getElementById('p-rights').innerHTML = t.p_rights.replace('info@pacdi.eu', '<a href="mailto:info@pacdi.eu">info@pacdi.eu</a>');
+
+    document.getElementById('h2-cookies').textContent = t.h2_cookies;
+    document.getElementById('h3-ga').textContent = t.h3_ga;
+    document.getElementById('p-ga').innerHTML = t.p_ga.replace('Google Analytics Opt-out Add-on', '<a href="https://tools.google.com/dlpage/gaoptout" target="_blank">Google Analytics Opt-out Add-on</a>');
+    document.getElementById('h3-adsense').textContent = t.h3_adsense;
+    document.getElementById('p-adsense').innerHTML = t.p_adsense.replace(/Google.s Privacy Policy|Google Gizlilik Politikası|Google-Datenschutzerkl&auml;rung/, '<a href="https://policies.google.com/privacy" target="_blank">' + (lang==='tr'?'Google Gizlilik Politikası':(lang==='de'?'Google-Datenschutzerklärung':'Googles Privacy Policy')) + '</a>');
+    document.getElementById('h3-localstorage2').textContent = t.h3_localstorage2;
+    document.getElementById('p-localstorage2').textContent = t.p_localstorage2;
+
+    document.getElementById('h2-ip').textContent = t.h2_ip;
+    document.getElementById('p-ip1').innerHTML = t.p_ip1;
+    document.getElementById('p-ip2').innerHTML = t.p_ip2;
+
+    document.getElementById('h2-contact').textContent = t.h2_contact;
+    document.getElementById('p-contact1').textContent = t.p_contact1;
+    document.getElementById('p-contact-companies').innerHTML = t.p_contact_companies;
+    document.getElementById('p-fullecosystem').innerHTML = t.p_fullecosystem + '<a href="https://pacdi.eu/legal.html">pacdi.eu/legal.html</a>';
+
+    document.querySelectorAll('.lang-btn').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang;
+    try { sessionStorage.setItem('autoLang', lang); } catch(e) {}
+  }
+
+  var defaultLang = null;
+  try { defaultLang = sessionStorage.getItem('autoLang'); } catch(e) {}
+  if (!defaultLang || !i18n[defaultLang]) {
+    var navLang = (navigator.language || 'de').toLowerCase();
+    defaultLang = navLang.indexOf('tr') === 0 ? 'tr' : (navLang.indexOf('en') === 0 ? 'en' : 'de');
+  }
+  setLanguage(defaultLang);
+})();
+</script>
 </body>
 </html>

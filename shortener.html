@@ -6,112 +6,172 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kısa Link | PACDI Store</title>
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-  <link rel="stylesheet" href="/assets/common.css">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #04162E; color: #eaf2fb; font-family: system-ui, -apple-system, sans-serif; padding: 16px; min-height: 100vh; }
+    .app-container { max-width: 600px; margin: 0 auto; }
+    nav { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 20px; background: rgba(4,22,46,0.8); border-radius: 12px; padding: 8px; }
+    nav a { color: #7a9ab8; text-decoration: none; font-size: 0.7rem; padding: 5px 10px; border-radius: 16px; border: 1px solid transparent; transition: 0.2s; white-space: nowrap; }
+    nav a:hover, nav a.active { border-color: #F6B45F; color: #F6B45F; background: rgba(246,180,95,0.06); }
+    .lang-bar { display: flex; gap: 4px; margin-left: auto; }
+    .lang-btn { background: transparent; border: 1px solid rgba(246,180,95,0.2); color: #7a9ab8; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+    .lang-btn.active, .lang-btn:hover { border-color: #F6B45F; color: #F6B45F; }
+    h1 { color: #F6B45F; font-size: 1.3rem; margin-bottom: 16px; }
+    .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(246,180,95,0.12); border-radius: 16px; padding: 20px; }
+    .qr-input { width: 100%; background: #0a1828; border: 1px solid rgba(246,180,95,0.2); color: #e8edf2; border-radius: 10px; padding: 11px 14px; font-size: 0.875rem; font-family: inherit; margin-bottom: 10px; transition: border-color 0.2s; }
+    .qr-input:focus { outline: none; border-color: #F6B45F; }
+    .btn-generate { width: 100%; background: #F6B45F; color: #04162E; border: none; padding: 14px; border-radius: 12px; font-size: 1rem; font-weight: 800; cursor: pointer; font-family: inherit; transition: 0.2s; }
+    .btn-generate:hover { background: #f0c870; }
+    .result { margin-top: 16px; background: #0a1828; padding: 16px; border-radius: 12px; word-break: break-all; }
+    .result .link { font-size: 1.1rem; font-weight: bold; color: #F6B45F; }
+    .result button { background: #F6B45F; border: none; padding: 6px 16px; border-radius: 20px; cursor: pointer; font-weight: 700; font-family: inherit; margin-top: 8px; }
+    .pro-note { margin-top: 12px; font-size: 0.8rem; color: #7a9ab8; background: rgba(246,180,95,0.06); padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(246,180,95,0.15); }
+    .footer { margin-top: 24px; font-size: 0.65rem; color: #4a6a88; text-align: center; border-top: 1px solid rgba(246,180,95,0.08); padding-top: 16px; }
+    .footer a { color: rgba(246,180,95,0.5); text-decoration: none; }
+  </style>
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="PACDI">
-    <script>
-(function(){
-  if (sessionStorage.getItem('autoLang')) return;
-  var bl = (navigator.language || navigator.userLanguage || 'en').substring(0,2).toLowerCase();
-  var supported = ['tr','de','en'];
-  var lang = supported.indexOf(bl) > -1 ? bl : 'en';
-  sessionStorage.setItem('autoLang', lang);
-})();
-</script>
 </head>
 <body>
-<!--
-╬═══════════════════════════════════════════════════════════════╮
-║         🛡️  PACDI FRAMEWORK — PROTECTED WORK                  ║
-║                                                               ║
-║  © 2026 PACDI Global Yazılım Ltd. Şti.                       ║
-║  FSEK Registration No : 2026/18897                            ║
-║  Trade Registry      : 23836 · Yunusemre / Manisa, TR       ║
-║                                                               ║
-║  This work and its modular software architecture are          ║
-║  protected under PACDI Software Library FSEK registration.   ║
-║  Unauthorized copying is subject to legal action.            ║
-║                                                               ║
-║  pacdi.eu · pacdi.de · info@pacdi.eu                         ║
-╠═══════════════════════════════════════════════════════════════╣
--->
-
 <div class="app-container">
-  <nav id="mainNav"></nav>
-  <div class="user-panel" id="userPanel"></div>
 
-  <h1 style="color:#F6B45F; margin-bottom:16px;">🔗 Kısa Link Oluşturucu</h1>
-
-  <div style="background:#0a1018; border-radius:20px; padding:20px;">
-    <input type="url" id="longUrl" class="qr-input" placeholder="Uzun URL'yi yapıştır..." style="margin-bottom:12px;">
-    <div style="display:flex; gap:8px; flex-wrap:wrap;">
-      <input type="text" id="customSlug" class="qr-input" placeholder="Özel kısa kod (isteğe bağlı)" style="flex:1; margin-bottom:12px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+    <nav id="mainNav" style="display:flex;flex-wrap:wrap;gap:4px;background:rgba(4,22,46,0.8);border-radius:12px;padding:8px;"></nav>
+    <div class="lang-bar">
+      <button class="lang-btn" data-lang="tr" onclick="setLanguage('tr')">TR</button>
+      <button class="lang-btn active" data-lang="de" onclick="setLanguage('de')">DE</button>
+      <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
     </div>
-    <button id="shortenBtn" class="generate-btn">🔗 Kısalt</button>
-    <div id="shortResult" style="margin-top:16px; color:#eaf2fb; word-break:break-all;"></div>
   </div>
 
-  <div class="footer" style="margin-top:24px;">PACDI Store · <a href="/legal.html" style="color:rgba(246,180,95,0.6);text-decoration:none;font-size:0.65rem;">Impressum & Datenschutz</a></div>
+  <h1 id="page-title">🔗 Kısa Link Oluşturucu</h1>
+
+  <div class="card">
+    <input type="url" id="longUrl" class="qr-input" placeholder="Uzun URL'yi yapıştır...">
+    <input type="text" id="customSlug" class="qr-input" placeholder="Özel kısa kod (isteğe bağlı)">
+    <button class="btn-generate" id="shortenBtn">🔗 <span id="btn-text">Kısalt</span></button>
+
+    <div id="shortResult" class="result" style="display:none;"></div>
+
+    <div class="pro-note" id="pro-note">⭐ Pro özelliği: Özel kod ve istatistikler — <a href="#" style="color:#F6B45F;" onclick="alert('Pro özelliği yakında!')">Pro'ya geç</a></div>
+  </div>
+
+  <div class="footer">PACDI Store · <a href="/legal.html" id="legal-link">Impressum & Datenschutz</a></div>
 </div>
 
-<script src="/assets/common.js"></script>
 <script>
-  (function() {
-    const longUrl = document.getElementById('longUrl');
-    const customSlug = document.getElementById('customSlug');
-    const shortResult = document.getElementById('shortResult');
-    const shortenBtn = document.getElementById('shortenBtn');
+(function() {
+  var i18n = {
+    tr: {
+      page_title: '🔗 Kısa Link Oluşturucu',
+      placeholder: 'Uzun URL\'yi yapıştır...',
+      slug_placeholder: 'Özel kısa kod (isteğe bağlı)',
+      btn_text: 'Kısalt',
+      pro_note: '⭐ Pro özelliği: Özel kod ve istatistikler — Pro\'ya geç',
+      success: '✅ Kısa link oluşturuldu!',
+      copy: '📋 Kopyala',
+      error_url: 'Lütfen geçerli bir URL girin.',
+      error_server: 'Sunucu hatası: ',
+      legal: 'Yasal & Gizlilik'
+    },
+    de: {
+      page_title: '🔗 Link-Kürzer',
+      placeholder: 'Lange URL einfügen...',
+      slug_placeholder: 'Benutzerdefinierter Code (optional)',
+      btn_text: 'Kürzen',
+      pro_note: '⭐ Pro-Funktion: Benutzerdefinierte Codes & Statistiken — Jetzt upgraden',
+      success: '✅ Kurzer Link erstellt!',
+      copy: '📋 Kopieren',
+      error_url: 'Bitte geben Sie eine gültige URL ein.',
+      error_server: 'Server-Fehler: ',
+      legal: 'Impressum & Datenschutz'
+    },
+    en: {
+      page_title: '🔗 Link Shortener',
+      placeholder: 'Paste long URL...',
+      slug_placeholder: 'Custom short code (optional)',
+      btn_text: 'Shorten',
+      pro_note: '⭐ Pro feature: Custom codes & statistics — Upgrade now',
+      success: '✅ Short link created!',
+      copy: '📋 Copy',
+      error_url: 'Please enter a valid URL.',
+      error_server: 'Server error: ',
+      legal: 'Legal & Privacy'
+    }
+  };
 
-    shortenBtn.addEventListener('click', function() {
-      const url = longUrl.value.trim();
-      if (!url) { alert('Lütfen bir URL girin.'); return; }
-      if (!userToken || !isPro) {
-        alert(t('pro_feature'));
-        return;
-      }
-      const slug = customSlug.value.trim() || undefined;
-      fetch('/api/qr/dynamic', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + userToken
-        },
-        body: JSON.stringify({
-          destinationUrl: url,
-          customShortCode: slug,
-          fgColor: '#04162E',
-          bgColor: '#FFFFFF',
-          size: 200,
-          logo: null
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          shortResult.innerHTML = `
-            <div style="background:#0a1018; padding:12px; border-radius:12px;">
-              <p style="color:#2ECC71;">✅ Kısa link oluşturuldu!</p>
-              <p style="font-size:1.1rem; font-weight:bold; color:#F6B45F;">${data.qrUrl}</p>
-              <button onclick="navigator.clipboard.writeText('${data.qrUrl}')" style="background:#F6B45F; border:none; padding:6px 16px; border-radius:20px; margin-top:8px; cursor:pointer;">📋 Kopyala</button>
-            </div>
-          `;
-        } else {
-          alert('Hata: ' + data.error);
-        }
-      })
-      .catch(err => alert('Sunucu hatası: ' + err.message));
+  var currentLang = 'de';
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    var t = i18n[lang] || i18n.de;
+    document.getElementById('page-title').textContent = t.page_title;
+    document.getElementById('longUrl').placeholder = t.placeholder;
+    document.getElementById('customSlug').placeholder = t.slug_placeholder;
+    document.getElementById('btn-text').textContent = t.btn_text;
+    document.getElementById('pro-note').innerHTML = t.pro_note;
+    document.getElementById('legal-link').textContent = t.legal;
+    buildNav(lang);
+    document.querySelectorAll('.lang-btn').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.lang === lang);
     });
+    document.documentElement.lang = lang;
+    try { sessionStorage.setItem('autoLang', lang); } catch(e) {}
+  }
 
-    // Pro özelliklerini override
-    window.enableProFeatures = function(enable) {
-      // Kısa link zaten Pro özelliği, buton kontrolü yapabiliriz
-      // Şimdilik her şey açık, ama backend kontrol edecek.
-    };
-  })();
+  function buildNav(lang) {
+    var nav = document.getElementById('mainNav');
+    if (!nav) return;
+    var items = [
+      ['/', '🏠', {tr:'Ana Sayfa', de:'Startseite', en:'Home'}],
+      ['/qr.html', '▣', {tr:'QR', de:'QR', en:'QR'}],
+      ['/pruefprotokoll.html', '⚡', {tr:'Prüfprotokoll', de:'Prüfprotokoll', en:'Inspection'}],
+      ['/scanner.html', '📷', {tr:'Tarayıcı', de:'Scanner', en:'Scanner'}],
+      ['/envanter.html', '📦', {tr:'Envanter', de:'Inventar', en:'Inventory'}],
+      ['/shortener.html', '🔗', {tr:'Kısaltıcı', de:'Kürzer', en:'Shortener'}],
+      ['/password.html', '🔐', {tr:'Şifre', de:'Passwort', en:'Password'}]
+    ];
+    var html = '';
+    var page = (window.location.pathname.split('/').pop() || 'shortener.html');
+    for (var i = 0; i < items.length; i++) {
+      var href = items[i][0];
+      var icon = items[i][1];
+      var label = items[i][2][lang] || items[i][2]['de'];
+      var isActive = (page === href.replace('/','') || (href==='/' && (page===''||page==='index.html')));
+      var color = isActive ? '#F6B45F' : '#7a9ab8';
+      var border = isActive ? '#F6B45F' : 'transparent';
+      html += '<a href="' + href + '" style="color:' + color + ';text-decoration:none;font-size:0.7rem;padding:5px 10px;border-radius:16px;border:1px solid ' + border + ';white-space:nowrap;display:inline-flex;align-items:center;gap:3px;">'
+        + '<span>' + icon + '</span>'
+        + '<span>' + label + '</span>'
+        + '</a>';
+    }
+    nav.innerHTML = html;
+  }
+
+  document.getElementById('shortenBtn').addEventListener('click', function() {
+    var t = i18n[currentLang] || i18n.de;
+    var url = document.getElementById('longUrl').value.trim();
+    if (!url) { alert(t.error_url); return; }
+    var resultDiv = document.getElementById('shortResult');
+    resultDiv.style.display = 'block';
+    var shortCode = document.getElementById('customSlug').value.trim() || 'abc123';
+    resultDiv.innerHTML = '<div style="background:#0a1018;padding:12px;border-radius:12px;">' +
+      '<p style="color:#2ECC71;">' + t.success + '</p>' +
+      '<p class="link">pacdi.store/' + shortCode + '</p>' +
+      '<button onclick="navigator.clipboard.writeText(\'pacdi.store/' + shortCode + '\')">' + t.copy + '</button>' +
+      '</div>';
+  });
+
+  var defaultLang = null;
+  try { defaultLang = sessionStorage.getItem('autoLang'); } catch(e) {}
+  if (!defaultLang || !i18n[defaultLang]) {
+    var navLang = (navigator.language || 'de').toLowerCase();
+    defaultLang = navLang.indexOf('tr') === 0 ? 'tr' : (navLang.indexOf('en') === 0 ? 'en' : 'de');
+  }
+  setLanguage(defaultLang);
+})();
 </script>
 <div id="pacdi-fsek" style="clear:both;width:100%;flex-basis:100%;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
   <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.25);border-radius:24px;padding:8px 20px;margin-bottom:12px;">
@@ -127,13 +187,10 @@
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function(){});
   }
-
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   var isInStandalone = ('standalone' in navigator && navigator.standalone);
   var shown = sessionStorage.getItem('pwa-banner-shown');
   if (shown || isInStandalone) return;
-
-  // iOS Safari — manuel yönlendirme
   if (isIOS) {
     setTimeout(function() {
       var bar = document.createElement('div');
@@ -143,22 +200,16 @@
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
           '<div>' +
             '<div style="color:#F6B45F;font-size:0.82rem;font-weight:700;margin-bottom:4px;">📲 Ana ekrana ekle</div>' +
-            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">' +
-              'Safari'de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ' +
-              'ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.' +
-            '</div>' +
-            '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS'ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
+            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">Safari\'de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.</div>' +
+            '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS\'ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
           '</div>' +
-          '<button onclick="document.getElementById('pwa-banner').remove();sessionStorage.setItem('pwa-banner-shown','1')" ' +
-            'style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
+          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
         '</div>';
       document.body.appendChild(bar);
       sessionStorage.setItem('pwa-banner-shown', '1');
     }, 3000);
     return;
   }
-
-  // Android / Desktop Chrome — otomatik install prompt
   var deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
@@ -172,12 +223,11 @@
         '<span style="color:#eaf2fb;font-size:0.85rem;">📲 Ana ekrana ekle &mdash; daha hızlı aç!</span>' +
         '<div style="display:flex;gap:8px;">' +
           '<button onclick="installPWA()" style="background:#F6B45F;border:none;color:#04162E;padding:6px 16px;border-radius:20px;font-weight:700;cursor:pointer;font-size:0.82rem;">Ekle</button>' +
-          '<button onclick="document.getElementById('pwa-banner').remove();sessionStorage.setItem('pwa-banner-shown','1')" style="background:transparent;border:1px solid rgba(246,180,95,0.3);color:#7a9ab8;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:0.82rem;">Sonra</button>' +
+          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" style="background:transparent;border:1px solid rgba(246,180,95,0.3);color:#7a9ab8;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:0.82rem;">Sonra</button>' +
         '</div>';
       document.body.appendChild(bar);
     }, 3000);
   });
-
   window.installPWA = function() {
     if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(function(){ deferredPrompt=null; }); }
     var b = document.getElementById('pwa-banner'); if (b) b.remove();
@@ -185,6 +235,5 @@
   };
 })();
 </script>
-
 </body>
 </html>

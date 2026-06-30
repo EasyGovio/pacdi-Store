@@ -23,36 +23,26 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #04162E; color: #eaf2fb; font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; padding: 16px; padding-bottom: 60px; }
     .app { max-width: 600px; margin: 0 auto; }
-
-    /* Nav */
     nav { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 20px; background: rgba(4,22,46,0.8); border-radius: 12px; padding: 8px; }
     nav a { color: #7a9ab8; text-decoration: none; font-size: 0.7rem; padding: 5px 10px; border-radius: 16px; border: 1px solid transparent; transition: 0.2s; white-space: nowrap; }
     nav a:hover, nav a.active { border-color: #F6B45F; color: #F6B45F; background: rgba(246,180,95,0.06); }
-
+    .lang-bar { display: flex; gap: 4px; margin-left: auto; }
+    .lang-btn { background: transparent; border: 1px solid rgba(246,180,95,0.2); color: #7a9ab8; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+    .lang-btn.active, .lang-btn:hover { border-color: #F6B45F; color: #F6B45F; }
     h1 { color: #F6B45F; font-size: 1.3rem; margin-bottom: 4px; font-weight: 700; }
     .subtitle { color: #7a9ab8; font-size: 0.8rem; margin-bottom: 16px; }
-
-    /* Tabs */
     .tabs { display: flex; gap: 6px; margin-bottom: 16px; }
     .tab-btn { flex: 1; padding: 10px 6px; background: rgba(255,255,255,0.04); border: 1px solid rgba(246,180,95,0.15); border-radius: 10px; color: #7a9ab8; font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: 0.2s; text-align: center; }
     .tab-btn.active { background: rgba(246,180,95,0.1); border-color: #F6B45F; color: #F6B45F; }
-
-    /* Content */
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-
-    /* Card */
     .card { background: #0a1828; border: 1px solid rgba(246,180,95,0.15); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
     .card-title { font-size: 0.88rem; font-weight: 700; color: #F6B45F; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-
-    /* Form */
     .field { margin-bottom: 12px; }
     .field label { display: block; font-size: 0.78rem; color: #7a9ab8; margin-bottom: 5px; font-weight: 600; }
     .field input { width: 100%; padding: 10px 12px; background: #04162E; border: 1px solid rgba(246,180,95,0.2); border-radius: 8px; color: #eaf2fb; font-size: 0.9rem; font-family: inherit; outline: none; transition: border 0.2s; }
     .field input:focus { border-color: #F6B45F; }
     .field input::placeholder { color: #4a6a88; }
-
-    /* Buttons */
     .btn { display: block; width: 100%; padding: 12px; border: none; border-radius: 40px; font-weight: 700; font-size: 0.9rem; cursor: pointer; font-family: inherit; transition: 0.2s; text-align: center; }
     .btn-gold { background: #F6B45F; color: #04162E; }
     .btn-gold:hover { background: #f0c870; }
@@ -62,15 +52,11 @@
     .btn-green:hover { background: #6ee7b7; }
     .btn-sm { padding: 5px 14px; font-size: 0.75rem; border-radius: 20px; border: none; cursor: pointer; font-family: inherit; font-weight: 600; }
     .btn-sm-red { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
-
-    /* QR Label Preview */
     .label-wrap { display: flex; justify-content: center; margin: 14px 0; }
     .qr-label { background: #ffffff; border-radius: 8px; padding: 20px; text-align: center; width: 280px; }
     #qrcode-output { display: flex; justify-content: center; margin-bottom: 10px; }
     .lbl-name { font-size: 1rem; font-weight: 700; color: #000; margin-top: 6px; font-family: sans-serif; }
     .lbl-serial { font-size: 0.7rem; color: #555; margin-top: 4px; letter-spacing: 0.5px; font-family: monospace; }
-
-    /* Inventory list */
     .inv-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: background 0.15s; gap: 8px; }
     .inv-item:last-child { border-bottom: none; }
     .inv-item:hover { background: rgba(246,180,95,0.04); border-radius: 8px; }
@@ -81,177 +67,319 @@
     .badge { padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 700; }
     .badge-pending { background: rgba(251,191,36,0.15); color: #fbbf24; }
     .badge-done { background: rgba(52,211,153,0.15); color: #34D399; }
-
-    /* Result */
     .result-card { background: #0a1828; padding: 14px 16px; border-radius: 12px; border-left: 4px solid #34D399; margin-top: 12px; }
     .result-card.error { border-left-color: #f87171; }
     .result-label { font-weight: 700; font-size: 0.82rem; margin-bottom: 4px; }
     .result-value { font-size: 0.9rem; color: #eaf2fb; }
-
-    /* Info box */
     .info-box { background: rgba(246,180,95,0.05); border: 1px solid rgba(246,180,95,0.15); border-left: 4px solid #F6B45F; border-radius: 8px; padding: 10px 14px; font-size: 0.8rem; color: #b0b5bf; line-height: 1.6; margin-bottom: 14px; }
-
-    /* Empty state */
     .empty { text-align: center; color: #4a6a88; font-size: 0.85rem; padding: 24px 0; }
-
-    /* Print */
     @media print {
       body * { visibility: hidden; }
       #print-zone, #print-zone * { visibility: visible; }
       #print-zone { position: absolute; left: 0; top: 0; }
     }
-
     .footer { margin-top: 28px; font-size: 0.65rem; color: #4a6a88; text-align: center; border-top: 1px solid rgba(246,180,95,0.08); padding-top: 16px; }
     .footer a { color: rgba(246,180,95,0.5); text-decoration: none; }
-
-    /* Toast */
     .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #34D399; color: #04162E; padding: 10px 22px; border-radius: 40px; font-weight: 700; font-size: 0.85rem; z-index: 9999; box-shadow: 0 4px 16px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; }
     .toast.show { opacity: 1; }
     .toast.error { background: #f87171; }
   </style>
-    <script>
-(function(){
-  if (sessionStorage.getItem('autoLang')) return;
-  var bl = (navigator.language || navigator.userLanguage || 'en').substring(0,2).toLowerCase();
-  var supported = ['tr','de','en'];
-  var lang = supported.indexOf(bl) > -1 ? bl : 'en';
-  sessionStorage.setItem('autoLang', lang);
-})();
-</script>
 </head>
 <body>
 <div class="app">
 
-  <nav>
-    <a href="/">&#127968; Home</a>
-    <a href="/qr.html">&#9643; QR</a>
-    <a href="/pruefprotokoll.html">&#9889; Pr&uuml;f</a>
-    <a href="/scanner.html">&#128247; Scan</a>
-    <a href="/envanter.html" class="active">&#128230; Inventar</a>
-    <a href="/password.html">&#128272; Pass</a>
-  </nav>
-
-  <h1>&#128230; Inventar &amp; Prüfkontrolle</h1>
-  <p class="subtitle">Ger&auml;te erfassen · QR generieren · Kontroll&uuml;bersicht</p>
-
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('tab-kayit', this)">&#9881;&#65039; Ger&auml;t erfassen</button>
-    <button class="tab-btn" onclick="switchTab('tab-liste', this)">&#128203; Inventarliste</button>
-    <button class="tab-btn" onclick="switchTab('tab-kontrol', this)">&#10003; Prüfkontrolle</button>
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+    <nav id="mainNav" style="display:flex;flex-wrap:wrap;gap:4px;background:rgba(4,22,46,0.8);border-radius:12px;padding:8px;"></nav>
+    <div class="lang-bar">
+      <button class="lang-btn" data-lang="tr" onclick="setLanguage('tr')">TR</button>
+      <button class="lang-btn active" data-lang="de" onclick="setLanguage('de')">DE</button>
+      <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+    </div>
   </div>
 
-  <!-- TAB 1: Cihaz Kayıt + QR -->
+  <h1 id="page-title">📦 Inventar &amp; Prüfkontrolle</h1>
+  <p class="subtitle" id="page-sub">Geräte erfassen · QR generieren · Kontrollübersicht</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('tab-kayit', this)" id="tab1">⚙️ Gerät erfassen</button>
+    <button class="tab-btn" onclick="switchTab('tab-liste', this)" id="tab2">📄 Inventarliste</button>
+    <button class="tab-btn" onclick="switchTab('tab-kontrol', this)" id="tab3">✅ Prüfkontrolle</button>
+  </div>
+
   <div id="tab-kayit" class="tab-content active">
-
     <div class="card">
-      <div class="card-title">&#9881;&#65039; Neues Ger&auml;t erfassen</div>
-
+      <div class="card-title" id="card1-title">⚙️ Neues Gerät erfassen</div>
       <div class="field">
-        <label>Ger&auml;tebezeichnung</label>
+        <label id="lbl-name-field">Gerätebezeichnung</label>
         <input type="text" id="devName" placeholder="z.B. Bohrmaschine Bosch GSB 18V" oninput="updatePreview()">
       </div>
       <div class="field">
-        <label>Standort / Bereich</label>
+        <label id="lbl-standort">Standort / Bereich</label>
         <input type="text" id="devStandort" placeholder="z.B. Werkstatt, Baustelle A" oninput="updatePreview(); updateSerial();">
       </div>
       <div class="field">
-        <label>Inventar-Code (automatisch generiert)</label>
+        <label id="lbl-serial-field">Inventar-Code (automatisch generiert)</label>
         <input type="text" id="devSerial" placeholder="PACDI-WERKST-001-XXXXXX" oninput="updatePreview()">
       </div>
       <div class="field">
-        <label>N&auml;chste Pr&uuml;fung f&auml;llig</label>
+        <label id="lbl-nextcheck">Nächste Prüfung fällig</label>
         <input type="date" id="devNextCheck">
       </div>
-
-      <button class="btn btn-gold" onclick="saveDevice()">&#128190; Im Inventar speichern</button>
+      <button class="btn btn-gold" onclick="saveDevice()" id="btn-save">💾 Im Inventar speichern</button>
     </div>
 
-    <!-- QR Etiket Önizleme -->
     <div class="card">
-      <div class="card-title">&#128247; Ger&auml;te-Etikett Vorschau</div>
-      <p style="font-size:0.78rem;color:#7a9ab8;margin-bottom:12px;">Dieses Etikett wird am Ger&auml;t befestigt. QR-Code enth&auml;lt den Inventar-Code.</p>
-
+      <div class="card-title" id="card2-title">📷 Geräte-Etikett Vorschau</div>
+      <p style="font-size:0.78rem;color:#7a9ab8;margin-bottom:12px;" id="label-hint">Dieses Etikett wird am Gerät befestigt. QR-Code enthält den Inventar-Code.</p>
       <div class="label-wrap">
         <div class="qr-label" id="print-zone">
           <div id="qrcode-output"></div>
-          <div class="lbl-name" id="lbl-name">Ger&auml;tebezeichnung</div>
+          <div class="lbl-name" id="lbl-name">Gerätebezeichnung</div>
           <div class="lbl-serial" id="lbl-serial">PACDI-XXXX-001-XXXXXX</div>
         </div>
       </div>
-
-      <button class="btn btn-outline" onclick="window.print()">&#128438; Etikett drucken</button>
-      <button class="btn btn-outline" style="margin-top:6px;" onclick="downloadLabel()">&#11015;&#65039; Als PNG herunterladen</button>
+      <button class="btn btn-outline" onclick="window.print()" id="btn-print">🖨️ Etikett drucken</button>
+      <button class="btn btn-outline" style="margin-top:6px;" onclick="downloadLabel()" id="btn-png">⬇️ Als PNG herunterladen</button>
     </div>
-
   </div>
 
-  <!-- TAB 2: Inventar Listesi -->
   <div id="tab-liste" class="tab-content">
-
-    <div class="info-box">
-      &#128161; Tippen Sie auf einen Eintrag, um den Inventar-Code automatisch in die Pr&uuml;fkontrolle zu &uuml;bertragen.
-    </div>
-
+    <div class="info-box" id="list-hint">💡 Tippen Sie auf einen Eintrag, um den Inventar-Code automatisch in die Prüfkontrolle zu übertragen.</div>
     <div class="card">
-      <div class="card-title">&#128203; Gespeicherte Ger&auml;te (<span id="inv-count">0</span>)</div>
-      <div id="inv-list"><div class="empty">Noch keine Ger&auml;te erfasst.</div></div>
+      <div class="card-title" id="list-title">📄 Gespeicherte Geräte (<span id="inv-count">0</span>)</div>
+      <div id="inv-list"><div class="empty" id="empty-list">Noch keine Geräte erfasst.</div></div>
     </div>
-
-    <button class="btn btn-outline" onclick="exportInventar()">&#128229; Inventar exportieren (JSON)</button>
-
+    <button class="btn btn-outline" onclick="exportInventar()" id="btn-export">📦 Inventar exportieren (JSON)</button>
   </div>
 
-  <!-- TAB 3: Prüfkontrol -->
   <div id="tab-kontrol" class="tab-content">
-
-    <div class="info-box">
-      &#128247; <strong>Workflow:</strong> QR-Code vom Ger&auml;t mit <a href="/scanner.html" style="color:#F6B45F;">Scanner</a> lesen <strong>oder</strong> Inventar-Code unten manuell eingeben &rarr; Best&auml;tigen.
-    </div>
-
+    <div class="info-box" id="control-hint">📷 <strong>Workflow:</strong> QR-Code vom Gerät mit <a href="/scanner.html" style="color:#F6B45F;">Scanner</a> lesen <strong>oder</strong> Inventar-Code unten manuell eingeben → Bestätigen.</div>
     <div class="card">
-      <div class="card-title">&#10003; Ger&auml;t pr&uuml;fen &amp; best&auml;tigen</div>
-
+      <div class="card-title" id="control-title">✅ Gerät prüfen &amp; bestätigen</div>
       <div class="field">
-        <label>Inventar-Code (vom QR-Scanner oder manuell)</label>
+        <label id="lbl-checkcode">Inventar-Code (vom QR-Scanner oder manuell)</label>
         <input type="text" id="checkCode" placeholder="PACDI-WERKST-001-XXXXXX" style="border-color:#34D399;">
       </div>
       <div class="field">
-        <label>Pr&uuml;fer (Name / K&uuml;rzel)</label>
+        <label id="lbl-pruefer">Prüfer (Name / Kürzel)</label>
         <input type="text" id="checkPruefer" placeholder="z.B. M. Aydınlı / MA">
       </div>
       <div class="field">
-        <label>Pr&uuml;fergebnis</label>
+        <label id="lbl-ergebnis">Prüfergebnis</label>
         <input type="text" id="checkErgebnis" placeholder="i.O. / nicht i.O. / Mangel festgestellt">
       </div>
-
-      <button class="btn btn-green" onclick="confirmCheck()">&#10003; Pr&uuml;fung best&auml;tigen</button>
-
+      <button class="btn btn-green" onclick="confirmCheck()" id="btn-confirm">✅ Prüfung bestätigen</button>
       <div id="check-result"></div>
     </div>
-
-    <!-- Kontrol bekleyenler -->
     <div class="card">
-      <div class="card-title">&#9201;&#65039; Pr&uuml;fung f&auml;llig</div>
-      <div id="check-pending-list"><div class="empty">Keine f&auml;lligen Pr&uuml;fungen.</div></div>
+      <div class="card-title" id="pending-title">⏳ Prüfung fällig</div>
+      <div id="check-pending-list"><div class="empty" id="pending-empty">Keine fälligen Prüfungen.</div></div>
     </div>
-
   </div>
 
-  <div class="footer">PACDI Store &middot; <a href="/legal.html">Legal &amp; Privacy</a></div>
+  <div class="footer">PACDI Store · <a href="/legal.html" id="legal-link">Legal &amp; Privacy</a></div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
 (function() {
-
   var STORAGE_KEY = 'pacdi_inventory';
   var inventory = [];
   var qrInstance = null;
   var currentTab = 'tab-kayit';
 
-  // ── LocalStorage ──
+  var i18n = {
+    tr: {
+      page_title: '📦 Envanter & Prüfkontrol',
+      page_sub: 'Cihazları kaydet · QR oluştur · Kontrol listesi',
+      tab1: '⚙️ Cihaz kaydet',
+      tab2: '📄 Envanter listesi',
+      tab3: '✅ Prüf kontrolü',
+      card1_title: '⚙️ Yeni cihaz kaydet',
+      lbl_name: 'Cihaz adı',
+      lbl_standort: 'Konum / Alan',
+      lbl_serial: 'Envanter kodu (otomatik)',
+      lbl_nextcheck: 'Sonraki kontrol tarihi',
+      btn_save: '💾 Envantere kaydet',
+      card2_title: '📷 Cihaz etiketi önizleme',
+      label_hint: 'Bu etiket cihaza yapıştırılacak. QR kod envanter kodunu içerir.',
+      btn_print: '🖨️ Etiketi yazdır',
+      btn_png: '⬇️ PNG olarak indir',
+      list_hint: '💡 Bir kayda tıklayarak envanter kodunu otomatik olarak kontrol alanına aktarın.',
+      list_title: '📄 Kayıtlı cihazlar',
+      empty_list: 'Henüz cihaz kaydedilmedi.',
+      btn_export: '📦 Envanteri dışa aktar (JSON)',
+      control_hint: '📷 <strong>İş akışı:</strong> Cihazdaki QR kodu <a href="/scanner.html" style="color:#F6B45F;">Tarayıcı</a> ile okutun <strong>veya</strong> envanter kodunu manuel girin → Onaylayın.',
+      control_title: '✅ Cihazı kontrol et ve onayla',
+      lbl_checkcode: 'Envanter kodu (QR tarayıcıdan veya manuel)',
+      lbl_pruefer: 'Denetçi (İsim / Kısaltma)',
+      lbl_ergebnis: 'Denetim sonucu',
+      btn_confirm: '✅ Denetimi onayla',
+      pending_title: '⏳ Denetim bekleyenler',
+      pending_empty: 'Bekleyen denetim yok.',
+      legal: 'Yasal & Gizlilik',
+      toast_saved: 'Kaydedildi: ',
+      toast_updated: 'Güncellendi: ',
+      toast_deleted: 'Cihaz silindi.',
+      toast_exported: 'Envanter dışa aktarıldı ✓',
+      toast_png: 'PNG indirildi ✓',
+      toast_confirm: 'Denetim kaydedildi: ',
+      toast_error: 'Lütfen cihaz adı ve kod girin.',
+      toast_notfound: 'Bu kod envanterde kayıtlı değil.',
+      toast_check_ok: '✅ Denetim onaylandı'
+    },
+    de: {
+      page_title: '📦 Inventar & Prüfkontrolle',
+      page_sub: 'Geräte erfassen · QR generieren · Kontrollübersicht',
+      tab1: '⚙️ Gerät erfassen',
+      tab2: '📄 Inventarliste',
+      tab3: '✅ Prüfkontrolle',
+      card1_title: '⚙️ Neues Gerät erfassen',
+      lbl_name: 'Gerätebezeichnung',
+      lbl_standort: 'Standort / Bereich',
+      lbl_serial: 'Inventar-Code (automatisch generiert)',
+      lbl_nextcheck: 'Nächste Prüfung fällig',
+      btn_save: '💾 Im Inventar speichern',
+      card2_title: '📷 Geräte-Etikett Vorschau',
+      label_hint: 'Dieses Etikett wird am Gerät befestigt. QR-Code enthält den Inventar-Code.',
+      btn_print: '🖨️ Etikett drucken',
+      btn_png: '⬇️ Als PNG herunterladen',
+      list_hint: '💡 Tippen Sie auf einen Eintrag, um den Inventar-Code automatisch in die Prüfkontrolle zu übertragen.',
+      list_title: '📄 Gespeicherte Geräte',
+      empty_list: 'Noch keine Geräte erfasst.',
+      btn_export: '📦 Inventar exportieren (JSON)',
+      control_hint: '📷 <strong>Workflow:</strong> QR-Code vom Gerät mit <a href="/scanner.html" style="color:#F6B45F;">Scanner</a> lesen <strong>oder</strong> Inventar-Code unten manuell eingeben → Bestätigen.',
+      control_title: '✅ Gerät prüfen & bestätigen',
+      lbl_checkcode: 'Inventar-Code (vom QR-Scanner oder manuell)',
+      lbl_pruefer: 'Prüfer (Name / Kürzel)',
+      lbl_ergebnis: 'Prüfergebnis',
+      btn_confirm: '✅ Prüfung bestätigen',
+      pending_title: '⏳ Prüfung fällig',
+      pending_empty: 'Keine fälligen Prüfungen.',
+      legal: 'Impressum & Datenschutz',
+      toast_saved: 'Gespeichert: ',
+      toast_updated: 'Aktualisiert: ',
+      toast_deleted: 'Gerät gelöscht.',
+      toast_exported: 'Inventar exportiert ✓',
+      toast_png: 'PNG heruntergeladen ✓',
+      toast_confirm: 'Prüfung gespeichert: ',
+      toast_error: 'Bitte Gerätebezeichnung und Code ausfüllen.',
+      toast_notfound: 'Dieser Code ist nicht im Inventar registriert.',
+      toast_check_ok: '✅ Prüfung bestätigt'
+    },
+    en: {
+      page_title: '📦 Inventory & Inspection Control',
+      page_sub: 'Register devices · Generate QR · Inspection overview',
+      tab1: '⚙️ Register device',
+      tab2: '📄 Inventory list',
+      tab3: '✅ Inspection control',
+      card1_title: '⚙️ Register new device',
+      lbl_name: 'Device name',
+      lbl_standort: 'Location / Area',
+      lbl_serial: 'Inventory code (auto-generated)',
+      lbl_nextcheck: 'Next inspection due',
+      btn_save: '💾 Save to inventory',
+      card2_title: '📷 Device label preview',
+      label_hint: 'This label will be attached to the device. QR code contains the inventory code.',
+      btn_print: '🖨️ Print label',
+      btn_png: '⬇️ Download as PNG',
+      list_hint: '💡 Tap an entry to automatically transfer the inventory code to the inspection field.',
+      list_title: '📄 Saved devices',
+      empty_list: 'No devices registered yet.',
+      btn_export: '📦 Export inventory (JSON)',
+      control_hint: '📷 <strong>Workflow:</strong> Scan QR code from device with <a href="/scanner.html" style="color:#F6B45F;">Scanner</a> <strong>or</strong> enter inventory code manually below → Confirm.',
+      control_title: '✅ Inspect & confirm device',
+      lbl_checkcode: 'Inventory code (from QR scanner or manual)',
+      lbl_pruefer: 'Inspector (Name / Abbreviation)',
+      lbl_ergebnis: 'Inspection result',
+      btn_confirm: '✅ Confirm inspection',
+      pending_title: '⏳ Inspection due',
+      pending_empty: 'No pending inspections.',
+      legal: 'Legal & Privacy',
+      toast_saved: 'Saved: ',
+      toast_updated: 'Updated: ',
+      toast_deleted: 'Device deleted.',
+      toast_exported: 'Inventory exported ✓',
+      toast_png: 'PNG downloaded ✓',
+      toast_confirm: 'Inspection saved: ',
+      toast_error: 'Please enter device name and code.',
+      toast_notfound: 'This code is not registered in inventory.',
+      toast_check_ok: '✅ Inspection confirmed'
+    }
+  };
+
+  var currentLang = 'de';
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    var t = i18n[lang] || i18n.de;
+
+    document.getElementById('page-title').textContent = t.page_title;
+    document.getElementById('page-sub').textContent = t.page_sub;
+    document.getElementById('tab1').textContent = t.tab1;
+    document.getElementById('tab2').textContent = t.tab2;
+    document.getElementById('tab3').textContent = t.tab3;
+    document.getElementById('card1-title').textContent = t.card1_title;
+    document.getElementById('lbl-name-field').textContent = t.lbl_name;
+    document.getElementById('lbl-standort').textContent = t.lbl_standort;
+    document.getElementById('lbl-serial-field').textContent = t.lbl_serial;
+    document.getElementById('lbl-nextcheck').textContent = t.lbl_nextcheck;
+    document.getElementById('btn-save').textContent = t.btn_save;
+    document.getElementById('card2-title').textContent = t.card2_title;
+    document.getElementById('label-hint').textContent = t.label_hint;
+    document.getElementById('btn-print').textContent = t.btn_print;
+    document.getElementById('btn-png').textContent = t.btn_png;
+    document.getElementById('list-hint').innerHTML = t.list_hint;
+    document.getElementById('list-title').innerHTML = t.list_title;
+    document.getElementById('empty-list').textContent = t.empty_list;
+    document.getElementById('btn-export').textContent = t.btn_export;
+    document.getElementById('control-hint').innerHTML = t.control_hint;
+    document.getElementById('control-title').textContent = t.control_title;
+    document.getElementById('lbl-checkcode').textContent = t.lbl_checkcode;
+    document.getElementById('lbl-pruefer').textContent = t.lbl_pruefer;
+    document.getElementById('lbl-ergebnis').textContent = t.lbl_ergebnis;
+    document.getElementById('btn-confirm').textContent = t.btn_confirm;
+    document.getElementById('pending-title').textContent = t.pending_title;
+    document.getElementById('pending-empty').textContent = t.pending_empty;
+    document.getElementById('legal-link').textContent = t.legal;
+
+    buildNav(lang);
+    document.querySelectorAll('.lang-btn').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang;
+    try { sessionStorage.setItem('autoLang', lang); } catch(e) {}
+  }
+
+  function buildNav(lang) {
+    var nav = document.getElementById('mainNav');
+    if (!nav) return;
+    var items = [
+      ['/', '🏠', {tr:'Ana Sayfa', de:'Startseite', en:'Home'}],
+      ['/qr.html', '▣', {tr:'QR', de:'QR', en:'QR'}],
+      ['/pruefprotokoll.html', '⚡', {tr:'Prüfprotokoll', de:'Prüfprotokoll', en:'Inspection'}],
+      ['/scanner.html', '📷', {tr:'Tarayıcı', de:'Scanner', en:'Scanner'}],
+      ['/envanter.html', '📦', {tr:'Envanter', de:'Inventar', en:'Inventory'}],
+      ['/password.html', '🔐', {tr:'Şifre', de:'Passwort', en:'Password'}]
+    ];
+    var html = '';
+    var page = (window.location.pathname.split('/').pop() || 'envanter.html');
+    for (var i = 0; i < items.length; i++) {
+      var href = items[i][0];
+      var icon = items[i][1];
+      var label = items[i][2][lang] || items[i][2]['de'];
+      var isActive = (page === href.replace('/','') || (href==='/' && (page===''||page==='index.html')));
+      var color = isActive ? '#F6B45F' : '#7a9ab8';
+      var border = isActive ? '#F6B45F' : 'transparent';
+      html += '<a href="' + href + '" style="color:' + color + ';text-decoration:none;font-size:0.7rem;padding:5px 10px;border-radius:16px;border:1px solid ' + border + ';white-space:nowrap;display:inline-flex;align-items:center;gap:3px;">'
+        + '<span>' + icon + '</span>'
+        + '<span>' + label + '</span>'
+        + '</a>';
+    }
+    nav.innerHTML = html;
+  }
+
   function load() {
     try { inventory = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { inventory = []; }
   }
@@ -260,7 +388,6 @@
   }
   load();
 
-  // ── Toast ──
   function toast(msg, isError) {
     var el = document.getElementById('toast');
     el.textContent = msg;
@@ -268,7 +395,6 @@
     setTimeout(function() { el.className = 'toast'; }, 3000);
   }
 
-  // ── Unique ID üretici ──
   function makeUID(standort, count) {
     var s = (standort || 'PACDI').replace(/[^a-zA-Z0-9]/g,'').toUpperCase().substring(0,6);
     var nr = String(count + 1).padStart(3, '0');
@@ -276,7 +402,6 @@
     return 'PACDI-' + s + '-' + nr + '-' + rand;
   }
 
-  // ── Serial güncelle (standort değişince) ──
   window.updateSerial = function() {
     var standort = document.getElementById('devStandort').value;
     var serial = makeUID(standort, inventory.length);
@@ -284,7 +409,6 @@
     updatePreview();
   };
 
-  // ── QR init ──
   function initQR(text) {
     var el = document.getElementById('qrcode-output');
     el.innerHTML = '';
@@ -296,7 +420,6 @@
     });
   }
 
-  // ── Preview ──
   window.updatePreview = function() {
     var name = document.getElementById('devName').value || 'Gerätebezeichnung';
     var serial = document.getElementById('devSerial').value || 'PACDI-XXXX-001-XXXXXX';
@@ -307,40 +430,27 @@
     }
   };
 
-  // ── Kaydet ──
   window.saveDevice = function() {
+    var t = i18n[currentLang] || i18n.de;
     var name    = document.getElementById('devName').value.trim();
     var standort= document.getElementById('devStandort').value.trim();
     var serial  = document.getElementById('devSerial').value.trim();
     var nextCheck = document.getElementById('devNextCheck').value;
 
-    if (!name || !serial) { toast('Bitte Gerätebezeichnung und Code ausfüllen.', true); return; }
+    if (!name || !serial) { toast(t.toast_error, true); return; }
 
     var exists = inventory.find(function(x){ return x.uid === serial; });
     if (exists) {
       exists.name = name; exists.standort = standort; exists.nextCheck = nextCheck;
       save();
-      toast('Gerät aktualisiert: ' + name);
+      toast(t.toast_updated + name);
     } else {
       inventory.push({ uid: serial, name: name, standort: standort, nextCheck: nextCheck, status: 'Offen', checks: [], ts: new Date().toISOString() });
       save();
-      toast('Gespeichert: ' + name + ' ✓');
+      toast(t.toast_saved + name);
     }
 
     renderLists();
-
-  // PWA Service Worker
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('./sw.js').then(function(reg) {
-        console.log('PACDI PWA aktif.');
-      }).catch(function(err) {
-        console.log('SW hatası:', err);
-      });
-    });
-  }
-
-    // Sonraki cihaz için hazırla
     setTimeout(function() {
       document.getElementById('devName').value = '';
       document.getElementById('devSerial').value = makeUID(standort, inventory.length);
@@ -348,29 +458,27 @@
     }, 400);
   };
 
-  // ── Sil ──
   window.deleteDevice = function(uid, e) {
+    var t = i18n[currentLang] || i18n.de;
     e.stopPropagation();
-    if (!confirm('Gerät aus dem Inventar löschen?')) return;
+    if (!confirm('Gerät löschen?')) return;
     inventory = inventory.filter(function(x){ return x.uid !== uid; });
     save();
     renderLists();
-    toast('Gerät gelöscht.');
+    toast(t.toast_deleted);
   };
 
-  // ── Listeden koda aktar ──
   window.selectDevice = function(uid) {
     document.getElementById('checkCode').value = uid;
     switchTab('tab-kontrol', null);
-    // Tab butonunu aktif et
     var btns = document.querySelectorAll('.tab-btn');
     btns[0].classList.remove('active');
     btns[1].classList.remove('active');
     btns[2].classList.add('active');
   };
 
-  // ── Prüfung onayla ──
   window.confirmCheck = function() {
+    var t = i18n[currentLang] || i18n.de;
     var code     = document.getElementById('checkCode').value.trim();
     var pruefer  = document.getElementById('checkPruefer').value.trim();
     var ergebnis = document.getElementById('checkErgebnis').value.trim();
@@ -381,11 +489,10 @@
     var device = inventory.find(function(x){ return x.uid.toUpperCase() === code.toUpperCase(); });
 
     if (!device) {
-      resultEl.innerHTML = '<div class="result-card error"><div class="result-label" style="color:#f87171;">&#10060; Nicht gefunden</div><div class="result-value" style="color:#f87171;">Dieser Code ist nicht im Inventar registriert.</div></div>';
+      resultEl.innerHTML = '<div class="result-card error"><div class="result-label" style="color:#f87171;">❌ Nicht gefunden</div><div class="result-value" style="color:#f87171;">' + t.toast_notfound + '</div></div>';
       return;
     }
 
-    // Kaydet
     var checkEntry = { date: new Date().toISOString(), pruefer: pruefer || '—', ergebnis: ergebnis || 'i.O.', uid: code };
     if (!device.checks) device.checks = [];
     device.checks.push(checkEntry);
@@ -394,14 +501,13 @@
     save();
     renderLists();
 
-    resultEl.innerHTML = '<div class="result-card"><div class="result-label" style="color:#34D399;">&#10003; Prüfung bestätigt</div><div class="result-value"><strong>' + device.name + '</strong><br><span style="font-size:0.78rem;color:#7a9ab8;">Standort: ' + (device.standort || '—') + ' · Prüfer: ' + (pruefer || '—') + ' · ' + new Date().toLocaleDateString('de-DE') + '</span></div></div>';
-    toast('Prüfung gespeichert: ' + device.name + ' ✓');
+    resultEl.innerHTML = '<div class="result-card"><div class="result-label" style="color:#34D399;">✅ ' + t.toast_check_ok + '</div><div class="result-value"><strong>' + device.name + '</strong><br><span style="font-size:0.78rem;color:#7a9ab8;">Standort: ' + (device.standort || '—') + ' · Prüfer: ' + (pruefer || '—') + ' · ' + new Date().toLocaleDateString('de-DE') + '</span></div></div>';
+    toast(t.toast_confirm + device.name);
 
     document.getElementById('checkCode').value = '';
     document.getElementById('checkErgebnis').value = '';
   };
 
-  // ── Render Lists ──
   function renderLists() {
     renderInvList();
     renderPendingList();
@@ -409,26 +515,28 @@
   }
 
   function renderInvList() {
+    var t = i18n[currentLang] || i18n.de;
     var el = document.getElementById('inv-list');
-    if (!inventory.length) { el.innerHTML = '<div class="empty">Noch keine Geräte erfasst.</div>'; return; }
+    if (!inventory.length) { el.innerHTML = '<div class="empty">' + t.empty_list + '</div>'; return; }
     el.innerHTML = '';
     inventory.forEach(function(item) {
       var div = document.createElement('div');
       div.className = 'inv-item';
       div.onclick = function() { selectDevice(item.uid); };
       var badge = item.status === 'Geprüft'
-        ? '<span class="badge badge-done">&#10003; Geprüft</span>'
+        ? '<span class="badge badge-done">✅ Geprüft</span>'
         : '<span class="badge badge-pending">Offen</span>';
       div.innerHTML = '<div class="info"><div class="iname">' + item.name + '</div><div class="iserial">' + item.uid + (item.standort ? ' · ' + item.standort : '') + '</div></div>' +
-        '<div class="actions">' + badge + '<button class="btn-sm btn-sm-red" onclick="deleteDevice(\'' + item.uid + '\', event)">&#128465;</button></div>';
+        '<div class="actions">' + badge + '<button class="btn-sm btn-sm-red" onclick="deleteDevice(\'' + item.uid + '\', event)">🗑️</button></div>';
       el.appendChild(div);
     });
   }
 
   function renderPendingList() {
+    var t = i18n[currentLang] || i18n.de;
     var el = document.getElementById('check-pending-list');
     var pending = inventory.filter(function(x){ return x.status !== 'Geprüft'; });
-    if (!pending.length) { el.innerHTML = '<div class="empty">&#10003; Alle Geräte geprüft!</div>'; return; }
+    if (!pending.length) { el.innerHTML = '<div class="empty">' + t.pending_empty + '</div>'; return; }
     el.innerHTML = '';
     pending.forEach(function(item) {
       var div = document.createElement('div');
@@ -439,7 +547,6 @@
     });
   }
 
-  // ── Tab Switch ──
   window.switchTab = function(id, btn) {
     document.querySelectorAll('.tab-content').forEach(function(el){ el.classList.remove('active'); });
     document.getElementById(id).classList.add('active');
@@ -451,18 +558,18 @@
     renderLists();
   };
 
-  // ── Export ──
   window.exportInventar = function() {
+    var t = i18n[currentLang] || i18n.de;
     var blob = new Blob([JSON.stringify(inventory, null, 2)], { type: 'application/json' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = 'PACDI-Inventar-' + new Date().toISOString().split('T')[0] + '.json';
     a.click();
-    toast('Inventar exportiert ✓');
+    toast(t.toast_exported);
   };
 
-  // ── Download Label PNG ──
   window.downloadLabel = function() {
+    var t = i18n[currentLang] || i18n.de;
     var canvas = document.querySelector('#qrcode-output canvas');
     if (!canvas) { toast('QR-Code nicht gefunden.', true); return; }
 
@@ -483,8 +590,6 @@
     ctx.font = '10px monospace';
     ctx.fillStyle = '#555555';
     ctx.fillText(serial, 150, 232);
-
-    // PACDI watermark
     ctx.font = '9px Arial';
     ctx.fillStyle = '#cccccc';
     ctx.fillText('PACDI Store · pacdi.store', 150, 250);
@@ -494,27 +599,22 @@
     a.download = 'PACDI-QR-' + safeName + '.png';
     a.href = final.toDataURL('image/png', 1.0);
     a.click();
-    toast('PNG heruntergeladen ✓');
+    toast(t.toast_png);
   };
 
-  // ── Scanner'dan gelen UID eşleştirme (URL param) ──
-  var urlParams = new URLSearchParams(window.location.search);
-  var scannedUID = urlParams.get('uid');
-  if (scannedUID) {
-    document.getElementById('checkCode').value = scannedUID;
-    switchTab('tab-kontrol', null);
-    var btns = document.querySelectorAll('.tab-btn');
-    btns[2].classList.add('active');
-    btns[0].classList.remove('active');
+  var defaultLang = null;
+  try { defaultLang = sessionStorage.getItem('autoLang'); } catch(e) {}
+  if (!defaultLang || !i18n[defaultLang]) {
+    var navLang = (navigator.language || 'de').toLowerCase();
+    defaultLang = navLang.indexOf('tr') === 0 ? 'tr' : (navLang.indexOf('en') === 0 ? 'en' : 'de');
   }
+  setLanguage(defaultLang);
 
-  // ── Init ──
   renderLists();
   document.getElementById('devSerial').value = makeUID('', inventory.length);
   initQR(document.getElementById('devSerial').value);
   updatePreview();
 
-  // Next check default — 1 yıl sonra
   var d = new Date();
   d.setFullYear(d.getFullYear() + 1);
   document.getElementById('devNextCheck').value = d.toISOString().split('T')[0];
@@ -530,5 +630,58 @@
   <div style="font-size:0.72rem;color:#6B7280;margin-bottom:10px;">Intellectual property owned by © 2026 PACDI Global Yazılım Ltd. Şti. &mdash; FSEK No: <a href="https://pacdi.eu/legal.html" style="color:#D4AF37;text-decoration:none;">2026/18897</a></div>
   <div style="font-size:0.82rem;font-style:italic;color:#6B7280;">&ldquo;Technology in the service of humanity.&rdquo;</div>
 </div>
+<script>
+(function() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  }
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  var isInStandalone = ('standalone' in navigator && navigator.standalone);
+  var shown = sessionStorage.getItem('pwa-banner-shown');
+  if (shown || isInStandalone) return;
+  if (isIOS) {
+    setTimeout(function() {
+      var bar = document.createElement('div');
+      bar.id = 'pwa-banner';
+      bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#04162E;border-top:2px solid #F6B45F;padding:14px 16px;z-index:9999;font-family:system-ui;';
+      bar.innerHTML =
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
+          '<div>' +
+            '<div style="color:#F6B45F;font-size:0.82rem;font-weight:700;margin-bottom:4px;">📲 Ana ekrana ekle</div>' +
+            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">Safari\'de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.</div>' +
+            '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS\'ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
+          '</div>' +
+          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
+        '</div>';
+      document.body.appendChild(bar);
+      sessionStorage.setItem('pwa-banner-shown', '1');
+    }, 3000);
+    return;
+  }
+  var deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    setTimeout(function() {
+      if (!deferredPrompt) return;
+      var bar = document.createElement('div');
+      bar.id = 'pwa-banner';
+      bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#04162E;border-top:2px solid #F6B45F;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:9999;font-family:system-ui;';
+      bar.innerHTML =
+        '<span style="color:#eaf2fb;font-size:0.85rem;">📲 Ana ekrana ekle &mdash; daha hızlı aç!</span>' +
+        '<div style="display:flex;gap:8px;">' +
+          '<button onclick="installPWA()" style="background:#F6B45F;border:none;color:#04162E;padding:6px 16px;border-radius:20px;font-weight:700;cursor:pointer;font-size:0.82rem;">Ekle</button>' +
+          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" style="background:transparent;border:1px solid rgba(246,180,95,0.3);color:#7a9ab8;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:0.82rem;">Sonra</button>' +
+        '</div>';
+      document.body.appendChild(bar);
+    }, 3000);
+  });
+  window.installPWA = function() {
+    if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(function(){ deferredPrompt=null; }); }
+    var b = document.getElementById('pwa-banner'); if (b) b.remove();
+    sessionStorage.setItem('pwa-banner-shown', '1');
+  };
+})();
+</script>
 </body>
 </html>

@@ -13,7 +13,6 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
-  <!-- ZXing — works on iOS Safari -->
   <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.1/umd/index.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,93 +21,33 @@
     nav { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 20px; background: rgba(4,22,46,0.8); border-radius: 12px; padding: 8px; }
     nav a { color: #7a9ab8; text-decoration: none; font-size: 0.7rem; padding: 5px 10px; border-radius: 16px; border: 1px solid transparent; transition: 0.2s; white-space: nowrap; }
     nav a:hover, nav a.active { border-color: #F6B45F; color: #F6B45F; background: rgba(246,180,95,0.06); }
+    .lang-bar { display: flex; gap: 4px; margin-left: auto; }
+    .lang-btn { background: transparent; border: 1px solid rgba(246,180,95,0.2); color: #7a9ab8; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+    .lang-btn.active, .lang-btn:hover { border-color: #F6B45F; color: #F6B45F; }
     h1 { color: #F6B45F; font-size: 1.3rem; margin-bottom: 6px; font-weight: 700; }
     .subtitle { color: #7a9ab8; font-size: 0.8rem; margin-bottom: 16px; }
-
-    /* Camera view */
-    #videoWrap {
-      position: relative;
-      width: 100%;
-      background: #0a1828;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(246,180,95,0.2);
-      min-height: 300px;
-      display: none;
-    }
+    #videoWrap { position: relative; width: 100%; background: #0a1828; border-radius: 16px; overflow: hidden; border: 1px solid rgba(246,180,95,0.2); min-height: 300px; display: none; }
     #video { width: 100%; display: block; }
-    #scanOverlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .scan-frame {
-      width: 75%;
-      aspect-ratio: 1;
-      border: 2px solid rgba(246,180,95,0.5);
-      border-radius: 12px;
-      position: relative;
-    }
+    #scanOverlay { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+    .scan-frame { width: 75%; aspect-ratio: 1; border: 2px solid rgba(246,180,95,0.5); border-radius: 12px; position: relative; }
     .scan-frame::before { content:''; position:absolute; top:-2px; left:-2px; width:24px; height:24px; border-top:3px solid #F6B45F; border-left:3px solid #F6B45F; border-radius:8px 0 0 0; }
     .scan-frame::after  { content:''; position:absolute; bottom:-2px; right:-2px; width:24px; height:24px; border-bottom:3px solid #F6B45F; border-right:3px solid #F6B45F; border-radius:0 0 8px 0; }
     .scan-line { position:absolute; top:0; left:5%; width:90%; height:2px; background:linear-gradient(90deg,transparent,#F6B45F,transparent); animation:scan 2s ease-in-out infinite; }
     @keyframes scan { 0%,100%{top:10%} 50%{top:85%} }
-
-    /* Capture button area */
-    .capture-area {
-      background: #0a1828;
-      border: 2px dashed rgba(246,180,95,0.3);
-      border-radius: 16px;
-      padding: 32px 20px;
-      text-align: center;
-      margin-bottom: 4px;
-    }
+    .capture-area { background: #0a1828; border: 2px dashed rgba(246,180,95,0.3); border-radius: 16px; padding: 32px 20px; text-align: center; margin-bottom: 4px; }
     .capture-area .icon { font-size: 3rem; margin-bottom: 12px; display: block; }
     .capture-area h3 { color: #e8edf2; font-size: 1rem; margin-bottom: 8px; }
     .capture-area p { color: #7a9ab8; font-size: 0.82rem; line-height: 1.6; margin-bottom: 16px; }
-
-    /* Big capture button */
     .capture-btn-wrap { position: relative; display: inline-block; }
-    .capture-btn-wrap input[type=file] {
-      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
-    }
-    .capture-btn {
-      background: #F6B45F; color: #04162E; border: none;
-      padding: 14px 32px; border-radius: 40px; font-size: 1rem;
-      font-weight: 800; cursor: pointer; font-family: inherit;
-      display: flex; align-items: center; gap: 8px;
-      pointer-events: none;
-    }
-
-    /* Gallery button */
+    .capture-btn-wrap input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .capture-btn { background: #F6B45F; color: #04162E; border: none; padding: 14px 32px; border-radius: 40px; font-size: 1rem; font-weight: 800; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 8px; pointer-events: none; }
     .gallery-btn-wrap { position: relative; display: inline-block; margin-top: 10px; }
     .gallery-btn-wrap input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .gallery-btn {
-      background: transparent; color: #F6B45F;
-      border: 1px solid rgba(246,180,95,0.4);
-      padding: 10px 24px; border-radius: 40px; font-size: 0.85rem;
-      font-weight: 600; cursor: pointer; font-family: inherit;
-      pointer-events: none;
-    }
-
-    /* OR divider */
+    .gallery-btn { background: transparent; color: #F6B45F; border: 1px solid rgba(246,180,95,0.4); padding: 10px 24px; border-radius: 40px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; pointer-events: none; }
     .or-divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; color: #4a6a88; font-size: 0.75rem; }
     .or-divider::before, .or-divider::after { content:''; flex:1; height:1px; background:rgba(246,180,95,0.1); }
-
-    /* Live scan toggle */
-    .live-btn {
-      background: transparent; color: #7a9ab8;
-      border: 1px solid rgba(246,180,95,0.2);
-      padding: 8px 20px; border-radius: 40px; font-size: 0.8rem;
-      font-weight: 600; cursor: pointer; font-family: inherit;
-      width: 100%;
-    }
+    .live-btn { background: transparent; color: #7a9ab8; border: 1px solid rgba(246,180,95,0.2); padding: 8px 20px; border-radius: 40px; font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit; width: 100%; }
     .live-btn:hover { color: #F6B45F; border-color: rgba(246,180,95,0.4); }
-
-    /* Result */
     #result { margin-top: 14px; }
     .result-card { background: #0a1828; padding: 14px 16px; border-radius: 12px; border-left: 4px solid #34D399; word-break: break-all; }
     .result-label { color: #34D399; font-weight: 700; font-size: 0.82rem; margin-bottom: 6px; }
@@ -118,11 +57,9 @@
     .status-box { color: #7a9ab8; font-size: 0.85rem; padding: 8px 0; display:flex; align-items:center; gap:8px; }
     .spinner { width:14px; height:14px; border:2px solid rgba(246,180,95,0.3); border-top-color:#F6B45F; border-radius:50%; animation:spin 0.8s linear infinite; flex-shrink:0; }
     @keyframes spin { to{transform:rotate(360deg)} }
-
     .btn-sm { background:#F6B45F; border:none; padding:5px 14px; border-radius:40px; font-weight:700; color:#04162E; cursor:pointer; font-size:0.75rem; font-family:inherit; }
     .btn-sm-outline { background:transparent; border:1px solid #F6B45F; color:#F6B45F; padding:5px 14px; border-radius:40px; font-weight:600; cursor:pointer; font-size:0.75rem; font-family:inherit; }
     .btn-sm-green { background:#34D399; color:#04162E; border:none; padding:5px 14px; border-radius:40px; font-weight:700; cursor:pointer; font-size:0.75rem; font-family:inherit; }
-
     #history { margin-top: 22px; }
     #history h3 { color: #F6B45F; font-size: 0.9rem; margin-bottom: 10px; }
     .history-item { background: #0a1828; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; gap: 8px; }
@@ -137,31 +74,21 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="PACDI">
-    <script>
-(function(){
-  if (sessionStorage.getItem('autoLang')) return;
-  var bl = (navigator.language || navigator.userLanguage || 'en').substring(0,2).toLowerCase();
-  var supported = ['tr','de','en'];
-  var lang = supported.indexOf(bl) > -1 ? bl : 'en';
-  sessionStorage.setItem('autoLang', lang);
-})();
-</script>
 </head>
 <body>
 <div class="app">
-  <nav>
-    <a href="/">&#127968; Home</a>
-    <a href="/qr.html">&#9643; QR</a>
-    <a href="/pruefprotokoll.html">&#9889; Pr&uuml;f</a>
-    <a href="/scanner.html" class="active">&#128247; Scan</a>
-    <a href="/envanter.html">&#128230; Inventar</a>
-    <a href="/password.html">&#128272; Pass</a>
-  </nav>
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+    <nav id="mainNav" style="display:flex;flex-wrap:wrap;gap:4px;background:rgba(4,22,46,0.8);border-radius:12px;padding:8px;"></nav>
+    <div class="lang-bar">
+      <button class="lang-btn" data-lang="tr" onclick="setLanguage('tr')">TR</button>
+      <button class="lang-btn active" data-lang="de" onclick="setLanguage('de')">DE</button>
+      <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+    </div>
+  </div>
 
-  <h1>&#128247; QR / Barcode Scanner</h1>
-  <p class="subtitle">iOS Safari: use camera button below &bull; Android/Desktop: live scan also works</p>
+  <h1 id="page-title">📷 QR / Barcode Scanner</h1>
+  <p class="subtitle" id="page-sub">iOS Safari: use camera button below • Android/Desktop: live scan also works</p>
 
-  <!-- Live camera view (hidden by default) -->
   <div id="videoWrap">
     <video id="video" autoplay playsinline muted></video>
     <div id="scanOverlay">
@@ -169,37 +96,30 @@
     </div>
   </div>
 
-  <!-- Main UI: photo capture -->
   <div class="capture-area" id="captureArea">
-    <span class="icon">&#128247;</span>
-    <h3>Scan QR or Barcode</h3>
-    <p>Take a photo with your back camera,<br>or upload from gallery.</p>
-
-    <!-- iOS: capture=environment opens back camera directly -->
+    <span class="icon">📷</span>
+    <h3 id="capture-title">Scan QR or Barcode</h3>
+    <p id="capture-desc">Take a photo with your back camera,<br>or upload from gallery.</p>
     <div class="capture-btn-wrap">
       <input type="file" id="captureInput" accept="image/*" capture="environment">
-      <div class="capture-btn">&#128247; Take Photo</div>
+      <div class="capture-btn" id="capture-btn-text">📷 Take Photo</div>
     </div>
-
     <br>
-
     <div class="gallery-btn-wrap">
       <input type="file" id="galleryInput" accept="image/*">
-      <div class="gallery-btn">&#128444;&#65039; Choose from Gallery</div>
+      <div class="gallery-btn" id="gallery-btn-text">🖼️ Choose from Gallery</div>
     </div>
   </div>
 
-  <div class="or-divider">or</div>
+  <div class="or-divider" id="or-text">or</div>
 
-  <button class="live-btn" id="liveBtn">&#9654; Live Camera Scan (Android / Desktop)</button>
-  <button class="live-btn" id="stopLiveBtn" style="display:none; margin-top:6px; color:#f87171; border-color:rgba(248,113,113,0.3);">&#9646;&#9646; Stop Live Scan</button>
+  <button class="live-btn" id="liveBtn">▶ Live Camera Scan (Android / Desktop)</button>
+  <button class="live-btn" id="stopLiveBtn" style="display:none; margin-top:6px; color:#f87171; border-color:rgba(248,113,113,0.3);">⏹ Stop Live Scan</button>
 
   <div id="result"></div>
-
   <canvas id="canvas"></canvas>
-
   <div id="history"></div>
-  <div class="footer">PACDI Store &middot; <a href="/legal.html">Legal &amp; Privacy</a></div>
+  <div class="footer">PACDI Store · <a href="/legal.html" id="legal-link">Legal &amp; Privacy</a></div>
 </div>
 
 <script>
@@ -221,11 +141,146 @@ var codeReader = null;
 var liveStream = null;
 var liveActive = false;
 
-// ── History ──
+var i18n = {
+  tr: {
+    page_title: '📷 QR / Barkod Tarayıcı',
+    page_sub: 'iOS Safari: aşağıdaki kamera butonunu kullan • Android/Masaüstü: canlı tarama da çalışır',
+    capture_title: 'QR veya Barkod Tara',
+    capture_desc: 'Arka kamerayla fotoğraf çekin<br>veya galeriden yükleyin.',
+    capture_btn: '📷 Fotoğraf Çek',
+    gallery_btn: '🖼️ Galeriden Seç',
+    or: 'veya',
+    live_btn: '▶ Canlı Kamera Taraması (Android / Masaüstü)',
+    stop_btn: '⏹ Canlı Taramayı Durdur',
+    history_title: '📄 Geçmiş',
+    empty_history: 'Henüz taranmış kod yok.',
+    legal: 'Yasal & Gizlilik',
+    status_decoding: 'Çözümleniyor...',
+    error_no_code: 'QR/barkod bulunamadı.<br>💡 İpuçları:<br>• İyi aydınlatma sağlayın<br>• Kodu sabit ve yakın tutun<br>• Tekrar deneyin',
+    error_image: 'Görüntü yüklenemedi.',
+    camera_error: 'Kamera hatası: ',
+    scan_success: '✅ Tarandı:',
+    save: 'Kaydet',
+    saved: 'Kaydedildi ✓',
+    copy: 'Kopyala',
+    copied: 'Kopyalandı ✓',
+    open: 'Aç →',
+    device_detected: '⚡ Cihaz tanındı:',
+    save_device: 'Kaydet'
+  },
+  de: {
+    page_title: '📷 QR / Barcode Scanner',
+    page_sub: 'iOS Safari: Kamera-Button unten • Android/Desktop: Live-Scan funktioniert auch',
+    capture_title: 'QR oder Barcode scannen',
+    capture_desc: 'Machen Sie ein Foto mit der Rückkamera<br>oder laden Sie aus der Galerie hoch.',
+    capture_btn: '📷 Foto aufnehmen',
+    gallery_btn: '🖼️ Aus Galerie wählen',
+    or: 'oder',
+    live_btn: '▶ Live-Kamera-Scan (Android / Desktop)',
+    stop_btn: '⏹ Live-Scan beenden',
+    history_title: '📄 Verlauf',
+    empty_history: 'Noch keine Scans.',
+    legal: 'Impressum & Datenschutz',
+    status_decoding: 'Dekodiere...',
+    error_no_code: 'Kein QR/Barcode gefunden.<br>💡 Tipps:<br>• Gute Beleuchtung<br>• Code ruhig und nah halten<br>• Erneut versuchen',
+    error_image: 'Bild konnte nicht geladen werden.',
+    camera_error: 'Kamera-Fehler: ',
+    scan_success: '✅ Gescannt:',
+    save: 'Speichern',
+    saved: 'Gespeichert ✓',
+    copy: 'Kopieren',
+    copied: 'Kopiert ✓',
+    open: 'Öffnen →',
+    device_detected: '⚡ Gerät erkannt:',
+    save_device: 'Speichern'
+  },
+  en: {
+    page_title: '📷 QR / Barcode Scanner',
+    page_sub: 'iOS Safari: use camera button below • Android/Desktop: live scan also works',
+    capture_title: 'Scan QR or Barcode',
+    capture_desc: 'Take a photo with your back camera,<br>or upload from gallery.',
+    capture_btn: '📷 Take Photo',
+    gallery_btn: '🖼️ Choose from Gallery',
+    or: 'or',
+    live_btn: '▶ Live Camera Scan (Android / Desktop)',
+    stop_btn: '⏹ Stop Live Scan',
+    history_title: '📄 History',
+    empty_history: 'No scans yet.',
+    legal: 'Legal & Privacy',
+    status_decoding: 'Decoding...',
+    error_no_code: 'No QR/barcode found.<br>💡 Tips:<br>• Ensure good lighting<br>• Hold code steady & close<br>• Try again',
+    error_image: 'Could not load image.',
+    camera_error: 'Camera error: ',
+    scan_success: '✅ Scanned:',
+    save: 'Save',
+    saved: 'Saved ✓',
+    copy: 'Copy',
+    copied: 'Copied ✓',
+    open: 'Open →',
+    device_detected: '⚡ Device detected:',
+    save_device: 'Save'
+  }
+};
+
+var currentLang = 'de';
+
+function setLanguage(lang) {
+  currentLang = lang;
+  var t = i18n[lang] || i18n.de;
+
+  document.getElementById('page-title').textContent = t.page_title;
+  document.getElementById('page-sub').textContent = t.page_sub;
+  document.getElementById('capture-title').textContent = t.capture_title;
+  document.getElementById('capture-desc').innerHTML = t.capture_desc;
+  document.getElementById('capture-btn-text').textContent = t.capture_btn;
+  document.getElementById('gallery-btn-text').textContent = t.gallery_btn;
+  document.getElementById('or-text').textContent = t.or;
+  document.getElementById('liveBtn').textContent = t.live_btn;
+  document.getElementById('stopLiveBtn').textContent = t.stop_btn;
+  document.getElementById('legal-link').textContent = t.legal;
+
+  buildNav(lang);
+
+  document.querySelectorAll('.lang-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  document.documentElement.lang = lang;
+  try { sessionStorage.setItem('autoLang', lang); } catch(e) {}
+}
+
+function buildNav(lang) {
+  var nav = document.getElementById('mainNav');
+  if (!nav) return;
+  var items = [
+    ['/', '🏠', {tr:'Ana Sayfa', de:'Startseite', en:'Home'}],
+    ['/qr.html', '▣', {tr:'QR', de:'QR', en:'QR'}],
+    ['/pruefprotokoll.html', '⚡', {tr:'Prüfprotokoll', de:'Prüfprotokoll', en:'Inspection'}],
+    ['/scanner.html', '📷', {tr:'Tarayıcı', de:'Scanner', en:'Scanner'}],
+    ['/envanter.html', '📦', {tr:'Envanter', de:'Inventar', en:'Inventory'}],
+    ['/password.html', '🔐', {tr:'Şifre', de:'Passwort', en:'Password'}]
+  ];
+  var html = '';
+  var page = (window.location.pathname.split('/').pop() || 'scanner.html');
+  for (var i = 0; i < items.length; i++) {
+    var href = items[i][0];
+    var icon = items[i][1];
+    var label = items[i][2][lang] || items[i][2]['de'];
+    var isActive = (page === href.replace('/','') || (href==='/' && (page===''||page==='index.html')));
+    var color = isActive ? '#F6B45F' : '#7a9ab8';
+    var border = isActive ? '#F6B45F' : 'transparent';
+    html += '<a href="' + href + '" style="color:' + color + ';text-decoration:none;font-size:0.7rem;padding:5px 10px;border-radius:16px;border:1px solid ' + border + ';white-space:nowrap;display:inline-flex;align-items:center;gap:3px;">'
+      + '<span>' + icon + '</span>'
+      + '<span>' + label + '</span>'
+      + '</a>';
+  }
+  nav.innerHTML = html;
+}
+
 function renderHistory() {
+  var t = i18n[currentLang] || i18n.de;
   var el = document.getElementById('history');
-  if (!scanHistory.length) { el.innerHTML = '<div class="empty-history">&#128237; No scans yet.</div>'; return; }
-  var h = '<h3>&#128220; History</h3>';
+  if (!scanHistory.length) { el.innerHTML = '<div class="empty-history">📭 ' + t.empty_history + '</div>'; return; }
+  var h = '<h3>' + t.history_title + '</h3>';
   scanHistory.slice(-10).reverse().forEach(function(item) {
     var s = item.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     h += '<div class="history-item"><span class="text">'+s+'</span><span class="date">'+new Date(item.date).toLocaleString()+'</span></div>';
@@ -241,14 +296,13 @@ function saveHistory(text) {
   renderHistory();
 }
 
-// ── UI ──
 function showStatus(msg) { resultEl.innerHTML = '<div class="status-box"><div class="spinner"></div>'+msg+'</div>'; }
-function showError(msg)  { resultEl.innerHTML = '<div class="error-box">&#10060; '+msg+'</div>'; }
+function showError(msg)  { resultEl.innerHTML = '<div class="error-box">❌ '+msg+'</div>'; }
 
 function showResult(text) {
+  var t = i18n[currentLang] || i18n.de;
   stopLive();
 
-  // Inventory lookup — PACDI QR eşleştir
   var deviceInfo = null;
   try {
     var parsed = JSON.parse(text);
@@ -257,24 +311,23 @@ function showResult(text) {
       var found = inv.find(function(x){ return x.uid === parsed.id; });
       if (found) deviceInfo = found;
     }
-  } catch(e) { /* not JSON, normal QR/barcode */ }
+  } catch(e) {}
 
   var isUrl = /^https?:\/\//i.test(text);
   var card = document.createElement('div'); card.className='result-card';
 
-  // Eğer PACDI cihazı tanındıysa farklı göster
   if (deviceInfo) {
     card.style.borderLeftColor = '#F6B45F';
     var lbl = document.createElement('div'); lbl.className='result-label';
     lbl.style.color = '#F6B45F';
-    lbl.innerHTML = '&#9889; Ger&auml;t erkannt:';
+    lbl.innerHTML = t.device_detected;
     var val = document.createElement('div'); val.className='result-value';
     val.innerHTML = '<strong style="color:#e8edf2;font-size:1rem;">' + deviceInfo.name + '</strong><br>' +
       '<span style="font-size:0.75rem;color:#7a9ab8;">ID: ' + deviceInfo.uid + '</span>';
     card.appendChild(lbl); card.appendChild(val);
     var acts = document.createElement('div'); acts.className='result-actions';
-    var saveBtn = document.createElement('button'); saveBtn.className='btn-sm-green'; saveBtn.textContent='Speichern';
-    saveBtn.addEventListener('click', function(){ saveHistory(deviceInfo.name + ' | ' + deviceInfo.uid); saveBtn.textContent='Gespeichert \u2713'; saveBtn.disabled=true; });
+    var saveBtn = document.createElement('button'); saveBtn.className='btn-sm-green'; saveBtn.textContent = t.save_device;
+    saveBtn.addEventListener('click', function(){ saveHistory(deviceInfo.name + ' | ' + deviceInfo.uid); saveBtn.textContent = t.saved; saveBtn.disabled=true; });
     acts.appendChild(saveBtn);
     card.appendChild(acts);
     resultEl.innerHTML=''; resultEl.appendChild(card);
@@ -282,30 +335,30 @@ function showResult(text) {
     return;
   }
 
-  var lbl = document.createElement('div'); lbl.className='result-label'; lbl.textContent='\u2713 Scanned:';
+  var lbl = document.createElement('div'); lbl.className='result-label'; lbl.textContent = t.scan_success;
   var val = document.createElement('div'); val.className='result-value'; val.textContent=text;
   var acts = document.createElement('div'); acts.className='result-actions';
 
-  var saveBtn = document.createElement('button'); saveBtn.className='btn-sm-green'; saveBtn.textContent='Save';
-  saveBtn.addEventListener('click', function(){ saveHistory(text); saveBtn.textContent='Saved \u2713'; saveBtn.disabled=true; });
+  var saveBtn = document.createElement('button'); saveBtn.className='btn-sm-green'; saveBtn.textContent = t.save;
+  saveBtn.addEventListener('click', function(){ saveHistory(text); saveBtn.textContent = t.saved; saveBtn.disabled=true; });
 
-  var copyBtn = document.createElement('button'); copyBtn.className='btn-sm-outline'; copyBtn.textContent='Copy';
+  var copyBtn = document.createElement('button'); copyBtn.className='btn-sm-outline'; copyBtn.textContent = t.copy;
   copyBtn.addEventListener('click', function(){
-    if(navigator.clipboard){ navigator.clipboard.writeText(text).then(function(){ copyBtn.textContent='Copied \u2713'; }); }
-    else { var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); copyBtn.textContent='Copied \u2713'; }
+    if(navigator.clipboard){ navigator.clipboard.writeText(text).then(function(){ copyBtn.textContent = t.copied; }); }
+    else { var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); copyBtn.textContent = t.copied; }
   });
 
   acts.appendChild(saveBtn); acts.appendChild(copyBtn);
-  if(isUrl){ var a=document.createElement('a'); a.className='btn-sm'; a.href=text; a.target='_blank'; a.rel='noopener'; a.style.textDecoration='none'; a.textContent='Open \u2192'; acts.appendChild(a); }
+  if(isUrl){ var a=document.createElement('a'); a.className='btn-sm'; a.href=text; a.target='_blank'; a.rel='noopener'; a.style.textDecoration='none'; a.textContent = t.open; acts.appendChild(a); }
 
   card.appendChild(lbl); card.appendChild(val); card.appendChild(acts);
   resultEl.innerHTML=''; resultEl.appendChild(card);
   if(navigator.vibrate) navigator.vibrate(100);
 }
 
-// ── Decode image with ZXing ──
 function decodeImage(src) {
-  showStatus('Decoding...');
+  var t = i18n[currentLang] || i18n.de;
+  showStatus(t.status_decoding);
   var img = new Image();
   img.onload = function() {
     canvas.width  = img.naturalWidth;
@@ -336,24 +389,21 @@ function decodeImage(src) {
       var result    = reader.decode(bitmap);
       showResult(result.getText());
     } catch(e) {
-      // Try inverted
       try {
         var luminance2 = new ZXing.HTMLCanvasElementLuminanceSource(canvas);
         var binarizer2 = new ZXing.HybridBinarizer(luminance2);
-        var inv = binarizer2.getBlackMatrix().clone();
         var bitmap2 = new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(new ZXing.InvertedLuminanceSource(luminance2)));
         var result2 = reader.decode(bitmap2);
         showResult(result2.getText());
       } catch(e2) {
-        showError('No QR/barcode found.<br>&#128161; Tips:<br>• Ensure good lighting<br>• Hold code steady & close<br>• Try again');
+        showError(t.error_no_code);
       }
     }
   };
-  img.onerror = function(){ showError('Could not load image.'); };
+  img.onerror = function(){ showError(t.error_image); };
   img.src = src;
 }
 
-// ── File inputs ──
 function handleFile(file) {
   if(!file) return;
   var url = URL.createObjectURL(file);
@@ -363,8 +413,8 @@ function handleFile(file) {
 document.getElementById('captureInput').addEventListener('change', function(){ handleFile(this.files[0]); this.value=''; });
 document.getElementById('galleryInput').addEventListener('change', function(){ handleFile(this.files[0]); this.value=''; });
 
-// ── Live camera (ZXing continuous) ──
 function startLive() {
+  var t = i18n[currentLang] || i18n.de;
   stopLive();
   videoWrap.style.display = 'block';
   captureArea.style.display = 'none';
@@ -372,7 +422,6 @@ function startLive() {
   stopLiveBtn.style.display = 'block';
   showStatus('Starting camera...');
 
-  // Use getUserMedia + manual frame capture for better iOS compatibility
   navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
     .then(function(stream) {
       liveStream = stream;
@@ -383,7 +432,7 @@ function startLive() {
       scheduleDecode();
     })
     .catch(function(err) {
-      showError('Camera error: ' + err + '<br>Use Take Photo button instead.');
+      showError(t.camera_error + err);
       stopLive();
     });
 }
@@ -392,7 +441,6 @@ function scheduleDecode() {
   if (!liveActive) return;
   if (video.readyState < 2) { setTimeout(scheduleDecode, 300); return; }
 
-  // Capture frame to canvas and decode
   canvas.width  = video.videoWidth  || 640;
   canvas.height = video.videoHeight || 480;
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -415,10 +463,10 @@ function scheduleDecode() {
     var bitmap = new ZXing.BinaryBitmap(bin);
     var result = reader.decode(bitmap);
     showResult(result.getText());
-    return; // success — stop loop
-  } catch(e) { /* not found yet */ }
+    return;
+  } catch(e) {}
 
-  setTimeout(scheduleDecode, 400); // try again
+  setTimeout(scheduleDecode, 400);
 }
 
 function stopLive() {
@@ -435,6 +483,13 @@ liveBtn.addEventListener('click', startLive);
 stopLiveBtn.addEventListener('click', function(){ stopLive(); resultEl.innerHTML=''; });
 window.addEventListener('beforeunload', stopLive);
 
+var defaultLang = null;
+try { defaultLang = sessionStorage.getItem('autoLang'); } catch(e) {}
+if (!defaultLang || !i18n[defaultLang]) {
+  var navLang = (navigator.language || 'de').toLowerCase();
+  defaultLang = navLang.indexOf('tr') === 0 ? 'tr' : (navLang.indexOf('en') === 0 ? 'en' : 'de');
+}
+setLanguage(defaultLang);
 renderHistory();
 
 })();
@@ -453,13 +508,10 @@ renderHistory();
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function(){});
   }
-
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   var isInStandalone = ('standalone' in navigator && navigator.standalone);
   var shown = sessionStorage.getItem('pwa-banner-shown');
   if (shown || isInStandalone) return;
-
-  // iOS Safari — manuel yönlendirme
   if (isIOS) {
     setTimeout(function() {
       var bar = document.createElement('div');
@@ -469,22 +521,16 @@ renderHistory();
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
           '<div>' +
             '<div style="color:#F6B45F;font-size:0.82rem;font-weight:700;margin-bottom:4px;">📲 Ana ekrana ekle</div>' +
-            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">' +
-              'Safari'de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ' +
-              'ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.' +
-            '</div>' +
-            '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS'ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
+            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">Safari\'de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.</div>' +
+            '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS\'ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
           '</div>' +
-          '<button onclick="document.getElementById('pwa-banner').remove();sessionStorage.setItem('pwa-banner-shown','1')" ' +
-            'style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
+          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
         '</div>';
       document.body.appendChild(bar);
       sessionStorage.setItem('pwa-banner-shown', '1');
     }, 3000);
     return;
   }
-
-  // Android / Desktop Chrome — otomatik install prompt
   var deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
@@ -498,12 +544,11 @@ renderHistory();
         '<span style="color:#eaf2fb;font-size:0.85rem;">📲 Ana ekrana ekle &mdash; daha hızlı aç!</span>' +
         '<div style="display:flex;gap:8px;">' +
           '<button onclick="installPWA()" style="background:#F6B45F;border:none;color:#04162E;padding:6px 16px;border-radius:20px;font-weight:700;cursor:pointer;font-size:0.82rem;">Ekle</button>' +
-          '<button onclick="document.getElementById('pwa-banner').remove();sessionStorage.setItem('pwa-banner-shown','1')" style="background:transparent;border:1px solid rgba(246,180,95,0.3);color:#7a9ab8;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:0.82rem;">Sonra</button>' +
+          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" style="background:transparent;border:1px solid rgba(246,180,95,0.3);color:#7a9ab8;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:0.82rem;">Sonra</button>' +
         '</div>';
       document.body.appendChild(bar);
     }, 3000);
   });
-
   window.installPWA = function() {
     if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(function(){ deferredPrompt=null; }); }
     var b = document.getElementById('pwa-banner'); if (b) b.remove();
@@ -511,6 +556,5 @@ renderHistory();
   };
 })();
 </script>
-
 </body>
 </html>
