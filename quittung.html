@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quittung Generator | PACDI Store</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body { background:#04162E; color:#eaf2fb; font-family:-apple-system,system-ui,sans-serif; min-height:100vh; padding:16px; padding-bottom:60px; }
+  .app { max-width:640px; margin:0 auto; }
+
+  header { margin-bottom:18px; }
+  header h1 { color:#F6B45F; font-size:1.2rem; margin-bottom:4px; }
+  header .sub { color:#7a9ab8; font-size:0.78rem; }
+
+  .info-box { background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-left:4px solid #34D399; border-radius:10px; padding:12px 16px; margin-bottom:16px; font-size:0.78rem; color:#b0b5bf; line-height:1.7; }
+  .info-box strong { color:#34D399; }
+  .warning-box { background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.25); border-left:4px solid #f87171; border-radius:10px; padding:12px 16px; margin-bottom:16px; font-size:0.74rem; color:#b0b5bf; line-height:1.7; }
+  .warning-box strong { color:#f87171; }
+
+  .card { background:#0a1828; border:1px solid rgba(246,180,95,0.15); border-radius:14px; padding:16px; margin-bottom:14px; }
+  .card h3 { color:#F6B45F; font-size:0.85rem; margin-bottom:14px; }
+
+  .field { margin-bottom:12px; }
+  .field label { display:block; font-size:0.75rem; color:#7a9ab8; margin-bottom:5px; font-weight:600; }
+  .field input, .field select, .field textarea { width:100%; padding:10px 12px; background:#04162E; border:1px solid rgba(246,180,95,0.2); border-radius:8px; color:#eaf2fb; font-size:0.88rem; font-family:inherit; outline:none; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color:#F6B45F; }
+  .field textarea { min-height:60px; resize:vertical; }
+  .field .hint { font-size:0.68rem; color:#4a6a88; margin-top:4px; }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  .tax-toggle { display:flex; gap:8px; margin-bottom:14px; }
+  .tax-btn { flex:1; padding:10px; background:rgba(255,255,255,0.03); border:1px solid rgba(246,180,95,0.15); border-radius:10px; color:#7a9ab8; font-size:0.78rem; font-weight:600; cursor:pointer; text-align:center; font-family:inherit; }
+  .tax-btn.active { background:rgba(246,180,95,0.1); border-color:#F6B45F; color:#F6B45F; }
+
+  .tax-rate-row { display:none; gap:8px; margin-bottom:12px; }
+  .tax-rate-row.show { display:flex; }
+  .tax-rate-btn { flex:1; padding:8px; background:rgba(255,255,255,0.03); border:1px solid rgba(246,180,95,0.12); border-radius:8px; color:#7a9ab8; font-size:0.75rem; cursor:pointer; text-align:center; font-family:inherit; }
+  .tax-rate-btn.active { border-color:#F6B45F; color:#F6B45F; }
+
+  .amount-display { background:rgba(246,180,95,0.06); border:1px solid rgba(246,180,95,0.2); border-radius:10px; padding:12px 16px; margin-bottom:14px; font-size:0.8rem; color:#b0b5bf; line-height:1.8; }
+  .amount-display .big { font-size:1.3rem; color:#F6B45F; font-weight:700; }
+
+  .btn-save { width:100%; padding:13px; background:#F6B45F; color:#04162E; border:none; border-radius:30px; font-weight:700; font-size:0.9rem; cursor:pointer; font-family:inherit; }
+  .btn-save:hover { opacity:0.9; }
+  .btn-outline { width:100%; padding:11px; background:transparent; border:1px solid rgba(246,180,95,0.3); color:#F6B45F; border-radius:30px; font-weight:600; font-size:0.85rem; cursor:pointer; font-family:inherit; margin-top:8px; }
+
+  .history-list { margin-top:18px; }
+  .history-list h3 { color:#F6B45F; font-size:0.85rem; margin-bottom:10px; }
+  .h-item { background:#0a1828; border:1px solid rgba(246,180,95,0.1); border-radius:10px; padding:10px 12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .h-item .hno { font-size:0.7rem; color:#F6B45F; font-weight:700; }
+  .h-item .hmeta { font-size:0.72rem; color:#7a9ab8; }
+  .h-item .hamount { font-size:0.85rem; font-weight:700; color:#34D399; }
+  .h-item .hactions { display:flex; gap:6px; }
+  .h-item button { background:transparent; border:none; cursor:pointer; font-size:0.85rem; padding:2px 4px; }
+  .empty-state { text-align:center; color:#4a6a88; font-size:0.8rem; padding:20px 0; }
+
+  .footer { margin-top:24px; font-size:0.65rem; color:#4a6a88; text-align:center; border-top:1px solid rgba(246,180,95,0.08); padding-top:14px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <h1>🧾 Quittung Generator</h1>
+    <div class="sub">Kleinbetragsrechnung nach § 33 UStDV — kostenlos &amp; lokal</div>
+    <a href="/zeiterfassung.html" style="display:inline-block;margin-top:8px;font-size:0.72rem;color:#7a9ab8;text-decoration:none;border:1px solid rgba(246,180,95,0.2);padding:4px 12px;border-radius:14px;">⏱️ Zur Zeiterfassung</a>
+  </header>
+
+  <div class="info-box">
+    <strong>ℹ️ Hinweis:</strong> Diese Quittung erfüllt die Pflichtangaben für Kleinbetragsrechnungen bis 250&nbsp;€ brutto. Für höhere Beträge ist eine vollständige Rechnung mit Empfängerangaben und fortlaufender Rechnungsnummer erforderlich.
+  </div>
+
+  <div class="warning-box">
+    <strong>⚠️ Wichtig — Aufbewahrungspflicht:</strong> Dieses Tool speichert Ihre Daten ausschließlich lokal in diesem Browser (keine Cloud, kein Server). Nach GoBD sind Sie als Aussteller gesetzlich verpflichtet, erstellte Belege <strong>8 Jahre lang selbst</strong> sicher aufzubewahren (z. B. PDF-Export auf eigenem Gerät, Cloud-Speicher oder E-Mail-Archiv). Browser-Daten können jederzeit verloren gehen — verlassen Sie sich nicht allein auf den Verlauf in diesem Tool.
+  </div>
+
+  <div class="card" id="ausstellerCard">
+    <h3>👤 Ihre Daten (Aussteller)</h3>
+    <div class="field">
+      <label>Name / Firma</label>
+      <input type="text" id="ausstellerName" placeholder="Vor- und Nachname oder Firmenname">
+    </div>
+    <div class="field">
+      <label>Adresse</label>
+      <textarea id="ausstellerAdresse" placeholder="Straße, PLZ Ort"></textarea>
+    </div>
+    <button class="btn-outline" id="saveAusstellerBtn" type="button">💾 Als Standard speichern</button>
+  </div>
+
+  <div class="card">
+    <h3>🧾 Neue Quittung</h3>
+
+    <div class="field">
+      <label>Belegnummer (automatisch fortlaufend)</label>
+      <input type="text" id="belegNr" readonly style="opacity:0.7;">
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Datum</label>
+        <input type="date" id="datum">
+      </div>
+      <div class="field">
+        <label>Empfänger (optional)</label>
+        <input type="text" id="empfaenger" placeholder="Name (nicht Pflicht)">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Leistung / Ware</label>
+      <textarea id="leistung" placeholder="z.B. 2x Reparatur Steckdose, Materialkosten enthalten"></textarea>
+      <div class="hint">⚠️ Genaue Beschreibung erforderlich — "Diverses" wird vom Finanzamt nicht anerkannt.</div>
+    </div>
+
+    <div class="field">
+      <label>Bruttobetrag (€)</label>
+      <input type="number" id="betrag" step="0.01" min="0.01" placeholder="0.00">
+    </div>
+
+    <div class="field">
+      <label>Steuerstatus</label>
+      <div class="tax-toggle">
+        <button class="tax-btn active" id="taxKleinunternehmerBtn" type="button">§19 Kleinunternehmer</button>
+        <button class="tax-btn" id="taxNormalBtn" type="button">Regelbesteuert</button>
+      </div>
+      <div class="tax-rate-row" id="taxRateRow">
+        <button class="tax-rate-btn" data-rate="19" type="button">19%</button>
+        <button class="tax-rate-btn" data-rate="7" type="button">7%</button>
+      </div>
+    </div>
+
+    <div class="amount-display" id="amountDisplay"></div>
+
+    <button class="btn-save" id="generateBtn">📄 Quittung als PDF erstellen</button>
+  </div>
+
+  <div class="history-list">
+    <h3>📋 Letzte Quittungen</h3>
+    <div id="historyContainer"></div>
+    <button class="btn-outline" id="exportJsonBtn" type="button" style="margin-top:10px;">💾 Alle Daten als JSON-Backup sichern</button>
+    <div style="font-size:0.65rem;color:#4a6a88;margin-top:6px;text-align:center;">Empfehlung: Nach jeder Quittung oder regelmäßig sichern — für Ihre 8-jährige Aufbewahrungspflicht.</div>
+  </div>
+
+  <div class="footer">Quittung Generator · Lokal gespeichert, keine Cloud · PACDI Store</div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var AUSSTELLER_KEY = 'quittung_aussteller';
+  var COUNTER_KEY = 'quittung_counter';
+  var HISTORY_KEY = 'quittung_history';
+
+  function loadAussteller() {
+    try { return JSON.parse(localStorage.getItem(AUSSTELLER_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveAussteller(data) {
+    localStorage.setItem(AUSSTELLER_KEY, JSON.stringify(data));
+  }
+
+  var aussteller = loadAussteller();
+  document.getElementById('ausstellerName').value = aussteller.name || '';
+  document.getElementById('ausstellerAdresse').value = aussteller.adresse || '';
+
+  document.getElementById('saveAusstellerBtn').addEventListener('click', function() {
+    var name = document.getElementById('ausstellerName').value.trim();
+    var adresse = document.getElementById('ausstellerAdresse').value.trim();
+    if (!name) { alert('Bitte Name/Firma eingeben.'); return; }
+    saveAussteller({ name: name, adresse: adresse });
+    alert('Gespeichert! Diese Daten werden ab jetzt automatisch verwendet.');
+  });
+
+  // ── Belegnummer ──
+  function getNextBelegNr() {
+    var counter = parseInt(localStorage.getItem(COUNTER_KEY) || '0', 10);
+    return counter + 1;
+  }
+  function formatBelegNr(n) {
+    var year = new Date().getFullYear();
+    return year + '-' + String(n).padStart(4, '0');
+  }
+  function refreshBelegNrField() {
+    document.getElementById('belegNr').value = formatBelegNr(getNextBelegNr());
+  }
+  refreshBelegNrField();
+
+  // ── Datum default ──
+  document.getElementById('datum').value = new Date().toISOString().slice(0,10);
+
+  // ── Vorbefüllung aus Zeiterfassung (URL-Parameter) ──
+  (function() {
+    var params = new URLSearchParams(window.location.search);
+    var datum = params.get('datum');
+    var leistung = params.get('leistung');
+    if (datum) document.getElementById('datum').value = datum;
+    if (leistung) document.getElementById('leistung').value = leistung;
+  })();
+
+  // ── Tax status toggle ──
+  var taxMode = 'kleinunternehmer'; // or 'normal'
+  var taxRate = 19;
+
+  var btnKU = document.getElementById('taxKleinunternehmerBtn');
+  var btnNormal = document.getElementById('taxNormalBtn');
+  var taxRateRow = document.getElementById('taxRateRow');
+
+  btnKU.addEventListener('click', function() {
+    taxMode = 'kleinunternehmer';
+    btnKU.classList.add('active');
+    btnNormal.classList.remove('active');
+    taxRateRow.classList.remove('show');
+    updateAmountDisplay();
+  });
+  btnNormal.addEventListener('click', function() {
+    taxMode = 'normal';
+    btnNormal.classList.add('active');
+    btnKU.classList.remove('active');
+    taxRateRow.classList.add('show');
+    updateAmountDisplay();
+  });
+  document.querySelectorAll('.tax-rate-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      taxRate = parseInt(btn.dataset.rate, 10);
+      document.querySelectorAll('.tax-rate-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      updateAmountDisplay();
+    });
+  });
+  document.querySelector('.tax-rate-btn[data-rate="19"]').classList.add('active');
+
+  function updateAmountDisplay() {
+    var brutto = parseFloat(document.getElementById('betrag').value) || 0;
+    var display = document.getElementById('amountDisplay');
+    if (brutto <= 0) { display.innerHTML = ''; return; }
+
+    if (taxMode === 'kleinunternehmer') {
+      display.innerHTML =
+        '<div class="big">' + brutto.toFixed(2).replace('.',',') + ' €</div>' +
+        '<div>Gemäß § 19 UStG wird keine Umsatzsteuer ausgewiesen.</div>';
+    } else {
+      var netto = brutto / (1 + taxRate/100);
+      var steuer = brutto - netto;
+      display.innerHTML =
+        '<div class="big">' + brutto.toFixed(2).replace('.',',') + ' € (Brutto)</div>' +
+        '<div>Netto: ' + netto.toFixed(2).replace('.',',') + ' € · USt (' + taxRate + '%): ' + steuer.toFixed(2).replace('.',',') + ' €</div>';
+    }
+  }
+  document.getElementById('betrag').addEventListener('input', updateAmountDisplay);
+
+  // ── Number to German words (simplified, for amounts under 10000) ──
+  var ONES = ['', 'ein', 'zwei', 'drei', 'vier', 'fünf', 'sechs', 'sieben', 'acht', 'neun'];
+  var TEENS = ['zehn', 'elf', 'zwölf', 'dreizehn', 'vierzehn', 'fünfzehn', 'sechzehn', 'siebzehn', 'achtzehn', 'neunzehn'];
+  var TENS = ['', '', 'zwanzig', 'dreißig', 'vierzig', 'fünfzig', 'sechzig', 'siebzig', 'achtzig', 'neunzig'];
+
+  function numToWordsDE(n) {
+    if (n === 0) return 'null';
+    if (n < 10) return ONES[n];
+    if (n < 20) return TEENS[n-10];
+    if (n < 100) {
+      var t = Math.floor(n/10), o = n%10;
+      return (o ? ONES[o] + 'und' : '') + TENS[t];
+    }
+    if (n < 1000) {
+      var h = Math.floor(n/100), rest = n%100;
+      return (h>1?ONES[h]:'') + 'hundert' + (rest ? numToWordsDE(rest) : '');
+    }
+    if (n < 10000) {
+      var th = Math.floor(n/1000), rest2 = n%1000;
+      return (th>1?ONES[th]:'') + 'tausend' + (rest2 ? numToWordsDE(rest2) : '');
+    }
+    return n.toString();
+  }
+
+  function amountToWordsDE(amount) {
+    var euros = Math.floor(amount);
+    var cents = Math.round((amount - euros) * 100);
+    var euroWords = numToWordsDE(euros) + ' Euro';
+    var centWords = cents > 0 ? ' und ' + numToWordsDE(cents) + ' Cent' : '';
+    return euroWords + centWords;
+  }
+
+  // ── History ──
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch(e) { return []; }
+  }
+  function saveHistory(list) {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+  }
+
+  function fmtDateDE(dateStr) {
+    var d = new Date(dateStr + 'T00:00:00');
+    return String(d.getDate()).padStart(2,'0') + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + d.getFullYear();
+  }
+
+  function renderHistory() {
+    var container = document.getElementById('historyContainer');
+    var history = loadHistory();
+    if (!history.length) {
+      container.innerHTML = '<div class="empty-state">Noch keine Quittungen erstellt.</div>';
+      return;
+    }
+    container.innerHTML = '';
+    history.slice().reverse().slice(0, 20).forEach(function(item) {
+      var div = document.createElement('div');
+      div.className = 'h-item';
+      div.innerHTML =
+        '<div>' +
+          '<div class="hno">' + item.belegNr + '</div>' +
+          '<div class="hmeta">' + fmtDateDE(item.datum) + ' · ' + (item.leistung.length > 30 ? item.leistung.slice(0,30) + '...' : item.leistung) + '</div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<span class="hamount">' + item.betrag.toFixed(2).replace('.',',') + ' €</span>' +
+        '</div>';
+      container.appendChild(div);
+    });
+  }
+  renderHistory();
+
+  document.getElementById('exportJsonBtn').addEventListener('click', function() {
+    var history = loadHistory();
+    if (!history.length) { alert('Noch keine Quittungen vorhanden.'); return; }
+    var backup = {
+      exportDate: new Date().toISOString(),
+      aussteller: loadAussteller(),
+      counter: localStorage.getItem(COUNTER_KEY),
+      quittungen: history
+    };
+    var blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'Quittung-Backup-' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+  });
+
+  // ── Generate PDF ──
+  document.getElementById('generateBtn').addEventListener('click', function() {
+    var name = document.getElementById('ausstellerName').value.trim();
+    var adresse = document.getElementById('ausstellerAdresse').value.trim();
+    var empfaenger = document.getElementById('empfaenger').value.trim();
+    var datum = document.getElementById('datum').value;
+    var leistung = document.getElementById('leistung').value.trim();
+    var betrag = parseFloat(document.getElementById('betrag').value) || 0;
+
+    if (!name) { alert('Bitte Name/Firma des Ausstellers eingeben.'); return; }
+    if (!datum) { alert('Bitte Datum angeben.'); return; }
+    if (!leistung) { alert('Bitte Leistung/Ware beschreiben.'); return; }
+    if (leistung.length < 5) { alert('Bitte eine genauere Beschreibung eingeben (z.B. nicht nur "Diverses").'); return; }
+    if (betrag <= 0) { alert('Bitte gültigen Betrag eingeben.'); return; }
+    if (betrag > 250 && taxMode === 'kleinunternehmer') {
+      if (!confirm('Hinweis: Beträge über 250 € benötigen eigentlich eine vollständige Rechnung mit Empfängerangaben. Trotzdem als einfache Quittung fortfahren?')) return;
+    }
+
+    var belegNrNum = getNextBelegNr();
+    var belegNr = formatBelegNr(belegNrNum);
+
+    var doc = new jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a5' });
+    var pageWidth = doc.internal.pageSize.getWidth();
+    var pageHeight = doc.internal.pageSize.getHeight();
+    var margin = 12;
+    var y = 18;
+
+    doc.setFontSize(16); doc.setFont('helvetica', 'bold');
+    doc.setTextColor(212, 175, 55);
+    doc.text('QUITTUNG', pageWidth/2, y, { align: 'center' });
+    y += 6;
+    doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+    doc.setTextColor(120,120,120);
+    doc.text('Beleg-Nr. ' + belegNr, pageWidth/2, y, { align: 'center' });
+    y += 10;
+
+    doc.setDrawColor(212,175,55);
+    doc.setLineWidth(0.3);
+    doc.line(margin, y, pageWidth-margin, y);
+    y += 8;
+
+    doc.setFontSize(9); doc.setTextColor(50,50,50); doc.setFont('helvetica', 'bold');
+    doc.text('Aussteller:', margin, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(name, margin, y+5);
+    var adresseLines = adresse ? doc.splitTextToSize(adresse, pageWidth - margin*2) : [];
+    adresseLines.forEach(function(line, i) { doc.text(line, margin, y+10+i*4); });
+    y += 10 + (adresseLines.length * 4) + 4;
+
+    if (empfaenger) {
+      doc.setFont('helvetica', 'bold');
+      doc.text('Empfänger:', margin, y);
+      doc.setFont('helvetica', 'normal');
+      doc.text(empfaenger, margin, y+5);
+      y += 11;
+    }
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Datum:', margin, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(fmtDateDE(datum), margin + 25, y);
+    y += 8;
+
+    doc.line(margin, y, pageWidth-margin, y);
+    y += 8;
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Leistung / Ware:', margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    var leistungLines = doc.splitTextToSize(leistung, pageWidth - margin*2);
+    leistungLines.forEach(function(line) { doc.text(line, margin, y); y += 4.5; });
+    y += 6;
+
+    doc.line(margin, y, pageWidth-margin, y);
+    y += 8;
+
+    doc.setFontSize(11); doc.setFont('helvetica', 'bold');
+    doc.setTextColor(212,175,55);
+    doc.text('Betrag: ' + betrag.toFixed(2).replace('.',',') + ' €', margin, y);
+    y += 6;
+
+    doc.setFontSize(8); doc.setFont('helvetica', 'italic');
+    doc.setTextColor(100,100,100);
+    doc.text('(' + amountToWordsDE(betrag) + ')', margin, y);
+    y += 7;
+
+    doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+    doc.setTextColor(50,50,50);
+    if (taxMode === 'kleinunternehmer') {
+      doc.text('Gemäß § 19 UStG wird keine Umsatzsteuer ausgewiesen.', margin, y);
+      y += 6;
+    } else {
+      var netto = betrag / (1 + taxRate/100);
+      var steuer = betrag - netto;
+      doc.text('Netto: ' + netto.toFixed(2).replace('.',',') + ' € · enthaltene USt (' + taxRate + '%): ' + steuer.toFixed(2).replace('.',',') + ' €', margin, y);
+      y += 6;
+    }
+
+    y = Math.max(y + 14, pageHeight - 38);
+    doc.line(margin, y, margin + 60, y);
+    doc.setFontSize(7.5); doc.setTextColor(120,120,120);
+    doc.text('Datum, Unterschrift Aussteller', margin, y+4);
+
+    doc.setFontSize(6.5); doc.setTextColor(150,150,150);
+    doc.text('Erstellt mit PACDI Quittung Generator · pacdi.store', pageWidth/2, pageHeight-6, { align: 'center' });
+
+    doc.save('Quittung_' + belegNr + '.pdf');
+
+    localStorage.setItem(COUNTER_KEY, String(belegNrNum));
+    var history = loadHistory();
+    history.push({ belegNr: belegNr, datum: datum, leistung: leistung, betrag: betrag, taxMode: taxMode });
+    saveHistory(history);
+
+    document.getElementById('leistung').value = '';
+    document.getElementById('betrag').value = '';
+    document.getElementById('empfaenger').value = '';
+    document.getElementById('amountDisplay').innerHTML = '';
+    refreshBelegNrField();
+    renderHistory();
+
+    setTimeout(function() {
+      if (confirm('Quittung erstellt! ✅\n\nMöchten Sie jetzt auch ein JSON-Backup aller Daten sichern? (Empfohlen für Ihre Aufbewahrungspflicht)')) {
+        document.getElementById('exportJsonBtn').click();
+      }
+    }, 500);
+  });
+
+})();
+</script>
+</body>
+</html>
