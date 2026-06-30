@@ -296,30 +296,25 @@ for root, dirs, files in os.walk('.'):
             if fname == 'index.html' and '#userPanel .btn-sm' not in content:
                 insert += '    <style>#userPanel .btn-sm { background: transparent !important; color: var(--gold) !important; border: 1px solid var(--gold) !important; } #userPanel .btn-sm:hover { background: rgba(246,180,95,0.1) !important; }</style>\n'
 
-            # ── ÖZEL: pruefprotokoll.html beta override ──
-            if fname == 'pruefprotokoll.html':
-                override_script = '''
-    <script>
-    (function() {
-      var origHandle = window.handlePDF;
-      if (origHandle) {
-        window.handlePDF = function() {
-          var params = new URLSearchParams(window.location.search);
-          if (params.get("beta") === "pacdi2026") {
-            if (typeof generatePDF === "function") generatePDF();
-            return;
-          }
-          origHandle();
-        };
-      }
-    })();
-    </script>
-    '''
-                if 'beta' not in content:
-                    insert += override_script
-
             if insert:
                 content = content.replace('</head>', insert + '</head>', 1)
+
+            # ── ÖZEL: pruefprotokoll.html beta override — BODY SONUNA, handlePDF tanımlandıktan SONRA ──
+            if fname == 'pruefprotokoll.html' and 'pacdi2026' not in content:
+                override_script = '''<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('beta') !== 'pacdi2026') return;
+  var origHandle = window.handlePDF;
+  window.handlePDF = function() {
+    if (typeof generatePDF === 'function') { generatePDF(); return; }
+    if (origHandle) origHandle();
+  };
+})();
+</script>
+'''
+                if '</body>' in content:
+                    content = content.replace('</body>', override_script + '</body>', 1)
 
             # ── PWA Script ──
             if 'serviceWorker' not in content and '</body>' in content and fname not in SKIP_FOOTER:
