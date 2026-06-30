@@ -92,6 +92,17 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="PACDI">
+    <script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('beta') === 'pacdi2026') {
+    try { sessionStorage.setItem('betaUnlock', '1'); } catch(e) {}
+  }
+  window.isBetaUnlocked = function() {
+    try { return sessionStorage.getItem('betaUnlock') === '1'; } catch(e) { return false; }
+  };
+})();
+</script>
 </head>
 <body>
 <!--

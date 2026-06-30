@@ -35,6 +35,17 @@
     <meta name="apple-mobile-web-app-title" content="PACDI">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
+    <script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('beta') === 'pacdi2026') {
+    try { sessionStorage.setItem('betaUnlock', '1'); } catch(e) {}
+  }
+  window.isBetaUnlocked = function() {
+    try { return sessionStorage.getItem('betaUnlock') === '1'; } catch(e) { return false; }
+  };
+})();
+</script>
 </head>
 <body>
 <!--
