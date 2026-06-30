@@ -31,6 +31,17 @@
     .header-user span { color: var(--muted); font-size: 0.72rem; }
     .btn-sm { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 5px 14px; border-radius: 20px; font-size: 0.72rem; cursor: pointer; font-family: inherit; transition: 0.2s; white-space: nowrap; }
     .btn-sm:hover { background: rgba(246,180,95,0.1); }
+
+    /* Giriş butonu düzeltmesi */
+    #userPanel .btn-sm {
+      background: transparent !important;
+      color: var(--gold) !important;
+      border: 1px solid var(--gold) !important;
+    }
+    #userPanel .btn-sm:hover {
+      background: rgba(246,180,95,0.1) !important;
+    }
+
     main { max-width: 1200px; margin: 0 auto; padding: 32px 24px 64px; }
     .hero { background: linear-gradient(135deg, rgba(246,180,95,0.07) 0%, transparent 60%); border: 1px solid var(--border); border-radius: var(--radius); padding: 36px 40px; margin-bottom: 36px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
     .hero h1 { font-size: 2rem; font-weight: 800; color: var(--gold); margin-bottom: 8px; line-height: 1.2; }
@@ -77,10 +88,10 @@
     }
     @media (max-width: 420px) { .tools-grid { grid-template-columns: 1fr; } }
   </style>
-    <link rel="manifest" href="/manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PACDI">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PACDI">
 </head>
 <body>
 <!--
@@ -155,7 +166,7 @@ pacdi.eu · pacdi.de · info@pacdi.eu
     <a href="/pruefprotokoll.html" class="tool-card featured">
       <div class="card-badge" id="cb-new">YENİ</div>
       <div class="tool-icon">⚡</div>
-      <div class="tool-name">DGUV Prüfprotokoll</div>
+      <div class="tool-name" id="t2-name">DGUV Prüfprotokoll</div>
       <div class="tool-desc" id="t2-desc">BGV A3 / DGUV Vorschrift 3 uyumlu elektro muayene protokolü. PDF export, imza, renk kodlu sonuçlar.</div>
       <div class="tool-meta">
         <span class="tag tag-free">3 Protokol Ücretsiz</span>
@@ -197,7 +208,7 @@ pacdi.eu · pacdi.de · info@pacdi.eu
 
 <footer>
   <span>© 2026 PACDI Global · pacdi.store</span>
-  <a href="/legal.html">Impressum & Datenschutz</a>
+  <a href="/legal.html" id="footer-legal">Impressum & Datenschutz</a>
   <a href="https://pacdi.de" target="_blank">pacdi.de</a>
 </footer>
 
@@ -206,40 +217,88 @@ pacdi.eu · pacdi.de · info@pacdi.eu
 (function() {
   var i18n = {
     tr: {
-      heroTitle: "Dijital Araçlar", heroSub: "QR kod, bağlantı kısaltıcı, güçlü şifre üretici ve profesyonel Prüfprotokoll — hepsi burada, ücretsiz.",
-      heroNew: "⚡ Yeni: DGUV Prüfprotokoll", fsTitle: "DGUV V3 Prüfprotokoll",
+      heroTitle: "Dijital Araçlar",
+      heroSub: "QR kod, bağlantı kısaltıcı, güçlü şifre üretici ve profesyonel Prüfprotokoll — hepsi burada, ücretsiz.",
+      heroNew: "⚡ Yeni: DGUV Prüfprotokoll",
+      fsTitle: "DGUV V3 Prüfprotokoll",
       fsDesc: "Elektrikli cihazları kayıt altına al, ölçüm değerlerini gir, PDF olarak dışa aktar. Rakipler 80€+ alırken biz 15€'dan başlıyoruz.",
-      fsBtn: "Hemen dene →", fsHint: "✔ Ücretsiz · PDF çıktı · Mobil uyumlu", toolsLabel: "ARAÇLAR",
-      t1: "QR Kod Oluşturucu", t1d: "URL, vCard, WiFi ve sosyal medya için anında QR kod üret. PNG, JPG veya SVG olarak indir.",
-      t3: "QR Tarayıcı", t3d: "Kamera veya görsel yükleyerek QR kodları ve barkodları anında okut.",
-      t4: "Bağlantı Kısaltıcı", t4d: "Uzun URL'leri kısa ve paylaşılabilir bağlantılara dönüştür.",
-      t5: "Şifre Üretici", t5d: "Güvenli, özelleştirilebilir şifreler üret.",
-      cbNew: "YENİ", t2d: "BGV A3 / DGUV Vorschrift 3 uyumlu elektro muayene protokolü. PDF export, imza, renk kodlu sonuçlar.",
-      nav_qr: "QR", nav_scanner: "Tarayıcı", nav_shortener: "Kısaltıcı", nav_password: "Şifre", nav_pruef: "Prüfprotokoll", nav_blog: "Blog"
+      fsBtn: "Hemen dene →",
+      fsHint: "✔ Ücretsiz · PDF çıktı · Mobil uyumlu",
+      toolsLabel: "ARAÇLAR",
+      t1: "QR Kod Oluşturucu",
+      t1d: "URL, vCard, WiFi ve sosyal medya için anında QR kod üret. PNG, JPG veya SVG olarak indir.",
+      t2Name: "DGUV Prüfprotokoll",
+      t2d: "BGV A3 / DGUV Vorschrift 3 uyumlu elektro muayene protokolü. PDF export, imza, renk kodlu sonuçlar.",
+      t3: "QR Tarayıcı",
+      t3d: "Kamera veya görsel yükleyerek QR kodları ve barkodları anında okut.",
+      t4: "Bağlantı Kısaltıcı",
+      t4d: "Uzun URL'leri kısa ve paylaşılabilir bağlantılara dönüştür.",
+      t5: "Şifre Üretici",
+      t5d: "Güvenli, özelleştirilebilir şifreler üret.",
+      cbNew: "YENİ",
+      nav_qr: "QR",
+      nav_scanner: "Tarayıcı",
+      nav_shortener: "Kısaltıcı",
+      nav_password: "Şifre",
+      nav_pruef: "Prüfprotokoll",
+      nav_blog: "Blog",
+      footerLegal: "Yasal & Gizlilik"
     },
     de: {
-      heroTitle: "Digitale Werkzeuge", heroSub: "QR-Code-Generator, Link-Shortener, Passwort-Generator und professionelles Prüfprotokoll — alles kostenlos.",
-      heroNew: "⚡ Neu: DGUV Prüfprotokoll", fsTitle: "DGUV V3 Prüfprotokoll",
+      heroTitle: "Digitale Werkzeuge",
+      heroSub: "QR-Code-Generator, Link-Shortener, Passwort-Generator und professionelles Prüfprotokoll — alles kostenlos.",
+      heroNew: "⚡ Neu: DGUV Prüfprotokoll",
+      fsTitle: "DGUV V3 Prüfprotokoll",
       fsDesc: "Elektrische Betriebsmittel prüfen, dokumentieren und als PDF exportieren. Kostenlos testen — kein Login, keine Installation. Ab 15 € statt 80 €+ bei Mitbewerbern.",
-      fsBtn: "Jetzt testen →", fsHint: "✔ Kostenlos · PDF-Export · Mobilfreundlich", toolsLabel: "WERKZEUGE",
-      t1: "QR-Code-Generator", t1d: "Erstelle sofort QR-Codes für URL, vCard, WLAN und Social Media. Als PNG, JPG oder SVG herunterladen.",
-      t3: "QR-Scanner", t3d: "QR-Codes und Barcodes per Kamera oder Bilddatei scannen.",
-      t4: "Link-Shortener", t4d: "Lange URLs in kurze, teilbare Links umwandeln.",
-      t5: "Passwort-Generator", t5d: "Sichere, anpassbare Passwörter generieren.",
-      cbNew: "NEU", t2d: "BGV A3 / DGUV Vorschrift 3 konformes Prüfprotokoll. PDF-Export, Unterschriftenfeld, farbkodierte Ergebnisse.",
-      nav_qr: "QR", nav_scanner: "Scanner", nav_shortener: "Kürzer", nav_password: "Passwort", nav_pruef: "Prüfprotokoll", nav_blog: "Blog"
+      fsBtn: "Jetzt testen →",
+      fsHint: "✔ Kostenlos · PDF-Export · Mobilfreundlich",
+      toolsLabel: "WERKZEUGE",
+      t1: "QR-Code-Generator",
+      t1d: "Erstelle sofort QR-Codes für URL, vCard, WLAN und Social Media. Als PNG, JPG oder SVG herunterladen.",
+      t2Name: "DGUV Prüfprotokoll",
+      t2d: "BGV A3 / DGUV Vorschrift 3 konformes Prüfprotokoll. PDF-Export, Unterschriftenfeld, farbkodierte Ergebnisse.",
+      t3: "QR-Scanner",
+      t3d: "QR-Codes und Barcodes per Kamera oder Bilddatei scannen.",
+      t4: "Link-Shortener",
+      t4d: "Lange URLs in kurze, teilbare Links umwandeln.",
+      t5: "Passwort-Generator",
+      t5d: "Sichere, anpassbare Passwörter generieren.",
+      cbNew: "NEU",
+      nav_qr: "QR",
+      nav_scanner: "Scanner",
+      nav_shortener: "Kürzer",
+      nav_password: "Passwort",
+      nav_pruef: "Prüfprotokoll",
+      nav_blog: "Blog",
+      footerLegal: "Impressum & Datenschutz"
     },
     en: {
-      heroTitle: "Digital Tools", heroSub: "QR code generator, link shortener, password generator and professional inspection protocol — all free.",
-      heroNew: "⚡ New: DGUV Inspection Protocol", fsTitle: "DGUV V3 Inspection Protocol",
+      heroTitle: "Digital Tools",
+      heroSub: "QR code generator, link shortener, password generator and professional inspection protocol — all free.",
+      heroNew: "⚡ New: DGUV Inspection Protocol",
+      fsTitle: "DGUV V3 Inspection Protocol",
       fsDesc: "Test and document electrical equipment, export as PDF. Free to try — no login, no installation. From €15 vs. competitors charging €80+.",
-      fsBtn: "Try now →", fsHint: "✔ Free · PDF export · Mobile friendly", toolsLabel: "TOOLS",
-      t1: "QR Code Generator", t1d: "Generate QR codes for URL, vCard, WiFi and social media. Download as PNG, JPG or SVG.",
-      t3: "QR Scanner", t3d: "Scan QR codes and barcodes via camera or image upload.",
-      t4: "Link Shortener", t4d: "Convert long URLs into short, shareable links.",
-      t5: "Password Generator", t5d: "Generate secure, customizable passwords.",
-      cbNew: "NEW", t2d: "BGV A3 / DGUV Vorschrift 3 compliant inspection protocol. PDF export, signature field, color-coded results.",
-      nav_qr: "QR", nav_scanner: "Scanner", nav_shortener: "Shortener", nav_password: "Password", nav_pruef: "Prüfprotokoll", nav_blog: "Blog"
+      fsBtn: "Try now →",
+      fsHint: "✔ Free · PDF export · Mobile friendly",
+      toolsLabel: "TOOLS",
+      t1: "QR Code Generator",
+      t1d: "Generate QR codes for URL, vCard, WiFi and social media. Download as PNG, JPG or SVG.",
+      t2Name: "DGUV Inspection Protocol",
+      t2d: "BGV A3 / DGUV Vorschrift 3 compliant inspection protocol. PDF export, signature field, color-coded results.",
+      t3: "QR Scanner",
+      t3d: "Scan QR codes and barcodes via camera or image upload.",
+      t4: "Link Shortener",
+      t4d: "Convert long URLs into short, shareable links.",
+      t5: "Password Generator",
+      t5d: "Generate secure, customizable passwords.",
+      cbNew: "NEW",
+      nav_qr: "QR",
+      nav_scanner: "Scanner",
+      nav_shortener: "Shortener",
+      nav_password: "Password",
+      nav_pruef: "Inspection",
+      nav_blog: "Blog",
+      footerLegal: "Legal & Privacy"
     }
   };
 
@@ -255,6 +314,7 @@ pacdi.eu · pacdi.de · info@pacdi.eu
     document.getElementById('tools-label').textContent = d.toolsLabel;
     document.getElementById('t1-name').textContent = d.t1;
     document.getElementById('t1-desc').textContent = d.t1d;
+    document.getElementById('t2-name').textContent = d.t2Name;
     document.getElementById('t2-desc').textContent = d.t2d;
     document.getElementById('t3-name').textContent = d.t3;
     document.getElementById('t3-desc').textContent = d.t3d;
@@ -270,6 +330,7 @@ pacdi.eu · pacdi.de · info@pacdi.eu
     document.getElementById('nav-password').textContent = '🔐 ' + d.nav_password;
     document.getElementById('nav-pruef').textContent = '⚡ ' + d.nav_pruef;
     document.getElementById('nav-blog').textContent = '📚 ' + d.nav_blog;
+    document.getElementById('footer-legal').textContent = d.footerLegal;
 
     document.querySelectorAll('.lang-btn').forEach(function(b) {
       b.classList.toggle('active', b.textContent === lang.toUpperCase());
@@ -280,7 +341,6 @@ pacdi.eu · pacdi.de · info@pacdi.eu
 
   window.setLanguage = function(lang) { applyLang(lang); };
 
-  /* inject.py'nin head'e yazdığı autoLang değerini önceliklendir; yoksa kendi navigator.language mantığını kullan */
   var detected = null;
   try { detected = sessionStorage.getItem('autoLang'); } catch(e) {}
   if (!detected) {
@@ -360,6 +420,5 @@ pacdi.eu · pacdi.de · info@pacdi.eu
   };
 })();
 </script>
-
 </body>
 </html>
