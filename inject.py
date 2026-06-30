@@ -32,6 +32,17 @@ PWA_HEAD = """    <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-title" content="PACDI">
 """
 
+LANG_DETECT_SCRIPT = """<script>
+(function(){
+  if (sessionStorage.getItem('autoLang')) return;
+  var bl = (navigator.language || navigator.userLanguage || 'en').substring(0,2).toLowerCase();
+  var supported = ['tr','de','en'];
+  var lang = supported.indexOf(bl) > -1 ? bl : 'en';
+  sessionStorage.setItem('autoLang', lang);
+})();
+</script>
+"""
+
 PWA_SCRIPT = """<script>
 (function() {
   if ('serviceWorker' in navigator) {
@@ -284,6 +295,8 @@ for root, dirs, files in os.walk('.'):
                 insert += '    <link rel="canonical" href="' + url + '" />\n'
             if 'manifest.json' not in content and fname not in SKIP:
                 insert += PWA_HEAD
+            if 'autoLang' not in content and fname not in SKIP:
+                insert += '    ' + LANG_DETECT_SCRIPT
             if insert:
                 content = content.replace('</head>', insert + '</head>', 1)
 
