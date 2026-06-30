@@ -348,6 +348,11 @@ pacdi.eu · pacdi.de · info@pacdi.eu
     });
     document.documentElement.lang = lang;
     try { sessionStorage.setItem('autoLang', lang); } catch(e) {}
+
+    // common.js'in userPanel'ini (Giriş Yap/Misafir vb.) yeni dile göre tamamen yeniden kur
+    if (typeof window.initCommon === 'function') {
+      window.initCommon();
+    }
   }
 
   window.setLanguage = function(lang) { applyLang(lang); };
