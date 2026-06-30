@@ -23,7 +23,7 @@
         }
         .container { max-width: 1400px; width: 100%; margin: 0 auto; padding: 16px; box-sizing: border-box; }
 
-        /* ––– HERO BANNER (NEU) ––– */
+        /* ––– HERO BANNER ––– */
         .hero {
             background: linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(10,22,40,0) 60%);
             border: 1px solid rgba(212,175,55,0.25);
@@ -86,7 +86,7 @@
             text-align: right;
         }
 
-        /* ––– PRICING BOX (NEU) ––– */
+        /* ––– PRICING BOX ––– */
         .pricing-strip {
             display: flex;
             gap: 14px;
@@ -147,7 +147,7 @@
         }
         .pricing-card .btn-upgrade:hover { background: #E8CC6A; }
 
-        /* ––– PDF PAYWALL MODAL (NEU) ––– */
+        /* ––– PDF PAYWALL MODAL ––– */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -229,7 +229,7 @@
             text-decoration: underline;
         }
 
-        /* ––– PDF SUCCESS BANNER (NEU) ––– */
+        /* ––– PDF SUCCESS BANNER ––– */
         .pdf-success-banner {
             display: none;
             background: rgba(52,211,153,0.10);
@@ -475,11 +475,11 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
     <link rel="canonical" href="https://pacdi.store/pruefprotokoll.html" />
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="PACDI">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
         .lang-bar { display: flex; gap: 4px; }
         .lang-btn { background: transparent; border: 1px solid rgba(246,180,95,0.2); color: #7a9ab8; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; cursor: pointer; text-transform: uppercase; transition: 0.2s; font-family: inherit; }
@@ -502,7 +502,6 @@
 ║  pacdi.eu · pacdi.de · info@pacdi.eu                         ║
 ╠═══════════════════════════════════════════════════════════════╣
 -->
-
 
 <!-- PDF PAYWALL MODAL -->
 <div class="modal-overlay" id="paywallModal">
@@ -635,7 +634,6 @@
     </div>
 
     <!-- HEADER / FORMULAR -->
-    <!-- Kullanım Rehberi -->
     <div style="max-width:1200px;margin:16px auto 0;padding:0 16px;">
         <div style="background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.2);border-left:4px solid #34D399;border-radius:10px;padding:14px 18px;font-size:0.82rem;color:#b0b5bf;line-height:1.8;">
             <strong style="color:#34D399;display:block;margin-bottom:6px;" id="qr-workflow-title">&#128247; QR-Scanner Workflow</strong>
@@ -861,7 +859,7 @@
                 var uid = 'PACDI-' + standort.substring(0,6).replace(/[^a-zA-Z0-9]/g,'').toUpperCase() + '-' + String(rowNr).padStart(3,'0') + '-' + Date.now().toString(36).toUpperCase();
                 var qrData = JSON.stringify({ id: uid, name: inventar, ts: new Date().toISOString().split('T')[0] });
                 generateAndDownloadQR(uid, inventar, qrData);
-                // Save to inventory
+                // Save to inventory (sadece meta bilgi, QR PNG'sini kaydetme)
                 var inv = JSON.parse(localStorage.getItem('pacdi_inventory') || '[]');
                 var existing = inv.findIndex(function(x){ return x.rowNr == rowNr; });
                 var entry = { uid: uid, rowNr: rowNr, name: inventar, ts: new Date().toISOString() };
@@ -1007,20 +1005,24 @@
 
         // ––– FREEMIUM PDF LOGIC –––
         function handlePDF() {
+            // 🧪 TEST MODU: ?beta=pacdi2026 ile sınırsız PDF
+            var params = new URLSearchParams(window.location.search);
+            if (params.get('beta') === 'pacdi2026') {
+                generatePDF();
+                return;
+            }
+
             var used = localStorage.getItem('pdf_export_used');
             if (!used) {
-                // Erster Export: kostenlos
                 generatePDF();
                 localStorage.setItem('pdf_export_used', 'true');
             } else {
-                // Paywall anzeigen
                 document.getElementById('paywallModal').classList.add('active');
             }
         }
 
         function closePaywall() {
             document.getElementById('paywallModal').classList.remove('active');
-            // Modal state reset
             setTimeout(function() {
                 showModalState('info');
             }, 300);
@@ -1045,7 +1047,6 @@
             var msg = document.getElementById('earlyAccessMsg');
             var email = emailInput.value.trim();
 
-            // Validierung
             if (!email || email.indexOf('@') < 1 || email.indexOf('.') < 2) {
                 msg.style.color = '#F87171';
                 msg.textContent = '⚠ Bitte gültige E-Mail eingeben';
@@ -1055,8 +1056,6 @@
             msg.style.color = '#D4AF37';
             msg.textContent = '⏳ Wird gespeichert...';
 
-            // EmailJS senden
-            // !! SETUP: emailjs.com → kostenlos anmelden → Service + Template ID eintragen
             var EMAILJS_PUBLIC_KEY  = '9d7pOeBuMINaOmg_R';
             var EMAILJS_SERVICE_ID  = 'service_u8ta604';
             var EMAILJS_TEMPLATE_ID = 'template_pdzdt6h';
@@ -1069,13 +1068,11 @@
                 message: 'Neuer Early Access Lead: ' + email,
                 reply_to: email
             }).then(function() {
-                // Lokal speichern (Backup)
                 var leads = JSON.parse(localStorage.getItem('early_access_leads') || '[]');
                 leads.push({ email: email, ts: new Date().toISOString() });
                 localStorage.setItem('early_access_leads', JSON.stringify(leads));
                 showModalState('success');
             }, function(error) {
-                // Fallback: nur lokal speichern
                 var leads = JSON.parse(localStorage.getItem('early_access_leads') || '[]');
                 leads.push({ email: email, ts: new Date().toISOString() });
                 localStorage.setItem('early_access_leads', JSON.stringify(leads));
@@ -1185,7 +1182,6 @@
 
             doc.save('DGUV_Pruefprotokoll.pdf');
 
-            // Erfolgs-Banner anzeigen
             document.getElementById('pdfSuccessBanner').classList.add('active');
         }
 
@@ -1194,7 +1190,6 @@
         }
 
         function generateAndDownloadQR(uid, name, qrData) {
-            // Gizli div oluştur
             var hiddenDiv = document.createElement('div');
             hiddenDiv.style.cssText = 'position:fixed;left:-9999px;top:0;width:200px;height:200px;';
             document.body.appendChild(hiddenDiv);
@@ -1212,7 +1207,6 @@
                 var srcCanvas = hiddenDiv.querySelector('canvas');
                 if (!srcCanvas) { document.body.removeChild(hiddenDiv); alert(ppT('alert_qr_error','QR Fehler')); return; }
 
-                // Label ekle
                 var finalCanvas = document.createElement('canvas');
                 finalCanvas.width = 300;
                 finalCanvas.height = 360;
@@ -1221,7 +1215,6 @@
                 ctx.fillRect(0, 0, 300, 360);
                 ctx.drawImage(srcCanvas, 0, 0, 300, 300);
 
-                // Cihaz adı
                 ctx.fillStyle = '#000000';
                 ctx.font = 'bold 14px Arial';
                 ctx.textAlign = 'center';
@@ -1233,20 +1226,18 @@
 
                 var pngBase64 = finalCanvas.toDataURL('image/png', 1.0);
 
-                // Envantere base64 kaydet
+                // Sadece meta bilgi kaydet (QR PNG'sini kaydetme)
                 var inv = JSON.parse(localStorage.getItem('pacdi_inventory') || '[]');
                 var existIdx = inv.findIndex(function(x){ return x.uid === uid; });
-                var entry = { uid: uid, name: name, qrPng: pngBase64, ts: new Date().toISOString() };
+                var entry = { uid: uid, name: name, ts: new Date().toISOString() };
                 if (existIdx >= 0) inv[existIdx] = entry; else inv.push(entry);
                 localStorage.setItem('pacdi_inventory', JSON.stringify(inv));
 
-                // Bilgi mesajı
                 var msg = document.createElement('div');
                 msg.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#34D399;color:#04162E;padding:12px 24px;border-radius:12px;font-weight:700;font-size:0.85rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.3);';
                 msg.innerHTML = '&#10003; QR gespeichert: ' + name.substring(0,25) + '<br><span style="font-weight:400;font-size:0.75rem;">Im Inventar verfügbar · optional herunterladen</span>';
                 document.body.appendChild(msg);
 
-                // Optionaler Download
                 var dlBtn = document.createElement('button');
                 dlBtn.textContent = '⬇ PNG herunterladen';
                 dlBtn.style.cssText = 'display:block;margin:6px auto 0;background:rgba(0,0,0,0.2);border:1px solid rgba(0,0,0,0.3);color:#04162E;padding:4px 12px;border-radius:8px;cursor:pointer;font-size:0.72rem;font-family:inherit;';
@@ -1277,7 +1268,6 @@
         window.submitEarlyAccess = submitEarlyAccess;
         window.scrollToForm = scrollToForm;
 
-        // Init: Beispieldaten laden falls kein localStorage
         function init() {
             var raw = localStorage.getItem('dguv_protokoll');
             if (raw) {
@@ -1286,7 +1276,6 @@
                     if (data.rows && data.rows.length > 0) { loadFromLocalStorage(); return; }
                 } catch(e) {}
             }
-            // Auto-Fill Beispiel-Zeilen
             for (var i = 0; i < 3; i++) {
                 var tr = createRow(nextId++, i);
                 tableBody.appendChild(tr);
@@ -1336,7 +1325,9 @@
       nav_blog: 'Blog',
       nav_pruef: 'Prüfprotokoll',
       nav_scanner: 'Tarayıcı',
-      nav_envanter: 'Envanter'
+      nav_envanter: 'Envanter',
+      nav_shortener: 'Kısaltıcı',
+      nav_password: 'Şifre'
     },
     de: {
       modal_title_1: 'Ihr Prüfprotokoll ist fertig',
@@ -1365,7 +1356,9 @@
       nav_blog: 'Blog',
       nav_pruef: 'Prüfprotokoll',
       nav_scanner: 'Scanner',
-      nav_envanter: 'Inventar'
+      nav_envanter: 'Inventar',
+      nav_shortener: 'Kürzer',
+      nav_password: 'Passwort'
     },
     en: {
       modal_title_1: 'Your inspection protocol is ready',
@@ -1394,7 +1387,9 @@
       nav_blog: 'Blog',
       nav_pruef: 'Inspection',
       nav_scanner: 'Scanner',
-      nav_envanter: 'Inventory'
+      nav_envanter: 'Inventory',
+      nav_shortener: 'Shortener',
+      nav_password: 'Password'
     }
   };
 
@@ -1729,7 +1724,6 @@
     if (el = document.getElementById('footer-made')) el.textContent = t.footer_made;
     if (el = document.getElementById('footer-legal')) el.innerHTML = t.footer_legal;
 
-    // Mevcut satırlardaki placeholder ve interval label'larını güncelle
     document.querySelectorAll('.inventar').forEach(function(inp) { inp.placeholder = t.placeholder_inventar; });
     document.querySelectorAll('.bemerkung').forEach(function(inp) { inp.placeholder = t.placeholder_bemerkung; });
     document.querySelectorAll('.pruefintervall').forEach(function(sel) {
@@ -1741,14 +1735,12 @@
       sel.value = currentVal;
     });
 
-    // Cihaz sayacı (rowCounter zaten sayıyla başlıyor, sadece sonek değişir)
     var rc = document.getElementById('rowCounter');
     if (rc) {
       var num = (rc.textContent.match(/\d+/) || ['0'])[0];
       rc.textContent = num + ' ' + t.row_counter_suffix;
     }
   };
-
 
   function buildPPNav(lang) {
     var nav = document.getElementById('mainNav');
@@ -1757,10 +1749,11 @@
     var items = [
       ['/index.html', '🏠', t.nav_store, false],
       ['/qr.html', '🔳', t.nav_qr, false],
-      ['/blog/', '📚', t.nav_blog, false],
-      ['/pruefprotokoll.html', '⚡', t.nav_pruef, true],
       ['/scanner.html', '📷', t.nav_scanner, false],
-      ['/envanter.html', '📦', t.nav_envanter, false]
+      ['/shortener.html', '🔗', t.nav_shortener, false],
+      ['/password.html', '🔐', t.nav_password, false],
+      ['/blog/', '📚', t.nav_blog, false],
+      ['/pruefprotokoll.html', '⚡', t.nav_pruef, true]
     ];
     var html = '';
     for (var i = 0; i < items.length; i++) {
@@ -1812,9 +1805,7 @@
     document.documentElement.lang = lang;
     try { sessionStorage.setItem('autoLang', lang); } catch(e) {}
 
-    // Parça 2/3 i18n fonksiyonları varsa onları da tetikle (ileride eklenecek)
     if (typeof window.applyPPFormLang === 'function') window.applyPPFormLang(lang);
-    if (typeof window.applyPPPdfLang === 'function') window.applyPPPdfLang(lang);
   };
 
   var defaultLang = null;
