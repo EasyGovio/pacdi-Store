@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="PACDI Store — QR Kod, Bağlantı Kısaltıcı, Şifre Üretici ve DGUV Prüfprotokoll araçları. Ücretsiz ve Pro.">
+  <meta name="description" content="PACDI Store — QR Kod, Bağlantı Kısaltıcı, Şifre Üretici, Zeiterfassung, Quittung Generator ve DGUV Prüfprotokoll araçları. Ücretsiz ve Pro.">
   <title>PACDI Store | Dijital Araçlar</title>
   <link rel="canonical" href="https://pacdi.store/" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script>
@@ -32,7 +32,6 @@
     .btn-sm { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 5px 14px; border-radius: 20px; font-size: 0.72rem; cursor: pointer; font-family: inherit; transition: 0.2s; white-space: nowrap; }
     .btn-sm:hover { background: rgba(246,180,95,0.1); }
 
-    /* Giriş butonu düzeltmesi */
     #userPanel .btn-sm {
       background: transparent !important;
       color: var(--gold) !important;
@@ -128,9 +127,12 @@ pacdi.eu · pacdi.de · info@pacdi.eu
     <nav id="mainNav">
       <a href="/qr.html" id="nav-qr">🔳 QR</a>
       <a href="/scanner.html" id="nav-scanner">📷 Tarayıcı</a>
+      <a href="/zeiterfassung.html" id="nav-zeit">⏱️ Zeiterfassung</a>
+      <a href="/quittung.html" id="nav-quittung">🧾 Quittung</a>
       <a href="/shortener.html" id="nav-shortener">🔗 Kısaltıcı</a>
       <a href="/password.html" id="nav-password">🔐 Şifre</a>
       <a href="/pruefprotokoll.html" id="nav-pruef">⚡ Prüfprotokoll</a>
+      <a href="/backup.html" id="nav-backup">☁️ Backup</a>
       <a href="/blog/" id="nav-blog">📚 Blog</a>
     </nav>
   </div>
@@ -182,6 +184,26 @@ pacdi.eu · pacdi.de · info@pacdi.eu
       <div class="tool-meta">
         <span class="tag tag-free">3 Protokol Ücretsiz</span>
         <span class="tag tag-pro">Pro: Sınırsız</span>
+      </div>
+    </a>
+
+    <a href="/zeiterfassung.html" class="tool-card">
+      <div class="tool-icon">⏱️</div>
+      <div class="tool-name" id="t6-name">Zeiterfassung</div>
+      <div class="tool-desc" id="t6-desc">Çalışma saatlerini kategori bazlı kaydet, ay sonunda profesyonel Excel raporu olarak indir. Şifre korumalı, tamamen yerel.</div>
+      <div class="tool-meta">
+        <span class="tag tag-free">Ücretsiz</span>
+      </div>
+    </a>
+
+    <a href="/quittung.html" class="tool-card">
+      <div class="card-badge" id="cb-new2">YENİ</div>
+      <div class="tool-icon">🧾</div>
+      <div class="tool-name" id="t7-name">Quittung Generator</div>
+      <div class="tool-desc" id="t7-desc">§ 33 UStDV uyumlu makbuz oluştur — sıra numaralı, PDF çıktılı, GoBD destekli. Honorardozent, Handwerker, Nachhilfe için hazır şablonlar.</div>
+      <div class="tool-meta">
+        <span class="tag tag-free">İlk Ay Sınırsız</span>
+        <span class="tag tag-pro">Pro: Aylık Sınırsız</span>
       </div>
     </a>
 
@@ -246,13 +268,20 @@ pacdi.eu · pacdi.de · info@pacdi.eu
       t4d: "Uzun URL'leri kısa ve paylaşılabilir bağlantılara dönüştür.",
       t5: "Şifre Üretici",
       t5d: "Güvenli, özelleştirilebilir şifreler üret.",
+      t6: "Zeiterfassung",
+      t6d: "Çalışma saatlerini kategori bazlı kaydet, ay sonunda profesyonel Excel raporu olarak indir. Şifre korumalı, tamamen yerel.",
+      t7: "Quittung Generator",
+      t7d: "§ 33 UStDV uyumlu makbuz oluştur — sıra numaralı, PDF çıktılı, GoBD destekli. Honorardozent, Handwerker, Nachhilfe için hazır şablonlar.",
       cbNew: "YENİ",
       nav_qr: "QR",
       nav_scanner: "Tarayıcı",
+      nav_zeit: "Zeiterfassung",
+      nav_quittung: "Quittung",
       nav_shortener: "Kısaltıcı",
       nav_password: "Şifre",
       nav_pruef: "Prüfprotokoll",
       nav_blog: "Blog",
+      nav_backup: "Yedekle",
       footerLegal: "Yasal & Gizlilik"
     },
     de: {
@@ -274,13 +303,20 @@ pacdi.eu · pacdi.de · info@pacdi.eu
       t4d: "Lange URLs in kurze, teilbare Links umwandeln.",
       t5: "Passwort-Generator",
       t5d: "Sichere, anpassbare Passwörter generieren.",
+      t6: "Zeiterfassung",
+      t6d: "Arbeitszeiten kategoriebasiert erfassen, am Monatsende als professionellen Excel-Bericht exportieren. Passwortgeschützt, vollständig lokal.",
+      t7: "Quittung Generator",
+      t7d: "Kleinbetragsrechnung nach § 33 UStDV erstellen — fortlaufende Belegnummer, PDF-Export, GoBD-konforme Hinweise. Fertige Vorlagen für Honorardozent, Handwerker, Nachhilfe.",
       cbNew: "NEU",
       nav_qr: "QR",
       nav_scanner: "Scanner",
+      nav_zeit: "Zeiterfassung",
+      nav_quittung: "Quittung",
       nav_shortener: "Kürzer",
       nav_password: "Passwort",
       nav_pruef: "Prüfprotokoll",
       nav_blog: "Blog",
+      nav_backup: "Backup",
       footerLegal: "Impressum & Datenschutz"
     },
     en: {
@@ -302,13 +338,20 @@ pacdi.eu · pacdi.de · info@pacdi.eu
       t4d: "Convert long URLs into short, shareable links.",
       t5: "Password Generator",
       t5d: "Generate secure, customizable passwords.",
+      t6: "Time Tracking",
+      t6d: "Track work hours by category, export a professional Excel report at month end. Password-protected, fully local.",
+      t7: "Receipt Generator",
+      t7d: "Create § 33 UStDV compliant receipts — sequential numbering, PDF export, GoBD-aware notices. Ready-made templates for tutors, tradespeople, and freelancers.",
       cbNew: "NEW",
       nav_qr: "QR",
       nav_scanner: "Scanner",
+      nav_zeit: "Time Tracking",
+      nav_quittung: "Receipts",
       nav_shortener: "Shortener",
       nav_password: "Password",
       nav_pruef: "Inspection",
       nav_blog: "Blog",
+      nav_backup: "Backup",
       footerLegal: "Legal & Privacy"
     }
   };
@@ -333,13 +376,21 @@ pacdi.eu · pacdi.de · info@pacdi.eu
     document.getElementById('t4-desc').textContent = d.t4d;
     document.getElementById('t5-name').textContent = d.t5;
     document.getElementById('t5-desc').textContent = d.t5d;
+    document.getElementById('t6-name').textContent = d.t6;
+    document.getElementById('t6-desc').textContent = d.t6d;
+    document.getElementById('t7-name').textContent = d.t7;
+    document.getElementById('t7-desc').textContent = d.t7d;
     document.getElementById('cb-new').textContent = d.cbNew;
+    document.getElementById('cb-new2').textContent = d.cbNew;
 
     document.getElementById('nav-qr').textContent = '🔳 ' + d.nav_qr;
     document.getElementById('nav-scanner').textContent = '📷 ' + d.nav_scanner;
+    document.getElementById('nav-zeit').textContent = '⏱️ ' + d.nav_zeit;
+    document.getElementById('nav-quittung').textContent = '🧾 ' + d.nav_quittung;
     document.getElementById('nav-shortener').textContent = '🔗 ' + d.nav_shortener;
     document.getElementById('nav-password').textContent = '🔐 ' + d.nav_password;
     document.getElementById('nav-pruef').textContent = '⚡ ' + d.nav_pruef;
+    document.getElementById('nav-backup').textContent = '☁️ ' + d.nav_backup;
     document.getElementById('nav-blog').textContent = '📚 ' + d.nav_blog;
     document.getElementById('footer-legal').textContent = d.footerLegal;
 
@@ -349,7 +400,6 @@ pacdi.eu · pacdi.de · info@pacdi.eu
     document.documentElement.lang = lang;
     try { sessionStorage.setItem('autoLang', lang); } catch(e) {}
 
-    // common.js'in userPanel'ini (Giriş Yap/Misafir vb.) yeni dile göre tamamen yeniden kur
     if (typeof window.initCommon === 'function') {
       window.initCommon();
     }
