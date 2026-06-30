@@ -108,7 +108,7 @@ PWA_SCRIPT = """<script>
 </script>
 """
 
-FSEK_FOOTER = """<div id="pacdi-fsek" style="clear:both;width:100%;display:block;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-sizing:border-box;">
+FSEK_FOOTER = """<div id="pacdi-fsek" style="clear:both;width:100%;flex-basis:100%;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-sizing:border-box;">
   <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.25);border-radius:24px;padding:8px 20px;margin-bottom:12px;flex-wrap:wrap;justify-content:center;">
     <span style="font-size:1rem;">\U0001f6e1\ufe0f</span>
     <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#D4AF37;text-transform:uppercase;">FSEK Registered \u00b7 PACDI Framework</span>
@@ -297,6 +297,34 @@ for root, dirs, files in os.walk('.'):
                 insert += PWA_HEAD
             if 'autoLang' not in content and fname not in SKIP:
                 insert += '    ' + LANG_DETECT_SCRIPT
+
+            # ── ÖZEL: index.html giriş butonu CSS düzeltmesi ──
+            if fname == 'index.html' and '#userPanel .btn-sm' not in content:
+                insert += '    <style>#userPanel .btn-sm { background: transparent !important; color: var(--gold) !important; border: 1px solid var(--gold) !important; } #userPanel .btn-sm:hover { background: rgba(246,180,95,0.1) !important; }</style>\n'
+
+            # ── ÖZEL: pruefprotokoll.html beta override ──
+            if fname == 'pruefprotokoll.html':
+                override_script = '''
+    <script>
+    (function() {
+      var origHandle = window.handlePDF;
+      if (origHandle) {
+        window.handlePDF = function() {
+          var params = new URLSearchParams(window.location.search);
+          if (params.get("beta") === "pacdi2026") {
+            if (typeof generatePDF === "function") generatePDF();
+            return;
+          }
+          origHandle();
+        };
+      }
+    })();
+    </script>
+    '''
+                if 'beta' not in content:
+                    # override'ı <body> sonuna ekle (PWA script'ten önce)
+                    insert += override_script
+
             if insert:
                 content = content.replace('</head>', insert + '</head>', 1)
 
@@ -311,7 +339,6 @@ for root, dirs, files in os.walk('.'):
 
             # ── FSEK footer eski versiyon güncelle ──
             if 'pacdi-fsek' in content:
-                # Eski tek satırlı versiyon → yeni iki şirketli versiyon
                 content = content.replace(
                     '<div style="font-size:0.78rem;color:#8A8F9A;margin-bottom:4px;">\u00a9 2026 PACDI Global Yaz\u0131l\u0131m Ltd. \u015eti.</div>\n  <div style="font-size:0.72rem;color:#6B7280;margin-bottom:10px;">Protected under FSEK Copyright Registration No: <a href="https://pacdi.eu" style="color:#D4AF37;text-decoration:none;">2026/18897</a></div>',
                     '<div style="font-size:0.78rem;color:#8A8F9A;margin-bottom:4px;">Operated by AskMeAI Teknoloji Ltd. \u015eti. (TR: 23837)</div>\n  <div style="font-size:0.72rem;color:#6B7280;margin-bottom:10px;">Intellectual property owned by \u00a9 2026 PACDI Global Yaz\u0131l\u0131m Ltd. \u015eti. &mdash; FSEK No: <a href="https://pacdi.eu/legal.html" style="color:#D4AF37;text-decoration:none;">2026/18897</a></div>'
@@ -331,26 +358,20 @@ for root, dirs, files in os.walk('.'):
                     'Ein Service von AskMeAI Teknoloji Ltd. \u015eti.'
                 )
 
-            # ── Body flex fix: mevcut FSEK yanlış yerdeyse düzelt ──
+            # ── Body flex fix ──
             import re as _re2
             if 'pacdi-fsek' in content:
                 body_flex2 = _re2.search(r'body\s*\{[^}]*display\s*:\s*flex', content)
                 if body_flex2 and 'flex-direction:column' not in content:
-                    # body'ye flex-direction:column ekle
                     content = _re2.sub(
                         r'(body\s*\{[^}]*)(display\s*:\s*flex)',
                         r'\1flex-direction:column;\2',
                         content, count=1
                     )
-
-            # ── Body flex fix: FSEK footer yan kaymasın ──
-            if 'pacdi-fsek' in content and 'display:flex' in content:
-                # Yeni versiyon
                 content = content.replace(
                     'id="pacdi-fsek" style="clear:both;width:100%;display:block;',
                     'id="pacdi-fsek" style="clear:both;width:100%;flex-basis:100%;display:block;'
                 )
-                # Eski versiyon — padding ile başlayan
                 import re
                 content = re.sub(
                     r'id="pacdi-fsek" style="([^"]*?)"',
@@ -362,11 +383,9 @@ for root, dirs, files in os.walk('.'):
 
             # ── FSEK visible footer ──
             if 'pacdi-fsek' not in content and '</body>' in content and fname not in SKIP_FOOTER:
-                # Body display:flex varsa son </div> öncesine ekle (layout fix)
                 import re as _re
                 body_flex = _re.search(r'body\s*\{[^}]*display\s*:\s*flex', content)
                 if body_flex:
-                    # Son </div> + </body> pattern'ı bul
                     last_div = content.rfind('</div>')
                     if last_div > 0:
                         content = content[:last_div] + FSEK_FOOTER + '\n' + content[last_div:]
