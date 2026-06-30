@@ -1,14 +1,10 @@
 // assets/common.js — PACDI Store
+// NOT: Dil (setLanguage) ve nav (buildMenu) mantığı buradan KALDIRILDI.
+// Her sayfa kendi i18n sistemini ve nav'ını kendi <script> bloğunda yönetiyor.
+// Bu dosya artık SADECE login/Pro/dashboard (userPanel) işlevlerinden sorumlu.
 
 const langData = {
   tr: {
-    title: "PACDI Store",
-    menu_home: "🏠 Ana Sayfa",
-    menu_scanner: "📷 Tarayıcı",
-    menu_shortener: "🔗 Kısa Link",
-    menu_password: "🔐 Şifre",
-    menu_pruef: "⚡ Prüfprotokoll",
-    menu_inventar: "📦 Inventar",
     login: "Giriş Yap", logout: "Çıkış", pro: "⭐ PRO",
     dashboard: "📊 QR'larım", guest: "Misafir", user: "👤 Kullanıcı",
     upgrade: "⬆ Yükselt", already_pro: "Zaten Pro üyesisiniz!",
@@ -19,13 +15,6 @@ const langData = {
     paddle_vendor: 12345, paddle_token: "YOUR_PADDLE_CLIENT_TOKEN", paddle_priceId: "pri_xxxxxxxxxxxxx"
   },
   de: {
-    title: "PACDI Store",
-    menu_home: "🏠 Startseite",
-    menu_scanner: "📷 Scanner",
-    menu_shortener: "🔗 Kurzlink",
-    menu_password: "🔐 Passwort",
-    menu_pruef: "⚡ Prüfprotokoll",
-    menu_inventar: "📦 Inventar",
     login: "Anmelden", logout: "Abmelden", pro: "⭐ PRO",
     dashboard: "📊 Meine QR-Codes", guest: "Gast", user: "👤 Benutzer",
     upgrade: "⬆ Upgrade", already_pro: "Sie sind bereits PRO-Mitglied!",
@@ -36,13 +25,6 @@ const langData = {
     paddle_vendor: 12345, paddle_token: "YOUR_PADDLE_CLIENT_TOKEN", paddle_priceId: "pri_xxxxxxxxxxxxx"
   },
   en: {
-    title: "PACDI Store",
-    menu_home: "🏠 Home",
-    menu_scanner: "📷 Scanner",
-    menu_shortener: "🔗 Short Link",
-    menu_password: "🔐 Password",
-    menu_pruef: "⚡ Protocol",
-    menu_inventar: "📦 Inventory",
     login: "Login", logout: "Logout", pro: "⭐ PRO",
     dashboard: "📊 My QR Codes", guest: "Guest", user: "👤 User",
     upgrade: "⬆ Upgrade", already_pro: "You are already a PRO member!",
@@ -54,20 +36,22 @@ const langData = {
   }
 };
 
-let currentLang = "tr";
 let userToken = localStorage.getItem('token') || null;
 let isPro = localStorage.getItem('isPro') === 'true';
 
-function setLanguage(lang) {
-  currentLang = lang;
-  localStorage.setItem('lang', lang);
-  updateUI();
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.lang === lang);
-  });
+// ── Aktif dili sayfanın kendi sisteminden oku (sessionStorage.autoLang) ──
+function getCommonLang() {
+  try {
+    var l = sessionStorage.getItem('autoLang');
+    if (l && langData[l]) return l;
+  } catch (e) {}
+  return 'de';
 }
-function getLang() { return currentLang; }
-function t(key) { return langData[currentLang][key] || key; }
+
+function t(key) {
+  var lang = getCommonLang();
+  return (langData[lang] && langData[lang][key]) || key;
+}
 
 function updateUI() {
   const userStatus = document.getElementById('userStatus');
@@ -97,15 +81,17 @@ function enableProFeatures(enable) {}
 
 function initPaddle() {
   if (typeof Paddle === 'undefined') return;
+  var lang = getCommonLang();
   Paddle.Environment.set('sandbox');
-  Paddle.Initialize({ vendor: langData[currentLang].paddle_vendor, token: langData[currentLang].paddle_token });
+  Paddle.Initialize({ vendor: langData[lang].paddle_vendor, token: langData[lang].paddle_token });
 }
 
 function openPaddleCheckout() {
   if (!userToken) { alert(t('need_login')); return; }
   if (typeof Paddle === 'undefined') { alert('Paddle yüklenemedi.'); return; }
+  var lang = getCommonLang();
   Paddle.Checkout.open({
-    items: [{ priceId: langData[currentLang].paddle_priceId, quantity: 1 }],
+    items: [{ priceId: langData[lang].paddle_priceId, quantity: 1 }],
     successUrl: 'https://pacdi.store/success',
     cancelUrl: 'https://pacdi.store/cancel',
     customerEmail: 'user@example.com',
@@ -128,20 +114,9 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// ── MENÜ — envanter.html eklendi ──
-function buildMenu() {
-  const nav = document.getElementById('mainNav');
-  if (!nav) return;
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  nav.innerHTML = `
-    <a href="/index.html" class="${currentPage === 'index.html' ? 'active' : ''}">${t('menu_home')}</a>
-    <a href="/scanner.html" class="${currentPage === 'scanner.html' ? 'active' : ''}">${t('menu_scanner')}</a>
-    <a href="/pruefprotokoll.html" class="${currentPage === 'pruefprotokoll.html' ? 'active' : ''}">${t('menu_pruef')}</a>
-    <a href="/envanter.html" class="${currentPage === 'envanter.html' ? 'active' : ''}">${t('menu_inventar')}</a>
-    <a href="/shortener.html" class="${currentPage === 'shortener.html' ? 'active' : ''}">${t('menu_shortener')}</a>
-    <a href="/password.html" class="${currentPage === 'password.html' ? 'active' : ''}">${t('menu_password')}</a>
-  `;
-}
+// NOT: buildMenu() KALDIRILDI.
+// Her sayfanın kendi inline script'i #mainNav'ı kendi i18n sistemiyle dolduruyor.
+// common.js artık nav'a hiç dokunmuyor — çakışma riski sıfırlandı.
 
 function loginUser() {
   const email = prompt(t('login_prompt_email')); if (!email) return;
@@ -192,17 +167,15 @@ window.deleteQR = function(id) {
 };
 
 function initCommon() {
-  const savedLang = localStorage.getItem('lang') || 'tr';
-  setLanguage(savedLang);
-  buildMenu();
+  // ── setLanguage(savedLang) ve buildMenu() ARTIK ÇAĞRILMIYOR ──
   const userPanel = document.getElementById('userPanel');
   if (userPanel) {
     userPanel.innerHTML = `
       <span id="userStatus">${t('guest')}</span>
-      <button id="loginBtn">${t('login')}</button>
-      <button id="logoutBtn" class="logout" style="display:none;">${t('logout')}</button>
-      <button id="proBtn" style="display:none;background:#F6B45F;color:#04162E;border:none;font-weight:bold;">${t('pro')}</button>
-      <button id="dashboardToggle" style="display:none;background:#0a1018;border:1px solid #3498DB;color:#3498DB;">${t('dashboard')}</button>
+      <button id="loginBtn" class="btn-sm">${t('login')}</button>
+      <button id="logoutBtn" class="btn-sm logout" style="display:none;">${t('logout')}</button>
+      <button id="proBtn" class="btn-sm" style="display:none;background:#F6B45F;color:#04162E;border:none;font-weight:bold;">${t('pro')}</button>
+      <button id="dashboardToggle" class="btn-sm" style="display:none;background:#0a1018;border:1px solid #3498DB;color:#3498DB;">${t('dashboard')}</button>
     `;
     document.getElementById('loginBtn').addEventListener('click', loginUser);
     document.getElementById('logoutBtn').addEventListener('click', logoutUser);
@@ -223,3 +196,5 @@ if (document.readyState === 'loading') {
 } else {
   initCommon();
 }
+
+window.initCommon = initCommon;
