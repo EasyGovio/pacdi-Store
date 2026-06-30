@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zeiterfassung | PACDI Store</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body { background:#04162E; color:#eaf2fb; font-family:-apple-system,system-ui,sans-serif; min-height:100vh; padding:16px; padding-bottom:60px; }
+  .app { max-width:680px; margin:0 auto; }
+
+  #lockScreen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh; text-align:center; }
+  #lockScreen .icon { font-size:3rem; margin-bottom:16px; }
+  #lockScreen h1 { color:#F6B45F; font-size:1.3rem; margin-bottom:6px; }
+  #lockScreen p { color:#7a9ab8; font-size:0.85rem; margin-bottom:24px; }
+  #lockScreen input { width:240px; padding:14px; background:#0a1828; border:1px solid rgba(246,180,95,0.3); border-radius:10px; color:#eaf2fb; font-size:1.2rem; text-align:center; letter-spacing:4px; margin-bottom:14px; outline:none; }
+  #lockScreen input:focus { border-color:#F6B45F; }
+  #lockScreen button { padding:12px 32px; background:#F6B45F; color:#04162E; border:none; border-radius:30px; font-weight:700; cursor:pointer; font-size:0.95rem; }
+  #lockScreen .err { color:#f87171; font-size:0.8rem; margin-top:10px; min-height:18px; }
+  #lockScreen .setup-hint { color:#4a6a88; font-size:0.72rem; margin-top:20px; max-width:280px; line-height:1.6; }
+
+  #mainApp { display:none; }
+  header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:8px; }
+  header h1 { color:#F6B45F; font-size:1.2rem; }
+  header .sub { color:#7a9ab8; font-size:0.75rem; }
+  .icon-btn { background:transparent; border:1px solid rgba(246,180,95,0.25); color:#7a9ab8; padding:6px 12px; border-radius:20px; font-size:0.72rem; cursor:pointer; font-family:inherit; }
+  .icon-btn:hover { border-color:#F6B45F; color:#F6B45F; }
+
+  .month-bar { display:flex; align-items:center; justify-content:space-between; background:#0a1828; border:1px solid rgba(246,180,95,0.15); border-radius:14px; padding:12px 16px; margin-bottom:16px; }
+  .month-bar .nav-btn { background:transparent; border:none; color:#F6B45F; font-size:1.3rem; cursor:pointer; padding:0 10px; }
+  .month-bar .month-label { font-weight:700; color:#eaf2fb; font-size:0.95rem; }
+
+  .totals-strip { display:grid; grid-template-columns:repeat(auto-fit,minmax(70px,1fr)); gap:8px; margin-bottom:18px; }
+  .totals-strip .tcard { background:#0a1828; border:1px solid rgba(246,180,95,0.15); border-radius:10px; padding:10px 6px; text-align:center; }
+  .totals-strip .tcard .lbl { font-size:0.62rem; color:#7a9ab8; text-transform:uppercase; letter-spacing:0.05em; }
+  .totals-strip .tcard .val { font-size:1.05rem; font-weight:700; color:#F6B45F; margin-top:2px; }
+  .totals-strip .tcard.total .val { color:#34D399; }
+
+  .mode-tabs { display:flex; gap:6px; margin-bottom:14px; }
+  .mode-tab { flex:1; padding:10px; background:rgba(255,255,255,0.03); border:1px solid rgba(246,180,95,0.15); border-radius:10px; color:#7a9ab8; font-size:0.8rem; font-weight:600; cursor:pointer; text-align:center; font-family:inherit; }
+  .mode-tab.active { background:rgba(246,180,95,0.1); border-color:#F6B45F; color:#F6B45F; }
+  .mode-tab.emergency.active { background:rgba(248,113,113,0.1); border-color:#f87171; color:#f87171; }
+
+  .card { background:#0a1828; border:1px solid rgba(246,180,95,0.15); border-radius:14px; padding:16px; margin-bottom:14px; }
+  .field { margin-bottom:12px; }
+  .field label { display:block; font-size:0.75rem; color:#7a9ab8; margin-bottom:5px; font-weight:600; }
+  .field input, .field select, .field textarea { width:100%; padding:10px 12px; background:#04162E; border:1px solid rgba(246,180,95,0.2); border-radius:8px; color:#eaf2fb; font-size:0.88rem; font-family:inherit; outline:none; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color:#F6B45F; }
+  .field textarea { min-height:70px; resize:vertical; }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  .quick-templates { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  .qt-btn { background:rgba(246,180,95,0.08); border:1px solid rgba(246,180,95,0.25); color:#F6B45F; font-size:0.7rem; padding:5px 10px; border-radius:14px; cursor:pointer; font-family:inherit; }
+  .qt-btn:hover { background:rgba(246,180,95,0.18); }
+
+  .firma-suggest { font-size:0.7rem; color:#4a6a88; margin-top:4px; }
+  .firma-suggest b { color:#F6B45F; }
+
+  .btn-save { width:100%; padding:13px; background:#F6B45F; color:#04162E; border:none; border-radius:30px; font-weight:700; font-size:0.9rem; cursor:pointer; font-family:inherit; }
+  .btn-save.emergency { background:#f87171; color:#04162E; }
+  .btn-save:hover { opacity:0.9; }
+
+  .entries-list { margin-top:18px; }
+  .entries-list h3 { color:#F6B45F; font-size:0.85rem; margin-bottom:10px; }
+  .entry-item { background:#0a1828; border:1px solid rgba(246,180,95,0.1); border-radius:10px; padding:10px 12px; margin-bottom:8px; }
+  .entry-item.emergency { border-left:3px solid #f87171; }
+  .entry-item .erow { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .entry-item .edate { font-size:0.7rem; color:#F6B45F; font-weight:700; white-space:nowrap; }
+  .entry-item .etext { font-size:0.82rem; color:#eaf2fb; line-height:1.4; margin:4px 0; }
+  .entry-item .emeta { font-size:0.68rem; color:#7a9ab8; }
+  .entry-item .ehours { font-size:0.85rem; font-weight:700; color:#34D399; white-space:nowrap; }
+  .entry-item .edel { background:transparent; border:none; color:#f87171; cursor:pointer; font-size:0.9rem; padding:2px 6px; }
+  .empty-day { text-align:center; color:#4a6a88; font-size:0.8rem; padding:20px 0; }
+
+  .footer { margin-top:24px; font-size:0.65rem; color:#4a6a88; text-align:center; border-top:1px solid rgba(246,180,95,0.08); padding-top:14px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div id="lockScreen">
+    <div class="icon">🔒</div>
+    <h1 id="lockTitle">Zeiterfassung</h1>
+    <p id="lockSub">Geben Sie Ihren Zugangscode ein</p>
+    <input type="password" id="pinInput" placeholder="••••" maxlength="12" inputmode="numeric" autocomplete="off">
+    <br>
+    <button id="unlockBtn">Entsperren</button>
+    <div class="err" id="lockErr"></div>
+    <div class="setup-hint" id="setupHint" style="display:none;">Noch kein Code eingerichtet. Geben Sie oben einen neuen Code ein und bestätigen Sie — dieser wird ab jetzt verwendet.</div>
+  </div>
+
+  <div id="mainApp">
+    <header>
+      <div>
+        <h1>⏱️ Zeiterfassung</h1>
+        <div class="sub" id="employeeLabel">Mitarbeiter</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <a href="/quittung.html" class="icon-btn" style="text-decoration:none;">🧾 Quittung</a>
+        <button class="icon-btn" id="editNameBtn">✏️</button>
+        <button class="icon-btn" id="lockAgainBtn">🔒 Sperren</button>
+      </div>
+    </header>
+
+    <div class="month-bar">
+      <button class="nav-btn" id="prevMonth">◀</button>
+      <span class="month-label" id="monthLabel">Januar 2026</span>
+      <button class="nav-btn" id="nextMonth">▶</button>
+    </div>
+
+    <button class="icon-btn" id="exportBtn" style="width:100%;padding:11px;margin-bottom:16px;border-color:#34D399;color:#34D399;">📊 Als Excel exportieren (.xlsx)</button>
+
+    <div class="totals-strip" id="totalsStrip">
+      <!-- dynamisch befüllt -->
+    </div>
+
+    <div class="card" id="categoryManagerCard">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <label style="font-size:0.75rem;color:#7a9ab8;font-weight:600;">📂 Ihre Kategorien (Projekte / Kunden / Abteilungen)</label>
+        <button class="qt-btn" id="addCategoryBtn" type="button">➕ Neu</button>
+      </div>
+      <div class="quick-templates" id="categoryChips"></div>
+      <div style="font-size:0.68rem;color:#4a6a88;margin-top:4px;" id="categoryHint">z.B. Kundenname, Projektname oder Abteilung — frei wählbar.</div>
+    </div>
+
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="modeNormalTab">📋 Normaler Eintrag</button>
+      <button class="mode-tab emergency" id="modeEmergencyTab">🚨 Sonderfall (Notdienst/Feiertag/Wochenende)</button>
+    </div>
+
+    <div class="card" id="normalForm">
+      <div class="field">
+        <label>Aktueller Tag (automatisch fortlaufend)</label>
+        <input type="date" id="currentDay" readonly style="opacity:0.7;">
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <label style="font-size:0.72rem;color:#7a9ab8;">⚡ Schnellvorlagen</label>
+        <button class="qt-btn" id="addTemplateBtn" type="button">➕ Vorlage speichern</button>
+      </div>
+      <div class="quick-templates" id="bereichTemplates"></div>
+
+      <div class="field">
+        <label>Art der Arbeit</label>
+        <textarea id="artDerArbeit" placeholder="Beschreibung der Tätigkeit..."></textarea>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Bereich</label>
+          <input type="text" id="bereich" placeholder="z.B. 4.OG, Metallwerkstatt">
+        </div>
+        <div class="field">
+          <label>Stunden</label>
+          <input type="number" id="stunden" step="0.5" min="0.5" max="8" value="1">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Kategorie <span style="font-weight:400;color:#4a6a88;">(Vorschlag basiert auf Bereich)</span></label>
+        <select id="firma"></select>
+        <div class="firma-suggest" id="firmaSuggest"></div>
+      </div>
+
+      <button class="btn-save" id="saveNormalBtn">💾 Eintrag speichern</button>
+    </div>
+
+    <div class="card" id="emergencyForm" style="display:none;">
+      <div class="field">
+        <label>Datum &amp; Uhrzeit</label>
+        <input type="datetime-local" id="emergencyDateTime">
+      </div>
+      <div class="field">
+        <label>Art des Einsatzes</label>
+        <select id="emergencyType">
+          <option value="Notdienst">🚨 Notdienst (außerhalb Arbeitszeit)</option>
+          <option value="Feiertag">🎉 Feiertagsarbeit</option>
+          <option value="Krankheit-Einsatz">🤒 Einsatz trotz Krankheit</option>
+          <option value="Wochenende">📅 Wochenendeinsatz</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Beschreibung</label>
+        <textarea id="emergencyText" placeholder="Was war das Problem, was wurde gemacht..."></textarea>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Bereich</label>
+          <input type="text" id="emergencyBereich" placeholder="z.B. 5.OG">
+        </div>
+        <div class="field">
+          <label>Stunden</label>
+          <input type="number" id="emergencyStunden" step="0.25" min="0.25" value="1">
+        </div>
+      </div>
+      <div class="field">
+        <label>Kategorie</label>
+        <select id="emergencyFirma"></select>
+      </div>
+      <button class="btn-save emergency" id="saveEmergencyBtn">🚨 Notdienst-Eintrag speichern</button>
+    </div>
+
+    <div class="entries-list">
+      <h3>📄 Einträge diesen Monat</h3>
+      <div id="entriesContainer"></div>
+    </div>
+
+    <div class="footer">Zeiterfassung · Lokal gespeichert, keine Cloud · PACDI Store</div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var STORAGE_KEY = 'arbeitszeit_entries';
+  var PIN_KEY = 'arbeitszeit_pin_hash';
+  var STATE_KEY = 'arbeitszeit_state';
+
+  function simpleHash(str) {
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash |= 0;
+    }
+    return hash.toString(36);
+  }
+
+  var pinInput = document.getElementById('pinInput');
+  var unlockBtn = document.getElementById('unlockBtn');
+  var lockErr = document.getElementById('lockErr');
+  var setupHint = document.getElementById('setupHint');
+  var lockScreen = document.getElementById('lockScreen');
+  var mainApp = document.getElementById('mainApp');
+
+  function hasPinSet() {
+    return !!localStorage.getItem(PIN_KEY);
+  }
+
+  function checkUnlock() {
+    var val = pinInput.value.trim();
+    if (!val) { lockErr.textContent = 'Bitte Code eingeben.'; return; }
+
+    if (!hasPinSet()) {
+      if (val.length < 4) { lockErr.textContent = 'Code muss mindestens 4 Zeichen haben.'; return; }
+      localStorage.setItem(PIN_KEY, simpleHash(val));
+      unlockApp();
+      return;
+    }
+
+    var stored = localStorage.getItem(PIN_KEY);
+    if (simpleHash(val) === stored) {
+      unlockApp();
+    } else {
+      lockErr.textContent = 'Falscher Code.';
+      pinInput.value = '';
+    }
+  }
+
+  function unlockApp() {
+    lockScreen.style.display = 'none';
+    mainApp.style.display = 'block';
+    pinInput.value = '';
+    lockErr.textContent = '';
+    initAppData();
+  }
+
+  unlockBtn.addEventListener('click', checkUnlock);
+  pinInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') checkUnlock(); });
+
+  if (!hasPinSet()) {
+    setupHint.style.display = 'block';
+    document.getElementById('lockSub').textContent = 'Richten Sie einen neuen Zugangscode ein';
+  }
+
+  document.getElementById('lockAgainBtn').addEventListener('click', function() {
+    mainApp.style.display = 'none';
+    lockScreen.style.display = 'flex';
+  });
+
+  // ── Dynamische Kategorien (vom Nutzer verwaltet) ──
+  var CATEGORIES_KEY = 'zeit_categories';
+  var DEFAULT_CATEGORIES = ['Projekt A', 'Projekt B', 'Verwaltung'];
+
+  function loadCategories() {
+    try {
+      var c = JSON.parse(localStorage.getItem(CATEGORIES_KEY) || 'null');
+      if (c && c.length) return c;
+    } catch(e) {}
+    return DEFAULT_CATEGORIES.slice();
+  }
+  function saveCategories(cats) {
+    localStorage.setItem(CATEGORIES_KEY, JSON.stringify(cats));
+  }
+
+  function renderCategoryChips() {
+    var cats = loadCategories();
+    var container = document.getElementById('categoryChips');
+    container.innerHTML = '';
+    cats.forEach(function(cat) {
+      var wrap = document.createElement('span');
+      wrap.style.cssText = 'display:inline-flex;align-items:center;gap:4px;background:rgba(246,180,95,0.08);border:1px solid rgba(246,180,95,0.25);border-radius:14px;padding:5px 6px 5px 10px;';
+      var txt = document.createElement('span');
+      txt.style.cssText = 'font-size:0.7rem;color:#F6B45F;';
+      txt.textContent = cat;
+      var del = document.createElement('button');
+      del.type = 'button';
+      del.textContent = '✕';
+      del.style.cssText = 'background:transparent;border:none;color:#f87171;cursor:pointer;font-size:0.7rem;padding:0 4px;';
+      del.addEventListener('click', function() {
+        if (cats.length <= 1) { alert('Mindestens eine Kategorie muss vorhanden sein.'); return; }
+        if (!confirm('Kategorie "' + cat + '" entfernen?')) return;
+        var updated = loadCategories().filter(function(c) { return c !== cat; });
+        saveCategories(updated);
+        renderCategoryChips();
+        populateFirmaSelects();
+      });
+      wrap.appendChild(txt);
+      wrap.appendChild(del);
+      container.appendChild(wrap);
+    });
+  }
+
+  document.getElementById('addCategoryBtn').addEventListener('click', function() {
+    var name = prompt('Name der neuen Kategorie (z.B. Kunde, Projekt, Abteilung):');
+    if (!name || !name.trim()) return;
+    var cats = loadCategories();
+    if (cats.indexOf(name.trim()) !== -1) { alert('Diese Kategorie existiert bereits.'); return; }
+    cats.push(name.trim());
+    saveCategories(cats);
+    renderCategoryChips();
+    populateFirmaSelects();
+  });
+
+  function populateFirmaSelects() {
+    var cats = loadCategories();
+    ['firma', 'emergencyFirma'].forEach(function(id) {
+      var sel = document.getElementById(id);
+      var current = sel.value;
+      sel.innerHTML = '';
+      cats.forEach(function(cat) {
+        var opt = document.createElement('option');
+        opt.value = cat;
+        opt.textContent = cat;
+        sel.appendChild(opt);
+      });
+      if (cats.indexOf(current) !== -1) sel.value = current;
+    });
+  }
+
+  // ── Dynamische Schnellvorlagen (vom Nutzer verwaltet) ──
+  var TEMPLATES_KEY = 'zeit_templates';
+
+  function loadTemplates() {
+    try { return JSON.parse(localStorage.getItem(TEMPLATES_KEY) || '[]'); } catch(e) { return []; }
+  }
+  function saveTemplates(tpls) {
+    localStorage.setItem(TEMPLATES_KEY, JSON.stringify(tpls));
+  }
+
+  function suggestFirma(bereichText) {
+    if (!bereichText) return null;
+    var lower = bereichText.toLowerCase();
+    var templates = loadTemplates();
+    for (var i = 0; i < templates.length; i++) {
+      if (templates[i].bereich && lower === templates[i].bereich.toLowerCase() && templates[i].lastFirma) {
+        return templates[i].lastFirma;
+      }
+    }
+    return null;
+  }
+
+  var bereichTemplatesEl = document.getElementById('bereichTemplates');
+
+  function renderTemplateButtons() {
+    var templates = loadTemplates();
+    bereichTemplatesEl.innerHTML = '';
+    if (!templates.length) {
+      var hint = document.createElement('span');
+      hint.style.cssText = 'font-size:0.7rem;color:#4a6a88;';
+      hint.textContent = 'Noch keine Vorlagen — füllen Sie das Formular aus und klicken Sie "Vorlage speichern".';
+      bereichTemplatesEl.appendChild(hint);
+      return;
+    }
+    templates.forEach(function(tpl, idx) {
+      var wrap = document.createElement('span');
+      wrap.style.cssText = 'display:inline-flex;align-items:center;';
+      var btn = document.createElement('button');
+      btn.className = 'qt-btn';
+      btn.type = 'button';
+      btn.textContent = tpl.label;
+      btn.addEventListener('click', function() {
+        document.getElementById('bereich').value = tpl.bereich || '';
+        document.getElementById('artDerArbeit').value = tpl.text || '';
+        if (tpl.lastFirma) document.getElementById('firma').value = tpl.lastFirma;
+        updateFirmaSuggestion();
+      });
+      var del = document.createElement('button');
+      del.type = 'button';
+      del.textContent = '✕';
+      del.title = 'Vorlage löschen';
+      del.style.cssText = 'background:transparent;border:none;color:#f87171;cursor:pointer;font-size:0.65rem;padding:0 4px;margin-left:-4px;';
+      del.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (!confirm('Vorlage "' + tpl.label + '" löschen?')) return;
+        var updated = loadTemplates(); updated.splice(idx, 1); saveTemplates(updated);
+        renderTemplateButtons();
+      });
+      wrap.appendChild(btn);
+      wrap.appendChild(del);
+      bereichTemplatesEl.appendChild(wrap);
+    });
+  }
+
+  document.getElementById('addTemplateBtn').addEventListener('click', function() {
+    var art = document.getElementById('artDerArbeit').value.trim();
+    var bereich = document.getElementById('bereich').value.trim();
+    var firma = document.getElementById('firma').value;
+    if (!art && !bereich) { alert('Bitte zuerst Bereich oder Beschreibung ausfüllen, dann als Vorlage speichern.'); return; }
+    var label = prompt('Name für diese Vorlage (kurz):', bereich || art.slice(0,20));
+    if (!label || !label.trim()) return;
+    var templates = loadTemplates();
+    templates.push({ label: label.trim(), bereich: bereich, text: art, lastFirma: firma });
+    saveTemplates(templates);
+    renderTemplateButtons();
+  });
+
+  function updateFirmaSuggestion() {
+    var bereichVal = document.getElementById('bereich').value;
+    var suggestion = suggestFirma(bereichVal);
+    var hintEl = document.getElementById('firmaSuggest');
+    if (suggestion) {
+      hintEl.innerHTML = 'Vorschlag: <b>' + suggestion + '</b>';
+      document.getElementById('firma').value = suggestion;
+    } else {
+      hintEl.innerHTML = '';
+    }
+  }
+  document.getElementById('bereich').addEventListener('input', updateFirmaSuggestion);
+
+  var modeNormalTab = document.getElementById('modeNormalTab');
+  var modeEmergencyTab = document.getElementById('modeEmergencyTab');
+  var normalForm = document.getElementById('normalForm');
+  var emergencyForm = document.getElementById('emergencyForm');
+
+  modeNormalTab.addEventListener('click', function() {
+    modeNormalTab.classList.add('active');
+    modeEmergencyTab.classList.remove('active');
+    normalForm.style.display = 'block';
+    emergencyForm.style.display = 'none';
+  });
+  modeEmergencyTab.addEventListener('click', function() {
+    modeEmergencyTab.classList.add('active');
+    modeNormalTab.classList.remove('active');
+    emergencyForm.style.display = 'block';
+    normalForm.style.display = 'none';
+    var now = new Date();
+    document.getElementById('emergencyDateTime').value = now.toISOString().slice(0,16);
+  });
+
+  function loadEntries() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { return []; }
+  }
+  function saveEntries(entries) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  }
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STATE_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveState(state) {
+    localStorage.setItem(STATE_KEY, JSON.stringify(state));
+  }
+
+  var currentViewMonth = null;
+
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function nextWorkday(dateStr) {
+    var d = new Date(dateStr + 'T00:00:00');
+    do {
+      d.setDate(d.getDate() + 1);
+    } while (d.getDay() === 0 || d.getDay() === 6);
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function getCurrentWorkDay() {
+    var state = loadState();
+    var entries = loadEntries();
+    var today = todayISO();
+
+    if (!state.currentDay) {
+      state.currentDay = today;
+      saveState(state);
+      return state.currentDay;
+    }
+
+    var dayTotal = 0;
+    entries.forEach(function(e) {
+      if (e.mode === 'normal' && e.date === state.currentDay) dayTotal += parseFloat(e.stunden) || 0;
+    });
+
+    if (dayTotal >= 8) {
+      state.currentDay = nextWorkday(state.currentDay);
+      saveState(state);
+    }
+
+    return state.currentDay;
+  }
+
+  function refreshCurrentDayField() {
+    document.getElementById('currentDay').value = getCurrentWorkDay();
+  }
+
+  document.getElementById('saveNormalBtn').addEventListener('click', function() {
+    var day = getCurrentWorkDay();
+    var art = document.getElementById('artDerArbeit').value.trim();
+    var bereich = document.getElementById('bereich').value.trim();
+    var stunden = parseFloat(document.getElementById('stunden').value) || 0;
+    var firma = document.getElementById('firma').value;
+
+    if (!art) { alert('Bitte "Art der Arbeit" ausfüllen.'); return; }
+    if (stunden <= 0) { alert('Bitte gültige Stundenzahl eingeben.'); return; }
+
+    var entries = loadEntries();
+    entries.push({
+      id: Date.now(),
+      mode: 'normal',
+      date: day,
+      art: art,
+      bereich: bereich,
+      stunden: stunden,
+      firma: firma
+    });
+    saveEntries(entries);
+
+    document.getElementById('artDerArbeit').value = '';
+    document.getElementById('bereich').value = '';
+    document.getElementById('stunden').value = '1';
+    document.getElementById('firmaSuggest').innerHTML = '';
+
+    refreshCurrentDayField();
+    renderEntries();
+    renderTotals();
+  });
+
+  document.getElementById('saveEmergencyBtn').addEventListener('click', function() {
+    var dt = document.getElementById('emergencyDateTime').value;
+    var type = document.getElementById('emergencyType').value;
+    var text = document.getElementById('emergencyText').value.trim();
+    var bereich = document.getElementById('emergencyBereich').value.trim();
+    var stunden = parseFloat(document.getElementById('emergencyStunden').value) || 0;
+    var firma = document.getElementById('emergencyFirma').value;
+
+    if (!dt) { alert('Bitte Datum/Uhrzeit angeben.'); return; }
+    if (!text) { alert('Bitte Beschreibung eingeben.'); return; }
+    if (stunden <= 0) { alert('Bitte gültige Stundenzahl eingeben.'); return; }
+
+    var dateOnly = dt.slice(0,10);
+    var timeOnly = dt.slice(11,16);
+
+    var entries = loadEntries();
+    entries.push({
+      id: Date.now(),
+      mode: 'emergency',
+      date: dateOnly,
+      time: timeOnly,
+      type: type,
+      art: '[' + type + '] ' + text,
+      bereich: bereich,
+      stunden: stunden,
+      firma: firma
+    });
+    saveEntries(entries);
+
+    document.getElementById('emergencyText').value = '';
+    document.getElementById('emergencyBereich').value = '';
+    document.getElementById('emergencyStunden').value = '1';
+
+    renderEntries();
+    renderTotals();
+  });
+
+  window.deleteEntry = function(id) {
+    if (!confirm('Eintrag löschen?')) return;
+    var entries = loadEntries().filter(function(e) { return e.id !== id; });
+    saveEntries(entries);
+    renderEntries();
+    renderTotals();
+  };
+
+  var MONTH_NAMES_DE = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+
+  function initCurrentViewMonth() {
+    var d = new Date();
+    currentViewMonth = { year: d.getFullYear(), month: d.getMonth() };
+  }
+
+  document.getElementById('prevMonth').addEventListener('click', function() {
+    currentViewMonth.month--;
+    if (currentViewMonth.month < 0) { currentViewMonth.month = 11; currentViewMonth.year--; }
+    renderEntries();
+    renderTotals();
+  });
+  document.getElementById('nextMonth').addEventListener('click', function() {
+    currentViewMonth.month++;
+    if (currentViewMonth.month > 11) { currentViewMonth.month = 0; currentViewMonth.year++; }
+    renderEntries();
+    renderTotals();
+  });
+
+  function entriesForViewMonth() {
+    var entries = loadEntries();
+    return entries.filter(function(e) {
+      var d = new Date(e.date + 'T00:00:00');
+      return d.getFullYear() === currentViewMonth.year && d.getMonth() === currentViewMonth.month;
+    }).sort(function(a,b) { return a.date.localeCompare(b.date); });
+  }
+
+  function renderTotals() {
+    var monthEntries = entriesForViewMonth();
+    var cats = loadCategories();
+    var sums = {};
+    cats.forEach(function(c) { sums[c] = 0; });
+    var grandTotal = 0;
+    monthEntries.forEach(function(e) {
+      var h = parseFloat(e.stunden) || 0;
+      if (sums.hasOwnProperty(e.firma)) sums[e.firma] += h;
+      grandTotal += h;
+    });
+
+    var strip = document.getElementById('totalsStrip');
+    strip.innerHTML = '';
+    cats.forEach(function(c) {
+      var card = document.createElement('div');
+      card.className = 'tcard';
+      var val = sums[c].toFixed(1).replace('.0','');
+      card.innerHTML = '<div class="lbl">' + c.replace(/</g,'&lt;') + '</div><div class="val">' + val + '</div>';
+      strip.appendChild(card);
+    });
+    var totalCard = document.createElement('div');
+    totalCard.className = 'tcard total';
+    totalCard.innerHTML = '<div class="lbl">Gesamt</div><div class="val">' + grandTotal.toFixed(1).replace('.0','') + '</div>';
+    strip.appendChild(totalCard);
+
+    document.getElementById('monthLabel').textContent = MONTH_NAMES_DE[currentViewMonth.month] + ' ' + currentViewMonth.year;
+  }
+
+  function fmtDateDE(dateStr) {
+    var d = new Date(dateStr + 'T00:00:00');
+    return String(d.getDate()).padStart(2,'0') + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + d.getFullYear();
+  }
+
+  function createQuittungUrl(entry) {
+    var params = new URLSearchParams();
+    params.set('datum', entry.date);
+    params.set('leistung', entry.art);
+    return '/quittung.html?' + params.toString();
+  }
+
+  function renderEntries() {
+    var container = document.getElementById('entriesContainer');
+    var monthEntries = entriesForViewMonth();
+    if (!monthEntries.length) {
+      container.innerHTML = '<div class="empty-day">Keine Einträge in diesem Monat.</div>';
+      return;
+    }
+    container.innerHTML = '';
+    monthEntries.slice().reverse().forEach(function(e) {
+      var div = document.createElement('div');
+      div.className = 'entry-item' + (e.mode === 'emergency' ? ' emergency' : '');
+      var dateLabel = fmtDateDE(e.date) + (e.time ? ' · ' + e.time : '');
+      div.innerHTML =
+        '<div class="erow">' +
+          '<div><span class="edate">' + dateLabel + '</span></div>' +
+          '<div style="display:flex;align-items:center;gap:6px;">' +
+            '<span class="ehours">' + e.stunden + 'h</span>' +
+            '<button class="edel" onclick="deleteEntry(' + e.id + ')">🗑️</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="etext">' + e.art.replace(/</g,'&lt;') + '</div>' +
+        '<div class="emeta">' + (e.bereich || '—') + ' · ' + e.firma + '</div>' +
+        '<a href="' + createQuittungUrl(e) + '" style="display:inline-block;margin-top:6px;font-size:0.68rem;color:#F6B45F;text-decoration:none;border:1px solid rgba(246,180,95,0.3);padding:3px 10px;border-radius:12px;">🧾 Quittung erstellen</a>';
+      container.appendChild(div);
+    });
+  }
+
+  // ── Employee name ──
+  var NAME_KEY = 'arbeitszeit_employee_name';
+
+  function loadEmployeeName() {
+    return localStorage.getItem(NAME_KEY) || '';
+  }
+
+  function renderEmployeeLabel() {
+    var name = loadEmployeeName();
+    document.getElementById('employeeLabel').textContent = name ? 'Mitarbeiter: ' + name : 'Mitarbeiter: (nicht eingestellt)';
+  }
+
+  document.getElementById('editNameBtn').addEventListener('click', function() {
+    var current = loadEmployeeName();
+    var name = prompt('Name des Mitarbeiters (für Excel-Export):', current);
+    if (name !== null && name.trim()) {
+      localStorage.setItem(NAME_KEY, name.trim());
+      renderEmployeeLabel();
+    }
+  });
+
+  // ── Excel export — matches original format exactly ──
+  var MONTH_NAMES_DE_FULL = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+
+  function isWeekendDate(d) {
+    var day = d.getDay();
+    return day === 0 || day === 6;
+  }
+
+  function buildExportRows(year, month) {
+    var cats = loadCategories();
+    var entries = loadEntries().filter(function(e) {
+      var d = new Date(e.date + 'T00:00:00');
+      return d.getFullYear() === year && d.getMonth() === month;
+    }).sort(function(a, b) {
+      if (a.date !== b.date) return a.date.localeCompare(b.date);
+      return (a.id || 0) - (b.id || 0);
+    });
+
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    var entriesByDate = {};
+    entries.forEach(function(e) {
+      if (!entriesByDate[e.date]) entriesByDate[e.date] = [];
+      entriesByDate[e.date].push(e);
+    });
+
+    var rows = [];
+    var totals = {};
+    cats.forEach(function(c) { totals[c] = 0; });
+
+    for (var day = 1; day <= daysInMonth; day++) {
+      var d = new Date(year, month, day);
+      var dateStr = year + '-' + String(month+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+      var dayEntries = entriesByDate[dateStr];
+
+      if (dayEntries && dayEntries.length) {
+        dayEntries.forEach(function(e, idx) {
+          var catValues = cats.map(function(c) {
+            if (c === e.firma) { totals[c] += (parseFloat(e.stunden) || 0); return e.stunden; }
+            return null;
+          });
+          var dateCell = idx === 0 ? d : null;
+          rows.push([dateCell, e.art, e.bereich || '—'].concat(catValues));
+        });
+      } else if (isWeekendDate(d)) {
+        rows.push([d, 'Wochenende', null].concat(cats.map(function(){ return null; })));
+      } else {
+        rows.push([d, '', null].concat(cats.map(function(){ return null; })));
+      }
+    }
+
+    return { rows: rows, totals: totals, categories: cats };
+  }
+
+  function exportToExcel() {
+    if (typeof XLSX === 'undefined') { alert('Excel-Bibliothek konnte nicht geladen werden. Bitte Internetverbindung prüfen.'); return; }
+
+    var year = currentViewMonth.year;
+    var month = currentViewMonth.month;
+    var data = buildExportRows(year, month);
+    var employeeName = loadEmployeeName() || 'Mitarbeiter';
+    var cats = data.categories;
+    var numCols = 3 + cats.length;
+
+    var wsData = [];
+    var headerRow = new Array(numCols).fill(null);
+    headerRow[0] = 'Mitarbeiter: ' + employeeName;
+    wsData.push(headerRow);
+
+    var dateRow = new Array(numCols).fill(null);
+    dateRow[0] = new Date(year, month, 1);
+    wsData.push(dateRow);
+
+    var titleRow = ['Tag', 'Art der Arbeit', 'Bereich'].concat(cats);
+    wsData.push(titleRow);
+    wsData.push(new Array(numCols).fill(null));
+
+    data.rows.forEach(function(r) { wsData.push(r); });
+
+    var totalsRow = new Array(numCols).fill(null);
+    cats.forEach(function(c, i) { totalsRow[3+i] = data.totals[c] || null; });
+    wsData.push(totalsRow);
+    wsData.push(new Array(numCols).fill(null));
+
+    var grandTotal = 0;
+    cats.forEach(function(c) { grandTotal += data.totals[c]; });
+    var grandRow = new Array(numCols).fill(null);
+    grandRow[numCols - 1] = grandTotal || null;
+    wsData.push(grandRow);
+
+    wsData.push(new Array(numCols).fill(null));
+    wsData.push(new Array(numCols).fill(null));
+    var sigRow1 = wsData.length;
+    var sig1 = new Array(numCols).fill(null);
+    sig1[0] = '_________________________';
+    sig1[2] = '_________________________';
+    wsData.push(sig1);
+    var sig2 = new Array(numCols).fill(null);
+    sig2[0] = 'Datum, Unterschrift Mitarbeiter';
+    sig2[2] = 'Datum, Unterschrift Kontrolle/Genehmigung';
+    wsData.push(sig2);
+
+    var ws = XLSX.utils.aoa_to_sheet(wsData);
+
+    var cols = [{ wch: 12 }, { wch: 55 }, { wch: 18 }];
+    cats.forEach(function() { cols.push({ wch: 12 }); });
+    ws['!cols'] = cols;
+
+    ws['!merges'] = [{ s: { r: 1, c: 0 }, e: { r: 1, c: numCols - 1 } }];
+
+    var dateFmt = 'TT.MM.JJJJ';
+    for (var i = 0; i < wsData.length; i++) {
+      var cellA = ws['A' + (i+1)];
+      if (cellA && cellA.t === 'd') cellA.z = dateFmt;
+    }
+
+    var range = XLSX.utils.decode_range(ws['!ref']);
+    for (var R = range.s.r; R <= range.e.r; R++) {
+      for (var C = range.s.c; C <= range.e.c; C++) {
+        var addr = XLSX.utils.encode_cell({ r: R, c: C });
+        var cell = ws[addr];
+        if (!cell) continue;
+        cell.s = cell.s || {};
+        if (R <= 2) {
+          cell.s.font = { name: 'Arial', sz: 14, bold: true };
+          if (R === 2 || R === 1) cell.s.alignment = { horizontal: 'center' };
+        } else if (R >= 4 && R < 4 + data.rows.length) {
+          cell.s.font = { name: C === 1 ? 'Calibri' : 'Arial', sz: C === 1 ? 12 : 10 };
+          cell.s.alignment = { wrapText: true };
+        } else if (R >= 4 + data.rows.length && R < sigRow1) {
+          cell.s.font = { name: 'Arial', sz: 10, bold: true };
+        }
+        if (R === sigRow1) {
+          cell.s.font = { name: 'Arial', sz: 11, bold: false };
+        }
+        if (R === sigRow1 + 1) {
+          cell.s.font = { name: 'Arial', sz: 8, italic: true, color: { rgb: '888888' } };
+        }
+      }
+    }
+
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Tabelle1');
+
+    if (!wb.Workbook) wb.Workbook = {};
+    wb.Workbook.Sheets = [{ Hidden: 0 }];
+
+    var filename = MONTH_NAMES_DE_FULL[month] + '_' + year + '.xlsx';
+    XLSX.writeFile(wb, filename, { cellStyles: true });
+  }
+
+  document.getElementById('exportBtn').addEventListener('click', exportToExcel);
+
+  function initAppData() {
+    initCurrentViewMonth();
+    renderCategoryChips();
+    populateFirmaSelects();
+    renderTemplateButtons();
+    refreshCurrentDayField();
+    renderEmployeeLabel();
+    renderEntries();
+    renderTotals();
+  }
+
+})();
+</script>
+</body>
+</html>
