@@ -59,53 +59,60 @@
   .empty-state { text-align:center; color:#4a6a88; font-size:0.8rem; padding:20px 0; }
 
   .footer { margin-top:24px; font-size:0.65rem; color:#4a6a88; text-align:center; border-top:1px solid rgba(246,180,95,0.08); padding-top:14px; }
+
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:999; align-items:center; justify-content:center; }
+  .modal-overlay.active { display:flex; }
+  .modal { background:#0a1828; border:1px solid rgba(246,180,95,0.35); border-radius:14px; padding:28px 24px; max-width:380px; width:90%; text-align:center; }
+  .modal .modal-icon { font-size:36px; margin-bottom:10px; }
+  .modal h2 { font-size:1.1rem; color:#F6B45F; margin-bottom:8px; }
+  .modal p { font-size:0.82rem; color:#b0b5bf; line-height:1.6; margin-bottom:16px; }
+  .modal .modal-price { background:rgba(246,180,95,0.08); border:1px solid rgba(246,180,95,0.25); border-radius:10px; padding:12px; margin-bottom:16px; }
+  .modal .modal-price strong { font-size:24px; color:#F6B45F; }
+  .modal .modal-price span { font-size:13px; color:#8A8F9A; }
+  .modal .modal-features { list-style:none; text-align:left; font-size:0.78rem; color:#b0b5bf; margin-bottom:16px; line-height:2; }
+  .modal .modal-features li::before { content:'✔  '; color:#F6B45F; }
+  .modal-btn-primary { width:100%; padding:12px; background:#F6B45F; color:#04162E; border:none; border-radius:8px; font-weight:700; font-size:0.88rem; cursor:pointer; font-family:inherit; margin-bottom:10px; }
+  .modal-btn-cancel { background:none; border:none; color:#8A8F9A; font-size:0.78rem; cursor:pointer; font-family:inherit; text-decoration:underline; }
 </style>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>
-    <link rel="canonical" href="https://pacdi.store/quittung.html" />
-    <link rel="manifest" href="/manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PACDI">
-    <script>
-(function(){
-  if (sessionStorage.getItem('autoLang')) return;
-  var bl = (navigator.language || navigator.userLanguage || 'en').substring(0,2).toLowerCase();
-  var supported = ['tr','de','en'];
-  var lang = supported.indexOf(bl) > -1 ? bl : 'en';
-  sessionStorage.setItem('autoLang', lang);
-})();
-</script>
-    <script>
-(function(){
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('beta') === 'pacdi2026') {
-    try { sessionStorage.setItem('betaUnlock', '1'); } catch(e) {}
-  }
-  window.isBetaUnlocked = function() {
-    try { return sessionStorage.getItem('betaUnlock') === '1'; } catch(e) { return false; }
-  };
-})();
-</script>
 </head>
 <body>
-<!--
-╬═══════════════════════════════════════════════════════════════╮
-║         🛡️  PACDI FRAMEWORK — PROTECTED WORK                  ║
-║                                                               ║
-║  © 2026 PACDI Global Yazılım Ltd. Şti.                       ║
-║  FSEK Registration No : 2026/18897                            ║
-║  Trade Registry      : 23836 · Yunusemre / Manisa, TR       ║
-║                                                               ║
-║  This work and its modular software architecture are          ║
-║  protected under PACDI Software Library FSEK registration.   ║
-║  Unauthorized copying is subject to legal action.            ║
-║                                                               ║
-║  pacdi.eu · pacdi.de · info@pacdi.eu                         ║
-╠═══════════════════════════════════════════════════════════════╣
--->
-
 <div class="app">
+
+  <!-- PAYWALL MODAL -->
+  <div class="modal-overlay" id="paywallModal">
+    <div class="modal">
+      <div id="modalStateInfo">
+        <div class="modal-icon">📋</div>
+        <h2>Monatslimit erreicht</h2>
+        <p>Sie haben Ihre 5 kostenlosen Quittungen für diesen Monat verbraucht. Mit Pro erstellen Sie unbegrenzt viele Quittungen.</p>
+        <div class="modal-price"><strong>9€</strong> <span>/ Monat</span></div>
+        <ul class="modal-features">
+          <li>Unbegrenzte Quittungen</li>
+          <li>Cloud-Backup (optional)</li>
+          <li>Firmenlogo auf Quittung</li>
+          <li>Priorit&auml;ts-Support</li>
+        </ul>
+        <button class="modal-btn-primary" id="btnEarlyAccess">🎯 Frühzugang + Rabatt sichern</button>
+        <br>
+        <button class="modal-btn-cancel" id="btnCancelModal">Schließen</button>
+      </div>
+      <div id="modalStateForm" style="display:none;">
+        <div class="modal-icon">🎯</div>
+        <h2>Early Access sichern</h2>
+        <input type="email" id="earlyAccessEmail" placeholder="Ihre E-Mail-Adresse" style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid rgba(246,180,95,0.3);background:rgba(255,255,255,0.04);color:#eaf2fb;font-size:0.85rem;font-family:inherit;outline:none;margin-bottom:10px;">
+        <div id="earlyAccessMsg" style="font-size:0.78rem;min-height:20px;margin-bottom:10px;"></div>
+        <button class="modal-btn-primary" id="btnSubmitEA">✔ Jetzt sichern</button>
+        <br>
+        <button class="modal-btn-cancel" id="btnCancelModal2">Vielleicht später</button>
+      </div>
+      <div id="modalStateSuccess" style="display:none;">
+        <div class="modal-icon">🎉</div>
+        <h2 style="color:#34D399;">Danke!</h2>
+        <p>Wir benachrichtigen Sie, sobald Pro verfügbar ist.</p>
+        <button class="modal-btn-primary" style="background:#34D399;" id="btnCloseSuccess">Schließen</button>
+      </div>
+    </div>
+  </div>
 
   <header>
     <h1>🧾 Quittung Generator</h1>
@@ -140,6 +147,7 @@
     <div class="field">
       <label>Belegnummer (automatisch fortlaufend)</label>
       <input type="text" id="belegNr" readonly style="opacity:0.7;">
+      <div class="hint" id="usageDisplay" style="margin-top:6px;"></div>
     </div>
 
     <div class="row2">
@@ -213,6 +221,68 @@
 
   var AUSSTELLER_KEY = 'quittung_aussteller';
   var COUNTER_KEY = 'quittung_counter';
+  var FIRST_USE_KEY = 'quittung_first_use_month';
+  var MONTHLY_USAGE_KEY = 'quittung_monthly_usage';
+  var FREE_LIMIT = 5;
+
+  function currentMonthKey() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+  }
+
+  function getFirstUseMonth() {
+    var v = localStorage.getItem(FIRST_USE_KEY);
+    if (!v) {
+      v = currentMonthKey();
+      localStorage.setItem(FIRST_USE_KEY, v);
+    }
+    return v;
+  }
+
+  function isFirstMonth() {
+    return getFirstUseMonth() === currentMonthKey();
+  }
+
+  function getMonthlyUsage() {
+    try {
+      var data = JSON.parse(localStorage.getItem(MONTHLY_USAGE_KEY) || '{}');
+      var key = currentMonthKey();
+      return data[key] || 0;
+    } catch(e) { return 0; }
+  }
+
+  function incrementMonthlyUsage() {
+    var data = {};
+    try { data = JSON.parse(localStorage.getItem(MONTHLY_USAGE_KEY) || '{}'); } catch(e) {}
+    var key = currentMonthKey();
+    data[key] = (data[key] || 0) + 1;
+    localStorage.setItem(MONTHLY_USAGE_KEY, JSON.stringify(data));
+  }
+
+  function canCreateQuittung() {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('beta') === 'pacdi2026') return true;
+    try { if (sessionStorage.getItem('betaUnlock') === '1') return true; } catch(e) {}
+    if (isFirstMonth()) return true;
+    return getMonthlyUsage() < FREE_LIMIT;
+  }
+
+  function remainingThisMonth() {
+    if (isFirstMonth()) return null; // unlimited
+    return Math.max(0, FREE_LIMIT - getMonthlyUsage());
+  }
+
+  function updateUsageDisplay() {
+    var el = document.getElementById('usageDisplay');
+    if (!el) return;
+    if (isFirstMonth()) {
+      el.innerHTML = '🎉 <strong style="color:#34D399;">Erster Monat: unbegrenzte Nutzung!</strong>';
+    } else {
+      var remaining = remainingThisMonth();
+      var color = remaining > 1 ? '#7a9ab8' : '#f87171';
+      el.innerHTML = '<span style="color:' + color + ';">' + remaining + ' von ' + FREE_LIMIT + ' kostenlosen Quittungen diesen Monat übrig</span>';
+    }
+  }
   var HISTORY_KEY = 'quittung_history';
 
   function loadAussteller() {
@@ -491,6 +561,11 @@
 
   // ── Generate PDF ──
   document.getElementById('generateBtn').addEventListener('click', function() {
+    if (!canCreateQuittung()) {
+      document.getElementById('paywallModal').classList.add('active');
+      return;
+    }
+
     var name = document.getElementById('ausstellerName').value.trim();
     var adresse = document.getElementById('ausstellerAdresse').value.trim();
     var empfaenger = document.getElementById('empfaenger').value.trim();
@@ -595,17 +670,26 @@
       y += 6;
     }
 
-    y = Math.max(y + 14, pageHeight - 38);
+    y = Math.max(y + 14, pageHeight - 44);
     doc.line(margin, y, margin + 60, y);
     doc.setFontSize(7.5); doc.setTextColor(120,120,120);
     doc.text('Datum, Unterschrift Aussteller', margin, y+4);
 
+    doc.setFontSize(6); doc.setTextColor(160,160,160);
+    var disclaimerLine = 'Erstellt mit PACDI Quittung Generator (Dokumentationswerkzeug, keine Steuer-/Rechtsberatung). Aufbewahrungspflicht (8 J.) liegt beim Aussteller.';
+    var disclaimerLines = doc.splitTextToSize(disclaimerLine, pageWidth - margin*2);
+    var dY = pageHeight - 12;
+    disclaimerLines.forEach(function(line, i) {
+      doc.text(line, pageWidth/2, dY + (i*3), { align: 'center' });
+    });
     doc.setFontSize(6.5); doc.setTextColor(150,150,150);
-    doc.text('Erstellt mit PACDI Quittung Generator · pacdi.store', pageWidth/2, pageHeight-6, { align: 'center' });
+    doc.text('pacdi.store · Beleg-Nr. ' + belegNr, pageWidth/2, pageHeight-4, { align: 'center' });
 
     doc.save('Quittung_' + belegNr + '.pdf');
 
     localStorage.setItem(COUNTER_KEY, String(belegNrNum));
+    incrementMonthlyUsage();
+    updateUsageDisplay();
     var history = loadHistory();
     history.push({ belegNr: belegNr, datum: datum, leistung: leistung, betrag: betrag, taxMode: taxMode, erstelltAm: new Date().toISOString() });
     saveHistory(history);
@@ -624,74 +708,40 @@
     }, 500);
   });
 
-})();
-</script>
-<script>
-(function() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  // ── Paywall modal controls ──
+  function showModalState(state) {
+    document.getElementById('modalStateInfo').style.display = state === 'info' ? 'block' : 'none';
+    document.getElementById('modalStateForm').style.display = state === 'form' ? 'block' : 'none';
+    document.getElementById('modalStateSuccess').style.display = state === 'success' ? 'block' : 'none';
   }
-
-  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  var isInStandalone = ('standalone' in navigator && navigator.standalone);
-  var shown = sessionStorage.getItem('pwa-banner-shown');
-  if (shown || isInStandalone) return;
-
-  if (isIOS) {
-    setTimeout(function() {
-      var bar = document.createElement('div');
-      bar.id = 'pwa-banner';
-      bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#04162E;border-top:2px solid #F6B45F;padding:14px 16px;z-index:9999;font-family:system-ui;';
-      bar.innerHTML =
-        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
-          '<div>' +
-            '<div style="color:#F6B45F;font-size:0.82rem;font-weight:700;margin-bottom:4px;">📲 Ana ekrana ekle</div>' +
-            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">Safari\'de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.</div>' +
-            '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS\'ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
-          '</div>' +
-          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
-        '</div>';
-      document.body.appendChild(bar);
-      sessionStorage.setItem('pwa-banner-shown', '1');
-    }, 3000);
-    return;
+  function closePaywall() {
+    document.getElementById('paywallModal').classList.remove('active');
+    setTimeout(function() { showModalState('info'); }, 300);
   }
+  document.getElementById('btnCancelModal').addEventListener('click', closePaywall);
+  document.getElementById('btnCancelModal2').addEventListener('click', closePaywall);
+  document.getElementById('btnCloseSuccess').addEventListener('click', closePaywall);
+  document.getElementById('btnEarlyAccess').addEventListener('click', function() { showModalState('form'); });
 
-  var deferredPrompt = null;
-  window.addEventListener('beforeinstallprompt', function(e) {
-    e.preventDefault();
-    deferredPrompt = e;
-    setTimeout(function() {
-      if (!deferredPrompt) return;
-      var bar = document.createElement('div');
-      bar.id = 'pwa-banner';
-      bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#04162E;border-top:2px solid #F6B45F;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:9999;font-family:system-ui;';
-      bar.innerHTML =
-        '<span style="color:#eaf2fb;font-size:0.85rem;">📲 Ana ekrana ekle &mdash; daha hızlı aç!</span>' +
-        '<div style="display:flex;gap:8px;">' +
-          '<button onclick="installPWA()" style="background:#F6B45F;border:none;color:#04162E;padding:6px 16px;border-radius:20px;font-weight:700;cursor:pointer;font-size:0.82rem;">Ekle</button>' +
-          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" style="background:transparent;border:1px solid rgba(246,180,95,0.3);color:#7a9ab8;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:0.82rem;">Sonra</button>' +
-        '</div>';
-      document.body.appendChild(bar);
-    }, 3000);
+  document.getElementById('btnSubmitEA').addEventListener('click', function() {
+    var emailInput = document.getElementById('earlyAccessEmail');
+    var msg = document.getElementById('earlyAccessMsg');
+    var email = emailInput.value.trim();
+    if (!email || email.indexOf('@') < 1 || email.indexOf('.') < 2) {
+      msg.style.color = '#f87171';
+      msg.textContent = '⚠ Bitte gültige E-Mail eingeben';
+      return;
+    }
+    var leads = JSON.parse(localStorage.getItem('quittung_early_access_leads') || '[]');
+    leads.push({ email: email, ts: new Date().toISOString() });
+    localStorage.setItem('quittung_early_access_leads', JSON.stringify(leads));
+    showModalState('success');
   });
 
-  window.installPWA = function() {
-    if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(function(){ deferredPrompt=null; }); }
-    var b = document.getElementById('pwa-banner'); if (b) b.remove();
-    sessionStorage.setItem('pwa-banner-shown', '1');
-  };
+  // ── Initial usage display ──
+  updateUsageDisplay();
+
 })();
 </script>
-
-<div id="pacdi-fsek" style="clear:both;width:100%;flex-basis:100%;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-sizing:border-box;">
-  <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.25);border-radius:24px;padding:8px 20px;margin-bottom:12px;flex-wrap:wrap;justify-content:center;">
-    <span style="font-size:1rem;">🛡️</span>
-    <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#D4AF37;text-transform:uppercase;">FSEK Registered · PACDI Framework</span>
-  </div>
-  <div style="font-size:0.78rem;color:#8A8F9A;margin-bottom:4px;">Operated by AskMeAI Teknoloji Ltd. Şti. (TR: 23837)</div>
-  <div style="font-size:0.72rem;color:#6B7280;margin-bottom:10px;">Intellectual property owned by © 2026 PACDI Global Yazılım Ltd. Şti. &mdash; FSEK No: <a href="https://pacdi.eu/legal.html" style="color:#D4AF37;text-decoration:none;">2026/18897</a></div>
-  <div style="font-size:0.82rem;font-style:italic;color:#6B7280;">&ldquo;Technology in the service of humanity.&rdquo;</div>
-</div>
 </body>
 </html>
