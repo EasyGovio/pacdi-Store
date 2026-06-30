@@ -23,6 +23,9 @@
         .logo { font-size: 0.95rem; font-weight: 800; color: #F6B45F; text-decoration: none; }
         nav a { color: #7a9ab8; text-decoration: none; font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; }
         nav a:hover { color: #F6B45F; }
+        .lang-bar { display: flex; gap: 4px; margin-left: 12px; }
+        .lang-btn { background: transparent; border: 1px solid rgba(246,180,95,0.2); color: #7a9ab8; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .lang-btn.active, .lang-btn:hover { border-color: #F6B45F; color: #F6B45F; }
         main { max-width: 1100px; margin: 0 auto; padding: 32px 20px 64px; }
         .hero { margin-bottom: 36px; }
         .hero h1 { font-size: 1.8rem; color: #F6B45F; margin-bottom: 8px; }
@@ -45,242 +48,247 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="PACDI">
-    <script>
-(function(){
-  if (sessionStorage.getItem('autoLang')) return;
-  var bl = (navigator.language || navigator.userLanguage || 'en').substring(0,2).toLowerCase();
-  var supported = ['tr','de','en'];
-  var lang = supported.indexOf(bl) > -1 ? bl : 'en';
-  sessionStorage.setItem('autoLang', lang);
-})();
-</script>
 </head>
 <body>
 <header>
   <div class="header-inner">
     <a href="/index.html" class="logo">PACDI Store</a>
-    <nav>
-      <a href="/index.html">← Store</a>
-      <a href="/pruefprotokoll.html">⚡ Prüfprotokoll</a>
-      <a href="/qr.html">▣ QR</a>
-    </nav>
+    <div style="display:flex;align-items:center;">
+      <nav>
+        <a href="/index.html">← Store</a>
+        <a href="/pruefprotokoll.html">⚡ Prüfprotokoll</a>
+        <a href="/qr.html">▣ QR</a>
+      </nav>
+      <div class="lang-bar">
+        <button class="lang-btn" data-lang="tr" onclick="setLanguage('tr')">TR</button>
+        <button class="lang-btn active" data-lang="de" onclick="setLanguage('de')">DE</button>
+        <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+      </div>
+    </div>
   </div>
 </header>
 <main>
   <div class="hero">
-    <h1>DGUV V3 Ratgeber & Wissen</h1>
-    <p>35 Artikel rund um Prüfprotokolle, Prüffristen, Software-Vergleiche und rechtliche Grundlagen.</p>
+    <h1 id="hero-title">DGUV V3 Ratgeber & Wissen</h1>
+    <p id="hero-desc">35 Artikel rund um Prüfprotokolle, Prüffristen, Software-Vergleiche und rechtliche Grundlagen.</p>
   </div>
 
-<div class="group-label">Grup 1 — Ohne Excel</div>
-<div class="grid">
-<a href="dguv-v3-ohne-excel-chaos.html" class="card">
-  <div class="card-title">DGUV V3 ohne Excel Chaos</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="pruefprotokoll-elektrischer-anlagen-ohne-excel.html" class="card">
-  <div class="card-title">Prüfprotokoll elektrischer Anlagen ohne Excel</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-vorschrift-3-protokoll-papierlos.html" class="card">
-  <div class="card-title">DGUV Vorschrift 3 Protokoll papierlos</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="schluss-mit-excel-elektropruefung.html" class="card">
-  <div class="card-title">Schluss mit Excel Elektroprüfung</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-pruefbericht-direkt-smartphone.html" class="card">
-  <div class="card-title">DGUV Prüfbericht direkt auf dem Smartphone</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-</div>
-<div class="group-label">Grup 2 — Hız</div>
-<div class="grid">
-<a href="dguv-v3-protokoll-in-2-minuten.html" class="card">
-  <div class="card-title">DGUV V3 Protokoll in 2 Minuten</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="elektropruefprotokoll-auf-knopfdruck-pdf.html" class="card">
-  <div class="card-title">Elektroprüfprotokoll auf Knopfdruck PDF</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="schnellste-dguv-v3-dokumentation-mobil.html" class="card">
-  <div class="card-title">Schnellste DGUV V3 Dokumentation mobil</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-v3-prueffristen-automatisch-berechnen.html" class="card">
-  <div class="card-title">DGUV V3 Prüffristen automatisch berechnen</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="elektropruefung-app-schnelles-pdf.html" class="card">
-  <div class="card-title">Elektroprüfung App schnelles PDF</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-</div>
-<div class="group-label">Grup 3 — Korku</div>
-<div class="grid">
-<a href="fehlendes-dguv-v3-pruefprotokoll-konsequenzen.html" class="card">
-  <div class="card-title">Fehlendes DGUV V3 Prüfprotokoll Konsequenzen</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="haeufige-fehler-dguv-v3-pruefprotokoll.html" class="card">
-  <div class="card-title">Häufige Fehler beim DGUV V3 Prüfprotokoll</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-v3-pruefung-pflichtformular-mythos.html" class="card">
-  <div class="card-title">DGUV V3 Prüfung Pflichtformular Mythos</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="warum-bg-pruefer-excel-protokolle-hasst.html" class="card">
-  <div class="card-title">Warum der BG-Prüfer Ihre Excel-Protokolle hasst</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-v3-pruefung-versaeumt-was-nun.html" class="card">
-  <div class="card-title">DGUV V3 Prüfung versäumt – was nun?</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-</div>
-<div class="group-label">Grup 4 — SaaS/PWA</div>
-<div class="grid">
-<a href="dguv-pruefsoftware-ohne-installation.html" class="card">
-  <div class="card-title">DGUV Prüfsoftware ohne Installation</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-v3-app-ohne-anmeldung-testen.html" class="card">
-  <div class="card-title">DGUV V3 App ohne Anmeldung testen</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-protokoll-lokale-speicherung-dsgvo.html" class="card">
-  <div class="card-title">DGUV Protokoll lokale Speicherung DSGVO</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-software-kostenlos-testen-browser.html" class="card">
-  <div class="card-title">DGUV Software kostenlos testen Browser</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="pruefprotokoll-app-dsgvo-konform-deutschland.html" class="card">
-  <div class="card-title">Prüfprotokoll App DSGVO konform Deutschland</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-</div>
-<div class="group-label">Grup 5 — B2B</div>
-<div class="grid">
-<a href="dguv-v3-software-elektriker-betrieb.html" class="card">
-  <div class="card-title">DGUV V3 Software für Elektriker Betrieb</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="pruefprotokoll-mehrere-standorte.html" class="card">
-  <div class="card-title">Prüfprotokoll für mehrere Standorte</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-dokumentation-handwerksbetrieb.html" class="card">
-  <div class="card-title">DGUV Dokumentation Handwerksbetrieb</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-pruefprotokoll-vorlage-unternehmen-kostenlos.html" class="card">
-  <div class="card-title">DGUV Prüfprotokoll Vorlage Unternehmen kostenlos</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="elektriker-software-klein-betrieb-günstig.html" class="card">
-  <div class="card-title">Elektriker Software klein Betrieb günstig</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-</div>
-<div class="group-label">Grup 6 — Rakip</div>
-<div class="grid">
-<a href="dguv-software-alternative-zu-pruefmaster.html" class="card">
-  <div class="card-title">DGUV Software Alternative zu Prüfmaster</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="billiger-als-vde-pruefsoftware.html" class="card">
-  <div class="card-title">Billiger als VDE-Prüfsoftware</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-protokoll-kostenlos-statt-teurer-software.html" class="card">
-  <div class="card-title">DGUV Protokoll kostenlos statt teurer Software</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="pruefprotokoll-software-vergleich-klein-betrieb.html" class="card">
-  <div class="card-title">Prüfprotokoll Software Vergleich Klein Betrieb</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-v3-tool-günstiger-als-80-euro.html" class="card">
-  <div class="card-title">DGUV V3 Tool günstiger als 80 Euro</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-</div>
-<div class="group-label">Grup 7 — Mevsimsel</div>
-<div class="grid">
-<a href="dguv-pruefung-faellig-erinnerung.html" class="card">
-  <div class="card-title">DGUV Prüfung fällig Erinnerung</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="bgv-a3-jahrespruefung-checkliste.html" class="card">
-  <div class="card-title">BGV A3 Jahresprüfung Checkliste</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-v3-pruefintervall-uebersicht.html" class="card">
-  <div class="card-title">DGUV V3 Prüfintervall Übersicht</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="elektrische-betriebsmittel-pruefung-frist-abgelaufen.html" class="card">
-  <div class="card-title">Elektrische Betriebsmittel Prüfung Frist abgelaufen</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-<a href="dguv-pruefprotokoll-jahresende-pflicht.html" class="card">
-  <div class="card-title">DGUV Prüfprotokoll Jahresende Pflicht</div>
-  <div class="card-cta">Lesen →</div>
-</a>
-</div>
+  <div id="group1-label" class="group-label">Grup 1 — Ohne Excel</div>
+  <div class="grid">
+    <a href="dguv-v3-ohne-excel-chaos.html" class="card" data-key="dguv-v3-ohne-excel-chaos">
+      <div class="card-title">DGUV V3 ohne Excel Chaos</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="pruefprotokoll-elektrischer-anlagen-ohne-excel.html" class="card" data-key="pruefprotokoll-elektrischer-anlagen-ohne-excel">
+      <div class="card-title">Prüfprotokoll elektrischer Anlagen ohne Excel</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-vorschrift-3-protokoll-papierlos.html" class="card" data-key="dguv-vorschrift-3-protokoll-papierlos">
+      <div class="card-title">DGUV Vorschrift 3 Protokoll papierlos</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="schluss-mit-excel-elektropruefung.html" class="card" data-key="schluss-mit-excel-elektropruefung">
+      <div class="card-title">Schluss mit Excel Elektroprüfung</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-pruefbericht-direkt-smartphone.html" class="card" data-key="dguv-pruefbericht-direkt-smartphone">
+      <div class="card-title">DGUV Prüfbericht direkt auf dem Smartphone</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+  </div>
 
+  <div id="group2-label" class="group-label">Grup 2 — Hız</div>
+  <div class="grid">
+    <a href="dguv-v3-protokoll-in-2-minuten.html" class="card" data-key="dguv-v3-protokoll-in-2-minuten">
+      <div class="card-title">DGUV V3 Protokoll in 2 Minuten</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="elektropruefprotokoll-auf-knopfdruck-pdf.html" class="card" data-key="elektropruefprotokoll-auf-knopfdruck-pdf">
+      <div class="card-title">Elektroprüfprotokoll auf Knopfdruck PDF</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="schnellste-dguv-v3-dokumentation-mobil.html" class="card" data-key="schnellste-dguv-v3-dokumentation-mobil">
+      <div class="card-title">Schnellste DGUV V3 Dokumentation mobil</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-v3-prueffristen-automatisch-berechnen.html" class="card" data-key="dguv-v3-prueffristen-automatisch-berechnen">
+      <div class="card-title">DGUV V3 Prüffristen automatisch berechnen</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="elektropruefung-app-schnelles-pdf.html" class="card" data-key="elektropruefung-app-schnelles-pdf">
+      <div class="card-title">Elektroprüfung App schnelles PDF</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+  </div>
 
-  <div class="cta-strip">
+  <div id="group3-label" class="group-label">Grup 3 — Korku</div>
+  <div class="grid">
+    <a href="fehlendes-dguv-v3-pruefprotokoll-konsequenzen.html" class="card" data-key="fehlendes-dguv-v3-pruefprotokoll-konsequenzen">
+      <div class="card-title">Fehlendes DGUV V3 Prüfprotokoll Konsequenzen</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="haeufige-fehler-dguv-v3-pruefprotokoll.html" class="card" data-key="haeufige-fehler-dguv-v3-pruefprotokoll">
+      <div class="card-title">Häufige Fehler beim DGUV V3 Prüfprotokoll</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-v3-pruefung-pflichtformular-mythos.html" class="card" data-key="dguv-v3-pruefung-pflichtformular-mythos">
+      <div class="card-title">DGUV V3 Prüfung Pflichtformular Mythos</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="warum-bg-pruefer-excel-protokolle-hasst.html" class="card" data-key="warum-bg-pruefer-excel-protokolle-hasst">
+      <div class="card-title">Warum der BG-Prüfer Ihre Excel-Protokolle hasst</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-v3-pruefung-versaeumt-was-nun.html" class="card" data-key="dguv-v3-pruefung-versaeumt-was-nun">
+      <div class="card-title">DGUV V3 Prüfung versäumt – was nun?</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+  </div>
+
+  <div id="group4-label" class="group-label">Grup 4 — SaaS/PWA</div>
+  <div class="grid">
+    <a href="dguv-pruefsoftware-ohne-installation.html" class="card" data-key="dguv-pruefsoftware-ohne-installation">
+      <div class="card-title">DGUV Prüfsoftware ohne Installation</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-v3-app-ohne-anmeldung-testen.html" class="card" data-key="dguv-v3-app-ohne-anmeldung-testen">
+      <div class="card-title">DGUV V3 App ohne Anmeldung testen</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-protokoll-lokale-speicherung-dsgvo.html" class="card" data-key="dguv-protokoll-lokale-speicherung-dsgvo">
+      <div class="card-title">DGUV Protokoll lokale Speicherung DSGVO</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-software-kostenlos-testen-browser.html" class="card" data-key="dguv-software-kostenlos-testen-browser">
+      <div class="card-title">DGUV Software kostenlos testen Browser</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="pruefprotokoll-app-dsgvo-konform-deutschland.html" class="card" data-key="pruefprotokoll-app-dsgvo-konform-deutschland">
+      <div class="card-title">Prüfprotokoll App DSGVO konform Deutschland</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+  </div>
+
+  <div id="group5-label" class="group-label">Grup 5 — B2B</div>
+  <div class="grid">
+    <a href="dguv-v3-software-elektriker-betrieb.html" class="card" data-key="dguv-v3-software-elektriker-betrieb">
+      <div class="card-title">DGUV V3 Software für Elektriker Betrieb</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="pruefprotokoll-mehrere-standorte.html" class="card" data-key="pruefprotokoll-mehrere-standorte">
+      <div class="card-title">Prüfprotokoll für mehrere Standorte</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-dokumentation-handwerksbetrieb.html" class="card" data-key="dguv-dokumentation-handwerksbetrieb">
+      <div class="card-title">DGUV Dokumentation Handwerksbetrieb</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-pruefprotokoll-vorlage-unternehmen-kostenlos.html" class="card" data-key="dguv-pruefprotokoll-vorlage-unternehmen-kostenlos">
+      <div class="card-title">DGUV Prüfprotokoll Vorlage Unternehmen kostenlos</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="elektriker-software-klein-betrieb-günstig.html" class="card" data-key="elektriker-software-klein-betrieb-günstig">
+      <div class="card-title">Elektriker Software klein Betrieb günstig</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+  </div>
+
+  <div id="group6-label" class="group-label">Grup 6 — Rakip</div>
+  <div class="grid">
+    <a href="dguv-software-alternative-zu-pruefmaster.html" class="card" data-key="dguv-software-alternative-zu-pruefmaster">
+      <div class="card-title">DGUV Software Alternative zu Prüfmaster</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="billiger-als-vde-pruefsoftware.html" class="card" data-key="billiger-als-vde-pruefsoftware">
+      <div class="card-title">Billiger als VDE-Prüfsoftware</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-protokoll-kostenlos-statt-teurer-software.html" class="card" data-key="dguv-protokoll-kostenlos-statt-teurer-software">
+      <div class="card-title">DGUV Protokoll kostenlos statt teurer Software</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="pruefprotokoll-software-vergleich-klein-betrieb.html" class="card" data-key="pruefprotokoll-software-vergleich-klein-betrieb">
+      <div class="card-title">Prüfprotokoll Software Vergleich Klein Betrieb</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-v3-tool-guenstiger-als-80-euro.html" class="card" data-key="dguv-v3-tool-guenstiger-als-80-euro">
+      <div class="card-title">DGUV V3 Tool günstiger als 80 Euro</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+  </div>
+
+  <div id="group7-label" class="group-label">Grup 7 — Mevsimsel</div>
+  <div class="grid">
+    <a href="dguv-pruefung-faellig-erinnerung.html" class="card" data-key="dguv-pruefung-faellig-erinnerung">
+      <div class="card-title">DGUV Prüfung fällig Erinnerung</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="bgv-a3-jahrespruefung-checkliste.html" class="card" data-key="bgv-a3-jahrespruefung-checkliste">
+      <div class="card-title">BGV A3 Jahresprüfung Checkliste</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-v3-pruefintervall-uebersicht.html" class="card" data-key="dguv-v3-pruefintervall-uebersicht">
+      <div class="card-title">DGUV V3 Prüfintervall Übersicht</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="elektrische-betriebsmittel-pruefung-frist-abgelaufen.html" class="card" data-key="elektrische-betriebsmittel-pruefung-frist-abgelaufen">
+      <div class="card-title">Elektrische Betriebsmittel Prüfung Frist abgelaufen</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+    <a href="dguv-pruefprotokoll-jahresende-pflicht.html" class="card" data-key="dguv-pruefprotokoll-jahresende-pflicht">
+      <div class="card-title">DGUV Prüfprotokoll Jahresende Pflicht</div>
+      <div class="card-cta">Lesen →</div>
+    </a>
+  </div>
+
+  <div class="cta-strip" id="cta1">
     <div>
-      <strong>⚡ DGUV V3 Prüfprotokoll direkt testen</strong>
-      <p>Kostenlos, ohne Login, direkt im Browser — in 2 Minuten fertig.</p>
+      <strong id="cta1-title">⚡ DGUV V3 Prüfprotokoll direkt testen</strong>
+      <p id="cta1-desc">Kostenlos, ohne Login, direkt im Browser — in 2 Minuten fertig.</p>
     </div>
-    <a href="/pruefprotokoll.html" class="btn">Jetzt testen →</a>
+    <a href="/pruefprotokoll.html" class="btn" id="cta1-btn">Jetzt testen →</a>
   </div>
 
   <div style="margin-top:40px;">
-    <div style="font-size:0.75rem;font-weight:700;letter-spacing:0.08em;color:#F6B45F;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(246,180,95,0.2);">🔳 QR &amp; Barkod Rehberi</div>
+    <div id="qr-section-title" style="font-size:0.75rem;font-weight:700;letter-spacing:0.08em;color:#F6B45F;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(246,180,95,0.2);">🔳 QR &amp; Barkod Rehberi</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;">
-      <a href="ucretsiz-qr-kod-olusturucu.html" class="card">
+      <a href="ucretsiz-qr-kod-olusturucu.html" class="card" data-key="qr-ucretsiz-qr-kod-olusturucu">
         <div class="card-title">Ücretsiz QR Kod Oluşturucu — Kayıt Gerekmez</div>
         <div class="card-cta">Oku →</div>
       </a>
-      <a href="wifi-qr-kod-olusturma.html" class="card">
+      <a href="wifi-qr-kod-olusturma.html" class="card" data-key="qr-wifi-qr-kod-olusturma">
         <div class="card-title">WiFi QR Kodu Nasıl Oluşturulur? Misafirler İçin Kolay Bağlantı</div>
         <div class="card-cta">Oku →</div>
       </a>
-      <a href="vcard-qr-dijital-kartvizit.html" class="card">
+      <a href="vcard-qr-dijital-kartvizit.html" class="card" data-key="qr-vcard-qr-dijital-kartvizit">
         <div class="card-title">vCard QR Kod ile Dijital Kartvizit — Kağıt Kartvizit Devri Bitti</div>
         <div class="card-cta">Oku →</div>
       </a>
-      <a href="etkinlik-qr-kodu-takvime-ekle.html" class="card">
+      <a href="etkinlik-qr-kodu-takvime-ekle.html" class="card" data-key="qr-etkinlik-qr-kodu-takvime-ekle">
         <div class="card-title">Etkinlik QR Kodu — Taratınca Telefon Takvimine Otomatik Ekle</div>
         <div class="card-cta">Oku →</div>
       </a>
-      <a href="barkod-olusturucu-ucretsiz.html" class="card">
+      <a href="barkod-olusturucu-ucretsiz.html" class="card" data-key="qr-barkod-olusturucu-ucretsiz">
         <div class="card-title">Ücretsiz Barkod Oluşturucu — EAN-13, EAN-8, Code 128, Code 39</div>
         <div class="card-cta">Oku →</div>
       </a>
     </div>
   </div>
 
-  <div class="cta-strip" style="margin-top:24px;">
+  <div class="cta-strip" style="margin-top:24px;" id="cta2">
     <div>
-      <strong>🔳 QR &amp; Barkod Oluşturucu</strong>
-      <p>Ücretsiz, kayıt gerekmez, watermark yok — hemen deneyin.</p>
+      <strong id="cta2-title">🔳 QR &amp; Barkod Oluşturucu</strong>
+      <p id="cta2-desc">Ücretsiz, kayıt gerekmez, watermark yok — hemen deneyin.</p>
     </div>
-    <a href="/qr.html" class="btn">Hemen Dene →</a>
+    <a href="/qr.html" class="btn" id="cta2-btn">Hemen Dene →</a>
   </div>
+
 </main>
 <footer>
   <span>© 2026 PACDI Global · pacdi.store</span>
   <a href="/legal.html">Impressum & Datenschutz</a>
 </footer>
+
 <div id="pacdi-fsek" style="clear:both;width:100%;flex-basis:100%;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
   <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.25);border-radius:24px;padding:8px 20px;margin-bottom:12px;">
     <span style="font-size:1rem;">🛡️</span>
@@ -290,8 +298,247 @@
   <div style="font-size:0.72rem;color:#6B7280;margin-bottom:10px;">Intellectual property owned by © 2026 PACDI Global Yazılım Ltd. Şti. &mdash; FSEK No: <a href="https://pacdi.eu/legal.html" style="color:#D4AF37;text-decoration:none;">2026/18897</a></div>
   <div style="font-size:0.82rem;font-style:italic;color:#6B7280;">&ldquo;Technology in the service of humanity.&rdquo;</div>
 </div>
+
 <script>
 (function() {
+  var i18n = {
+    tr: {
+      hero_title: "DGUV V3 Rehberi & Bilgi",
+      hero_desc: "Prüfprotokoller, Prüf süreleri, yazılım karşılaştırmaları ve yasal temeller hakkında 35 makale.",
+      group1: "Grup 1 — Excel'siz",
+      group2: "Grup 2 — Hız",
+      group3: "Grup 3 — Korku",
+      group4: "Grup 4 — SaaS/PWA",
+      group5: "Grup 5 — B2B",
+      group6: "Grup 6 — Rakip",
+      group7: "Grup 7 — Mevsimsel",
+      cta1_title: "⚡ DGUV V3 Prüfprotokolünü hemen dene",
+      cta1_desc: "Ücretsiz, giriş yok, doğrudan tarayıcıda — 2 dakikada hazır.",
+      cta1_btn: "Hemen dene →",
+      qr_title: "🔳 QR & Barkod Rehberi",
+      cta2_title: "🔳 QR & Barkod Oluşturucu",
+      cta2_desc: "Ücretsiz, kayıt gerekmez, watermark yok — hemen deneyin.",
+      cta2_btn: "Hemen Dene →",
+      read_more: "Oku →",
+      card_dguv_v3_ohne_excel_chaos: "DGUV V3 Excel'siz Kargaşa",
+      card_pruefprotokoll_elektrischer_anlagen_ohne_excel: "Excel'siz Elektrik Tesisatları Prüfprotokolü",
+      card_dguv_vorschrift_3_protokoll_papierlos: "DGUV Vorschrift 3 Protokolü kağıtsız",
+      card_schluss_mit_excel_elektropruefung: "Excel ile Elektrik Testine Son",
+      card_dguv_pruefbericht_direkt_smartphone: "DGUV Test Raporu doğrudan akıllı telefonda",
+      card_dguv_v3_protokoll_in_2_minuten: "DGUV V3 Protokolü 2 dakikada",
+      card_elektropruefprotokoll_auf_knopfdruck_pdf: "Elektrik Test Protokolü tek tuşla PDF",
+      card_schnellste_dguv_v3_dokumentation_mobil: "En hızlı DGUV V3 Dokümantasyonu mobil",
+      card_dguv_v3_prueffristen_automatisch_berechnen: "DGUV V3 Test Sürelerini otomatik hesapla",
+      card_elektropruefung_app_schnelles_pdf: "Elektrik Test Uygulaması hızlı PDF",
+      card_fehlendes_dguv_v3_pruefprotokoll_konsequenzen: "Eksik DGUV V3 Test Protokolü Sonuçları",
+      card_haeufige_fehler_dguv_v3_pruefprotokoll: "DGUV V3 Test Protokolünde Sık Yapılan Hatalar",
+      card_dguv_v3_pruefung_pflichtformular_mythos: "DGUV V3 Test Zorunlu Form Efsanesi",
+      card_warum_bg_pruefer_excel_protokolle_hasst: "BG Denetçisi Excel Protokollerinizden Neden Nefret Ediyor?",
+      card_dguv_v3_pruefung_versaeumt_was_nun: "DGUV V3 Testi Kaçırıldı – Şimdi Ne Olacak?",
+      card_dguv_pruefsoftware_ohne_installation: "Kurulum Gerektirmeyen DGUV Test Yazılımı",
+      card_dguv_v3_app_ohne_anmeldung_testen: "Kayıt Olmadan DGUV V3 Uygulamasını Test Et",
+      card_dguv_protokoll_lokale_speicherung_dsgvo: "DGUV Protokolü Yerel Depolama DSGVO",
+      card_dguv_software_kostenlos_testen_browser: "DGUV Yazılımını Tarayıcıda Ücretsiz Test Et",
+      card_pruefprotokoll_app_dsgvo_konform_deutschland: "Almanya'da DSGVO Uyumlu Test Protokolü Uygulaması",
+      card_dguv_v3_software_elektriker_betrieb: "Elektrikçi İşletmesi için DGUV V3 Yazılımı",
+      card_pruefprotokoll_mehrere_standorte: "Birden Fazla Lokasyon için Test Protokolü",
+      card_dguv_dokumentation_handwerksbetrieb: "Zanaatkar İşletmesi için DGUV Dokümantasyonu",
+      card_dguv_pruefprotokoll_vorlage_unternehmen_kostenlos: "İşletmeler için Ücretsiz DGUV Test Protokolü Şablonu",
+      card_elektriker_software_klein_betrieb_günstig: "Küçük İşletme için Uygun Fiyatlı Elektrikçi Yazılımı",
+      card_dguv_software_alternative_zu_pruefmaster: "Prüfmaster'a Alternatif DGUV Yazılımı",
+      card_billiger_als_vde_pruefsoftware: "VDE Test Yazılımından Daha Ucuz",
+      card_dguv_protokoll_kostenlos_statt_teurer_software: "Pahalı Yazılım Yerine Ücretsiz DGUV Protokolü",
+      card_pruefprotokoll_software_vergleich_klein_betrieb: "Küçük İşletme için Test Protokolü Yazılım Karşılaştırması",
+      card_dguv_v3_tool_guenstiger_als_80_euro: "80 Euro'dan Ucuz DGUV V3 Aracı",
+      card_dguv_pruefung_faellig_erinnerung: "DGUV Testi Vadesi Geldi Hatırlatıcı",
+      card_bgv_a3_jahrespruefung_checkliste: "BGV A3 Yıllık Test Kontrol Listesi",
+      card_dguv_v3_pruefintervall_uebersicht: "DGUV V3 Test Aralığı Genel Bakış",
+      card_elektrische_betriebsmittel_pruefung_frist_abgelaufen: "Elektrikli Ekipman Testi Süresi Doldu",
+      card_dguv_pruefprotokoll_jahresende_pflicht: "Yıl Sonu DGUV Test Protokolü Zorunluluğu",
+      card_qr_ucretsiz_qr_kod_olusturucu: "Ücretsiz QR Kod Oluşturucu — Kayıt Gerekmez",
+      card_qr_wifi_qr_kod_olusturma: "WiFi QR Kodu Nasıl Oluşturulur? Misafirler İçin Kolay Bağlantı",
+      card_qr_vcard_qr_dijital_kartvizit: "vCard QR Kod ile Dijital Kartvizit — Kağıt Kartvizit Devri Bitti",
+      card_qr_etkinlik_qr_kodu_takvime_ekle: "Etkinlik QR Kodu — Taratınca Telefon Takvimine Otomatik Ekle",
+      card_qr_barkod_olusturucu_ucretsiz: "Ücretsiz Barkod Oluşturucu — EAN-13, EAN-8, Code 128, Code 39"
+    },
+    de: {
+      hero_title: "DGUV V3 Ratgeber & Wissen",
+      hero_desc: "35 Artikel rund um Prüfprotokolle, Prüffristen, Software-Vergleiche und rechtliche Grundlagen.",
+      group1: "Gruppe 1 — Ohne Excel",
+      group2: "Gruppe 2 — Geschwindigkeit",
+      group3: "Gruppe 3 — Angst",
+      group4: "Gruppe 4 — SaaS/PWA",
+      group5: "Gruppe 5 — B2B",
+      group6: "Gruppe 6 — Konkurrenz",
+      group7: "Gruppe 7 — Saisonal",
+      cta1_title: "⚡ DGUV V3 Prüfprotokoll direkt testen",
+      cta1_desc: "Kostenlos, ohne Login, direkt im Browser — in 2 Minuten fertig.",
+      cta1_btn: "Jetzt testen →",
+      qr_title: "🔳 QR & Barcode Ratgeber",
+      cta2_title: "🔳 QR & Barcode Generator",
+      cta2_desc: "Kostenlos, keine Registrierung, kein Wasserzeichen — jetzt ausprobieren.",
+      cta2_btn: "Jetzt testen →",
+      read_more: "Lesen →",
+      card_dguv_v3_ohne_excel_chaos: "DGUV V3 ohne Excel Chaos",
+      card_pruefprotokoll_elektrischer_anlagen_ohne_excel: "Prüfprotokoll elektrischer Anlagen ohne Excel",
+      card_dguv_vorschrift_3_protokoll_papierlos: "DGUV Vorschrift 3 Protokoll papierlos",
+      card_schluss_mit_excel_elektropruefung: "Schluss mit Excel Elektroprüfung",
+      card_dguv_pruefbericht_direkt_smartphone: "DGUV Prüfbericht direkt auf dem Smartphone",
+      card_dguv_v3_protokoll_in_2_minuten: "DGUV V3 Protokoll in 2 Minuten",
+      card_elektropruefprotokoll_auf_knopfdruck_pdf: "Elektroprüfprotokoll auf Knopfdruck PDF",
+      card_schnellste_dguv_v3_dokumentation_mobil: "Schnellste DGUV V3 Dokumentation mobil",
+      card_dguv_v3_prueffristen_automatisch_berechnen: "DGUV V3 Prüffristen automatisch berechnen",
+      card_elektropruefung_app_schnelles_pdf: "Elektroprüfung App schnelles PDF",
+      card_fehlendes_dguv_v3_pruefprotokoll_konsequenzen: "Fehlendes DGUV V3 Prüfprotokoll Konsequenzen",
+      card_haeufige_fehler_dguv_v3_pruefprotokoll: "Häufige Fehler beim DGUV V3 Prüfprotokoll",
+      card_dguv_v3_pruefung_pflichtformular_mythos: "DGUV V3 Prüfung Pflichtformular Mythos",
+      card_warum_bg_pruefer_excel_protokolle_hasst: "Warum der BG-Prüfer Ihre Excel-Protokolle hasst",
+      card_dguv_v3_pruefung_versaeumt_was_nun: "DGUV V3 Prüfung versäumt – was nun?",
+      card_dguv_pruefsoftware_ohne_installation: "DGUV Prüfsoftware ohne Installation",
+      card_dguv_v3_app_ohne_anmeldung_testen: "DGUV V3 App ohne Anmeldung testen",
+      card_dguv_protokoll_lokale_speicherung_dsgvo: "DGUV Protokoll lokale Speicherung DSGVO",
+      card_dguv_software_kostenlos_testen_browser: "DGUV Software kostenlos testen Browser",
+      card_pruefprotokoll_app_dsgvo_konform_deutschland: "Prüfprotokoll App DSGVO konform Deutschland",
+      card_dguv_v3_software_elektriker_betrieb: "DGUV V3 Software für Elektriker Betrieb",
+      card_pruefprotokoll_mehrere_standorte: "Prüfprotokoll für mehrere Standorte",
+      card_dguv_dokumentation_handwerksbetrieb: "DGUV Dokumentation Handwerksbetrieb",
+      card_dguv_pruefprotokoll_vorlage_unternehmen_kostenlos: "DGUV Prüfprotokoll Vorlage Unternehmen kostenlos",
+      card_elektriker_software_klein_betrieb_günstig: "Elektriker Software klein Betrieb günstig",
+      card_dguv_software_alternative_zu_pruefmaster: "DGUV Software Alternative zu Prüfmaster",
+      card_billiger_als_vde_pruefsoftware: "Billiger als VDE-Prüfsoftware",
+      card_dguv_protokoll_kostenlos_statt_teurer_software: "DGUV Protokoll kostenlos statt teurer Software",
+      card_pruefprotokoll_software_vergleich_klein_betrieb: "Prüfprotokoll Software Vergleich Klein Betrieb",
+      card_dguv_v3_tool_guenstiger_als_80_euro: "DGUV V3 Tool günstiger als 80 Euro",
+      card_dguv_pruefung_faellig_erinnerung: "DGUV Prüfung fällig Erinnerung",
+      card_bgv_a3_jahrespruefung_checkliste: "BGV A3 Jahresprüfung Checkliste",
+      card_dguv_v3_pruefintervall_uebersicht: "DGUV V3 Prüfintervall Übersicht",
+      card_elektrische_betriebsmittel_pruefung_frist_abgelaufen: "Elektrische Betriebsmittel Prüfung Frist abgelaufen",
+      card_dguv_pruefprotokoll_jahresende_pflicht: "DGUV Prüfprotokoll Jahresende Pflicht",
+      card_qr_ucretsiz_qr_kod_olusturucu: "Kostenloser QR-Code-Generator — Keine Registrierung erforderlich",
+      card_qr_wifi_qr_kod_olusturma: "Wie erstelle ich einen WiFi-QR-Code? Einfache Verbindung für Gäste",
+      card_qr_vcard_qr_dijital_kartvizit: "Digitale Visitenkarte mit vCard QR-Code — Die Ära der Papier-Visitenkarten ist vorbei",
+      card_qr_etkinlik_qr_kodu_takvime_ekle: "Event-QR-Code — Beim Scannen automatisch zum Telefonkalender hinzufügen",
+      card_qr_barkod_olusturucu_ucretsiz: "Kostenloser Barcode-Generator — EAN-13, EAN-8, Code 128, Code 39"
+    },
+    en: {
+      hero_title: "DGUV V3 Guide & Knowledge",
+      hero_desc: "35 articles on inspection protocols, inspection deadlines, software comparisons and legal foundations.",
+      group1: "Group 1 — Without Excel",
+      group2: "Group 2 — Speed",
+      group3: "Group 3 — Fear",
+      group4: "Group 4 — SaaS/PWA",
+      group5: "Group 5 — B2B",
+      group6: "Group 6 — Competitor",
+      group7: "Group 7 — Seasonal",
+      cta1_title: "⚡ Test DGUV V3 inspection protocol directly",
+      cta1_desc: "Free, no login, directly in the browser — done in 2 minutes.",
+      cta1_btn: "Try now →",
+      qr_title: "🔳 QR & Barcode Guide",
+      cta2_title: "🔳 QR & Barcode Generator",
+      cta2_desc: "Free, no registration, no watermark — try it now.",
+      cta2_btn: "Try now →",
+      read_more: "Read →",
+      card_dguv_v3_ohne_excel_chaos: "DGUV V3 without Excel Chaos",
+      card_pruefprotokoll_elektrischer_anlagen_ohne_excel: "Inspection protocol for electrical systems without Excel",
+      card_dguv_vorschrift_3_protokoll_papierlos: "DGUV Vorschrift 3 Protocol paperless",
+      card_schluss_mit_excel_elektropruefung: "End of Excel for electrical testing",
+      card_dguv_pruefbericht_direkt_smartphone: "DGUV test report directly on smartphone",
+      card_dguv_v3_protokoll_in_2_minuten: "DGUV V3 Protocol in 2 minutes",
+      card_elektropruefprotokoll_auf_knopfdruck_pdf: "Electrical test protocol at the touch of a button PDF",
+      card_schnellste_dguv_v3_dokumentation_mobil: "Fastest DGUV V3 documentation mobile",
+      card_dguv_v3_prueffristen_automatisch_berechnen: "DGUV V3 test deadlines calculate automatically",
+      card_elektropruefung_app_schnelles_pdf: "Electrical testing app quick PDF",
+      card_fehlendes_dguv_v3_pruefprotokoll_konsequenzen: "Missing DGUV V3 test protocol consequences",
+      card_haeufige_fehler_dguv_v3_pruefprotokoll: "Common mistakes in DGUV V3 test protocol",
+      card_dguv_v3_pruefung_pflichtformular_mythos: "DGUV V3 testing mandatory form myth",
+      card_warum_bg_pruefer_excel_protokolle_hasst: "Why the BG inspector hates your Excel protocols",
+      card_dguv_v3_pruefung_versaeumt_was_nun: "DGUV V3 test missed – what now?",
+      card_dguv_pruefsoftware_ohne_installation: "DGUV test software without installation",
+      card_dguv_v3_app_ohne_anmeldung_testen: "Test DGUV V3 app without registration",
+      card_dguv_protokoll_lokale_speicherung_dsgvo: "DGUV protocol local storage GDPR",
+      card_dguv_software_kostenlos_testen_browser: "Test DGUV software free in browser",
+      card_pruefprotokoll_app_dsgvo_konform_deutschland: "Test protocol app GDPR compliant Germany",
+      card_dguv_v3_software_elektriker_betrieb: "DGUV V3 software for electrician business",
+      card_pruefprotokoll_mehrere_standorte: "Test protocol for multiple locations",
+      card_dguv_dokumentation_handwerksbetrieb: "DGUV documentation for craft business",
+      card_dguv_pruefprotokoll_vorlage_unternehmen_kostenlos: "Free DGUV test protocol template for companies",
+      card_elektriker_software_klein_betrieb_günstig: "Affordable electrician software for small business",
+      card_dguv_software_alternative_zu_pruefmaster: "DGUV software alternative to Prüfmaster",
+      card_billiger_als_vde_pruefsoftware: "Cheaper than VDE test software",
+      card_dguv_protokoll_kostenlos_statt_teurer_software: "Free DGUV protocol instead of expensive software",
+      card_pruefprotokoll_software_vergleich_klein_betrieb: "Test protocol software comparison small business",
+      card_dguv_v3_tool_guenstiger_als_80_euro: "DGUV V3 tool cheaper than 80 euros",
+      card_dguv_pruefung_faellig_erinnerung: "DGUV test due reminder",
+      card_bgv_a3_jahrespruefung_checkliste: "BGV A3 annual test checklist",
+      card_dguv_v3_pruefintervall_uebersicht: "DGUV V3 test interval overview",
+      card_elektrische_betriebsmittel_pruefung_frist_abgelaufen: "Electrical equipment test deadline expired",
+      card_dguv_pruefprotokoll_jahresende_pflicht: "Year-end DGUV test protocol obligation",
+      card_qr_ucretsiz_qr_kod_olusturucu: "Free QR Code Generator — No Registration Required",
+      card_qr_wifi_qr_kod_olusturma: "How to Create a WiFi QR Code? Easy Connection for Guests",
+      card_qr_vcard_qr_dijital_kartvizit: "Digital Business Card with vCard QR Code — Paper Business Card Era is Over",
+      card_qr_etkinlik_qr_kodu_takvime_ekle: "Event QR Code — Automatically Add to Phone Calendar on Scan",
+      card_qr_barkod_olusturucu_ucretsiz: "Free Barcode Generator — EAN-13, EAN-8, Code 128, Code 39"
+    }
+  };
+
+  function normalizeKey(key) {
+    return key.replace(/-/g, '_');
+  }
+
+  function applyLanguage(lang) {
+    var d = i18n[lang] || i18n.de;
+    document.getElementById('hero-title').textContent = d.hero_title;
+    document.getElementById('hero-desc').textContent = d.hero_desc;
+    document.getElementById('group1-label').textContent = d.group1;
+    document.getElementById('group2-label').textContent = d.group2;
+    document.getElementById('group3-label').textContent = d.group3;
+    document.getElementById('group4-label').textContent = d.group4;
+    document.getElementById('group5-label').textContent = d.group5;
+    document.getElementById('group6-label').textContent = d.group6;
+    document.getElementById('group7-label').textContent = d.group7;
+    document.getElementById('cta1-title').textContent = d.cta1_title;
+    document.getElementById('cta1-desc').textContent = d.cta1_desc;
+    document.getElementById('cta1-btn').textContent = d.cta1_btn;
+    document.getElementById('qr-section-title').textContent = d.qr_title;
+    document.getElementById('cta2-title').textContent = d.cta2_title;
+    document.getElementById('cta2-desc').textContent = d.cta2_desc;
+    document.getElementById('cta2-btn').textContent = d.cta2_btn;
+
+    var cards = document.querySelectorAll('.card');
+    cards.forEach(function(card) {
+      var key = card.getAttribute('data-key');
+      if (!key) return;
+      var keyNorm = normalizeKey(key);
+      var titleKey = 'card_' + keyNorm;
+      var title = d[titleKey];
+      if (title) {
+        var titleEl = card.querySelector('.card-title');
+        if (titleEl) titleEl.textContent = title;
+      }
+      var ctaEl = card.querySelector('.card-cta');
+      if (ctaEl) ctaEl.textContent = d.read_more || 'Read →';
+    });
+
+    document.querySelectorAll('.lang-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+    document.documentElement.lang = lang;
+  }
+
+  window.setLanguage = function(lang) {
+    applyLanguage(lang);
+    try { sessionStorage.setItem('autoLang', lang); } catch(e) {}
+  };
+
+  /* inject.py'nin head'e yazdığı autoLang değerini önceliklendir; yoksa navigator.language'a düş */
+  var defaultLang = null;
+  try { defaultLang = sessionStorage.getItem('autoLang'); } catch(e) {}
+  if (!defaultLang || !i18n[defaultLang]) {
+    var navLang = (navigator.language || 'de').toLowerCase();
+    defaultLang = navLang.indexOf('tr') === 0 ? 'tr' : (navLang.indexOf('en') === 0 ? 'en' : 'de');
+  }
+  applyLanguage(defaultLang);
+
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function(){});
   }
@@ -299,60 +546,51 @@
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   var isInStandalone = ('standalone' in navigator && navigator.standalone);
   var shown = sessionStorage.getItem('pwa-banner-shown');
-  if (shown || isInStandalone) return;
-
-  // iOS Safari — manuel yönlendirme
-  if (isIOS) {
-    setTimeout(function() {
-      var bar = document.createElement('div');
-      bar.id = 'pwa-banner';
-      bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#04162E;border-top:2px solid #F6B45F;padding:14px 16px;z-index:9999;font-family:system-ui;';
-      bar.innerHTML =
-        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
-          '<div>' +
-            '<div style="color:#F6B45F;font-size:0.82rem;font-weight:700;margin-bottom:4px;">📲 Ana ekrana ekle</div>' +
-            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">' +
-              'Safari'de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ' +
-              'ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.' +
+  if (!shown && !isInStandalone) {
+    if (isIOS) {
+      setTimeout(function() {
+        var bar = document.createElement('div');
+        bar.id = 'pwa-banner';
+        bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#04162E;border-top:2px solid #F6B45F;padding:14px 16px;z-index:9999;font-family:system-ui;';
+        bar.innerHTML =
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
+            '<div>' +
+              '<div style="color:#F6B45F;font-size:0.82rem;font-weight:700;margin-bottom:4px;">📲 Ana ekrana ekle</div>' +
+              '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">Safari\'de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.</div>' +
+              '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS\'ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
             '</div>' +
-            '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS'ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
-          '</div>' +
-          '<button onclick="document.getElementById('pwa-banner').remove();sessionStorage.setItem('pwa-banner-shown','1')" ' +
-            'style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
-        '</div>';
-      document.body.appendChild(bar);
-      sessionStorage.setItem('pwa-banner-shown', '1');
-    }, 3000);
-    return;
+            '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
+          '</div>';
+        document.body.appendChild(bar);
+        sessionStorage.setItem('pwa-banner-shown', '1');
+      }, 3000);
+    } else {
+      var deferredPrompt = null;
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        setTimeout(function() {
+          if (!deferredPrompt) return;
+          var bar = document.createElement('div');
+          bar.id = 'pwa-banner';
+          bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#04162E;border-top:2px solid #F6B45F;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:9999;font-family:system-ui;';
+          bar.innerHTML =
+            '<span style="color:#eaf2fb;font-size:0.85rem;">📲 Ana ekrana ekle &mdash; daha hızlı aç!</span>' +
+            '<div style="display:flex;gap:8px;">' +
+              '<button onclick="installPWA()" style="background:#F6B45F;border:none;color:#04162E;padding:6px 16px;border-radius:20px;font-weight:700;cursor:pointer;font-size:0.82rem;">Ekle</button>' +
+              '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" style="background:transparent;border:1px solid rgba(246,180,95,0.3);color:#7a9ab8;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:0.82rem;">Sonra</button>' +
+            '</div>';
+          document.body.appendChild(bar);
+        }, 3000);
+      });
+      window.installPWA = function() {
+        if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(function(){ deferredPrompt=null; }); }
+        var b = document.getElementById('pwa-banner'); if (b) b.remove();
+        sessionStorage.setItem('pwa-banner-shown', '1');
+      };
+    }
   }
-
-  // Android / Desktop Chrome — otomatik install prompt
-  var deferredPrompt = null;
-  window.addEventListener('beforeinstallprompt', function(e) {
-    e.preventDefault();
-    deferredPrompt = e;
-    setTimeout(function() {
-      if (!deferredPrompt) return;
-      var bar = document.createElement('div');
-      bar.id = 'pwa-banner';
-      bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#04162E;border-top:2px solid #F6B45F;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:9999;font-family:system-ui;';
-      bar.innerHTML =
-        '<span style="color:#eaf2fb;font-size:0.85rem;">📲 Ana ekrana ekle &mdash; daha hızlı aç!</span>' +
-        '<div style="display:flex;gap:8px;">' +
-          '<button onclick="installPWA()" style="background:#F6B45F;border:none;color:#04162E;padding:6px 16px;border-radius:20px;font-weight:700;cursor:pointer;font-size:0.82rem;">Ekle</button>' +
-          '<button onclick="document.getElementById('pwa-banner').remove();sessionStorage.setItem('pwa-banner-shown','1')" style="background:transparent;border:1px solid rgba(246,180,95,0.3);color:#7a9ab8;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:0.82rem;">Sonra</button>' +
-        '</div>';
-      document.body.appendChild(bar);
-    }, 3000);
-  });
-
-  window.installPWA = function() {
-    if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(function(){ deferredPrompt=null; }); }
-    var b = document.getElementById('pwa-banner'); if (b) b.remove();
-    sessionStorage.setItem('pwa-banner-shown', '1');
-  };
 })();
 </script>
-
 </body>
 </html>
