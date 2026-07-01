@@ -3,94 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BWK Inventar-Manager | PACDI</title>
+<title>BWK Inventar-Manager v2 | PACDI</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#04162E;color:#eaf2fb;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;min-height:100vh;padding:16px;}
-.app{max-width:900px;margin:0 auto;}
-header{margin-bottom:20px;}
-header h1{color:#F6B45F;font-size:1.2rem;margin-bottom:4px;}
-header .sub{color:#7a9ab8;font-size:0.78rem;}
+.app{max-width:960px;margin:0 auto;}
+header{margin-bottom:18px;}
+header h1{color:#F6B45F;font-size:1.15rem;margin-bottom:3px;}
+header .sub{color:#7a9ab8;font-size:0.75rem;}
 
-/* Steps */
-.steps{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
-.step-btn{padding:8px 16px;border-radius:20px;border:1px solid rgba(246,180,95,0.3);background:transparent;color:#7a9ab8;font-size:0.75rem;cursor:pointer;font-family:inherit;transition:0.2s;}
+.steps{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+.step-btn{padding:7px 14px;border-radius:20px;border:1px solid rgba(246,180,95,0.3);background:transparent;color:#7a9ab8;font-size:0.73rem;cursor:pointer;font-family:inherit;transition:0.2s;}
 .step-btn.active{background:#F6B45F;color:#04162E;border-color:#F6B45F;font-weight:700;}
 .step-btn.done{border-color:#34D399;color:#34D399;}
 
-/* Panels */
-.panel{display:none;} .panel.active{display:block;}
+.panel{display:none;}.panel.active{display:block;}
 
-/* Step 1 — Input */
-textarea{width:100%;height:220px;background:#0a1828;border:1px solid rgba(246,180,95,0.2);border-radius:10px;color:#eaf2fb;font-family:inherit;font-size:0.82rem;padding:12px;resize:vertical;line-height:1.6;}
-.btn-gold{background:#F6B45F;color:#04162E;border:none;padding:10px 24px;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:0.2s;margin-top:10px;}
+textarea{width:100%;height:240px;background:#0a1828;border:1px solid rgba(246,180,95,0.2);border-radius:10px;color:#eaf2fb;font-family:'Courier New',monospace;font-size:0.8rem;padding:12px;resize:vertical;line-height:1.7;}
+.btn-gold{background:#F6B45F;color:#04162E;border:none;padding:10px 22px;border-radius:8px;font-size:0.84rem;font-weight:700;cursor:pointer;font-family:inherit;transition:0.2s;margin:4px 4px 4px 0;}
 .btn-gold:hover{background:#f0c870;}
-.btn-outline{background:transparent;border:1px solid rgba(246,180,95,0.4);color:#F6B45F;padding:8px 18px;border-radius:8px;font-size:0.8rem;cursor:pointer;font-family:inherit;transition:0.2s;margin:4px;}
+.btn-outline{background:transparent;border:1px solid rgba(246,180,95,0.35);color:#F6B45F;padding:8px 16px;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:inherit;transition:0.2s;margin:4px 4px 4px 0;}
 .btn-outline:hover{background:rgba(246,180,95,0.08);}
-.btn-green{background:#34D399;color:#04162E;border:none;padding:10px 24px;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;margin:4px;}
+.btn-green{background:#34D399;color:#04162E;border:none;padding:8px 18px;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;margin:4px 4px 4px 0;}
 
-/* Table */
-.tbl-wrap{overflow-x:auto;margin-top:14px;}
-table{width:100%;border-collapse:collapse;font-size:0.78rem;}
-th{background:#0a1828;color:#F6B45F;padding:8px 10px;text-align:left;border-bottom:1px solid rgba(246,180,95,0.15);white-space:nowrap;}
-td{padding:7px 10px;border-bottom:1px solid rgba(246,180,95,0.07);vertical-align:middle;}
+.tbl-wrap{overflow-x:auto;margin-top:12px;}
+table{width:100%;border-collapse:collapse;font-size:0.76rem;}
+th{background:#0a1828;color:#F6B45F;padding:7px 8px;text-align:left;border-bottom:1px solid rgba(246,180,95,0.15);white-space:nowrap;}
+td{padding:6px 8px;border-bottom:1px solid rgba(246,180,95,0.07);vertical-align:middle;}
 tr:hover td{background:rgba(246,180,95,0.03);}
-td input{background:#04162E;border:1px solid rgba(246,180,95,0.15);color:#eaf2fb;padding:4px 8px;border-radius:6px;font-size:0.78rem;font-family:inherit;width:100%;}
-td input:focus{outline:none;border-color:#F6B45F;}
-.tag-leer{color:#4a6a88;font-style:italic;}
+td input,td select{background:#04162E;border:1px solid rgba(246,180,95,0.15);color:#eaf2fb;padding:4px 7px;border-radius:5px;font-size:0.75rem;font-family:inherit;width:100%;}
+td input:focus,td select:focus{outline:none;border-color:#F6B45F;}
+.badge-qr{background:rgba(246,180,95,0.12);color:#F6B45F;font-size:0.6rem;padding:2px 6px;border-radius:8px;font-weight:700;}
+.badge-bar{background:rgba(52,211,153,0.12);color:#34D399;font-size:0.6rem;padding:2px 6px;border-radius:8px;font-weight:700;}
 
-/* QR panel */
-.qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:14px;}
-.qr-card{background:#0a1828;border:1px solid rgba(246,180,95,0.12);border-radius:10px;padding:12px;text-align:center;}
-.qr-card .qr-room{font-size:0.65rem;color:#7a9ab8;margin-bottom:4px;}
-.qr-card .qr-name{font-size:0.72rem;color:#F6B45F;font-weight:700;margin-top:8px;line-height:1.3;}
-.qr-card .qr-id{font-size:0.6rem;color:#4a6a88;margin-top:2px;}
-.barcode-wrap{font-family:'Courier New',monospace;font-size:0.55rem;letter-spacing:2px;color:#eaf2fb;margin-top:4px;word-break:break-all;}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;}
+.stat{background:#0a1828;border:1px solid rgba(246,180,95,0.12);border-radius:8px;padding:7px 12px;font-size:0.73rem;}
+.stat strong{color:#F6B45F;font-size:0.95rem;display:block;}
 
-/* Stats */
-.stats{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0;}
-.stat{background:#0a1828;border:1px solid rgba(246,180,95,0.12);border-radius:8px;padding:8px 14px;font-size:0.75rem;}
-.stat strong{color:#F6B45F;font-size:1rem;}
+.info-box{background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.2);border-left:4px solid #34D399;border-radius:8px;padding:9px 13px;font-size:0.74rem;color:#b0b5bf;margin:10px 0;line-height:1.6;}
+.warn-box{background:rgba(246,180,95,0.05);border:1px solid rgba(246,180,95,0.2);border-left:4px solid #F6B45F;border-radius:8px;padding:9px 13px;font-size:0.74rem;color:#b0b5bf;margin:10px 0;}
 
-.info-box{background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.2);border-left:4px solid #34D399;border-radius:8px;padding:10px 14px;font-size:0.75rem;color:#b0b5bf;margin:10px 0;}
-.warn-box{background:rgba(246,180,95,0.06);border:1px solid rgba(246,180,95,0.2);border-left:4px solid #F6B45F;border-radius:8px;padding:10px 14px;font-size:0.75rem;color:#b0b5bf;margin:10px 0;}
+/* QR Grid */
+.qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin-top:12px;}
+.qr-card{background:#0a1828;border:1px solid rgba(246,180,95,0.12);border-radius:10px;padding:10px;text-align:center;}
+.qr-card.type-bar{border-color:rgba(52,211,153,0.2);}
+.qr-room{font-size:0.62rem;color:#7a9ab8;margin-bottom:3px;}
+.qr-name{font-size:0.7rem;color:#F6B45F;font-weight:700;margin-top:6px;line-height:1.3;}
+.qr-id{font-size:0.58rem;color:#4a6a88;margin-top:2px;}
+.barcode-text{font-family:'Courier New',monospace;font-size:0.52rem;letter-spacing:1.5px;color:#34D399;margin-top:3px;word-break:break-all;}
+.barcode-visual{font-family:'Courier New',monospace;font-size:1.4rem;letter-spacing:-1px;color:#eaf2fb;line-height:1;margin-top:2px;}
 
-/* Prüf options */
-.pruef-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}
-.pruef-options label{font-size:0.78rem;color:#7a9ab8;}
-.pruef-options input,.pruef-options select{width:100%;background:#0a1828;border:1px solid rgba(246,180,95,0.2);color:#eaf2fb;padding:8px 10px;border-radius:8px;font-size:0.78rem;font-family:inherit;margin-top:4px;}
-@media(max-width:500px){.pruef-options{grid-template-columns:1fr;}.qr-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}}
+/* Prüf form */
+.pruef-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}
+.pruef-grid label{font-size:0.76rem;color:#7a9ab8;display:block;margin-bottom:3px;}
+.pruef-grid input,.pruef-grid select{width:100%;background:#0a1828;border:1px solid rgba(246,180,95,0.2);color:#eaf2fb;padding:8px 10px;border-radius:8px;font-size:0.76rem;font-family:inherit;}
+
+.format-hint{font-size:0.68rem;color:#4a6a88;margin-top:6px;line-height:1.6;}
+
+@media(max-width:500px){
+  .pruef-grid{grid-template-columns:1fr;}
+  .qr-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}
+}
 </style>
 </head>
 <body>
 <div class="app">
 
 <header>
-  <a href="/" style="font-size:0.7rem;color:#7a9ab8;text-decoration:none;">← PACDI Store</a>
-  <h1 style="margin-top:8px;">📋 BWK Inventar-Manager</h1>
-  <div class="sub">Raumliste eingeben → Inventar prüfen → QR/Barkode generieren → Prüfprotokoll PDF</div>
+  <a href="/" style="font-size:0.68rem;color:#7a9ab8;text-decoration:none;">← PACDI Store</a>
+  <h1 style="margin-top:6px;">📋 BWK Inventar-Manager</h1>
+  <div class="sub">Raumliste eingeben → Inventar prüfen → QR/Barkode → Prüfprotokoll PDF</div>
 </header>
 
 <div class="steps">
-  <button class="step-btn active" onclick="goStep(1)" id="s1">1. Liste eingeben</button>
-  <button class="step-btn" onclick="goStep(2)" id="s2">2. Inventar prüfen</button>
+  <button class="step-btn active" onclick="goStep(1)" id="s1">1. Liste</button>
+  <button class="step-btn" onclick="goStep(2)" id="s2">2. Inventar</button>
   <button class="step-btn" onclick="goStep(3)" id="s3">3. QR &amp; Barkode</button>
-  <button class="step-btn" onclick="goStep(4)" id="s4">4. Prüfprotokoll PDF</button>
+  <button class="step-btn" onclick="goStep(4)" id="s4">4. PDF</button>
 </div>
 
 <!-- STEP 1 -->
 <div class="panel active" id="panel1">
-  <div class="info-box">✏️ Raumliste einfügen — genau so wie in Ihren Notizen. Das System erkennt Raumnummern, Gerätemengen und TR/DE Gerätenamen automatisch.</div>
-  <textarea id="rawInput" placeholder="101 smartboard vantilatör
-102 boş
-203 brother drucker
-    10 verlangerungskabel
-    6x bilgisayar
+  <div class="info-box">
+    <strong style="color:#34D399;">Format-Regeln:</strong><br>
+    • <strong>Raum:</strong> Zahl oder Name am Zeilenanfang → <code>203 brother drucker, 4x kabel</code><br>
+    • <strong>Oda başlığı:</strong> Sadece metin + iki nokta → <code>FRISEURSALON:</code><br>
+    • <strong>Virgül = ayrı cihaz</strong> aynı odada → her biri ayrı kayıt<br>
+    • <strong>Nx = adet</strong> → <code>17x laptop</code> = 17 ayrı etiket (aynı QR/barkod)<br>
+    • <strong>Marka/model</strong> parantezde → <code>brother drucker (MFC-L2750DW)</code><br>
+    • <strong>boş / leer</strong> → atlanır
+  </div>
+  <textarea id="rawInput" placeholder="203 brother drucker (MFC-L2750DW), 4x verlangerungskabel, vantilatör
 FRISEURSALON:
-12 bartschneider
-..."></textarea>
+12x bartschneider, 6x kafa kurutma, waschmaschine
+Teeküche 3.OG:
+6x kaffeemaschine, 1x wasserkocher"></textarea>
+  <div class="format-hint">
+    💡 QR/Barkode otomatik atanır: Verlängerungskabel, Kabel → <span style="color:#34D399;">Barkode</span> · Diğer cihazlar → <span style="color:#F6B45F;">QR</span>
+  </div>
   <br>
   <button class="btn-gold" onclick="parseAndShow()">🔍 Analysieren & Weiter →</button>
 </div>
@@ -98,16 +110,16 @@ FRISEURSALON:
 <!-- STEP 2 -->
 <div class="panel" id="panel2">
   <div class="stats" id="statsBar"></div>
-  <div class="warn-box" id="parseWarn" style="display:none;"></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+  <div id="parseWarn" class="warn-box" style="display:none;"></div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
     <button class="btn-outline" onclick="addRow()">+ Gerät hinzufügen</button>
-    <button class="btn-outline" onclick="exportCSV()">⬇️ CSV Export</button>
-    <button class="btn-gold" onclick="goStep(3)" style="margin:4px;">Weiter zu QR/Barkode →</button>
+    <button class="btn-outline" onclick="exportCSV()">⬇️ CSV</button>
+    <button class="btn-gold" onclick="goStep(3)">Weiter → QR &amp; Barkode</button>
   </div>
   <div class="tbl-wrap">
-    <table id="inventarTable">
+    <table>
       <thead><tr>
-        <th>ID</th><th>Raum</th><th>Gerätename (DE)</th><th>Anzahl</th><th>Seriennr.</th><th>Notiz</th><th></th>
+        <th>ID</th><th>Raum</th><th>Gerät (DE)</th><th>Marke/Modell</th><th>Anz.</th><th>Typ</th><th>Seriennr.</th><th>Notiz</th><th></th>
       </tr></thead>
       <tbody id="inventarBody"></tbody>
     </table>
@@ -116,41 +128,28 @@ FRISEURSALON:
 
 <!-- STEP 3 -->
 <div class="panel" id="panel3">
-  <div class="info-box">Für jedes Gerät wird ein QR-Code (mit Geräteinfo) und ein Barkode (ID) generiert. Druckansicht über den Button unten.</div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-    <button class="btn-gold" onclick="generateAllQR()">🔳 Alle QR/Barkode generieren</button>
-    <button class="btn-outline" onclick="printQR()">🖨️ QR-Seite drucken</button>
-    <button class="btn-outline" onclick="goStep(4)">Weiter zu Prüfprotokoll →</button>
+  <div class="info-box">
+    <span style="color:#F6B45F;">■ QR-Code</span> — Enthält Geräteinfo (Raum, Name, ID, Marke). Empfohlen für Geräte mit ausreichend Platz.<br>
+    <span style="color:#34D399;">■ Barkode</span> — Nur ID-Nummer. Ideal für Kabel, kleine Geräte, enge Flächen.
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+    <button class="btn-gold" onclick="generateAllQR()">🔳 Alle generieren</button>
+    <button class="btn-outline" onclick="printQR()">🖨️ Drucken</button>
+    <button class="btn-outline" onclick="goStep(4)">Weiter → PDF</button>
   </div>
   <div class="qr-grid" id="qrGrid"></div>
 </div>
 
 <!-- STEP 4 -->
 <div class="panel" id="panel4">
-  <div class="info-box">Prüfprotokoll nach DGUV Vorschrift 3 — automatisch mit Ihrem Inventar befüllt.</div>
-  <div class="pruef-options">
-    <div>
-      <label>Prüfer (Name)</label>
-      <input type="text" id="prueferName" placeholder="Max Mustermann">
-    </div>
-    <div>
-      <label>Prüfdatum</label>
-      <input type="date" id="pruefDatum">
-    </div>
-    <div>
-      <label>Nächste Prüfung</label>
-      <input type="date" id="naechstePruef">
-    </div>
-    <div>
-      <label>Prüfmittel</label>
-      <input type="text" id="pruefmittel" placeholder="z.B. FLUKE 1664 FC">
-    </div>
-    <div>
-      <label>Einrichtung</label>
-      <input type="text" id="einrichtung" value="BWK Berlin">
-    </div>
-    <div>
-      <label>Ergebnis (Standard)</label>
+  <div class="info-box">Prüfprotokoll nach DGUV Vorschrift 3 — automatisch befüllt, bereit zur Unterschrift.</div>
+  <div class="pruef-grid">
+    <div><label>Prüfer (Name)</label><input id="prueferName" placeholder="Max Mustermann"></div>
+    <div><label>Prüfdatum</label><input type="date" id="pruefDatum"></div>
+    <div><label>Nächste Prüfung</label><input type="date" id="naechstePruef"></div>
+    <div><label>Prüfmittel / Gerät</label><input id="pruefmittel" placeholder="z.B. FLUKE 1664 FC"></div>
+    <div><label>Einrichtung</label><input id="einrichtung" value="BWK Berlin"></div>
+    <div><label>Standard-Ergebnis</label>
       <select id="stdErgebnis">
         <option value="Bestanden">✅ Bestanden</option>
         <option value="Nicht bestanden">❌ Nicht bestanden</option>
@@ -158,46 +157,56 @@ FRISEURSALON:
       </select>
     </div>
   </div>
-  <button class="btn-gold" onclick="generatePDF()" style="margin-top:8px;">📄 Prüfprotokoll PDF generieren</button>
-  <div id="pdfStatus" style="margin-top:10px;font-size:0.78rem;color:#34D399;"></div>
+  <button class="btn-gold" onclick="generatePDF()">📄 Prüfprotokoll PDF</button>
+  <div id="pdfStatus" style="margin-top:8px;font-size:0.76rem;color:#34D399;"></div>
 </div>
 
-</div><!-- /app -->
+</div>
 
 <script>
 (function(){
 'use strict';
 
-// ── TR→DE map ──
-var TR_DE = {
-  'vantilatör':'Ventilator','bilgisayar ve monitörü':'Computer mit Monitor',
-  'bilgisayar':'Computer','monitörü':'Monitor','bildschrim':'Bildschirm',
-  'kaset çalar':'Kassettenspieler','kafa kurutma':'Trockenhaube',
-  'lockenstaub':'Lockenstab','gleteisen':'Glätteisen','boş':'leer',
-  'haartrockner':'Haartrockner','bartschneider':'Bartschneider',
-  'klimaanlagen':'Klimaanlage','klimaanlage':'Klimaanlage',
-  'smartboard':'Smartboard','beamer':'Beamer','drucker':'Drucker',
-  'brother drucker':'Brother Drucker','laptop':'Laptop',
-  'laptopwagen':'Laptopwagen','oberkopfprojektor':'Overhead-Projektor',
-  'überkopfprojektor':'Overhead-Projektor','verlangerungs kabel':'Verlängerungskabel',
-  'verlangerungskabel':'Verlängerungskabel','aktenvernichter':'Aktenvernichter',
-  'kopiemaschine':'Kopierer','staubsauger':'Staubsauger',
-  'tischlampe':'Tischlampe','kaffeemaschine':'Kaffeemaschine',
-  'wasserkocher':'Wasserkocher','teemaschine':'Teemaschine',
-  'kühlschrank':'Kühlschrank','waschmaschine':'Waschmaschine',
-  'waschtrockner':'Wäschetrockner','pc':'PC',
-};
+// ── TR→DE ──
+var TR_DE = [
+  ['bilgisayar ve monitörü','Computer mit Monitor'],['bilgisayar','Computer'],
+  ['monitörü','Monitor'],['bildschrim','Bildschirm'],['kaset çalar','Kassettenspieler'],
+  ['kafa kurutma','Trockenhaube'],['lockenstaub','Lockenstab'],['gleteisen','Glätteisen'],
+  ['boş','leer'],['vantilatör','Ventilator'],['klimaanlagen','Klimaanlage'],
+  ['klimaanlage','Klimaanlage'],['oberkopfprojektor','Overhead-Projektor'],
+  ['überkopfprojektor','Overhead-Projektor'],['verlangerungs kabel','Verlängerungskabel'],
+  ['verlangerungskabel','Verlängerungskabel'],['aktenvernichter','Aktenvernichter'],
+  ['kopiemaschine','Kopierer'],['staubsauger','Staubsauger'],['tischlampe','Tischlampe'],
+  ['kaffeemaschine','Kaffeemaschine'],['wasserkocher','Wasserkocher'],
+  ['teemaschine','Teemaschine'],['kühlschrank','Kühlschrank'],
+  ['waschmaschine','Waschmaschine'],['waschtrockner','Wäschetrockner'],
+  ['haartrockner','Haartrockner'],['bartschneider','Bartschneider'],
+  ['smartboard','Smartboard'],['beamer','Beamer'],['drucker','Drucker'],
+  ['laptop','Laptop'],['laptopwagen','Laptopwagen'],['pc','PC'],
+];
+
+// Cihaz adına göre otomatik QR/Barkod tipi
+var BARCODE_KEYWORDS = ['kabel','verlängerung','verlangerung','kablo','stecker','adapter','netzteil'];
+
+function autoType(nameDe) {
+  var n = nameDe.toLowerCase();
+  for (var i=0;i<BARCODE_KEYWORDS.length;i++) {
+    if (n.indexOf(BARCODE_KEYWORDS[i])>-1) return 'barcode';
+  }
+  return 'qr';
+}
 
 function translate(text) {
-  var t = text.trim().toLowerCase();
-  var sorted = Object.keys(TR_DE).sort(function(a,b){return b.length-a.length;});
-  for (var i=0;i<sorted.length;i++) {
-    t = t.split(sorted[i]).join(TR_DE[sorted[i]]);
+  var t = text.trim();
+  // Sort by length descending to avoid partial replacements
+  for (var i=0;i<TR_DE.length;i++) {
+    var re = new RegExp(TR_DE[i][0].replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+    t = t.replace(re, TR_DE[i][1]);
   }
   return t.charAt(0).toUpperCase()+t.slice(1);
 }
 
-// ── Parse ──
+// ── Parser ──
 var inventory = [];
 var idCounter = 1;
 
@@ -206,335 +215,322 @@ function parseRaw(raw) {
   idCounter = 1;
   var lines = raw.split('\n');
   var currentRoom = '?';
-  var warnings = [];
+  var warns = [];
 
   lines.forEach(function(line) {
     line = line.trim();
-    if (!line || /^[-—]+$/.test(line)) return;
+    if (!line || /^[-—=]+$/.test(line)) return;
 
-    // Room header (letters only, no leading number)
-    var roomHeader = line.match(/^([A-ZÜÖÄİŞĞÇa-züöäışğç][A-ZÜÖÄİŞĞÇa-züöäışğç\s\.\-]{2,}):?\s*$/i);
-    // Line starting with room number
-    var roomLine = line.match(/^(\d{2,3}[AB]?\.?)\s+(.*)/i);
-    // Indented continuation
-    var indented = /^\s{2,}/.test(' '+line) && !roomLine;
+    // Room number line: starts with digits (optionally followed by letter)
+    var roomNum = line.match(/^(\d{2,3}[A-Z]?)[.\s]\s*(.*)/i);
+    // Room name line: text + colon (e.g. "FRISEURSALON:" or "Teeküche 3.OG:")
+    var roomName = line.match(/^([A-ZÜÖÄİŞĞÇa-züöäışğç][^,\d]{2,}?):\s*(.*)/);
 
-    if (roomLine) {
-      currentRoom = roomLine[1].replace('.','').trim();
-      var rest = roomLine[2].trim();
-      if (!rest || /^(boş|leer|empty)$/i.test(rest)) return;
-      parseDevices(rest, currentRoom, warnings);
-
-    } else if (roomHeader) {
-      currentRoom = line.replace(':','').trim();
-
-    } else {
-      // Continuation or standalone line under current room
-      parseDevices(line, currentRoom, warnings);
+    if (roomNum) {
+      currentRoom = roomNum[1].trim();
+      var rest = roomNum[2].trim();
+      if (rest) parseDeviceList(rest, currentRoom);
+    } else if (roomName) {
+      currentRoom = roomName[1].trim();
+      var rest2 = roomName[2].trim();
+      if (rest2) parseDeviceList(rest2, currentRoom);
+    } else if (line) {
+      // Continuation / standalone under current room
+      parseDeviceList(line, currentRoom);
     }
   });
 
-  return warnings;
+  return warns;
 }
 
-function parseDevices(text, room, warnings) {
-  // Split by common device separators while keeping count prefix
-  // e.g. "2 klimaanlage 3 laptop" → ["2 klimaanlage", "3 laptop"]
-  var parts = text.split(/(?=\b\d+[x\s]+[a-züöäA-ZÜÖÄİŞĞÇışğç])/);
-  if (parts.length === 1) parts = [text];
-
+function parseDeviceList(text, room) {
+  // Split by comma → each part is a separate device
+  var parts = text.split(',');
   parts.forEach(function(part) {
     part = part.trim();
     if (!part) return;
 
-    var countMatch = part.match(/^(\d+)[x\s]+(.+)/);
-    var count, name;
+    // Extract count: "17x laptop" or "17 laptop"
+    var countMatch = part.match(/^(\d+)[x\s]\s*(.+)/i);
+    var count, deviceText;
     if (countMatch) {
-      count = parseInt(countMatch[1],10);
-      name = countMatch[2].trim();
+      count = parseInt(countMatch[1], 10);
+      deviceText = countMatch[2].trim();
     } else {
       count = 1;
-      name = part;
+      deviceText = part;
     }
 
-    var nameDe = translate(name);
-    if (/^(leer|boş|empty|-+)$/i.test(nameDe.trim())) return;
+    // Extract brand/model from parentheses
+    var brand = '';
+    var brandMatch = deviceText.match(/\(([^)]+)\)/);
+    if (brandMatch) {
+      brand = brandMatch[1].trim();
+      deviceText = deviceText.replace(/\([^)]+\)/,'').trim();
+    }
+
+    var nameDe = translate(deviceText);
+    if (/^(leer|boş|empty|-)$/i.test(nameDe.trim())) return;
     if (!nameDe.trim()) return;
 
-    // Add one row per individual device if count > 1? No — keep count, expand on PDF
-    inventory.push({
-      id: 'BWK-' + String(idCounter++).padStart(4,'0'),
-      room: room,
-      nameDe: nameDe,
-      nameOrig: name,
-      count: count,
-      serial: '',
-      note: ''
-    });
+    var type = autoType(nameDe);
+
+    // Add individual rows based on count
+    for (var i=0; i<count; i++) {
+      inventory.push({
+        id: 'BWK-' + String(idCounter++).padStart(4,'0'),
+        room: room,
+        nameDe: nameDe,
+        brand: brand,
+        count: 1, // each row = 1 device
+        type: type,
+        serial: '',
+        note: '',
+        origCount: count // remember original group
+      });
+    }
   });
 }
 
-// ── UI ──
+// ── Navigation ──
 function goStep(n) {
   [1,2,3,4].forEach(function(i){
-    document.getElementById('panel'+i).classList.toggle('active', i===n);
-    var btn = document.getElementById('s'+i);
-    btn.classList.remove('active','done');
-    if (i<n) btn.classList.add('done');
-    if (i===n) btn.classList.add('active');
+    document.getElementById('panel'+i).classList.toggle('active',i===n);
+    var b = document.getElementById('s'+i);
+    b.classList.remove('active','done');
+    if (i<n) b.classList.add('done');
+    if (i===n) b.classList.add('active');
   });
 }
 window.goStep = goStep;
 
-window.parseAndShow = function() {
+window.parseAndShow = function(){
   var raw = document.getElementById('rawInput').value;
-  if (!raw.trim()) { alert('Bitte Text einfügen.'); return; }
-  var warnings = parseRaw(raw);
+  if (!raw.trim()){alert('Bitte Text eingeben.');return;}
+  parseRaw(raw);
   renderTable();
   renderStats();
-  if (warnings.length) {
-    var wb = document.getElementById('parseWarn');
-    wb.style.display='block';
-    wb.textContent='⚠️ Hinweise: '+warnings.join('; ');
-  }
   goStep(2);
 };
 
-function renderStats() {
-  var rooms = {};
-  inventory.forEach(function(r){ rooms[r.room]=(rooms[r.room]||0)+1; });
-  var total = inventory.reduce(function(s,r){return s+r.count;},0);
-  document.getElementById('statsBar').innerHTML =
-    '<div class="stat"><strong>'+inventory.length+'</strong><br>Gerätetypen</div>'+
-    '<div class="stat"><strong>'+total+'</strong><br>Geräte gesamt</div>'+
-    '<div class="stat"><strong>'+Object.keys(rooms).length+'</strong><br>Räume</div>';
+function renderStats(){
+  var rooms={};
+  inventory.forEach(function(r){rooms[r.room]=(rooms[r.room]||0)+1;});
+  var qrCount=0,barCount=0;
+  inventory.forEach(function(r){r.type==='qr'?qrCount++:barCount++;});
+  document.getElementById('statsBar').innerHTML=
+    '<div class="stat"><strong>'+inventory.length+'</strong>Cihazlar</div>'+
+    '<div class="stat"><strong>'+Object.keys(rooms).length+'</strong>Räume</div>'+
+    '<div class="stat"><strong style="color:#F6B45F;">'+qrCount+'</strong>QR-Codes</div>'+
+    '<div class="stat"><strong style="color:#34D399;">'+barCount+'</strong>Barkodlar</div>';
 }
 
-function renderTable() {
-  var tbody = document.getElementById('inventarBody');
-  tbody.innerHTML = '';
-  inventory.forEach(function(item, idx) {
-    var tr = document.createElement('tr');
-    tr.innerHTML =
-      '<td style="font-size:0.65rem;color:#4a6a88;">'+item.id+'</td>'+
-      '<td><input value="'+escH(item.room)+'" onchange="inv('+idx+',\'room\',this.value)" style="width:70px;"></td>'+
-      '<td><input value="'+escH(item.nameDe)+'" onchange="inv('+idx+',\'nameDe\',this.value)"></td>'+
-      '<td><input type="number" value="'+item.count+'" min="1" onchange="inv('+idx+',\'count\',+this.value)" style="width:55px;"></td>'+
-      '<td><input value="'+escH(item.serial)+'" onchange="inv('+idx+',\'serial\',this.value)" placeholder="—"></td>'+
-      '<td><input value="'+escH(item.note)+'" onchange="inv('+idx+',\'note\',this.value)" placeholder="—"></td>'+
-      '<td><button onclick="delRow('+idx+')" style="background:transparent;border:none;color:#f87171;cursor:pointer;font-size:0.9rem;">🗑</button></td>';
-    tbody.appendChild(tr);
+function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+
+function renderTable(){
+  var tb=document.getElementById('inventarBody');
+  tb.innerHTML='';
+  inventory.forEach(function(item,idx){
+    var tr=document.createElement('tr');
+    tr.innerHTML=
+      '<td style="font-size:0.62rem;color:#4a6a88;white-space:nowrap;">'+item.id+'</td>'+
+      '<td><input value="'+escH(item.room)+'" onchange="upd('+idx+',\'room\',this.value)" style="width:65px;"></td>'+
+      '<td><input value="'+escH(item.nameDe)+'" onchange="upd('+idx+',\'nameDe\',this.value)"></td>'+
+      '<td><input value="'+escH(item.brand)+'" onchange="upd('+idx+',\'brand\',this.value)" placeholder="Marke/Modell"></td>'+
+      '<td style="color:#7a9ab8;text-align:center;">1</td>'+
+      '<td><select onchange="upd('+idx+',\'type\',this.value)">'+
+        '<option value="qr"'+(item.type==='qr'?' selected':'')+'>QR</option>'+
+        '<option value="barcode"'+(item.type==='barcode'?' selected':'')+'>Barkode</option>'+
+      '</select></td>'+
+      '<td><input value="'+escH(item.serial)+'" onchange="upd('+idx+',\'serial\',this.value)" placeholder="SN"></td>'+
+      '<td><input value="'+escH(item.note)+'" onchange="upd('+idx+',\'note\',this.value)" placeholder="—"></td>'+
+      '<td><button onclick="delRow('+idx+')" style="background:transparent;border:none;color:#f87171;cursor:pointer;">🗑</button></td>';
+    tb.appendChild(tr);
   });
 }
 
-function escH(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
-
-window.inv = function(idx,key,val){ inventory[idx][key]=val; };
-
-window.delRow = function(idx){
-  inventory.splice(idx,1);
-  renderTable();
-  renderStats();
-};
-
+window.upd = function(i,k,v){inventory[i][k]=v; if(k==='type') renderStats();};
+window.delRow = function(i){inventory.splice(i,1);renderTable();renderStats();};
 window.addRow = function(){
-  inventory.push({id:'BWK-'+String(idCounter++).padStart(4,'0'),room:'',nameDe:'',nameOrig:'',count:1,serial:'',note:''});
+  inventory.push({id:'BWK-'+String(idCounter++).padStart(4,'0'),room:'',nameDe:'',brand:'',count:1,type:'qr',serial:'',note:''});
   renderTable();
 };
-
 window.exportCSV = function(){
-  var rows = [['ID','Raum','Gerät','Anzahl','Seriennr.','Notiz']];
-  inventory.forEach(function(r){
-    rows.push([r.id, r.room, r.nameDe, r.count, r.serial, r.note]);
-  });
-  var csv = rows.map(function(r){return r.map(function(c){return '"'+String(c||'').replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var rows=[['ID','Raum','Gerät','Marke/Modell','Typ','Seriennr.','Notiz']];
+  inventory.forEach(function(r){rows.push([r.id,r.room,r.nameDe,r.brand,r.type,r.serial,r.note]);});
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c||'').replace(/"/g,'""')+'"';}).join(',');}).join('\n');
   var a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
   a.download='BWK-Inventar-'+new Date().toISOString().slice(0,10)+'.csv';
   a.click();
 };
 
-// ── QR + Barcode ──
+// ── QR + Barkode ──
 window.generateAllQR = function(){
-  var grid = document.getElementById('qrGrid');
+  var grid=document.getElementById('qrGrid');
   grid.innerHTML='';
   inventory.forEach(function(item){
-    var card = document.createElement('div');
-    card.className='qr-card';
+    var card=document.createElement('div');
+    card.className='qr-card'+(item.type==='barcode'?' type-bar':'');
 
-    var roomDiv=document.createElement('div'); roomDiv.className='qr-room';
+    var roomDiv=document.createElement('div');roomDiv.className='qr-room';
     roomDiv.textContent='Raum '+item.room;
 
-    var qrDiv=document.createElement('div'); qrDiv.id='qr-'+item.id; qrDiv.style.display='inline-block';
+    var nameDiv=document.createElement('div');nameDiv.className='qr-name';
+    nameDiv.textContent=item.nameDe+(item.brand?' · '+item.brand:'');
 
-    var nameDiv=document.createElement('div'); nameDiv.className='qr-name';
-    nameDiv.textContent=item.nameDe+(item.count>1?' ('+item.count+'x)':'');
-
-    var idDiv=document.createElement('div'); idDiv.className='qr-id';
-    idDiv.textContent=item.id;
-
-    var bcDiv=document.createElement('div'); bcDiv.className='barcode-wrap';
-    bcDiv.textContent='| '+item.id+' |';
-    bcDiv.title='Barkode: '+item.id;
+    var idDiv=document.createElement('div');idDiv.className='qr-id';
+    idDiv.textContent=item.id+(item.serial?' | SN:'+item.serial:'');
 
     card.appendChild(roomDiv);
-    card.appendChild(qrDiv);
-    card.appendChild(nameDiv);
-    card.appendChild(idDiv);
-    card.appendChild(bcDiv);
-    grid.appendChild(card);
 
-    // Generate QR
-    var qrText = 'BWK|'+item.id+'|R:'+item.room+'|'+item.nameDe+(item.serial?'|SN:'+item.serial:'');
-    try {
-      new QRCode(qrDiv, {text:qrText, width:100, height:100,
-        colorDark:'#F6B45F', colorLight:'#0a1828', correctLevel:QRCode.CorrectLevel.M});
-    } catch(e) {
-      qrDiv.textContent = item.id;
+    if (item.type==='qr') {
+      var qrDiv=document.createElement('div');
+      qrDiv.style.cssText='display:inline-block;margin:4px 0;';
+      card.appendChild(qrDiv);
+      card.appendChild(nameDiv);
+      card.appendChild(idDiv);
+      var qrText='BWK|'+item.id+'|R:'+item.room+'|'+item.nameDe+(item.brand?'|'+item.brand:'')+(item.serial?'|SN:'+item.serial:'');
+      try {
+        new QRCode(qrDiv,{text:qrText,width:110,height:110,
+          colorDark:'#F6B45F',colorLight:'#0a1828',correctLevel:QRCode.CorrectLevel.M});
+      } catch(e){qrDiv.textContent=item.id;}
+    } else {
+      // Barkode — visual bars simulation + ID text
+      var bcVisual=document.createElement('div');bcVisual.className='barcode-visual';
+      // Generate simple alternating bar pattern from ID
+      var bars='';var id=item.id.replace(/[^0-9]/g,'');
+      for(var i=0;i<id.length;i++){var n=parseInt(id[i]);bars+=(n%2===0?'█':'▌').repeat(n>0?n:1)+'░';}
+      bcVisual.textContent=bars.slice(0,28);
+      var bcText=document.createElement('div');bcText.className='barcode-text';
+      bcText.textContent=item.id;
+      card.appendChild(bcVisual);
+      card.appendChild(nameDiv);
+      card.appendChild(idDiv);
+      card.appendChild(bcText);
     }
+    grid.appendChild(card);
   });
 };
 
 window.printQR = function(){
-  var content = document.getElementById('qrGrid').innerHTML;
-  var w = window.open('','_blank');
-  w.document.write('<html><head><title>QR Codes BWK</title><style>*{box-sizing:border-box;}body{background:#fff;font-family:Arial,sans-serif;}.qr-grid{display:flex;flex-wrap:wrap;gap:8px;padding:8px;}.qr-card{border:1px solid #ccc;border-radius:6px;padding:8px;text-align:center;width:140px;}.qr-room{font-size:9px;color:#666;}.qr-name{font-size:9px;font-weight:bold;margin-top:4px;}.qr-id{font-size:8px;color:#999;}.barcode-wrap{font-family:monospace;font-size:7px;letter-spacing:1px;margin-top:2px;}@media print{@page{size:A4;margin:8mm;}}</style></head><body><div class="qr-grid">'+content+'</div></body></html>');
+  var content=document.getElementById('qrGrid').innerHTML;
+  var w=window.open('','_blank');
+  w.document.write('<!DOCTYPE html><html><head><title>BWK Etiketten</title><style>'+
+    '*{box-sizing:border-box;}body{background:#fff;font-family:Arial,sans-serif;margin:0;}'+
+    '.qr-grid{display:flex;flex-wrap:wrap;gap:6px;padding:8px;}'+
+    '.qr-card{border:1px solid #999;border-radius:5px;padding:7px;text-align:center;width:148px;page-break-inside:avoid;}'+
+    '.qr-card.type-bar{border-color:#2ECC71;}'+
+    '.qr-room{font-size:8px;color:#555;margin-bottom:2px;}'+
+    '.qr-name{font-size:8.5px;font-weight:bold;margin-top:4px;line-height:1.3;}'+
+    '.qr-id{font-size:7px;color:#888;margin-top:1px;}'+
+    '.barcode-visual{font-size:18px;letter-spacing:-1px;line-height:1;margin:4px 0;}'+
+    '.barcode-text{font-family:monospace;font-size:7px;letter-spacing:1px;margin-top:1px;}'+
+    '@media print{@page{size:A4;margin:6mm;}button{display:none;}}'+
+  '</style></head><body><div class="qr-grid">'+content+'</div></body></html>');
   w.document.close();
-  setTimeout(function(){w.print();},600);
+  setTimeout(function(){w.print();},700);
 };
 
-// ── PDF Prüfprotokoll ──
+// ── PDF ──
 window.generatePDF = function(){
-  var status = document.getElementById('pdfStatus');
-  if (!inventory.length) { alert('Kein Inventar vorhanden.'); return; }
-  if (typeof window.jspdf === 'undefined') { status.textContent='⚠️ PDF-Bibliothek lädt noch...'; return; }
+  var st=document.getElementById('pdfStatus');
+  if (!inventory.length){alert('Kein Inventar.');return;}
+  if (typeof window.jspdf==='undefined'){st.textContent='⚠️ PDF-Lib lädt...';return;}
+  st.textContent='⏳ Wird generiert...';
+  var {jsPDF}=window.jspdf;
+  var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
 
-  status.textContent='⏳ PDF wird generiert...';
-  var { jsPDF } = window.jspdf;
-  var doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  var pName=document.getElementById('prueferName').value||'_______________';
+  var pDat=document.getElementById('pruefDatum').value?fmtDE(document.getElementById('pruefDatum').value):new Date().toLocaleDateString('de-DE');
+  var pNext=document.getElementById('naechstePruef').value?fmtDE(document.getElementById('naechstePruef').value):'_______________';
+  var pMittel=document.getElementById('pruefmittel').value||'_______________';
+  var pEinr=document.getElementById('einrichtung').value||'BWK Berlin';
+  var pErg=document.getElementById('stdErgebnis').value;
 
-  var prueferName = document.getElementById('prueferName').value || '_______________';
-  var pruefDatum  = document.getElementById('pruefDatum').value ? formatDE(document.getElementById('pruefDatum').value) : new Date().toLocaleDateString('de-DE');
-  var naechste    = document.getElementById('naechstePruef').value ? formatDE(document.getElementById('naechstePruef').value) : '_______________';
-  var pruefmittel = document.getElementById('pruefmittel').value || '_______________';
-  var einrichtung = document.getElementById('einrichtung').value || 'BWK Berlin';
-  var stdErg      = document.getElementById('stdErgebnis').value;
+  var M=14,y=14,PW=210;
+  var cols=[14,48,95,138,162,186];
 
-  var margin=14, y=14, pageW=210, col=[14,50,100,130,160,185];
-
-  function header(){
-    doc.setFillColor(4,22,46); doc.rect(0,0,210,28,'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(246,180,95);
-    doc.text('Prüfprotokoll — DGUV Vorschrift 3',margin,10);
-    doc.setFontSize(7); doc.setTextColor(180,190,200);
-    doc.text('BGV A3 / DGUV Vorschrift 3 · Elektrische Betriebsmittel · '+einrichtung,margin,16);
-    doc.text('Prüfer: '+prueferName+'  |  Datum: '+pruefDatum+'  |  Nächste Prüfung: '+naechste+'  |  Prüfmittel: '+pruefmittel,margin,21);
-    doc.text('Erstellt mit PACDI Inventar-Manager · pacdi.store',margin,26);
-    doc.setTextColor(50,50,50);
-    y=32;
+  function hdr(){
+    doc.setFillColor(4,22,46);doc.rect(0,0,210,28,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(246,180,95);
+    doc.text('Prüfprotokoll — DGUV Vorschrift 3 / BGV A3',M,10);
+    doc.setFontSize(6.5);doc.setTextColor(170,180,195);
+    doc.text('Elektrische Betriebsmittel · '+pEinr,M,16);
+    doc.text('Prüfer: '+pName+' | Datum: '+pDat+' | Nächste Prüfung: '+pNext+' | Prüfmittel: '+pMittel,M,21);
+    doc.text('Erstellt mit PACDI Inventar-Manager · pacdi.store',M,26);
+    doc.setTextColor(40,40,40);y=32;
   }
 
-  function tableHeader(){
-    doc.setFillColor(10,24,40);
-    doc.rect(margin,y,pageW-margin*2,6,'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(246,180,95);
-    doc.text('Gerät-ID',col[0],y+4);
-    doc.text('Raum',col[1],y+4);
-    doc.text('Gerätename',col[2],y+4);
-    doc.text('Anz.',col[3],y+4);
-    doc.text('Seriennr.',col[4],y+4);
-    doc.text('Ergebnis',col[5],y+4);
-    doc.setTextColor(50,50,50);
-    y+=7;
+  function tblHdr(){
+    doc.setFillColor(10,24,40);doc.rect(M,y,PW-M*2,6,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(6);doc.setTextColor(246,180,95);
+    ['Gerät-ID','Raum','Gerätename','Marke/Modell','Seriennr.','Ergebnis'].forEach(function(t,i){doc.text(t,cols[i],y+4);});
+    doc.setTextColor(40,40,40);y+=7;
   }
 
-  function checkPage(){
-    if (y>272) {
-      doc.addPage();
-      header();
-      tableHeader();
-    }
-  }
+  function chkPage(){if(y>272){doc.addPage();hdr();tblHdr();}}
 
-  header();
-  tableHeader();
+  hdr();tblHdr();
 
   // Group by room
-  var rooms = {};
-  inventory.forEach(function(item){ (rooms[item.room]=rooms[item.room]||[]).push(item); });
+  var rooms={};
+  inventory.forEach(function(item){(rooms[item.room]=rooms[item.room]||[]).push(item);});
 
-  Object.keys(rooms).sort().forEach(function(room){
-    // Room heading
-    checkPage();
-    doc.setFillColor(20,40,70);
-    doc.rect(margin,y,pageW-margin*2,5,'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(246,180,95);
-    doc.text('Raum '+room,col[0],y+3.5);
-    doc.setTextColor(50,50,50);
-    y+=6;
+  Object.keys(rooms).sort().forEach(function(room,ri){
+    chkPage();
+    doc.setFillColor(15,35,65);doc.rect(M,y,PW-M*2,5,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.setTextColor(246,180,95);
+    doc.text('Raum '+room+' ('+rooms[room].length+' Gerät'+( rooms[room].length>1?'e':'')+')',M+1,y+3.5);
+    doc.setTextColor(40,40,40);y+=5.5;
 
     rooms[room].forEach(function(item,i){
-      checkPage();
-      var bg = i%2===0 ? [245,248,255] : [255,255,255];
-      doc.setFillColor(bg[0],bg[1],bg[2]);
-      doc.rect(margin,y,pageW-margin*2,5.5,'F');
-      doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(40,40,40);
-      doc.text(item.id,col[0],y+4);
-      doc.text(String(item.room),col[1],y+4);
-      var nameStr = item.nameDe.length>28 ? item.nameDe.slice(0,26)+'…' : item.nameDe;
-      doc.text(nameStr,col[2],y+4);
-      doc.text(String(item.count),col[3],y+4);
-      doc.text(item.serial||'—',col[4],y+4);
-      // Result with color
-      var erg = stdErg;
-      if (erg==='Bestanden') doc.setTextColor(0,150,80);
-      else if (erg==='Nicht bestanden') doc.setTextColor(200,30,30);
-      else doc.setTextColor(200,120,0);
-      doc.text(erg,col[5],y+4);
+      chkPage();
+      doc.setFillColor(i%2===0?244:255,i%2===0?247:255,i%2===0?255:255);
+      doc.rect(M,y,PW-M*2,5.5,'F');
+      doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(40,40,40);
+      doc.text(item.id,cols[0],y+3.8);
+      doc.text(String(item.room),cols[1],y+3.8);
+      var nm=item.nameDe.length>22?item.nameDe.slice(0,20)+'…':item.nameDe;
+      doc.text(nm,cols[2],y+3.8);
+      doc.text((item.brand||'—').slice(0,16),cols[3],y+3.8);
+      doc.text(item.serial||'—',cols[4],y+3.8);
+      if(pErg==='Bestanden')doc.setTextColor(0,140,70);
+      else if(pErg==='Nicht bestanden')doc.setTextColor(180,20,20);
+      else doc.setTextColor(180,100,0);
+      doc.text(pErg,cols[5],y+3.8);
       doc.setTextColor(40,40,40);
-      // Light border
-      doc.setDrawColor(200,210,230); doc.setLineWidth(0.1);
-      doc.line(margin,y+5.5,pageW-margin,y+5.5);
+      doc.setDrawColor(200,210,225);doc.setLineWidth(0.1);
+      doc.line(M,y+5.5,PW-M,y+5.5);
       y+=5.6;
     });
     y+=2;
   });
 
-  // Summary & signature
-  checkPage();
-  y+=4;
-  doc.setDrawColor(100,120,150); doc.setLineWidth(0.3);
-  doc.line(margin,y,pageW-margin,y); y+=6;
-  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(40,40,40);
-  var total = inventory.reduce(function(s,r){return s+r.count;},0);
-  doc.text('Gesamtanzahl Gerätetypen: '+inventory.length+'  |  Geräte gesamt: '+total+'  |  Ergebnis: '+stdErg, margin, y);
+  // Footer
+  chkPage();y+=4;
+  doc.setDrawColor(100,120,150);doc.setLineWidth(0.3);
+  doc.line(M,y,PW-M,y);y+=5;
+  doc.setFont('helvetica','bold');doc.setFontSize(6.5);
+  doc.text('Gesamtanzahl: '+inventory.length+' Geräte · Ergebnis: '+pErg,M,y);
   y+=10;
-  doc.setFont('helvetica','normal'); doc.setFontSize(7);
-  doc.text('Datum: '+pruefDatum, margin, y);
-  doc.text('Datum: '+pruefDatum, 130, y);
-  y+=10;
-  doc.line(margin,y,margin+55,y);
-  doc.line(130,y,185,y);
-  y+=4;
-  doc.text('Unterschrift Prüfer: '+prueferName, margin, y);
-  doc.text('Unterschrift Verantwortliche/r', 130, y);
-  y+=8;
-  doc.setFontSize(6); doc.setTextColor(140,140,140);
-  doc.text('Erstellt mit PACDI Inventar-Manager (Dokumentationswerkzeug, keine Zertifizierungsstelle). Aufbewahrungspflicht beim Betreiber.', margin, y);
+  doc.setFont('helvetica','normal');doc.setFontSize(7);
+  doc.text('Datum: '+pDat,M,y);doc.text('Datum: '+pDat,135,y);y+=10;
+  doc.line(M,y,M+55,y);doc.line(135,y,PW-M,y);y+=4;
+  doc.text('Unterschrift: '+pName,M,y);doc.text('Unterschrift Verantwortliche/r',135,y);
+  y+=8;doc.setFontSize(5.5);doc.setTextColor(140,140,140);
+  doc.text('Dokumentationswerkzeug — keine Zertifizierungsstelle. Aufbewahrungspflicht beim Betreiber. pacdi.store',M,y);
 
   doc.save('BWK-Pruefprotokoll-'+new Date().toISOString().slice(0,10)+'.pdf');
-  status.textContent='✅ PDF erfolgreich erstellt!';
+  st.textContent='✅ PDF erstellt!';
 };
 
-function formatDE(iso){
-  if (!iso) return '';
-  var p=iso.split('-'); return p[2]+'.'+p[1]+'.'+p[0];
-}
+function fmtDE(iso){var p=iso.split('-');return p[2]+'.'+p[1]+'.'+p[0];}
 
-// Init
-document.getElementById('pruefDatum').value = new Date().toISOString().slice(0,10);
-var next = new Date(); next.setFullYear(next.getFullYear()+1);
-document.getElementById('naechstePruef').value = next.toISOString().slice(0,10);
+// Init dates
+document.getElementById('pruefDatum').value=new Date().toISOString().slice(0,10);
+var nx=new Date();nx.setFullYear(nx.getFullYear()+1);
+document.getElementById('naechstePruef').value=nx.toISOString().slice(0,10);
 
 })();
 </script>
