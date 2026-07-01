@@ -58,4 +58,8 @@
   <url><loc>https://pacdi.store/quittung.html</loc><lastmod>2026-06-30</lastmod><priority>0.8</priority></url>
   <url><loc>https://pacdi.store/backup.html</loc><lastmod>2026-06-30</lastmod><priority>0.6</priority></url>
   <url><loc>https://pacdi.store/legal.html</loc><lastmod>2026-06-30</lastmod><priority>0.4</priority></url>
+  <!-- Blog makaleleri 2026-07-01 -->
+  <url><loc>https://pacdi.store/blog/gobd-pwa-quittung-ecommerce.html</loc><lastmod>2026-07-01</lastmod><priority>0.7</priority></url>
+  <url><loc>https://pacdi.store/blog/gobd-konforme-quittung-kleinunternehmer.html</loc><lastmod>2026-07-01</lastmod><priority>0.7</priority></url>
+  <url><loc>https://pacdi.store/blog/kleinunternehmer-quittung-vorlage-pdf.html</loc><lastmod>2026-07-01</lastmod><priority>0.7</priority></url>
 </urlset>
