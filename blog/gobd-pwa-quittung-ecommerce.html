@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoBD &amp; PWA im E-Commerce: Digitale Quittungen für Kleinunternehmer | PACDI Store</title>
+    <meta name="description" content="Wie Progressive Web Apps die digitale Belegführung für Kleinunternehmer vereinfachen — GoBD-Grundlagen, Praxistipps und der kostenlose PACDI Quittung Generator.">
+
+    <link rel="canonical" href="https://pacdi.store/blog/gobd-pwa-quittung-ecommerce.html" />
+    <link rel="alternate" href="https://pacdi.store/blog/gobd-pwa-quittung-ecommerce.html" hreflang="de" />
+    <link rel="alternate" href="https://pacdi.store/blog/gobd-pwa-receipt-ecommerce.html" hreflang="en" />
+    <link rel="alternate" href="https://pacdi.store/blog/gobd-pwa-makbuz-eticaret.html" hreflang="tr" />
+
+    <meta property="og:title" content="GoBD &amp; PWA im E-Commerce: Digitale Quittungen für Kleinunternehmer" />
+    <meta property="og:description" content="GoBD-Grundlagen, PWA-Vorteile und der kostenlose PACDI Quittung Generator — für Honorardozenten, Handwerker und Freiberufler." />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://pacdi.store/blog/gobd-pwa-quittung-ecommerce.html" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "GoBD und Progressive Web Apps im E-Commerce: Digitale Quittungen für Kleinunternehmer",
+      "description": "GoBD-Grundlagen, PWA-Vorteile und der kostenlose PACDI Quittung Generator für Honorardozenten, Handwerker und Freiberufler.",
+      "author": { "@type": "Organization", "name": "AskMeAI Teknoloji Ltd. Şti." },
+      "publisher": { "@type": "Organization", "name": "PACDI Store", "logo": { "@type": "ImageObject", "url": "https://pacdi.store/assets/logo.png" } },
+      "datePublished": "2026-07-01",
+      "dateModified": "2026-07-01"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "PACDI Store", "item": "https://pacdi.store/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pacdi.store/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "GoBD & PWA im E-Commerce", "item": "https://pacdi.store/blog/gobd-pwa-quittung-ecommerce.html" }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Was ist eine GoBD-konforme Quittung?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Eine GoBD-bewusste Quittung enthält alle Pflichtangaben nach § 33 UStDV und wird vom Aussteller revisionssicher aufbewahrt. PACDI erstellt die Quittung — die Archivierungspflicht (8 Jahre) liegt beim Aussteller."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Wie unterstützt PACDI Store die Belegführung?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PACDI Store bietet einen kostenlosen Quittung Generator, der alle Pflichtangaben nach § 33 UStDV automatisch befüllt. Alle Daten bleiben lokal im Browser — kein Server, keine Cloud. Die Aufbewahrungspflicht liegt beim Aussteller."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Was ist der Vorteil einer PWA gegenüber einer nativen App?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Eine PWA benötigt keinen App-Store-Download, ist sofort über den Browser nutzbar, wird von Google indexiert und bietet App-ähnliche Features wie Offline-Fähigkeit. Nur eine Codebasis für alle Geräte."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #0b1e33;
+            line-height: 1.7;
+            padding: 0 20px;
+        }
+        .container { max-width: 1140px; margin: 0 auto; background: #ffffff; box-shadow: 0 10px 40px rgba(0,0,0,0.05); border-radius: 24px; padding: 30px 40px 60px; margin-top: 30px; margin-bottom: 30px; }
+        a { color: #0066cc; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid #e9edf2; flex-wrap: wrap; gap: 15px; }
+        .logo-area { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; color: #0b1e33; }
+        .logo-area span { color: #F6B45F; }
+        .lang-switcher { display: flex; gap: 8px; background: #f1f4f8; padding: 6px 12px; border-radius: 40px; font-size: 0.85rem; }
+        .lang-switcher a { padding: 4px 12px; border-radius: 30px; color: #1e2a3a; font-weight: 500; transition: 0.2s; }
+        .lang-switcher a.active { background: #0b1e33; color: white; text-decoration: none; }
+        .lang-switcher a:hover { background: #d0d8e3; text-decoration: none; }
+        .breadcrumb { font-size: 0.9rem; color: #5e6f8d; margin: 20px 0 25px 0; padding: 10px 0; border-bottom: 1px dashed #dce2ea; }
+        .breadcrumb a { color: #2a7de1; }
+        .breadcrumb span { margin: 0 8px; }
+        h1 { font-size: 2.6rem; font-weight: 800; letter-spacing: -1px; line-height: 1.2; margin-bottom: 12px; color: #071220; }
+        .subtitle { font-size: 1.2rem; color: #3e5670; margin-bottom: 30px; border-left: 5px solid #F6B45F; padding: 16px 24px; background: #f2f6fc; border-radius: 0 12px 12px 0; }
+        h2 { font-size: 1.9rem; font-weight: 700; margin-top: 45px; margin-bottom: 18px; color: #0b1e33; border-bottom: 3px solid #eef3f9; padding-bottom: 12px; }
+        h3 { font-size: 1.4rem; font-weight: 600; margin-top: 30px; margin-bottom: 12px; color: #1c3650; }
+        p, li { color: #1f334b; margin-bottom: 16px; }
+        ul, ol { margin-left: 25px; margin-bottom: 20px; }
+        li { margin-bottom: 8px; }
+
+        /* Disclaimer */
+        .disclaimer { background: #fff8e6; border: 1px solid #f0c040; border-left: 5px solid #F6B45F; border-radius: 10px; padding: 14px 18px; margin: 20px 0; font-size: 0.9rem; }
+        .disclaimer strong { color: #7a5800; }
+        .disclaimer p { color: #5a4200; margin: 0; }
+
+        .feature-table { width: 100%; border-collapse: collapse; margin: 30px 0; font-size: 0.95rem; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .feature-table th { background: #0b1e33; color: white; font-weight: 600; padding: 14px 20px; text-align: left; }
+        .feature-table td { padding: 14px 20px; border-bottom: 1px solid #e9edf2; background: white; }
+        .feature-table tr:last-child td { border-bottom: none; }
+        .feature-table td:first-child { font-weight: 600; color: #0b1e33; width: 30%; }
+        .check { color: #0b9e5c; font-weight: 700; }
+        .warn-cell { color: #e07800; font-weight: 700; }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; margin: 30px 0 20px; }
+        .product-card { background: #f8faff; border-radius: 20px; padding: 24px 20px; border: 1px solid #e2e9f2; transition: transform 0.15s ease, box-shadow 0.15s; text-decoration: none; display: block; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,40,100,0.08); border-color: #b6cbe0; }
+        .product-card h4 { font-size: 1.2rem; margin-bottom: 6px; color: #0b1e33; }
+        .product-card .badge { display: inline-block; background: #F6B45F; color: #04162E; font-size: 0.7rem; font-weight: 700; padding: 2px 10px; border-radius: 30px; margin-bottom: 10px; }
+        .product-card p { font-size: 0.95rem; color: #3e5670; margin-bottom: 12px; }
+        .product-card .link-arrow { font-weight: 600; color: #2a7de1; }
+
+        .faq-item { border: 1px solid #e2e9f2; border-radius: 14px; margin-bottom: 12px; overflow: hidden; }
+        .faq-item summary { padding: 18px 24px; font-weight: 600; font-size: 1.05rem; cursor: pointer; background: #fafcff; transition: 0.2s; color: #0b1e33; }
+        .faq-item summary:hover { background: #f0f5fe; }
+        .faq-item .faq-answer { padding: 0 24px 24px 24px; color: #2a405b; }
+
+        .cta-box { background: #04162E; color: white; padding: 40px 35px; border-radius: 24px; margin: 50px 0 20px; text-align: center; }
+        .cta-box h3 { color: #F6B45F; margin-top: 0; }
+        .cta-box p { color: #cbd8eb; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .btn { display: inline-block; background: #F6B45F; color: #04162E; font-weight: 700; padding: 14px 40px; border-radius: 60px; margin-top: 18px; transition: 0.2s; border: none; font-size: 1rem; text-decoration: none; }
+        .btn:hover { background: #f0c870; text-decoration: none; }
+
+        .footer-note { text-align: center; font-size: 0.85rem; color: #6a7e9b; border-top: 1px solid #e9edf2; padding-top: 30px; margin-top: 20px; }
+        .footer-note a { color: #2a7de1; }
+
+        @media (max-width: 700px) {
+            .container { padding: 20px 18px; }
+            h1 { font-size: 1.9rem; }
+            h2 { font-size: 1.5rem; }
+            .top-bar { flex-direction: column; align-items: stretch; }
+            .lang-switcher { justify-content: center; }
+            .feature-table td, .feature-table th { padding: 10px 12px; font-size: 0.85rem; }
+            .product-grid { grid-template-columns: 1fr; }
+            .cta-box { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <header class="top-bar">
+            <div class="logo-area">PACDI<span>.store</span></div>
+            <div class="lang-switcher">
+                <a href="gobd-pwa-quittung-ecommerce.html" class="active" hreflang="de">DE</a>
+                <a href="gobd-pwa-receipt-ecommerce.html" hreflang="en">EN</a>
+                <a href="gobd-pwa-makbuz-eticaret.html" hreflang="tr">TR</a>
+            </div>
+        </header>
+
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="https://pacdi.store/">PACDI Store</a> <span>/</span>
+            <a href="https://pacdi.store/blog/">Blog</a> <span>/</span>
+            <span>GoBD &amp; PWA im E-Commerce</span>
+        </nav>
+
+        <article>
+            <h1>GoBD und Progressive Web Apps im E-Commerce: Digitale Quittungen für Kleinunternehmer</h1>
+            <div class="subtitle">
+                <strong>PACDI Store</strong> kombiniert PWA-Technologie mit GoBD-bewusster Belegführung — kostenlos, lokal und datenschutzkonform. Alle Daten bleiben auf Ihrem Gerät. Die Aufbewahrungspflicht liegt beim Aussteller.
+            </div>
+            <p><em>Veröffentlicht am 1. Juli 2026 – Lesezeit: ca. 6 Minuten</em></p>
+
+            <div class="disclaimer">
+                <strong>⚠️ Wichtiger Hinweis:</strong>
+                <p>PACDI ist ein <strong>Dokumentationswerkzeug</strong>, keine zertifizierte Buchhaltungssoftware. Die gesetzliche Aufbewahrungspflicht (8 Jahre nach GoBD, § 147 AO, § 14b UStG) liegt vollständig beim Aussteller. PACDI speichert keine Daten auf eigenen Servern. Bei höherem Belegvolumen empfehlen wir den Wechsel zu einer GoBD-zertifizierten Lösung oder die Beauftragung eines Steuerberaters.</p>
+            </div>
+
+            <p>Die Digitalisierung schreitet im E-Commerce unaufhaltsam voran – doch sie bringt auch wachsende regulatorische Anforderungen mit sich. Für Kleinunternehmer, Honorardozenten und Freiberufler in Deutschland stellt die <strong>GoBD-bewusste Belegführung</strong> eine alltägliche Herausforderung dar. Besonders die korrekte Ausstellung und Aufbewahrung von Quittungen bereitet vielen Kopfzerbrechen. Genau hier setzt der <strong>Quittung Generator von PACDI Store</strong> an – eine kostenlose Lösung für die digitale Belegführung im Alltag.</p>
+
+            <h2>Was bedeutet GoBD-bewusste Belegführung?</h2>
+            <p>Die GoBD ist eine Verwaltungsanweisung des Bundesfinanzministeriums, die für alle Unternehmer und Freiberufler in Deutschland verbindlich ist. Sie regelt, wie steuerrelevante Unterlagen aufbewahrt werden müssen.</p>
+            <p>Eine ordentliche Quittung nach <strong>§ 33 UStDV</strong> muss folgende Angaben enthalten:</p>
+            <ul>
+                <li><strong>Vollständigkeit:</strong> Name und Adresse des Ausstellers, Ausstellungsdatum, Art und Menge der Leistung, Rechnungsbetrag.</li>
+                <li><strong>Fortlaufende Nummerierung:</strong> Jeder Beleg erhält eine eindeutige, lückenlose Nummer.</li>
+                <li><strong>Korrekturen nur per Storno:</strong> Fehlerhafte Belege werden nicht gelöscht, sondern storniert — mit Pflichtangabe des Grundes.</li>
+                <li><strong>Aufbewahrungspflicht:</strong> Steuerrelevante Belege müssen <strong>8 Jahre</strong> aufbewahrt werden — diese Pflicht liegt beim Aussteller.</li>
+            </ul>
+
+            <h3>Besondere Regelung: Die Kleinbetragsquittung</h3>
+            <p>Für Quittungen bis <strong>250 Euro brutto</strong> gelten erleichterte Anforderungen nach § 33 UStDV. Der PACDI Quittung Generator wurde genau für diesen Anwendungsbereich entwickelt — ideal für Honorardozenten, Handwerker, Pflegekräfte und Nachhilfelehrer.</p>
+
+            <h2>Die Herausforderung für Kleinunternehmer</h2>
+            <p>Im Alltag gestaltet sich die GoBD-bewusste Belegführung für Kleinunternehmer oft komplex. Typische Probleme:</p>
+            <ul>
+                <li><strong>Papierkoçanlar</strong> gehen verloren, werden unleserlich oder sind schwer zu archivieren</li>
+                <li><strong>Manuelle Prozesse</strong> sind fehleranfällig und zeitaufwendig</li>
+                <li><strong>Fehlende Nummerierung</strong> kann bei Betriebsprüfungen Probleme verursachen</li>
+                <li><strong>Unsichere Aufbewahrung</strong> — Zettel in Schubladen erfüllen kaum die 8-Jahres-Pflicht</li>
+            </ul>
+
+            <h2>Progressive Web Apps im Alltag: Warum eine PWA?</h2>
+            <p>Eine Progressive Web App (PWA) ist eine Website, die sich wie eine native App verhält: installierbar, schnell und offline-fähig — ohne App-Store-Download.</p>
+            <ul>
+                <li><strong>Eine Codebasis für alle Geräte:</strong> Desktop, iOS und Android — überall gleich.</li>
+                <li><strong>Offline-Fähigkeit:</strong> Der Quittung Generator funktioniert auch ohne Internetverbindung.</li>
+                <li><strong>Keine Installation:</strong> Direkt über den Browser öffnen und sofort nutzen.</li>
+                <li><strong>Bessere Auffindbarkeit:</strong> PWAs werden von Google gecrawlt und indexiert.</li>
+            </ul>
+
+            <h2>PACDI Store: Was das Tool leistet — und was nicht</h2>
+            <table class="feature-table">
+                <thead>
+                    <tr><th>Funktion</th><th>PACDI leistet</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Pflichtangaben § 33 UStDV</td><td><span class="check">✔ automatisch befüllt</span></td></tr>
+                    <tr><td>Fortlaufende Belegnummer</td><td><span class="check">✔ JJJJ-NNNN Format, lückenlos</span></td></tr>
+                    <tr><td>Stornierungssystem</td><td><span class="check">✔ Kein Löschen — Storno mit Pflichtgrund</span></td></tr>
+                    <tr><td>Doppelter Zeitstempel</td><td><span class="check">✔ Belegdatum + Erstellungszeitpunkt</span></td></tr>
+                    <tr><td>PDF-Export</td><td><span class="check">✔ A4, druckfertig, mit Disclaimer</span></td></tr>
+                    <tr><td>Google Drive Backup</td><td><span class="check">✔ Direkt in Ihr persönliches Drive</span></td></tr>
+                    <tr><td>Datenschutz</td><td><span class="check">✔ Keine Cloud, kein Server, kein Login (DSGVO)</span></td></tr>
+                    <tr><td>Revisionssichere Archivierung</td><td><span class="warn-cell">⚠ Liegt beim Aussteller — PACDI stellt Export bereit</span></td></tr>
+                    <tr><td>GoBD-Zertifizierung</td><td><span class="warn-cell">⚠ Kein zertifiziertes System — Einstiegslösung</span></td></tr>
+                    <tr><td>Vollständige Buchhaltung</td><td><span class="warn-cell">⚠ Nicht vorgesehen — Steuerberater empfohlen</span></td></tr>
+                </tbody>
+            </table>
+
+            <h2>Die PACDI-Werkzeugfamilie für Kleinunternehmer</h2>
+            <p>Der Quittung Generator ist Teil eines wachsenden Ökosystems kostenloser Dokumentationswerkzeuge:</p>
+
+            <div class="product-grid">
+                <a href="https://pacdi.store/quittung.html" class="product-card">
+                    <span class="badge">1. Monat kostenlos · dann 5/Monat gratis</span>
+                    <h4>🧾 Quittung Generator</h4>
+                    <p>Kleinbetragsrechnungen nach § 33 UStDV — mit Storno, Zeitstempel, Berufstemplates und PDF-Export.</p>
+                    <span class="link-arrow">Jetzt testen →</span>
+                </a>
+                <a href="https://pacdi.store/zeiterfassung.html" class="product-card">
+                    <span class="badge">Kostenlos</span>
+                    <h4>⏱️ Zeiterfassung</h4>
+                    <p>Arbeitszeiten kategoriebasiert erfassen und als Excel-Bericht exportieren — ideal für Honorardozenten.</p>
+                    <span class="link-arrow">Mehr erfahren →</span>
+                </a>
+                <a href="https://pacdi.store/backup.html" class="product-card">
+                    <span class="badge">Kostenlos</span>
+                    <h4>☁️ Cloud-Backup</h4>
+                    <p>Alle PACDI-Daten direkt in Ihr persönliches Google Drive sichern — ein Klick, kein PACDI-Server.</p>
+                    <span class="link-arrow">Mehr erfahren →</span>
+                </a>
+                <a href="https://pacdi.store/pruefprotokoll.html" class="product-card">
+                    <span class="badge">Ab 15 €</span>
+                    <h4>⚡ DGUV Prüfprotokoll</h4>
+                    <p>Elektrische Betriebsmittel prüfen und dokumentieren — DGUV Vorschrift 3, PDF-Export, mobil.</p>
+                    <span class="link-arrow">Mehr erfahren →</span>
+                </a>
+            </div>
+
+            <h2>Fazit: Digitale Belegführung als Alltagserleichterung</h2>
+            <p>GoBD-bewusste Belegführung muss kein aufwendiges Projekt sein. Mit dem <strong>PACDI Quittung Generator</strong> erhalten Kleinunternehmer, Honorardozenten und Freiberufler eine kostenlose Einstiegslösung, die:</p>
+            <ul>
+                <li>✅ alle Pflichtangaben nach <strong>§ 33 UStDV</strong> automatisch befüllt</li>
+                <li>✅ <strong>keine Cloud, keinen Server</strong> und keine Registrierung benötigt</li>
+                <li>✅ <strong>Google Drive Backup</strong> für die eigene Archivierung bereitstellt</li>
+                <li>✅ mit <strong>Stornierungssystem</strong> und doppeltem Zeitstempel arbeitet</li>
+                <li>✅ <strong>kostenlos</strong> genutzt werden kann (1. Monat unbegrenzt)</li>
+            </ul>
+            <p>Die Aufbewahrungspflicht liegt beim Aussteller — PACDI stellt alle nötigen Werkzeuge bereit, um dieser Pflicht nachzukommen. Für wachsendes Geschäftsvolumen empfehlen wir rechtzeitig den Wechsel zu einer GoBD-zertifizierten Buchhaltungssoftware oder die Beauftragung eines Steuerberaters.</p>
+
+            <h2>Häufig gestellte Fragen (FAQ)</h2>
+            <div class="faq-item">
+                <details>
+                    <summary>Was ist eine GoBD-bewusste Quittung?</summary>
+                    <div class="faq-answer">
+                        <p>Eine GoBD-bewusste Quittung enthält alle Pflichtangaben nach § 33 UStDV und wird vom Aussteller revisionssicher aufbewahrt. PACDI erstellt die Quittung automatisch mit allen Pflichtfeldern — die Archivierungspflicht (8 Jahre) liegt beim Aussteller.</p>
+                    </div>
+                </details>
+            </div>
+            <div class="faq-item">
+                <details>
+                    <summary>Wie unterstützt PACDI Store die Belegführung?</summary>
+                    <div class="faq-answer">
+                        <p>PACDI Store bietet einen kostenlosen Quittung Generator, der alle Pflichtangaben nach § 33 UStDV automatisch befüllt, fortlaufend nummeriert und ein Stornierungssystem ohne Löschfunktion bietet. Alle Daten bleiben lokal im Browser — kein Server, keine Cloud. Die Aufbewahrungspflicht liegt beim Aussteller.</p>
+                    </div>
+                </details>
+            </div>
+            <div class="faq-item">
+                <details>
+                    <summary>Was ist der Vorteil einer PWA gegenüber einer nativen App?</summary>
+                    <div class="faq-answer">
+                        <p>Eine PWA benötigt keinen App-Store-Download, ist sofort über den Browser nutzbar, wird von Google gecrawlt und indexiert, und bietet dennoch App-ähnliche Features wie Offline-Fähigkeit. Nur eine Codebasis für alle Geräte — was Wartungsaufwand und Kosten reduziert.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="cta-box">
+                <h3>Jetzt kostenlos testen — kein Login, keine Installation</h3>
+                <p>Erstellen Sie Ihre erste Quittung direkt im Browser. Im ersten Monat unbegrenzt, danach 5 Quittungen/Monat kostenlos. Pro-Version ab 9 €/Monat.</p>
+                <a href="https://pacdi.store/quittung.html" class="btn">🧾 Quittung Generator öffnen →</a>
+            </div>
+
+        </article>
+
+        <footer class="footer-note">
+            <p>© 2026 AskMeAI Teknoloji Ltd. Şti. (TR: 23837) · Betrieben für PACDI Global Yazılım Ltd. Şti. · FSEK: 2026/18897</p>
+            <p style="margin-top: 8px;">
+                <a href="https://pacdi.store/legal.html">Impressum &amp; Datenschutz</a> |
+                <a href="https://pacdi.store/blog/">Blog</a> |
+                <a href="https://pacdi.store/">pacdi.store</a>
+            </p>
+            <p style="margin-top: 6px; font-size: 0.8rem; font-style: italic; color: #8a9ab8;">"Technology in the service of humanity."</p>
+        </footer>
+
+    </div>
+</body>
+</html>
