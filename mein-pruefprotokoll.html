@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DGUV V3 Prüfprotokoll | PACDI</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#04162E;color:#eaf2fb;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;min-height:100vh;padding:16px;}
+.app{max-width:960px;margin:0 auto;}
+header h1{color:#F6B45F;font-size:1.15rem;margin-bottom:3px;}
+header .sub{color:#7a9ab8;font-size:0.75rem;margin-bottom:16px;}
+
+.steps{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.step-btn{padding:7px 14px;border-radius:20px;border:1px solid rgba(246,180,95,0.3);background:transparent;color:#7a9ab8;font-size:0.73rem;cursor:pointer;font-family:inherit;transition:0.2s;}
+.step-btn.active{background:#F6B45F;color:#04162E;border-color:#F6B45F;font-weight:700;}
+.step-btn.done{border-color:#34D399;color:#34D399;}
+.panel{display:none;}.panel.active{display:block;}
+
+/* Step 1 - Import */
+.import-area{background:#0a1828;border:2px dashed rgba(246,180,95,0.25);border-radius:12px;padding:20px;text-align:center;margin-bottom:14px;}
+.import-area p{color:#7a9ab8;font-size:0.78rem;margin-top:8px;}
+textarea{width:100%;height:160px;background:#0a1828;border:1px solid rgba(246,180,95,0.2);border-radius:10px;color:#eaf2fb;font-family:'Courier New',monospace;font-size:0.75rem;padding:10px;resize:vertical;line-height:1.6;}
+
+/* Step 2 - Meta */
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.meta-grid label{font-size:0.75rem;color:#7a9ab8;display:block;margin-bottom:3px;}
+.meta-grid input,.meta-grid select{width:100%;background:#0a1828;border:1px solid rgba(246,180,95,0.2);color:#eaf2fb;padding:8px 10px;border-radius:8px;font-size:0.78rem;font-family:inherit;}
+
+/* Step 3 - Prüftabelle */
+.room-block{margin-bottom:18px;}
+.room-header{background:#0a1828;border-left:3px solid #F6B45F;padding:8px 12px;border-radius:6px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+.room-header h3{font-size:0.82rem;color:#F6B45F;}
+.room-header .room-stats{font-size:0.68rem;color:#7a9ab8;}
+.room-header .btn-all-ok{background:rgba(52,211,153,0.1);border:1px solid #34D399;color:#34D399;font-size:0.65rem;padding:3px 10px;border-radius:12px;cursor:pointer;font-family:inherit;}
+
+table{width:100%;border-collapse:collapse;font-size:0.76rem;}
+th{background:#071220;color:#F6B45F;padding:7px 8px;text-align:left;border-bottom:1px solid rgba(246,180,95,0.15);white-space:nowrap;font-size:0.7rem;}
+td{padding:6px 8px;border-bottom:1px solid rgba(246,180,95,0.06);vertical-align:middle;}
+tr.ok-row{background:rgba(52,211,153,0.04);}
+tr.fail-row{background:rgba(248,113,113,0.06);}
+
+/* Result buttons */
+.result-btns{display:flex;gap:5px;}
+.btn-ok{background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);color:#34D399;padding:5px 12px;border-radius:16px;cursor:pointer;font-size:0.78rem;font-weight:700;font-family:inherit;transition:0.15s;}
+.btn-ok.selected{background:#34D399;color:#04162E;}
+.btn-fail{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:#f87171;padding:5px 12px;border-radius:16px;cursor:pointer;font-size:0.78rem;font-weight:700;font-family:inherit;transition:0.15s;}
+.btn-fail.selected{background:#f87171;color:#fff;}
+
+/* Ohm input */
+.ohm-wrap{display:flex;align-items:center;gap:4px;}
+.ohm-wrap input{background:#04162E;border:1px solid rgba(246,180,95,0.2);color:#eaf2fb;padding:4px 7px;border-radius:6px;font-size:0.76rem;font-family:inherit;width:72px;text-align:right;}
+.ohm-wrap span{color:#7a9ab8;font-size:0.72rem;}
+.ohm-warn{color:#f87171;font-size:0.65rem;}
+.ohm-ok{color:#34D399;font-size:0.65rem;}
+
+/* Stats bar */
+.stats-bar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;padding:10px;background:#071220;border-radius:10px;}
+.stat{font-size:0.75rem;display:flex;align-items:center;gap:5px;}
+.stat .val{font-size:1rem;font-weight:700;}
+.stat.ok .val{color:#34D399;}
+.stat.fail .val{color:#f87171;}
+.stat.pend .val{color:#7a9ab8;}
+
+.btn-gold{background:#F6B45F;color:#04162E;border:none;padding:10px 22px;border-radius:8px;font-size:0.84rem;font-weight:700;cursor:pointer;font-family:inherit;transition:0.2s;margin:4px 4px 4px 0;}
+.btn-gold:hover{background:#f0c870;}
+.btn-outline{background:transparent;border:1px solid rgba(246,180,95,0.35);color:#F6B45F;padding:8px 16px;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:inherit;transition:0.2s;margin:4px 4px 4px 0;}
+.info-box{background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.2);border-left:4px solid #34D399;border-radius:8px;padding:9px 13px;font-size:0.74rem;color:#b0b5bf;margin:10px 0;line-height:1.6;}
+.warn-box{background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.2);border-left:4px solid #f87171;border-radius:8px;padding:9px 13px;font-size:0.74rem;color:#b0b5bf;margin:10px 0;}
+
+@media(max-width:600px){
+  .meta-grid{grid-template-columns:1fr;}
+  .result-btns{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <a href="/" style="font-size:0.68rem;color:#7a9ab8;text-decoration:none;">← PACDI Store</a>
+  <h1 style="margin-top:6px;">⚡ DGUV V3 Prüfprotokoll</h1>
+  <div class="sub">Inventar importieren → Prüfdaten eingeben → Werte eintragen → PDF exportieren</div>
+</header>
+
+<div class="steps">
+  <button class="step-btn active" id="s1" onclick="goStep(1)">1. Inventar</button>
+  <button class="step-btn" id="s2" onclick="goStep(2)">2. Prüfer &amp; Datum</button>
+  <button class="step-btn" id="s3" onclick="goStep(3)">3. Prüfung</button>
+  <button class="step-btn" id="s4" onclick="goStep(4)">4. PDF</button>
+</div>
+
+<!-- STEP 1: Import -->
+<div class="panel active" id="panel1">
+  <div class="info-box">
+    <strong style="color:#34D399;">Inventar CSV importieren</strong> — BWK Inventar-Manager'dan dışa aktardığınız CSV dosyasını buraya yapıştırın.<br>
+    Veya manuel olarak her satıra: <code>BWK-0001, Raum 203, Brother Drucker, Brother, </code>
+  </div>
+  <div class="import-area" id="dropArea">
+    <div style="font-size:1.5rem;">📂</div>
+    <p>CSV dosyasını sürükleyin veya aşağıya yapıştırın</p>
+    <input type="file" id="csvFile" accept=".csv" style="display:none;" onchange="loadCSV(event)">
+    <button class="btn-outline" onclick="document.getElementById('csvFile').click()" style="margin-top:10px;">Dosya seç</button>
+  </div>
+  <textarea id="csvInput" placeholder='ID,Raum,Gerät,Marke/Modell,Typ,Seriennr.,Notiz
+BWK-0001,203,Brother Drucker,MFC-L2750DW,qr,,
+BWK-0002,203,Verlängerungskabel,,barcode,,
+BWK-0003,FRISEURSALON,Bartschneider,,qr,,'></textarea>
+  <br>
+  <button class="btn-gold" onclick="importCSV()">📋 Importieren & Weiter →</button>
+  <p style="font-size:0.68rem;color:#4a6a88;margin-top:8px;">Tipp: Zuerst im BWK Inventar-Manager CSV exportieren, dann hier importieren.</p>
+</div>
+
+<!-- STEP 2: Prüfer -->
+<div class="panel" id="panel2">
+  <div class="meta-grid">
+    <div><label>Prüfer (Name &amp; Qualifikation)</label><input id="prueferName" placeholder="Max Mustermann, Elektrofachkraft"></div>
+    <div><label>Prüfdatum</label><input type="date" id="pruefDatum"></div>
+    <div><label>Nächste Prüfung</label><input type="date" id="naechstePruef"></div>
+    <div><label>Prüfmittel / Messgerät</label><input id="pruefmittel" placeholder="z.B. FLUKE 1664 FC, SN: 12345"></div>
+    <div><label>Einrichtung / Standort</label><input id="einrichtung" value="BWK Berlin"></div>
+    <div><label>Prüfungsgrundlage</label><input id="grundlage" value="DGUV Vorschrift 3 / BGV A3 / DIN VDE 0701-0702"></div>
+  </div>
+  <button class="btn-gold" onclick="goStep(3)">Weiter zur Prüfung →</button>
+</div>
+
+<!-- STEP 3: Prüftabelle -->
+<div class="panel" id="panel3">
+  <div class="stats-bar" id="statsBar"></div>
+  <div style="margin-bottom:12px;display:flex;gap:6px;flex-wrap:wrap;">
+    <button class="btn-outline" onclick="setAllOk()">✅ Alle bestanden</button>
+    <button class="btn-gold" onclick="goStep(4)">Weiter → PDF</button>
+  </div>
+  <div id="pruefTable"></div>
+</div>
+
+<!-- STEP 4: PDF -->
+<div class="panel" id="panel4">
+  <div class="stats-bar" id="statsBar4"></div>
+  <div id="failWarning" class="warn-box" style="display:none;"></div>
+  <div class="info-box">PDF enthält alle Prüfergebnisse, Messwerte und Unterschriftenfelder — bereit zur Archivierung.</div>
+  <button class="btn-gold" onclick="generatePDF()">📄 Prüfprotokoll PDF generieren</button>
+  <div id="pdfStatus" style="margin-top:10px;font-size:0.8rem;color:#34D399;"></div>
+</div>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var devices = []; // {id, room, name, brand, type, serial, note, result:'', ohm:''}
+
+// ── Navigation ──
+function goStep(n){
+  [1,2,3,4].forEach(function(i){
+    document.getElementById('panel'+i).classList.toggle('active',i===n);
+    var b=document.getElementById('s'+i);
+    b.classList.remove('active','done');
+    if(i<n)b.classList.add('done');
+    if(i===n)b.classList.add('active');
+  });
+  if(n===3) renderPruefTable();
+  if(n===4) renderStep4();
+}
+window.goStep=goStep;
+
+// ── CSV Import ──
+window.loadCSV = function(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    document.getElementById('csvInput').value = ev.target.result;
+  };
+  reader.readAsText(file,'UTF-8');
+};
+
+window.importCSV = function(){
+  var raw = document.getElementById('csvInput').value.trim();
+  if(!raw){alert('Bitte CSV eingeben.');return;}
+  devices=[];
+  var lines = raw.split('\n');
+  lines.forEach(function(line,idx){
+    if(idx===0 && line.toLowerCase().indexOf('id')>-1) return; // skip header
+    var cols = line.split(',').map(function(c){return c.replace(/^"|"$/g,'').trim();});
+    if(cols.length<3 || !cols[0]) return;
+    devices.push({
+      id: cols[0]||'',
+      room: cols[1]||'',
+      name: cols[2]||'',
+      brand: cols[3]||'',
+      type: cols[4]||'qr',
+      serial: cols[5]||'',
+      note: cols[6]||'',
+      result:'',
+      ohm:''
+    });
+  });
+  if(!devices.length){alert('Keine Geräte gefunden. Bitte CSV-Format prüfen.');return;}
+  goStep(2);
+};
+
+// ── Prüftabelle ──
+function renderPruefTable(){
+  var rooms={};
+  devices.forEach(function(d){(rooms[d.room]=rooms[d.room]||[]).push(d);});
+  var html='';
+  Object.keys(rooms).sort().forEach(function(room){
+    var list=rooms[room];
+    var okC=list.filter(function(d){return d.result==='ok';}).length;
+    html+='<div class="room-block">';
+    html+='<div class="room-header">'+
+      '<h3>📍 Raum '+room+' <span style="font-weight:400;color:#7a9ab8;font-size:0.72rem;">('+list.length+' Gerät'+(list.length>1?'e':'')+')</span></h3>'+
+      '<div style="display:flex;align-items:center;gap:8px;">'+
+        '<span class="room-stats">'+okC+'/'+list.length+' geprüft</span>'+
+        '<button class="btn-all-ok" onclick="setRoomOk(\''+room+'\')">✅ Alle OK</button>'+
+      '</div>'+
+    '</div>';
+    html+='<table><thead><tr>'+
+      '<th>ID</th><th>Gerät</th><th>Marke</th><th>SN</th>'+
+      '<th>R&lt;0,5Ω</th><th style="min-width:80px;">Messwert</th><th>Ergebnis</th>'+
+    '</tr></thead><tbody>';
+    list.forEach(function(d){
+      var cls=d.result==='ok'?'ok-row':d.result==='fail'?'fail-row':'';
+      var ohmWarn='';
+      if(d.ohm!=='' && !isNaN(parseFloat(d.ohm))){
+        ohmWarn=parseFloat(d.ohm)<0.5?'<span class="ohm-ok">✓</span>':'<span class="ohm-warn">!</span>';
+      }
+      html+='<tr class="'+cls+'" id="row-'+d.id+'">';
+      html+='<td style="font-size:0.62rem;color:#4a6a88;white-space:nowrap;">'+escH(d.id)+'</td>';
+      html+='<td style="font-weight:600;color:#eaf2fb;">'+escH(d.name)+'</td>';
+      html+='<td style="color:#7a9ab8;font-size:0.72rem;">'+escH(d.brand||'—')+'</td>';
+      html+='<td style="color:#4a6a88;font-size:0.68rem;">'+escH(d.serial||'—')+'</td>';
+      html+='<td>'+
+        '<div class="result-btns">'+
+          '<button class="btn-ok'+(d.result==='ok'?' selected':'')+'" onclick="setResult(\''+d.id+'\',\'ok\')">✅</button>'+
+          '<button class="btn-fail'+(d.result==='fail'?' selected':'')+'" onclick="setResult(\''+d.id+'\',\'fail\')">❌</button>'+
+        '</div>'+
+      '</td>';
+      html+='<td><div class="ohm-wrap"><input type="number" step="0.01" min="0" max="99" value="'+escH(d.ohm)+'" placeholder="0.00" onchange="setOhm(\''+d.id+'\',this.value)" onblur="setOhm(\''+d.id+'\',this.value)"><span>Ω</span>'+ohmWarn+'</div></td>';
+      html+='<td style="font-size:0.72rem;color:'+(d.result==='ok'?'#34D399':d.result==='fail'?'#f87171':'#4a6a88')+';">'+
+        (d.result==='ok'?'Bestanden':d.result==='fail'?'Nicht bestanden':'—')+
+      '</td>';
+      html+='</tr>';
+    });
+    html+='</tbody></table></div>';
+  });
+  document.getElementById('pruefTable').innerHTML=html;
+  updateStats();
+}
+
+window.setResult = function(id, res){
+  var d = devices.find(function(x){return x.id===id;});
+  if(!d) return;
+  d.result = res;
+  // Update row class and buttons
+  var row = document.getElementById('row-'+id);
+  if(row){
+    row.className = res==='ok'?'ok-row':res==='fail'?'fail-row':'';
+    // Update result buttons
+    var btns = row.querySelectorAll('.btn-ok,.btn-fail');
+    btns[0].classList.toggle('selected', res==='ok');
+    btns[1].classList.toggle('selected', res==='fail');
+    // Update result text
+    var cells = row.querySelectorAll('td');
+    var lastTd = cells[cells.length-1];
+    lastTd.style.color = res==='ok'?'#34D399':'#f87171';
+    lastTd.textContent = res==='ok'?'Bestanden':'Nicht bestanden';
+  }
+  updateStats();
+};
+
+window.setOhm = function(id, val){
+  var d = devices.find(function(x){return x.id===id;});
+  if(!d) return;
+  d.ohm = val;
+  // Auto-set result if ohm entered
+  if(val!=='' && !isNaN(parseFloat(val))){
+    var v = parseFloat(val);
+    if(d.result==='') setResult(id, v<0.5?'ok':'fail');
+  }
+  updateStats();
+};
+
+window.setAllOk = function(){
+  devices.forEach(function(d){d.result='ok';if(d.ohm==='')d.ohm='0.1';});
+  renderPruefTable();
+};
+
+window.setRoomOk = function(room){
+  devices.forEach(function(d){if(d.room===room){d.result='ok';if(d.ohm==='')d.ohm='0.1';}});
+  renderPruefTable();
+};
+
+function updateStats(){
+  var ok=devices.filter(function(d){return d.result==='ok';}).length;
+  var fail=devices.filter(function(d){return d.result==='fail';}).length;
+  var pend=devices.length-ok-fail;
+  var pct=devices.length?Math.round((ok+fail)/devices.length*100):0;
+
+  var html=
+    '<div class="stat ok"><span class="val">'+ok+'</span> Bestanden ✅</div>'+
+    '<div class="stat fail"><span class="val">'+fail+'</span> Nicht bestanden ❌</div>'+
+    '<div class="stat pend"><span class="val">'+pend+'</span> Ausstehend</div>'+
+    '<div class="stat"><span class="val" style="color:#F6B45F;">'+pct+'%</span> abgeschlossen</div>';
+  document.getElementById('statsBar').innerHTML=html;
+}
+
+function renderStep4(){
+  var ok=devices.filter(function(d){return d.result==='ok';}).length;
+  var fail=devices.filter(function(d){return d.result==='fail';}).length;
+  var pend=devices.length-ok-fail;
+  document.getElementById('statsBar4').innerHTML=
+    '<div class="stat ok"><span class="val">'+ok+'</span> Bestanden</div>'+
+    '<div class="stat fail"><span class="val">'+fail+'</span> Nicht bestanden</div>'+
+    '<div class="stat pend"><span class="val">'+pend+'</span> Ausstehend</div>';
+  var fw=document.getElementById('failWarning');
+  if(fail>0){
+    fw.style.display='block';
+    var failDevs=devices.filter(function(d){return d.result==='fail';});
+    fw.innerHTML='⚠️ <strong>'+fail+' Gerät'+(fail>1?'e':'')+' nicht bestanden:</strong> '+
+      failDevs.map(function(d){return d.name+' ('+d.id+', R:'+d.room+')';}).join(' · ');
+  } else fw.style.display='none';
+}
+
+// ── PDF ──
+window.generatePDF = function(){
+  var st=document.getElementById('pdfStatus');
+  if(!devices.length){alert('Kein Inventar.');return;}
+  if(typeof window.jspdf==='undefined'){st.textContent='⚠️ PDF-Lib lädt...';return;}
+  st.textContent='⏳ PDF wird erstellt...';
+
+  var {jsPDF}=window.jspdf;
+  var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+
+  var pName=document.getElementById('prueferName').value||'_______________';
+  var pDat=document.getElementById('pruefDatum').value?fmtDE(document.getElementById('pruefDatum').value):new Date().toLocaleDateString('de-DE');
+  var pNext=document.getElementById('naechstePruef').value?fmtDE(document.getElementById('naechstePruef').value):'_______________';
+  var pMit=document.getElementById('pruefmittel').value||'_______________';
+  var pEinr=document.getElementById('einrichtung').value||'BWK Berlin';
+  var pGrund=document.getElementById('grundlage').value||'DGUV Vorschrift 3 / BGV A3';
+
+  var M=12,y=14,PW=210;
+  var cols=[12,44,88,136,157,177,194];
+
+  function hdr(){
+    doc.setFillColor(4,22,46);doc.rect(0,0,210,30,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(246,180,95);
+    doc.text('Prüfprotokoll — DGUV Vorschrift 3',M,11);
+    doc.setFontSize(6.5);doc.setTextColor(160,175,195);
+    doc.text(pGrund+' · '+pEinr,M,17);
+    doc.text('Prüfer: '+pName+' | Datum: '+pDat+' | Nächste Prüfung: '+pNext,M,22);
+    doc.text('Prüfmittel: '+pMit+' | Erstellt: '+new Date().toLocaleString('de-DE')+' | pacdi.store',M,27);
+    doc.setTextColor(40,40,40);y=34;
+  }
+
+  function tblHdr(){
+    doc.setFillColor(10,24,40);doc.rect(M,y,PW-M*2,6,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(6);doc.setTextColor(246,180,95);
+    var heads=['Gerät-ID','Raum / Standort','Gerätename','Marke / Modell','SN','R Ω','Ergebnis'];
+    heads.forEach(function(h,i){doc.text(h,cols[i],y+4);});
+    doc.setTextColor(40,40,40);y+=7;
+  }
+
+  function chkPage(){if(y>275){doc.addPage();hdr();tblHdr();}}
+
+  hdr();tblHdr();
+
+  var rooms={};
+  devices.forEach(function(d){(rooms[d.room]=rooms[d.room]||[]).push(d);});
+
+  Object.keys(rooms).sort().forEach(function(room){
+    chkPage();
+    var list=rooms[room];
+    var okC=list.filter(function(d){return d.result==='ok';}).length;
+
+    // Room header
+    doc.setFillColor(15,30,60);doc.rect(M,y,PW-M*2,5,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.setTextColor(246,180,95);
+    doc.text('Raum '+room,M+1,y+3.5);
+    doc.setFont('helvetica','normal');doc.setTextColor(120,140,160);
+    doc.text(okC+'/'+list.length+' bestanden',PW-M-30,y+3.5);
+    doc.setTextColor(40,40,40);y+=5.5;
+
+    list.forEach(function(d,i){
+      chkPage();
+      // Row background
+      if(d.result==='ok') doc.setFillColor(240,252,245);
+      else if(d.result==='fail') doc.setFillColor(255,242,242);
+      else doc.setFillColor(i%2===0?248:255,i%2===0?249:255,i%2===0?252:255);
+      doc.rect(M,y,PW-M*2,5.5,'F');
+
+      doc.setFont('helvetica','normal');doc.setFontSize(5.8);doc.setTextColor(80,80,80);
+      doc.text(d.id,cols[0],y+3.8);
+      doc.text(String(d.room),cols[1],y+3.8);
+
+      var nm=d.name.length>24?d.name.slice(0,22)+'…':d.name;
+      doc.text(nm,cols[2],y+3.8);
+      doc.text((d.brand||'—').slice(0,14),cols[3],y+3.8);
+      doc.text((d.serial||'—').slice(0,10),cols[4],y+3.8);
+
+      // Ohm value with color
+      var ohmStr=d.ohm!==''?d.ohm+' Ω':'—';
+      if(d.ohm!=='' && parseFloat(d.ohm)>=0.5) doc.setTextColor(180,30,30);
+      else if(d.ohm!=='') doc.setTextColor(0,130,60);
+      doc.text(ohmStr,cols[5],y+3.8);
+      doc.setTextColor(40,40,40);
+
+      // Result with icon
+      if(d.result==='ok'){
+        doc.setTextColor(0,140,70);doc.setFont('helvetica','bold');
+        doc.text('✓ OK',cols[6],y+3.8);
+      } else if(d.result==='fail'){
+        doc.setTextColor(180,20,20);doc.setFont('helvetica','bold');
+        doc.text('✗ FAIL',cols[6],y+3.8);
+      } else {
+        doc.setTextColor(150,150,150);doc.setFont('helvetica','normal');
+        doc.text('—',cols[6],y+3.8);
+      }
+      doc.setTextColor(40,40,40);doc.setFont('helvetica','normal');
+
+      doc.setDrawColor(210,220,235);doc.setLineWidth(0.1);
+      doc.line(M,y+5.5,PW-M,y+5.5);
+      y+=5.6;
+    });
+    y+=2;
+  });
+
+  // Summary
+  chkPage();y+=5;
+  var ok=devices.filter(function(d){return d.result==='ok';}).length;
+  var fail=devices.filter(function(d){return d.result==='fail';}).length;
+  var pend=devices.length-ok-fail;
+
+  doc.setDrawColor(100,120,150);doc.setLineWidth(0.3);
+  doc.line(M,y,PW-M,y);y+=5;
+
+  doc.setFont('helvetica','bold');doc.setFontSize(7);
+  doc.setTextColor(0,140,70);doc.text('Bestanden: '+ok,M,y);
+  doc.setTextColor(180,20,20);doc.text('Nicht bestanden: '+fail,M+30,y);
+  doc.setTextColor(100,100,100);doc.text('Ausstehend: '+pend,M+70,y);
+  doc.setTextColor(40,40,40);doc.text('Gesamt: '+devices.length+' Geräte',M+110,y);
+  y+=12;
+
+  // Fail list
+  if(fail>0){
+    doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.setTextColor(180,20,20);
+    doc.text('Geräte mit Mängeln (Sofortmaßnahmen erforderlich):',M,y);y+=5;
+    devices.filter(function(d){return d.result==='fail';}).forEach(function(d){
+      chkPage();
+      doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(100,20,20);
+      doc.text('• '+d.id+' | R:'+d.room+' | '+d.name+(d.brand?' ('+d.brand+')':'')+(d.ohm?' | '+d.ohm+' Ω':''),M+3,y);
+      y+=4.5;
+    });
+    y+=4;
+  }
+
+  // Signatures
+  chkPage();y+=2;
+  doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(40,40,40);
+  doc.text('Datum: '+pDat,M,y);doc.text('Datum: '+pDat,130,y);y+=10;
+  doc.setDrawColor(80,80,80);doc.setLineWidth(0.3);
+  doc.line(M,y,M+60,y);doc.line(130,y,PW-M,y);y+=4;
+  doc.setFontSize(6.5);
+  doc.text('Prüfer: '+pName,M,y);doc.text('Verantwortliche Person',130,y);
+
+  y+=10;doc.setFontSize(5.5);doc.setTextColor(150,150,150);
+  doc.text('Erstellt mit PACDI Prüfprotokoll-Manager (Dokumentationswerkzeug). Aufbewahrungspflicht beim Betreiber. pacdi.store',M,y);
+
+  doc.save('DGUV-V3-Pruefprotokoll-'+pDat.replace(/\./g,'-')+'.pdf');
+  st.textContent='✅ PDF erfolgreich erstellt!';
+};
+
+function fmtDE(iso){var p=iso.split('-');return p[2]+'.'+p[1]+'.'+p[0];}
+function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+
+// Init
+document.getElementById('pruefDatum').value=new Date().toISOString().slice(0,10);
+var nx=new Date();nx.setFullYear(nx.getFullYear()+1);
+document.getElementById('naechstePruef').value=nx.toISOString().slice(0,10);
+
+// Drag & drop
+var da=document.getElementById('dropArea');
+da.addEventListener('dragover',function(e){e.preventDefault();da.style.borderColor='#F6B45F';});
+da.addEventListener('dragleave',function(){da.style.borderColor='';});
+da.addEventListener('drop',function(e){
+  e.preventDefault();da.style.borderColor='';
+  var file=e.dataTransfer.files[0];
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(ev){document.getElementById('csvInput').value=ev.target.result;};
+  reader.readAsText(file,'UTF-8');
+});
+
+})();
+</script>
+</body>
+</html>
