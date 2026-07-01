@@ -214,6 +214,12 @@ LEGAL_HTML = '''<!DOCTYPE html>
 SKIP = ['legal.html','impressum.html','datenschutz.html','404.html','master-template.html','test.html']
 SKIP_FOOTER = ['legal.html','impressum.html','datenschutz.html','404.html','master-template.html','test.html']
 
+# ── Kişisel/özel dosyalar — inject edilmez ──
+PRIVATE_PREFIXES = ('mein-', 'private-', 'pacdi-sunum', 'personal-', 'intern-')
+
+def is_private(filename):
+    return any(filename.startswith(p) for p in PRIVATE_PREFIXES)
+
 # ── Write standard legal.html (skip if pacdi.store) ──
 if domain != 'pacdi.store':
     legal_content = LEGAL_HTML.format()
@@ -278,6 +284,9 @@ for root, dirs, files in os.walk('.'):
     dirs[:] = [d for d in dirs if d not in ['.git','.github']]
     for fname in files:
         if not fname.endswith('.html') or fname.startswith('google4d'):
+            continue
+        if is_private(fname):
+            print('Skipped (private):', fname)
             continue
         fpath = os.path.join(root, fname)
         try:
