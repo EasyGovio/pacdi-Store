@@ -89,7 +89,7 @@ td input:focus,td select:focus{outline:none;border-color:#F6B45F;}
   <div class="info-box">
     <strong style="color:#34D399;">Format-Regeln:</strong><br>
     • <strong>Raum:</strong> Zahl oder Name am Zeilenanfang → <code>203 brother drucker, 4x kabel</code><br>
-    • <strong>Oda başlığı:</strong> Sadece metin + iki nokta → <code>FRISEURSALON:</code><br>
+    • <strong>Oda başlığı:</strong> Sadece metin + iki nokta → <code>FRISEURSALON:</code> veya <code>Teeküche 3.OG:</code><br>
     • <strong>Virgül = ayrı cihaz</strong> aynı odada → her biri ayrı kayıt<br>
     • <strong>Nx = adet</strong> → <code>17x laptop</code> = 17 ayrı etiket (aynı QR/barkod)<br>
     • <strong>Marka/model</strong> parantezde → <code>brother drucker (MFC-L2750DW)</code><br>
@@ -224,7 +224,11 @@ function parseRaw(raw) {
     // Room number line: starts with digits (optionally followed by letter)
     var roomNum = line.match(/^(\d{2,3}[A-Z]?)[.\s]\s*(.*)/i);
     // Room name line: text + colon (e.g. "FRISEURSALON:" or "Teeküche 3.OG:")
-    var roomName = line.match(/^([A-ZÜÖÄİŞĞÇa-züöäışğç][^,\d]{2,}?):\s*(.*)/);
+    // FIX (02.07.2026): önceki regex [^,\d]{2,}? oda adında rakam GEÇEMEZ diyordu,
+    // bu yüzden "Teeküche 3.OG:" gibi başlıklar (içinde "3" rakamı var) tanınmıyor,
+    // cihazları bir önceki Raum'a (örn. 319) düşüyordu. Artık sadece virgül ve
+    // iki nokta hariç her karaktere izin veriyoruz, rakamlar da dahil.
+    var roomName = line.match(/^([A-ZÜÖÄİŞĞÇa-züöäışğç][^,:]{1,}?):\s*(.*)/);
 
     if (roomNum) {
       currentRoom = roomNum[1].trim();
