@@ -127,6 +127,12 @@ BWK-0003,FRISEURSALON,Bartschneider,,qr,,'></textarea>
 <!-- STEP 3: Prüftabelle -->
 <div class="panel" id="panel3">
   <div class="stats-bar" id="statsBar"></div>
+  <div style="margin-bottom:12px;">
+    <label style="font-size:0.75rem;color:#7a9ab8;display:block;margin-bottom:4px;">📷 Barkod/QR Tarayıcı (Bluetooth-Scanner scannt hier automatisch)</label>
+    <input id="scannerInput" type="text" placeholder="Scan-Fokus hier — Gerät scannen, springt automatisch zur Zeile" autocomplete="off"
+      style="width:100%;background:#0a1828;border:2px solid rgba(52,211,153,0.4);color:#eaf2fb;padding:10px 12px;border-radius:8px;font-size:0.85rem;font-family:inherit;">
+    <div id="scannerFeedback" style="font-size:0.7rem;color:#7a9ab8;margin-top:4px;min-height:1.2em;"></div>
+  </div>
   <div style="margin-bottom:12px;display:flex;gap:6px;flex-wrap:wrap;">
     <button class="btn-outline" onclick="setAllOk()">✅ Alle bestanden</button>
     <button class="btn-gold" onclick="goStep(4)">Weiter → PDF</button>
@@ -160,7 +166,7 @@ function goStep(n){
     if(i<n)b.classList.add('done');
     if(i===n)b.classList.add('active');
   });
-  if(n===3) renderPruefTable();
+  if(n===3){ renderPruefTable(); setupScannerInput(); setTimeout(function(){ var si=document.getElementById('scannerInput'); if(si) si.focus(); },100); }
   if(n===4) renderStep4();
 }
 window.goStep=goStep;
@@ -238,7 +244,7 @@ function renderPruefTable(){
           '<button class="btn-fail'+(d.result==='fail'?' selected':'')+'" onclick="setResult(\''+d.id+'\',\'fail\')">❌</button>'+
         '</div>'+
       '</td>';
-      html+='<td><div class="ohm-wrap"><input type="number" step="0.01" min="0" max="99" value="'+escH(d.ohm)+'" placeholder="0.00" onchange="setOhm(\''+d.id+'\',this.value)" onblur="setOhm(\''+d.id+'\',this.value)"><span>Ω</span>'+ohmWarn+'</div></td>';
+      html+='<td><div class="ohm-wrap"><input id="ohm-'+d.id+'" type="number" step="0.01" min="0" max="99" value="'+escH(d.ohm)+'" placeholder="0.00" onchange="setOhm(\''+d.id+'\',this.value)" onblur="setOhm(\''+d.id+'\',this.value)"><span>Ω</span>'+ohmWarn+'</div></td>';
       html+='<td style="font-size:0.72rem;color:'+(d.result==='ok'?'#34D399':d.result==='fail'?'#f87171':'#4a6a88')+';">'+
         (d.result==='ok'?'Bestanden':d.result==='fail'?'Nicht bestanden':'—')+
       '</td>';
@@ -248,6 +254,69 @@ function renderPruefTable(){
   });
   document.getElementById('pruefTable').innerHTML=html;
   updateStats();
+}
+
+// ── Bluetooth/USB HID Barkod-Scanner (markenunabhängig) ──
+// Ein HID-Scanner tippt den Code sehr schnell als Tastatureingaben und schließt
+// meist mit Enter ab — genau wie eine Tastatur. Kein spezielles SDK nötig.
+var scannerListenerAttached = false;
+function setupScannerInput(){
+  var input = document.getElementById('scannerInput');
+  if(!input || scannerListenerAttached) return;
+  scannerListenerAttached = true;
+
+  input.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      handleScan(input.value.trim());
+      input.value = '';
+    }
+  });
+
+  // Fokus nicht verlieren — Scanner braucht das aktive Feld
+  input.addEventListener('blur', function(){
+    setTimeout(function(){
+      if(document.getElementById('panel3') && document.getElementById('panel3').classList.contains('active')){
+        input.focus();
+      }
+    }, 300);
+  });
+}
+
+function handleScan(raw){
+  var fb = document.getElementById('scannerFeedback');
+  if(!raw){ if(fb) fb.textContent=''; return; }
+
+  // QR-Format: 'BWK|BWK-0001|R:319|Gerätename|...' → ID ist Segment 2
+  // Barcode/Direkt-Format: einfach die rohe ID selbst (z. B. 'BWK-0001')
+  var id = raw;
+  if(raw.indexOf('|') > -1){
+    var parts = raw.split('|');
+    id = parts[1] || raw;
+  }
+
+  var d = devices.find(function(x){ return x.id === id; });
+  if(!d){
+    if(fb){ fb.style.color = '#f87171'; fb.textContent = '❌ Unbekannt: "'+raw+'" — kein Gerät mit dieser ID gefunden.'; }
+    return;
+  }
+
+  var row = document.getElementById('row-'+d.id);
+  if(row){
+    row.scrollIntoView({behavior:'smooth', block:'center'});
+    row.style.transition = 'background 0.3s';
+    var origBg = row.style.background;
+    row.style.background = 'rgba(246,180,95,0.35)';
+    setTimeout(function(){ row.style.background = origBg; }, 900);
+  }
+  var ohmField = document.getElementById('ohm-'+d.id);
+  if(ohmField) setTimeout(function(){ ohmField.focus(); }, 350);
+
+  if(fb){ fb.style.color = '#34D399'; fb.textContent = '✅ Gefunden: '+d.id+' — '+d.name+' (Raum '+d.room+')'; }
+
+  // Fokus zurück aufs Scanfeld für den nächsten Scan
+  var input = document.getElementById('scannerInput');
+  if(input) setTimeout(function(){ input.focus(); }, 400);
 }
 
 window.setResult = function(id, res){
