@@ -185,14 +185,8 @@ var TR_DE = [
   ['laptop','Laptop'],['laptopwagen','Laptopwagen'],['pc','PC'],
 ];
 
-// Cihaz adına göre otomatik QR/Barkod tipi
-var BARCODE_KEYWORDS = ['kabel','verlängerung','verlangerung','kablo','stecker','adapter','netzteil'];
-
+// Tüm etiketler artık QR (20x20mm baskıda güvenilir okuma için barkod kaldırıldı)
 function autoType(nameDe) {
-  var n = nameDe.toLowerCase();
-  for (var i=0;i<BARCODE_KEYWORDS.length;i++) {
-    if (n.indexOf(BARCODE_KEYWORDS[i])>-1) return 'barcode';
-  }
   return 'qr';
 }
 
@@ -343,8 +337,7 @@ function renderTable(){
       '<td><input value="'+escH(item.brand)+'" onchange="upd('+idx+',\'brand\',this.value)" placeholder="Marke/Modell"></td>'+
       '<td style="color:#7a9ab8;text-align:center;">1</td>'+
       '<td><select onchange="upd('+idx+',\'type\',this.value)">'+
-        '<option value="qr"'+(item.type==='qr'?' selected':'')+'>QR</option>'+
-        '<option value="barcode"'+(item.type==='barcode'?' selected':'')+'>Barkode</option>'+
+        '<option value="qr" selected>QR</option>'+
       '</select></td>'+
       '<td><input value="'+escH(item.serial)+'" onchange="upd('+idx+',\'serial\',this.value)" placeholder="SN"></td>'+
       '<td><input value="'+escH(item.note)+'" onchange="upd('+idx+',\'note\',this.value)" placeholder="—"></td>'+
@@ -496,7 +489,7 @@ window.generateAllQR = function(){
       card.appendChild(qrDiv);
       card.appendChild(nameDiv);
       card.appendChild(idDiv);
-      var qrText='BWK|'+item.id+'|R:'+item.room+'|'+item.nameDe+(item.brand?'|'+item.brand:'')+(item.serial?'|SN:'+item.serial:'');
+      var qrText=item.id;
       qrDivs.push({div:qrDiv, text:qrText, id:item.id});
     } else {
       var bcVisual=document.createElement('div');bcVisual.className='barcode-visual';
