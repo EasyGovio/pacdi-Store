@@ -369,6 +369,16 @@ window.exportCSV = function(){
 window.generateAllQR = function(){
   var grid=document.getElementById('qrGrid');
   grid.innerHTML='';
+  
+  // Status göster
+  var statusDiv = document.createElement('div');
+  statusDiv.id = 'qrStatus';
+  statusDiv.style.cssText = 'grid-column:1/-1;text-align:center;color:#F6B45F;font-size:0.78rem;padding:10px;';
+  statusDiv.textContent = '⏳ Generiere QR-Codes... 0/' + inventory.length;
+  grid.appendChild(statusDiv);
+
+  // Önce tüm kartları DOM'a ekle (QR olmadan)
+  var qrDivs = [];
   inventory.forEach(function(item){
     var card=document.createElement('div');
     card.className='qr-card'+(item.type==='barcode'?' type-bar':'');
@@ -386,21 +396,16 @@ window.generateAllQR = function(){
 
     if (item.type==='qr') {
       var qrDiv=document.createElement('div');
-      qrDiv.style.cssText='display:inline-block;margin:4px 0;';
+      qrDiv.style.cssText='display:inline-block;margin:4px 0;min-width:110px;min-height:110px;';
       card.appendChild(qrDiv);
       card.appendChild(nameDiv);
       card.appendChild(idDiv);
       var qrText='BWK|'+item.id+'|R:'+item.room+'|'+item.nameDe+(item.brand?'|'+item.brand:'')+(item.serial?'|SN:'+item.serial:'');
-      try {
-        new QRCode(qrDiv,{text:qrText,width:110,height:110,
-          colorDark:'#F6B45F',colorLight:'#0a1828',correctLevel:QRCode.CorrectLevel.M});
-      } catch(e){qrDiv.textContent=item.id;}
+      qrDivs.push({div:qrDiv, text:qrText, id:item.id});
     } else {
-      // Barkode — visual bars simulation + ID text
       var bcVisual=document.createElement('div');bcVisual.className='barcode-visual';
-      // Generate simple alternating bar pattern from ID
-      var bars='';var id=item.id.replace(/[^0-9]/g,'');
-      for(var i=0;i<id.length;i++){var n=parseInt(id[i]);bars+=(n%2===0?'█':'▌').repeat(n>0?n:1)+'░';}
+      var bars='';var bid=item.id.replace(/[^0-9]/g,'');
+      for(var i=0;i<bid.length;i++){var n=parseInt(bid[i]);bars+=(n%2===0?'█':'▌').repeat(n>0?n:1)+'░';}
       bcVisual.textContent=bars.slice(0,28);
       var bcText=document.createElement('div');bcText.className='barcode-text';
       bcText.textContent=item.id;
@@ -408,9 +413,40 @@ window.generateAllQR = function(){
       card.appendChild(nameDiv);
       card.appendChild(idDiv);
       card.appendChild(bcText);
+      qrDivs.push(null); // placeholder
     }
     grid.appendChild(card);
   });
+
+  // QR'ları sırayla generate et — her 10'da bir kısa mola ver
+  var idx = 0;
+  function generateNext() {
+    var batch = 10;
+    var end = Math.min(idx + batch, qrDivs.length);
+    for (var i = idx; i < end; i++) {
+      if (qrDivs[i]) {
+        try {
+          new QRCode(qrDivs[i].div, {
+            text: qrDivs[i].text,
+            width: 110, height: 110,
+            colorDark: '#F6B45F', colorLight: '#0a1828',
+            correctLevel: QRCode.CorrectLevel.M
+          });
+        } catch(e) {
+          qrDivs[i].div.textContent = qrDivs[i].id;
+        }
+      }
+    }
+    idx = end;
+    var st = document.getElementById('qrStatus');
+    if (st) st.textContent = '⏳ Generiere QR-Codes... ' + Math.min(idx, inventory.length) + '/' + inventory.length;
+    if (idx < qrDivs.length) {
+      setTimeout(generateNext, 50);
+    } else {
+      if (st) { st.textContent = '✅ Alle ' + inventory.length + ' QR-Codes generiert!'; setTimeout(function(){ if(st) st.remove(); }, 2000); }
+    }
+  }
+  setTimeout(generateNext, 100);
 };
 
 window.printQR = function(){
