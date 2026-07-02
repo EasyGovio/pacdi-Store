@@ -363,11 +363,103 @@ window.exportCSV = function(){
   var rows=[['ID','Raum','Gerät','Marke/Modell','Typ','Seriennr.','Notiz']];
   inventory.forEach(function(r){rows.push([r.id,r.room,r.nameDe,r.brand,r.type,r.serial,r.note]);});
   var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c||'').replace(/"/g,'""')+'"';}).join(',');}).join('\n');
-  var a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
-  a.download='BWK-Inventar-'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();
+  var filename='BWK-Inventar-'+new Date().toISOString().slice(0,10)+'.csv';
+
+  // Mobil Safari'de data:/blob otomatik indirme çoğu zaman sessizce başarısız oluyor.
+  // Bu yüzden garanti çalışan bir modal gösteriyoruz: Paylaş (iOS Share Sheet) + Kopyala + (masaüstünde) klasik indirme.
+  showCsvModal(csv, filename);
 };
+
+function showCsvModal(csv, filename){
+  var old=document.getElementById('csvModalOverlay');
+  if(old) old.remove();
+
+  var overlay=document.createElement('div');
+  overlay.id='csvModalOverlay';
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(4,22,46,0.94);z-index:9999;display:flex;align-items:center;justify-content:center;padding:14px;';
+
+  var box=document.createElement('div');
+  box.style.cssText='background:#0a1828;border:1px solid rgba(246,180,95,0.3);border-radius:12px;padding:16px;max-width:620px;width:100%;max-height:85vh;display:flex;flex-direction:column;gap:10px;';
+
+  var title=document.createElement('div');
+  title.style.cssText='color:#F6B45F;font-weight:700;font-size:0.85rem;';
+  title.textContent='📋 CSV hazır: '+filename;
+
+  var hint=document.createElement('div');
+  hint.style.cssText='color:#7a9ab8;font-size:0.7rem;line-height:1.6;';
+  hint.textContent='iPhone: "Paylaş" ile doğrudan Dosyalar/Drive\'a kaydet — en güvenilir yöntem. Olmazsa "Kopyala"ya bas, Notlar\'a yapıştır, .csv olarak kaydet. Masaüstünde "İndir" doğrudan çalışır.';
+
+  var ta=document.createElement('textarea');
+  ta.value=csv;
+  ta.readOnly=true;
+  ta.style.cssText='flex:1;min-height:180px;background:#04162E;color:#eaf2fb;border:1px solid rgba(246,180,95,0.2);border-radius:8px;padding:10px;font-family:Courier New,monospace;font-size:0.62rem;line-height:1.5;';
+
+  var btnRow=document.createElement('div');
+  btnRow.style.cssText='display:flex;gap:8px;flex-wrap:wrap;';
+
+  var shareBtn=document.createElement('button');
+  shareBtn.className='btn-gold';
+  shareBtn.textContent='📤 Paylaş / Kaydet';
+  shareBtn.onclick=function(){
+    try{
+      var blob=new Blob(['\uFEFF'+csv],{type:'text/csv'});
+      var file=new File([blob],filename,{type:'text/csv'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({files:[file],title:filename}).catch(function(){});
+      } else if(navigator.share){
+        navigator.share({title:filename,text:csv}).catch(function(){});
+      } else {
+        alert('Bu tarayıcı paylaşımı desteklemiyor. Lütfen "Kopyala" kullanın.');
+      }
+    }catch(e){
+      alert('Paylaşım başarısız. Lütfen "Kopyala" kullanın.');
+    }
+  };
+
+  var copyBtn=document.createElement('button');
+  copyBtn.className='btn-outline';
+  copyBtn.textContent='📋 Kopyala';
+  copyBtn.onclick=function(){
+    function done(){copyBtn.textContent='✅ Kopyalandı!';setTimeout(function(){copyBtn.textContent='📋 Kopyala';},1800);}
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(csv).then(done).catch(function(){
+        ta.focus();ta.select();document.execCommand('copy');done();
+      });
+    } else {
+      ta.focus();ta.select();document.execCommand('copy');done();
+    }
+  };
+
+  var dlBtn=document.createElement('button');
+  dlBtn.className='btn-outline';
+  dlBtn.textContent='⬇️ İndir (Desktop)';
+  dlBtn.onclick=function(){
+    var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;a.download=filename;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(url);},3000);
+  };
+
+  var closeBtn=document.createElement('button');
+  closeBtn.className='btn-outline';
+  closeBtn.textContent='Kapat';
+  closeBtn.onclick=function(){overlay.remove();};
+
+  btnRow.appendChild(shareBtn);
+  btnRow.appendChild(copyBtn);
+  btnRow.appendChild(dlBtn);
+  btnRow.appendChild(closeBtn);
+
+  box.appendChild(title);
+  box.appendChild(hint);
+  box.appendChild(ta);
+  box.appendChild(btnRow);
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',function(e){if(e.target===overlay) overlay.remove();});
+}
 
 // ── QR + Barkode ──
 window.generateAllQR = function(){
