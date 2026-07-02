@@ -1262,11 +1262,27 @@
                 dlBtn.textContent = '⬇ PNG herunterladen';
                 dlBtn.style.cssText = 'display:block;margin:6px auto 0;background:rgba(0,0,0,0.2);border:1px solid rgba(0,0,0,0.3);color:#04162E;padding:4px 12px;border-radius:8px;cursor:pointer;font-size:0.72rem;font-family:inherit;';
                 dlBtn.addEventListener('click', function() {
-                    var link = document.createElement('a');
                     var safeName = name.replace(/[^a-zA-Z0-9]/g,'_').substring(0,30);
-                    link.download = 'PACDI-QR-' + safeName + '.png';
-                    link.href = pngBase64;
-                    link.click();
+                    var filename = 'PACDI-QR-' + safeName + '.png';
+                    // Web Share API: erlaubt direktes Speichern in Fotos/Dateien mit einem Tap
+                    // (statt "lange drücken → Bild sichern" bei reiner data:-URI).
+                    finalCanvas.toBlob(function(blob){
+                        if (!blob) { fallbackDataUri(); return; }
+                        try {
+                            var file = new File([blob], filename, { type: 'image/png' });
+                            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                                navigator.share({ files: [file], title: filename }).catch(function(){ fallbackDataUri(); });
+                                return;
+                            }
+                        } catch(e) {}
+                        fallbackDataUri();
+                    }, 'image/png');
+                    function fallbackDataUri(){
+                        var link = document.createElement('a');
+                        link.download = filename;
+                        link.href = pngBase64;
+                        link.click();
+                    }
                 });
                 msg.appendChild(dlBtn);
                 setTimeout(function() { if (msg.parentNode) msg.parentNode.removeChild(msg); }, 5000);

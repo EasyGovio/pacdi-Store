@@ -262,13 +262,102 @@
   window.downloadLocalBackup = function() {
     var backup = collectAllData();
     var json = JSON.stringify(backup, null, 2);
-    var blob = new Blob([json], { type: 'application/json' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'PACDI-Backup-' + new Date().toISOString().slice(0,10) + '.json';
-    a.click();
-    showStatus('statusBox', 'success', '✅ Backup-Datei heruntergeladen. Bitte in einem sicheren Ort ablegen (iCloud Drive, OneDrive, externer Speicher).');
+    var filename = 'PACDI-Backup-' + new Date().toISOString().slice(0,10) + '.json';
+    showExportModal(json, filename, 'application/json');
+    showStatus('statusBox', 'success', '✅ Backup bereit — bitte über "Teilen" oder "Herunterladen" sichern und an einem sicheren Ort ablegen (iCloud Drive, OneDrive, externer Speicher).');
   };
+
+  function showExportModal(content, filename, mime){
+    var old = document.getElementById('exportModalOverlay');
+    if (old) old.remove();
+
+    var overlay = document.createElement('div');
+    overlay.id = 'exportModalOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(4,22,46,0.94);z-index:9999;display:flex;align-items:center;justify-content:center;padding:14px;';
+
+    var box = document.createElement('div');
+    box.style.cssText = 'background:#0a1828;border:1px solid rgba(246,180,95,0.3);border-radius:12px;padding:16px;max-width:620px;width:100%;max-height:85vh;display:flex;flex-direction:column;gap:10px;';
+
+    var title = document.createElement('div');
+    title.style.cssText = 'color:#F6B45F;font-weight:700;font-size:0.85rem;';
+    title.textContent = '📦 Backup bereit: ' + filename;
+
+    var hint = document.createElement('div');
+    hint.style.cssText = 'color:#7a9ab8;font-size:0.7rem;line-height:1.6;';
+    hint.textContent = 'iPhone/Android: "Teilen" für direktes Speichern in Dateien/Drive. Alternativ "Kopieren". Am Desktop funktioniert "Herunterladen" direkt.';
+
+    var ta = document.createElement('textarea');
+    ta.value = content;
+    ta.readOnly = true;
+    ta.style.cssText = 'flex:1;min-height:180px;background:#04162E;color:#eaf2fb;border:1px solid rgba(246,180,95,0.2);border-radius:8px;padding:10px;font-family:Courier New,monospace;font-size:0.62rem;line-height:1.5;';
+
+    var btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;';
+    var btnBase = 'padding:10px 16px;border-radius:20px;font-weight:700;font-size:0.78rem;cursor:pointer;font-family:inherit;border:none;';
+
+    var shareBtn = document.createElement('button');
+    shareBtn.style.cssText = btnBase + 'background:#F6B45F;color:#04162E;';
+    shareBtn.textContent = '📤 Teilen / Speichern';
+    shareBtn.onclick = function(){
+      try {
+        var blob = new Blob([content], { type: mime });
+        var file = new File([blob], filename, { type: mime });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file], title: filename }).catch(function(){});
+        } else if (navigator.share) {
+          navigator.share({ title: filename, text: content }).catch(function(){});
+        } else {
+          alert('Teilen wird von diesem Browser nicht unterstützt. Bitte "Kopieren" nutzen.');
+        }
+      } catch (e) {
+        alert('Teilen fehlgeschlagen. Bitte "Kopieren" nutzen.');
+      }
+    };
+
+    var copyBtn = document.createElement('button');
+    copyBtn.style.cssText = btnBase + 'background:transparent;border:1px solid rgba(246,180,95,0.4);color:#F6B45F;';
+    copyBtn.textContent = '📋 Kopieren';
+    copyBtn.onclick = function(){
+      function done(){ copyBtn.textContent = '✅ Kopiert!'; setTimeout(function(){ copyBtn.textContent = '📋 Kopieren'; }, 1800); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(content).then(done).catch(function(){
+          ta.focus(); ta.select(); document.execCommand('copy'); done();
+        });
+      } else {
+        ta.focus(); ta.select(); document.execCommand('copy'); done();
+      }
+    };
+
+    var dlBtn = document.createElement('button');
+    dlBtn.style.cssText = btnBase + 'background:transparent;border:1px solid rgba(246,180,95,0.4);color:#F6B45F;';
+    dlBtn.textContent = '⬇️ Herunterladen (Desktop)';
+    dlBtn.onclick = function(){
+      var blob = new Blob([content], { type: mime });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 3000);
+    };
+
+    var closeBtn = document.createElement('button');
+    closeBtn.style.cssText = btnBase + 'background:transparent;border:1px solid rgba(246,180,95,0.4);color:#F6B45F;';
+    closeBtn.textContent = 'Schließen';
+    closeBtn.onclick = function(){ overlay.remove(); };
+
+    btnRow.appendChild(shareBtn);
+    btnRow.appendChild(copyBtn);
+    btnRow.appendChild(dlBtn);
+    btnRow.appendChild(closeBtn);
+
+    box.appendChild(title);
+    box.appendChild(hint);
+    box.appendChild(ta);
+    box.appendChild(btnRow);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function(e){ if (e.target === overlay) overlay.remove(); });
+  }
 
   // ── GOOGLE DRIVE ──
   window.handleGoogleDrive = function() {
