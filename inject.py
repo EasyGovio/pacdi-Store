@@ -215,7 +215,7 @@ SKIP = ['legal.html','impressum.html','datenschutz.html','404.html','master-temp
 SKIP_FOOTER = ['legal.html','impressum.html','datenschutz.html','404.html','master-template.html','test.html']
 
 # ── Kişisel/özel dosyalar — inject edilmez ──
-PRIVATE_PREFIXES = ('mein-', 'private-', 'pacdi-sunum', 'personal-', 'intern-')
+PRIVATE_PREFIXES = ('mein-', 'private-', 'pacdi-sunum', 'personal-', 'intern-', 'ausbildung-')
 
 def is_private(filename):
     return any(filename.startswith(p) for p in PRIVATE_PREFIXES)
