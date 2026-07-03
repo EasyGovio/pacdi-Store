@@ -21,6 +21,12 @@
 var SHEET_ESLESTIRME = 'Kod-Eslestirme';
 var SHEET_TAKIP = 'Takip-Verisi';
 
+var SPREADSHEET_ID = '1-7EtPyDAq6cVrb_c0FX-sHtvjCLxIESyR6eilcSVW60';
+function getSS() {
+  return SpreadsheetApp.openById(SPREADSHEET_ID);
+}
+
+
 function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
@@ -48,7 +54,7 @@ function doGet(e) {
 }
 
 function handleRegisterStudent(data) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_ESLESTIRME);
+  var sheet = getSS().getSheetByName(SHEET_ESLESTIRME);
   if (!sheet) return jsonResponse({ ok: false, error: 'Sekme bulunamadı: ' + SHEET_ESLESTIRME });
 
   // Basit doğrulama
@@ -69,7 +75,7 @@ function handleRegisterStudent(data) {
 }
 
 function handleDailyEntry(data) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_TAKIP);
+  var sheet = getSS().getSheetByName(SHEET_TAKIP);
   if (!sheet) return jsonResponse({ ok: false, error: 'Sekme bulunamadı: ' + SHEET_TAKIP });
 
   if (!data.ogrenciKod || !data.isyeriKod || !data.devamDurumu) {
@@ -91,7 +97,7 @@ function handleDailyEntry(data) {
 
 function handleLookupStudent(data) {
   // İşyerinin kendi kodunu girip, o işyerine bağlı öğrencileri görebilmesi için.
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_ESLESTIRME);
+  var sheet = getSS().getSheetByName(SHEET_ESLESTIRME);
   if (!sheet) return jsonResponse({ ok: false, error: 'Sekme bulunamadı: ' + SHEET_ESLESTIRME });
 
   var values = sheet.getDataRange().getValues();
@@ -111,7 +117,7 @@ function handleLookupStudent(data) {
 }
 
 function handleGetAllOverview() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = getSS();
   var sheetE = ss.getSheetByName(SHEET_ESLESTIRME);
   var sheetT = ss.getSheetByName(SHEET_TAKIP);
   if (!sheetE || !sheetT) return jsonResponse({ ok: false, error: 'Sekme(ler) bulunamadı.' });
