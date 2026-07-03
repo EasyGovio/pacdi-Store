@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ausbildung-Takip | Anmeldung</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#04162E;color:#eaf2fb;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;min-height:100vh;padding:16px;}
+.app{max-width:520px;margin:0 auto;}
+header{margin-bottom:20px;}
+header h1{color:#F6B45F;font-size:1.15rem;margin-bottom:3px;}
+header .sub{color:#7a9ab8;font-size:0.75rem;}
+
+.card{background:#0a1828;border:1px solid rgba(246,180,95,0.15);border-radius:12px;padding:16px;margin-bottom:14px;}
+.field{margin-bottom:14px;}
+.field label{font-size:0.78rem;color:#7a9ab8;display:block;margin-bottom:5px;}
+.field input,.field select{width:100%;background:#04162E;border:1px solid rgba(246,180,95,0.25);color:#eaf2fb;padding:10px 12px;border-radius:8px;font-size:0.88rem;font-family:inherit;}
+.field input:focus,.field select:focus{outline:none;border-color:#F6B45F;}
+.field .hint{font-size:0.68rem;color:#4a6a88;margin-top:4px;}
+
+.btn-gold{width:100%;background:#F6B45F;color:#04162E;border:none;padding:13px 20px;border-radius:10px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;transition:0.2s;}
+.btn-gold:hover{background:#f0c870;}
+.btn-gold:disabled{opacity:0.5;cursor:not-allowed;}
+
+.status-box{background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.3);border-radius:10px;padding:14px;margin-top:14px;display:none;}
+.status-box.error{background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.3);}
+.status-box .code-display{font-family:'Courier New',monospace;font-size:1.1rem;color:#34D399;font-weight:700;margin:6px 0;}
+.status-box.error .code-display{color:#f87171;}
+
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(246,180,95,0.3);border-top-color:#F6B45F;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:8px;vertical-align:-2px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+footer{text-align:center;font-size:0.65rem;color:#4a6a88;margin-top:24px;padding-bottom:20px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <h1>📋 Ausbildung-Takip</h1>
+  <div class="sub">Anmeldung eines Auszubildenden im Praktikumsbetrieb</div>
+</header>
+
+<div class="card">
+  <div class="field">
+    <label>Betriebsname</label>
+    <input id="isyeriAd" placeholder="z.B. Café Sonnenschein GmbH" autocomplete="organization">
+    <div class="hint">Ihr voller Betriebsname — wird nur intern für die Zuordnung gespeichert.</div>
+  </div>
+  <div class="field">
+    <label>Ihr Betriebs-Code (vom Koordinator erhalten)</label>
+    <input id="isyeriKod" placeholder="z.B. WP-03" style="text-transform:uppercase;">
+    <div class="hint">Falls Sie noch keinen Code haben, wenden Sie sich an Ihre BWK-Koordinatorin.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="field">
+    <label>Name des/der Auszubildenden</label>
+    <input id="ogrenciAd" placeholder="Vor- und Nachname" autocomplete="off">
+  </div>
+  <div class="field">
+    <label>Ausbildungsbereich</label>
+    <select id="meslekDali">
+      <option value="">— Bitte wählen —</option>
+      <option value="Bekleidung">Bekleidung</option>
+      <option value="Handel">Handel</option>
+      <option value="Friseur">Friseur/-in</option>
+      <option value="Kueche">Küche</option>
+      <option value="Fahrrad">Fahrrad</option>
+      <option value="Sonstiges">Sonstiges</option>
+    </select>
+  </div>
+</div>
+
+<button class="btn-gold" id="submitBtn" onclick="registerStudent()">✅ Auszubildenden registrieren</button>
+
+<div class="status-box" id="statusBox">
+  <div id="statusContent"></div>
+</div>
+
+<footer>PACDI · Technologie im Dienste der Menschlichkeit.</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+// ── AYARLANMASI GEREKEN TEK YER ──
+// Apps Script'i "Web App" olarak dağıttıktan sonra aldığın URL'i buraya yapıştır.
+var SCRIPT_URL = 'BURAYA_APPS_SCRIPT_WEB_APP_URL_YAPISTIR';
+
+function genStudentCode(meslekDali) {
+  var prefixMap = {
+    'Bekleidung': 'BK', 'Handel': 'HD', 'Friseur': 'FR',
+    'Kueche': 'KO', 'Fahrrad': 'FA', 'Sonstiges': 'SO'
+  };
+  var prefix = prefixMap[meslekDali] || 'XX';
+  var rand = Math.floor(10 + Math.random() * 90); // 2 haneli rastgele
+  return prefix + '-' + rand;
+}
+
+window.registerStudent = function(){
+  var isyeriAd  = document.getElementById('isyeriAd').value.trim();
+  var isyeriKod = document.getElementById('isyeriKod').value.trim().toUpperCase();
+  var ogrenciAd = document.getElementById('ogrenciAd').value.trim();
+  var meslekDali = document.getElementById('meslekDali').value;
+
+  var statusBox = document.getElementById('statusBox');
+  var statusContent = document.getElementById('statusContent');
+  var btn = document.getElementById('submitBtn');
+
+  if (!isyeriAd || !isyeriKod || !ogrenciAd || !meslekDali) {
+    statusBox.className = 'status-box error';
+    statusBox.style.display = 'block';
+    statusContent.innerHTML = '❌ Bitte alle Felder ausfüllen.';
+    return;
+  }
+
+  if (SCRIPT_URL.indexOf('BURAYA_') === 0) {
+    statusBox.className = 'status-box error';
+    statusBox.style.display = 'block';
+    statusContent.innerHTML = '⚠️ Entwickler-Hinweis: SCRIPT_URL noch nicht konfiguriert.';
+    return;
+  }
+
+  var ogrenciKod = genStudentCode(meslekDali);
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Wird gespeichert...';
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'registerStudent',
+      isyeriAd: isyeriAd,
+      isyeriKod: isyeriKod,
+      ogrenciAd: ogrenciAd,
+      ogrenciKod: ogrenciKod,
+      meslekDali: meslekDali
+    })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
+    btn.disabled = false;
+    btn.innerHTML = '✅ Auszubildenden registrieren';
+    statusBox.style.display = 'block';
+    if (data.ok) {
+      statusBox.className = 'status-box';
+      statusContent.innerHTML =
+        '✅ Erfolgreich registriert!<br>' +
+        'Code des/der Auszubildenden:<br>' +
+        '<div class="code-display">' + ogrenciKod + '</div>' +
+        '<div class="hint">Bitte notieren Sie diesen Code — Sie benötigen ihn für die tägliche Erfassung.</div>';
+      document.getElementById('ogrenciAd').value = '';
+      document.getElementById('meslekDali').value = '';
+    } else {
+      statusBox.className = 'status-box error';
+      statusContent.innerHTML = '❌ Fehler: ' + (data.error || 'Unbekannter Fehler');
+    }
+  })
+  .catch(function(err){
+    btn.disabled = false;
+    btn.innerHTML = '✅ Auszubildenden registrieren';
+    statusBox.className = 'status-box error';
+    statusBox.style.display = 'block';
+    statusContent.innerHTML = '❌ Verbindungsfehler: ' + err;
+  });
+};
+
+})();
+</script>
+</body>
+</html>
