@@ -100,6 +100,8 @@
   <h1 id="page-title">📷 QR / Barcode Scanner</h1>
   <p class="subtitle" id="page-sub">iOS Safari: use camera button below • Android/Desktop: live scan also works</p>
 
+  <div id="liveDiagFixed" style="display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:#000;color:#0f0;font-family:monospace;font-size:0.68rem;padding:6px 10px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.5);"></div>
+
   <div id="videoWrap">
     <video id="video" autoplay playsinline muted></video>
     <div id="scanOverlay">
@@ -169,7 +171,7 @@ var i18n = {
     empty_history: 'Henüz taranmış kod yok.',
     legal: 'Yasal & Gizlilik',
     status_decoding: 'Çözümleniyor...',
-    error_no_code: 'QR/barkod bulunamadı.<br>💡 İpuçları:<br>• İyi aydınlatma sağlayın<br>• Kodu sabit ve yakın tutun<br>• Tekrar deneyin',
+    error_no_code: 'QR/barkod bulunamadı.<br>💡 İpuçları:<br>• İyi aydınlatma sağlayın<br>• Normal fotoğraf mesafesinde tutun (~15-20cm), çok yaklaşmayın<br>• Kodu sabit tutun, telefonun odaklanmasına izin verin',
     error_image: 'Görüntü yüklenemedi.',
     camera_error: 'Kamera hatası: ',
     scan_success: '✅ Tarandı:',
@@ -195,7 +197,7 @@ var i18n = {
     empty_history: 'Noch keine Scans.',
     legal: 'Impressum & Datenschutz',
     status_decoding: 'Dekodiere...',
-    error_no_code: 'Kein QR/Barcode gefunden.<br>💡 Tipps:<br>• Gute Beleuchtung<br>• Code ruhig und nah halten<br>• Erneut versuchen',
+    error_no_code: 'Kein QR/Barcode gefunden.<br>💡 Tipps:<br>• Gute Beleuchtung<br>• Normalen Fotoabstand halten (~15-20cm), nicht zu nah<br>• Code ruhig halten, Autofokus abwarten',
     error_image: 'Bild konnte nicht geladen werden.',
     camera_error: 'Kamera-Fehler: ',
     scan_success: '✅ Gescannt:',
@@ -221,7 +223,7 @@ var i18n = {
     empty_history: 'No scans yet.',
     legal: 'Legal & Privacy',
     status_decoding: 'Decoding...',
-    error_no_code: 'No QR/barcode found.<br>💡 Tips:<br>• Ensure good lighting<br>• Hold code steady & close<br>• Try again',
+    error_no_code: 'No QR/barcode found.<br>💡 Tips:<br>• Ensure good lighting<br>• Keep normal photo distance (~15-20cm), not too close<br>• Hold steady, let autofocus lock',
     error_image: 'Could not load image.',
     camera_error: 'Camera error: ',
     scan_success: '✅ Scanned:',
@@ -311,6 +313,20 @@ function saveHistory(text) {
 
 function showStatus(msg) { resultEl.innerHTML = '<div class="status-box"><div class="spinner"></div>'+msg+'</div>'; }
 function showError(msg)  { resultEl.innerHTML = '<div class="error-box">❌ '+msg+'</div>'; }
+
+function showErrorRetry(msg) {
+  resultEl.innerHTML = '<div class="error-box">❌ '+msg+'</div>';
+  var retryBtn = document.createElement('button');
+  retryBtn.textContent = '📷 Tekrar Çek';
+  retryBtn.style.cssText = 'margin-top:10px;background:#F6B45F;color:#04162E;border:none;padding:10px 20px;border-radius:20px;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;';
+  retryBtn.onclick = function(){ document.getElementById('captureInput').click(); };
+  resultEl.appendChild(retryBtn);
+}
+
+function liveDiagWrite(msg) {
+  var bar = document.getElementById('liveDiagFixed');
+  if (bar) { bar.style.display = 'block'; bar.textContent = msg; }
+}
 
 function showResult(text) {
   var t = i18n[currentLang] || i18n.de;
@@ -409,7 +425,7 @@ function decodeImage(src) {
         var result2 = reader.decode(bitmap2);
         showResult(result2.getText());
       } catch(e2) {
-        showError(t.error_no_code);
+        showErrorRetry(t.error_no_code);
       }
     }
   };
@@ -434,9 +450,7 @@ function startLive() {
   liveBtn.style.display = 'none';
   stopLiveBtn.style.display = 'block';
   showStatus('Starting camera...');
-
-  var diag = document.getElementById('liveDiag');
-  if (diag) { diag.style.display = 'block'; diag.textContent = 'Kamera başlatılıyor...'; }
+  liveDiagWrite('Kamera başlatılıyor...');
   scanAttempts = 0;
 
   navigator.mediaDevices.getUserMedia({
@@ -456,17 +470,16 @@ function startLive() {
     })
     .catch(function(err) {
       showError(t.camera_error + err);
-      if (diag) diag.textContent = 'getUserMedia hata: ' + (err && err.name ? err.name : err);
+      liveDiagWrite('getUserMedia hata: ' + (err && err.name ? err.name : err));
       stopLive();
     });
 }
 
 function scheduleDecode() {
   if (!liveActive) return;
-  var diag = document.getElementById('liveDiag');
 
   if (video.readyState < 2) {
-    if (diag) diag.textContent = 'Video hazır değil (readyState=' + video.readyState + ')...';
+    liveDiagWrite('Video hazır değil (readyState=' + video.readyState + ')...');
     setTimeout(scheduleDecode, 300);
     return;
   }
@@ -476,8 +489,7 @@ function scheduleDecode() {
   scanAttempts++;
 
   if (!vw || !vh) {
-    // iOS bazen metadata'yı geç bildiriyor; video akıyor görünse bile boyut 0 olabilir.
-    if (diag) diag.textContent = 'Boyut alınamadı (deneme ' + scanAttempts + ', videoWidth=0) — bekleniyor...';
+    liveDiagWrite('Boyut alınamadı (deneme ' + scanAttempts + ', videoWidth=0) — bekleniyor...');
     setTimeout(scheduleDecode, 300);
     return;
   }
@@ -503,11 +515,11 @@ function scheduleDecode() {
     var bin    = new ZXing.HybridBinarizer(lum);
     var bitmap = new ZXing.BinaryBitmap(bin);
     var result = reader.decode(bitmap);
-    if (diag) diag.textContent = 'Bulundu! (' + vw + '×' + vh + ', deneme ' + scanAttempts + ')';
+    liveDiagWrite('✅ BULUNDU (' + vw + '×' + vh + ', deneme ' + scanAttempts + ')');
     showResult(result.getText());
     return;
   } catch(e) {
-    if (diag) diag.textContent = vw + '×' + vh + ' | deneme ' + scanAttempts + ' | ' + (e && e.name ? e.name : 'kod bulunamadı');
+    liveDiagWrite(vw + '×' + vh + ' px | deneme ' + scanAttempts + ' | ' + (e && e.name ? e.name : 'kod bulunamadı'));
   }
 
   setTimeout(scheduleDecode, 400);
@@ -523,6 +535,8 @@ function stopLive() {
   stopLiveBtn.style.display = 'none';
   var diag = document.getElementById('liveDiag');
   if (diag) diag.style.display = 'none';
+  var diagFixed = document.getElementById('liveDiagFixed');
+  if (diagFixed) diagFixed.style.display = 'none';
 }
 
 liveBtn.addEventListener('click', startLive);
