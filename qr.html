@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="QR Kod ve Barkod oluşturucu — URL, vCard, WiFi, Sosyal Medya. PNG, JPG, SVG ve PDF olarak indir veya yazdır.">
-  <title>QR & Barkod Oluşturucu | PACDI Store</title>
+  <meta name="description" content="QR Kod Oluşturucu — Google Değerlendirme, WiFi, Menü/Speisekarte, vCard, Sosyal Medya. Ücretsiz, kayıt gerektirmez. PNG, SVG, PDF indir veya yazdır.">
+  <title>QR Kod Oluşturucu — Google Değerlendirme, WiFi, Menü QR | PACDI Store</title>
   <link rel="canonical" href="https://pacdi.store/qr.html" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
@@ -347,7 +347,7 @@
       flex-wrap: wrap;
       gap: 12px;
     }
-    .page-title { font-size: 1.4rem; font-weight: 800; color: #F6B45F; }
+    .page-title { font-size: 1.4rem; font-weight: 800; color: #F6B45F; margin: 0; }
     .page-sub { font-size: 0.82rem; color: #7a9ab8; margin-top: 4px; }
 
     /* ── MOBILE LAYOUT ── */
@@ -498,8 +498,8 @@
 
   <div class="page-header">
     <div>
-      <div class="page-title" id="pg-title">🔳 QR & Barkod Oluşturucu</div>
-      <div class="page-sub" id="pg-sub">URL, vCard, WiFi, Sosyal Medya — PNG, JPG, SVG, PDF veya direkt yazdır</div>
+      <h1 class="page-title" id="pg-title">🔳 QR Kod Oluşturucu</h1>
+      <div class="page-sub" id="pg-sub">Google Değerlendirme, WiFi, Menü, vCard, Sosyal Medya — PNG, JPG, SVG, PDF veya direkt yazdır</div>
     </div>
   </div>
 
@@ -521,6 +521,8 @@
         <div class="section-label" id="lb-template">ŞABLON</div>
         <select class="qr-select" id="templateSelect">
           <option value="url">🌐 URL / Link</option>
+          <option value="google_review">⭐ Google Değerlendirme</option>
+          <option value="menu">🍽️ Menü / Speisekarte</option>
           <option value="vcard">👤 vCard (Kartvizit)</option>
           <option value="wifi">📶 WiFi Ağı</option>
           <option value="event">📅 Etkinlik (Takvim)</option>
@@ -685,8 +687,8 @@ document.addEventListener('click', function(e) {
 // ── TRANSLATIONS ──
 var translations = {
   tr: {
-    title: '🔳 QR & Barkod Oluşturucu',
-    sub: 'URL, vCard, WiFi, Sosyal Medya — PNG, JPG, SVG, PDF veya direkt yazdır',
+    title: '🔳 QR Kod Oluşturucu',
+    sub: 'Google Değerlendirme, WiFi, Menü, vCard, Sosyal Medya — PNG, JPG, SVG, PDF veya direkt yazdır',
     type: 'TÜR',
     template: 'ŞABLON',
     content: 'İÇERİK',
@@ -741,14 +743,18 @@ var translations = {
     pruf_datum: 'Tarih',
     pruf_hint: '→ QR kod üretilir, protokol sayfasına link verir',
     placeholder_url: 'https://...',
+    placeholder_google_review: 'https://g.page/r/.../review',
+    hint_google_review: 'Google\'da işletmenizi arayın → "Değerlendirme İste" butonuna tıklayın → çıkan kısa linki buraya yapıştırın.',
+    placeholder_menu: 'https://ornekrestoran.de/menu.pdf',
+    hint_menu: 'Menünüzün PDF linkini ya da web sayfası adresini girin. Fiyat değişse bile QR aynı kalır, sadece linkteki içeriği güncellersiniz.',
     purpose_business: '🏪 İşletme',
     purpose_event: '📅 Etkinlik',
     purpose_personal: '👤 Kişisel',
     purpose_pruef: '⚡ Prüfprotokoll'
   },
   de: {
-    title: '🔳 QR & Barcode Generator',
-    sub: 'URL, vCard, WiFi, Soziale Medien — PNG, JPG, SVG, PDF oder direkt drucken',
+    title: '🔳 QR-Code-Generator',
+    sub: 'Google-Bewertung, WLAN, Speisekarte, vCard, Soziale Medien — PNG, JPG, SVG, PDF oder direkt drucken',
     type: 'TYP',
     template: 'VORLAGE',
     content: 'INHALT',
@@ -803,14 +809,18 @@ var translations = {
     pruf_datum: 'Datum',
     pruf_hint: '→ QR-Code erstellt Link zur Protokollseite',
     placeholder_url: 'https://...',
+    placeholder_google_review: 'https://g.page/r/.../review',
+    hint_google_review: 'Suchen Sie Ihr Unternehmen bei Google → Klicken Sie auf "Um Rezension bitten" → Fügen Sie den erzeugten Kurz-Link hier ein.',
+    placeholder_menu: 'https://ihrrestaurant.de/speisekarte.pdf',
+    hint_menu: 'Fügen Sie den PDF-Link oder die Webadresse Ihrer Speisekarte ein. Der QR-Code bleibt gleich, auch wenn sich Preise ändern — Sie aktualisieren nur den Inhalt hinter dem Link.',
     purpose_business: '🏪 Geschäft',
     purpose_event: '📅 Veranstaltung',
     purpose_personal: '👤 Persönlich',
     purpose_pruef: '⚡ Prüfprotokoll'
   },
   en: {
-    title: '🔳 QR & Barcode Generator',
-    sub: 'URL, vCard, WiFi, Social Media — PNG, JPG, SVG, PDF or print directly',
+    title: '🔳 QR Code Generator',
+    sub: 'Google Review, WiFi, Menu, vCard, Social Media — PNG, JPG, SVG, PDF or print directly',
     type: 'TYPE',
     template: 'TEMPLATE',
     content: 'CONTENT',
@@ -866,6 +876,10 @@ var translations = {
     pruf_datum: 'Date',
     pruf_hint: '→ QR code links to protocol page',
     placeholder_url: 'https://...',
+    placeholder_google_review: 'https://g.page/r/.../review',
+    hint_google_review: 'Search your business on Google → Click "Ask for reviews" → Paste the generated short link here.',
+    placeholder_menu: 'https://yourrestaurant.com/menu.pdf',
+    hint_menu: 'Paste the PDF link or web page of your menu. The QR code stays the same even if prices change — you only update the content behind the link.',
     purpose_business: '🏪 Business',
     purpose_event: '📅 Event',
     purpose_personal: '👤 Personal',
@@ -974,6 +988,14 @@ function updateTemplateFields() {
   var html = '';
   if (tpl === 'url') {
     html = '<input type="text" id="urlInput" class="qr-input" placeholder="' + t.placeholder_url + '" value="https://pacdi.store">';
+  } else if (tpl === 'google_review') {
+    html = '<input type="text" id="urlInput" class="qr-input" placeholder="' + (t.placeholder_google_review || 'https://g.page/r/.../review') + '">' +
+      '<div style="font-size:0.72rem;color:#7a9ab8;margin-top:8px;line-height:1.5;">' + (t.hint_google_review ||
+      'Google\'da işletmenizi arayın → "Değerlendirme İste" butonuna tıklayın → çıkan kısa linki buraya yapıştırın.') + '</div>';
+  } else if (tpl === 'menu') {
+    html = '<input type="text" id="urlInput" class="qr-input" placeholder="' + (t.placeholder_menu || 'https://ornekrestoran.de/menu.pdf') + '">' +
+      '<div style="font-size:0.72rem;color:#7a9ab8;margin-top:8px;line-height:1.5;">' + (t.hint_menu ||
+      'Menünüzün PDF linkini ya da web sayfası adresini girin. Fiyat değişse bile QR aynı kalır, sadece linkteki içeriği güncellersiniz.') + '</div>';
   } else if (tpl === 'vcard') {
     html = '<div class="input-grid">' +
       '<input type="text" id="vcardName" class="qr-input" placeholder="' + t.vcard_name + '">' +
