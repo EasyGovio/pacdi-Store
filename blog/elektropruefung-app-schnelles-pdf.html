@@ -72,8 +72,8 @@
 <h2>1. Was eine gute Elektroprüfung App auszeichnet</h2><p>Eine gute Elektroprüfung App sollte intuitiv bedienbar sein und alle notwendigen Funktionen für die DGUV V3 Dokumentation bereitstellen. Dazu gehören Erfassung von Prüfdaten, automatische Fristenberechnung und PDF-Export.</p><p>Wichtig ist auch die Datensicherheit: Die App sollte keine sensiblen Daten in fremde Clouds laden, sondern lokale oder firmeneigene Speicherung ermöglichen. PACDI erfüllt all diese Kriterien.</p>
 <h2>2. PDF-Export nach DGUV V3 – die wichtigsten Anforderungen</h2><p>Das exportierte PDF muss alle Pflichtangaben enthalten und übersichtlich gestaltet sein. Es sollte den Prüfer, das Prüfobjekt, die Messwerte und die nächste Frist klar ausweisen.</p><p>Mit PACDI erhalten Sie genau solche PDFs – automatisch generiert, fehlerfrei und sofort einsatzbereit. Sie müssen sich um nichts weiter kümmern.</p>
 <h2>3. PACDI: Die Alternative zur klassischen Prüf-App</h2><p>Im Gegensatz zu herkömmlichen Apps müssen Sie bei PACDI nichts installieren und kein Konto anlegen. Sie öffnen einfach den Browser und können sofort loslegen.</p><p>Probieren Sie die PACDI-Lösung selbst aus – Sie werden feststellen, wie unkompliziert die DGUV V3 Dokumentation sein kann. Der PDF-Export ist in Sekundenschnelle erledigt.</p>
-<div class="internal-links"><strong>Interne Links:</strong> <a href="https://pacdi.store/pruefprotokoll" target="_blank">pacdi.store/pruefprotokoll</a> <a href="https://wasstehtmirzu.com" target="_blank">wasstehtmirzu.com</a></div>
-<div class="cta-box"><strong>Jetzt kostenlos testen →</strong> <a href="https://pacdi.store/pruefprotokoll" target="_blank">pacdi.store/pruefprotokoll</a><br><span style="font-size:0.9rem;">Kein Login. Kein Download. Direkt im Browser.</span></div>
+<div class="internal-links"><strong>Interne Links:</strong> <a href="https://pacdi.store/pruefprotokoll.html" target="_blank">pacdi.store/pruefprotokoll.html</a> <a href="https://wasstehtmirzu.com" target="_blank">wasstehtmirzu.com</a></div>
+<div class="cta-box"><strong>Jetzt kostenlos testen →</strong> <a href="https://pacdi.store/pruefprotokoll.html" target="_blank">pacdi.store/pruefprotokoll.html</a><br><span style="font-size:0.9rem;">Kein Login. Kein Download. Direkt im Browser.</span></div>
 <div class="tags"><span>Elektroprüfung App</span><span>PDF</span><span>DGUV V3</span><span>Protokoll</span><span>mobile Prüfung</span><span>Browser-basiert</span></div>
 <div class="footer-note">PACDI Global Yazılım Ltd. Şti. | Manisa, Türkiye | pacdi.io</div>
 <div id="pacdi-fsek" style="clear:both;width:100%;flex-basis:100%;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
@@ -96,6 +96,7 @@
   var shown = sessionStorage.getItem('pwa-banner-shown');
   if (shown || isInStandalone) return;
 
+  // iOS Safari — manuel yönlendirme
   if (isIOS) {
     setTimeout(function() {
       var bar = document.createElement('div');
@@ -105,10 +106,14 @@
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
           '<div>' +
             '<div style="color:#F6B45F;font-size:0.82rem;font-weight:700;margin-bottom:4px;">📲 Ana ekrana ekle</div>' +
-            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">Safari\'de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.</div>' +
+            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">' +
+              'Safari\'de <strong style="color:#eaf2fb;">&#11015; Payla\u015f</strong> butonuna bas, ' +
+              'ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.' +
+            '</div>' +
             '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS\'ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
           '</div>' +
-          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
+          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" ' +
+            'style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
         '</div>';
       document.body.appendChild(bar);
       sessionStorage.setItem('pwa-banner-shown', '1');
@@ -116,6 +121,7 @@
     return;
   }
 
+  // Android / Desktop Chrome — otomatik install prompt
   var deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();

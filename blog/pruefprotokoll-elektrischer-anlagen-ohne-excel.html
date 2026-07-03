@@ -72,8 +72,8 @@
 <h2>1. Welche Anforderungen ein DGUV V3 Prüfprotokoll erfüllen muss</h2><p>Laut DGUV Vorschrift 3 muss jedes Prüfprotokoll eindeutige Angaben zum Prüfobjekt, zum Prüfer, zum Prüfdatum und zu den Ergebnissen enthalten. Diese Informationen müssen so aufbereitet sein, dass sie im Schadensfall nachvollzogen werden können.</p><p>Die Protokolle müssen revisionssicher archiviert werden. Werden diese Anforderungen nicht erfüllt, kann dies zu erheblichen rechtlichen und finanziellen Konsequenzen führen.</p>
 <h2>2. Die Nachteile von Excel bei der Prüfdokumentation</h2><p>Excel mag auf den ersten Blick flexibel erscheinen, doch genau diese Flexibilität ist bei der DGUV V3 Dokumentation ein Nachteil. Jeder Anwender kann Tabellenstrukturen verändern, Spalten löschen oder Formeln überschreiben.</p><p>Hinzu kommt, dass Excel keine integrierte Prüfplausibiität bietet. Falsche Datumsformate, fehlerhafte Prüffristen oder fehlende Messwerte bleiben oft unentdeckt.</p>
 <h2>3. Digitale Prüfprotokolle: effizient, sicher, jederzeit verfügbar</h2><p>Die PACDI Prüfsoftware führt Sie strukturiert durch jede Prüfung und stellt sicher, dass alle relevanten Daten erfasst werden. Prüffristen werden automatisch berechnet.</p><p>Der große Vorteil: Sie können von jedem Endgerät auf Ihre Protokolle zugreifen. Das spart nicht nur Zeit, sondern erhöht auch die Transparenz in Ihrem Betrieb.</p>
-<div class="internal-links"><strong>Interne Links:</strong> <a href="https://pacdi.store/pruefprotokoll" target="_blank">pacdi.store/pruefprotokoll</a> <a href="https://wasstehtmirzu.com" target="_blank">wasstehtmirzu.com</a></div>
-<div class="cta-box"><strong>Jetzt kostenlos testen →</strong> <a href="https://pacdi.store/pruefprotokoll" target="_blank">pacdi.store/pruefprotokoll</a><br><span style="font-size:0.9rem;">Kein Login. Kein Download. Direkt im Browser.</span></div>
+<div class="internal-links"><strong>Interne Links:</strong> <a href="https://pacdi.store/pruefprotokoll.html" target="_blank">pacdi.store/pruefprotokoll.html</a> <a href="https://wasstehtmirzu.com" target="_blank">wasstehtmirzu.com</a></div>
+<div class="cta-box"><strong>Jetzt kostenlos testen →</strong> <a href="https://pacdi.store/pruefprotokoll.html" target="_blank">pacdi.store/pruefprotokoll.html</a><br><span style="font-size:0.9rem;">Kein Login. Kein Download. Direkt im Browser.</span></div>
 <div class="tags"><span>Prüfprotokoll</span><span>elektrische Anlagen</span><span>DGUV V3</span><span>digitale Dokumentation</span><span>Excel Alternativ</span><span>Sicherheitsprüfung</span></div>
 <div class="footer-note">PACDI Global Yazılım Ltd. Şti. | Manisa, Türkiye | pacdi.io</div>
 <div id="pacdi-fsek" style="clear:both;width:100%;flex-basis:100%;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
@@ -96,6 +96,7 @@
   var shown = sessionStorage.getItem('pwa-banner-shown');
   if (shown || isInStandalone) return;
 
+  // iOS Safari — manuel yönlendirme
   if (isIOS) {
     setTimeout(function() {
       var bar = document.createElement('div');
@@ -105,10 +106,14 @@
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
           '<div>' +
             '<div style="color:#F6B45F;font-size:0.82rem;font-weight:700;margin-bottom:4px;">📲 Ana ekrana ekle</div>' +
-            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">Safari\'de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.</div>' +
+            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">' +
+              'Safari\'de <strong style="color:#eaf2fb;">&#11015; Payla\u015f</strong> butonuna bas, ' +
+              'ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.' +
+            '</div>' +
             '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS\'ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
           '</div>' +
-          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
+          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" ' +
+            'style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
         '</div>';
       document.body.appendChild(bar);
       sessionStorage.setItem('pwa-banner-shown', '1');
@@ -116,6 +121,7 @@
     return;
   }
 
+  // Android / Desktop Chrome — otomatik install prompt
   var deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();

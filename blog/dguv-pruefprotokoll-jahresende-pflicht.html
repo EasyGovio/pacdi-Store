@@ -78,8 +78,8 @@
 <h2>3. Mit PACDI entspannt ins neue Jahr – alle Prüfprotokolle auf einen Blick</h2>
 <p>PACDI bietet Ihnen eine übersichtliche Darstellung aller Prüfungen und Protokolle. Sie können jederzeit den Status aller Betriebsmittel einsehen und erkennen auf einen Blick, welche Prüfungen noch ausstehen.</p>
 <p>Testen Sie PACDI jetzt – es ist die ideale Lösung, um Ihre DGUV V3 Dokumentation zum Jahresende zu optimieren und entspannt ins neue Jahr zu starten.</p>
-<div class="internal-links"><strong>Interne Links:</strong> <a href="https://pacdi.store/pruefprotokoll" target="_blank">pacdi.store/pruefprotokoll</a> <a href="https://wasstehtmirzu.com" target="_blank">wasstehtmirzu.com</a></div>
-<div class="cta-box"><strong>Jetzt kostenlos testen →</strong> <a href="https://pacdi.store/pruefprotokoll" target="_blank">pacdi.store/pruefprotokoll</a><br><span style="font-size:0.9rem;">Kein Login. Kein Download. Direkt im Browser.</span></div>
+<div class="internal-links"><strong>Interne Links:</strong> <a href="https://pacdi.store/pruefprotokoll.html" target="_blank">pacdi.store/pruefprotokoll.html</a> <a href="https://wasstehtmirzu.com" target="_blank">wasstehtmirzu.com</a></div>
+<div class="cta-box"><strong>Jetzt kostenlos testen →</strong> <a href="https://pacdi.store/pruefprotokoll.html" target="_blank">pacdi.store/pruefprotokoll.html</a><br><span style="font-size:0.9rem;">Kein Login. Kein Download. Direkt im Browser.</span></div>
 <div class="tags"><span>DGUV Prüfprotokoll</span><span>Jahresende</span><span>Pflicht</span><span>Prüfdokumentation</span><span>Fristen</span><span>Elektroprüfung</span></div>
 <div class="footer-note">PACDI Global Yazılım Ltd. Şti. | Manisa, Türkiye | pacdi.io</div>
 <div id="pacdi-fsek" style="clear:both;width:100%;flex-basis:100%;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
@@ -102,6 +102,7 @@
   var shown = sessionStorage.getItem('pwa-banner-shown');
   if (shown || isInStandalone) return;
 
+  // iOS Safari — manuel yönlendirme
   if (isIOS) {
     setTimeout(function() {
       var bar = document.createElement('div');
@@ -111,10 +112,14 @@
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
           '<div>' +
             '<div style="color:#F6B45F;font-size:0.82rem;font-weight:700;margin-bottom:4px;">📲 Ana ekrana ekle</div>' +
-            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">Safari\'de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.</div>' +
+            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">' +
+              'Safari\'de <strong style="color:#eaf2fb;">&#11015; Payla\u015f</strong> butonuna bas, ' +
+              'ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.' +
+            '</div>' +
             '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS\'ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
           '</div>' +
-          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
+          '<button onclick="document.getElementById(\'pwa-banner\').remove();sessionStorage.setItem(\'pwa-banner-shown\',\'1\')" ' +
+            'style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
         '</div>';
       document.body.appendChild(bar);
       sessionStorage.setItem('pwa-banner-shown', '1');
@@ -122,6 +127,7 @@
     return;
   }
 
+  // Android / Desktop Chrome — otomatik install prompt
   var deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
