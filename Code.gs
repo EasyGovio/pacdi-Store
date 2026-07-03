@@ -32,6 +32,8 @@ function doPost(e) {
       return handleDailyEntry(data);
     } else if (action === 'lookupStudent') {
       return handleLookupStudent(data);
+    } else if (action === 'getAllOverview') {
+      return handleGetAllOverview();
     }
 
     return jsonResponse({ ok: false, error: 'Bilinmeyen işlem: ' + action });
@@ -106,6 +108,48 @@ function handleLookupStudent(data) {
   }
 
   return jsonResponse({ ok: true, students: results });
+}
+
+function handleGetAllOverview() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheetE = ss.getSheetByName(SHEET_ESLESTIRME);
+  var sheetT = ss.getSheetByName(SHEET_TAKIP);
+  if (!sheetE || !sheetT) return jsonResponse({ ok: false, error: 'Sekme(ler) bulunamadı.' });
+
+  var students = [];
+  var eValues = sheetE.getDataRange().getValues();
+  for (var i = 1; i < eValues.length; i++) {
+    var row = eValues[i];
+    if (!row[0]) continue;
+    students.push({
+      ogrenciKod: row[0],
+      ogrenciAd: row[1],
+      meslekDali: row[2],
+      isyeriKod: row[3],
+      isyeriAd: row[4]
+    });
+  }
+
+  var entries = [];
+  var tValues = sheetT.getDataRange().getValues();
+  for (var j = 1; j < tValues.length; j++) {
+    var trow = tValues[j];
+    if (!trow[1]) continue;
+    var tarihVal = trow[0];
+    var tarihStr = (tarihVal instanceof Date)
+      ? Utilities.formatDate(tarihVal, 'Europe/Berlin', 'yyyy-MM-dd')
+      : String(tarihVal);
+    entries.push({
+      tarih: tarihStr,
+      ogrenciKod: trow[1],
+      isyeriKod: trow[2],
+      devamDurumu: trow[3],
+      performansNotu: trow[4],
+      yaziliNot: trow[5]
+    });
+  }
+
+  return jsonResponse({ ok: true, students: students, entries: entries });
 }
 
 function jsonResponse(obj) {

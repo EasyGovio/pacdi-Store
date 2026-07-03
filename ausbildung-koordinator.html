@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ausbildung-Takip | Koordinator</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#04162E;color:#eaf2fb;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;min-height:100vh;padding:16px;}
+.app{max-width:640px;margin:0 auto;}
+header{margin-bottom:18px;}
+header h1{color:#F6B45F;font-size:1.15rem;margin-bottom:3px;}
+header .sub{color:#7a9ab8;font-size:0.75rem;}
+
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.stat{background:#0a1828;border:1px solid rgba(246,180,95,0.15);border-radius:10px;padding:10px 14px;font-size:0.72rem;flex:1;min-width:80px;text-align:center;}
+.stat strong{color:#F6B45F;font-size:1.15rem;display:block;}
+
+.filter-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.filter-btn{padding:7px 13px;border-radius:16px;border:1px solid rgba(246,180,95,0.3);background:transparent;color:#7a9ab8;font-size:0.72rem;cursor:pointer;font-family:inherit;}
+.filter-btn.active{background:#F6B45F;color:#04162E;border-color:#F6B45F;font-weight:700;}
+
+.refresh-btn{background:transparent;border:1px solid rgba(246,180,95,0.35);color:#F6B45F;padding:8px 14px;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:inherit;margin-bottom:14px;}
+
+.student-card{background:#0a1828;border:1px solid rgba(246,180,95,0.15);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;transition:0.15s;}
+.student-card:active{border-color:rgba(246,180,95,0.4);}
+.student-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.student-name{font-weight:700;font-size:0.9rem;color:#eaf2fb;}
+.student-code{font-family:'Courier New',monospace;font-size:0.68rem;color:#4a6a88;}
+.student-meta{font-size:0.72rem;color:#7a9ab8;}
+
+.badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:0.68rem;font-weight:700;}
+.badge.Var{background:rgba(52,211,153,0.15);color:#34D399;}
+.badge.Yok{background:rgba(248,113,113,0.15);color:#f87171;}
+.badge.Izinli{background:rgba(96,165,250,0.15);color:#60a5fa;}
+.badge.Hasta{background:rgba(251,191,36,0.15);color:#fbbf24;}
+.badge.none{background:rgba(122,154,184,0.15);color:#7a9ab8;}
+
+.score-pill{font-family:'Courier New',monospace;font-size:0.7rem;color:#F6B45F;margin-left:8px;}
+
+.detail-overlay{position:fixed;inset:0;background:rgba(4,22,46,0.96);z-index:999;display:none;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;}
+.detail-overlay.active{display:flex;}
+.detail-box{background:#0a1828;border:1px solid rgba(246,180,95,0.25);border-radius:12px;padding:18px;max-width:560px;width:100%;margin-top:30px;}
+.detail-box h2{color:#F6B45F;font-size:1rem;margin-bottom:4px;}
+.detail-box .sub{color:#7a9ab8;font-size:0.75rem;margin-bottom:14px;}
+.close-btn{float:right;background:transparent;border:none;color:#7a9ab8;font-size:1.3rem;cursor:pointer;}
+
+.entry-row{border-bottom:1px solid rgba(246,180,95,0.08);padding:10px 0;font-size:0.78rem;}
+.entry-row:last-child{border-bottom:none;}
+.entry-date{color:#4a6a88;font-size:0.68rem;}
+.entry-note{color:#b0b5bf;font-style:italic;margin-top:4px;font-size:0.75rem;}
+
+.status-box{background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.3);border-radius:10px;padding:14px;margin-bottom:14px;display:none;font-size:0.85rem;}
+.status-box.error{background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.3);}
+
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(246,180,95,0.3);border-top-color:#F6B45F;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:8px;vertical-align:-2px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.empty-state{text-align:center;color:#4a6a88;font-size:0.82rem;padding:30px 10px;}
+
+footer{text-align:center;font-size:0.65rem;color:#4a6a88;margin-top:24px;padding-bottom:20px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <h1>🧭 Koordinator-Übersicht</h1>
+  <div class="sub">Alle Auszubildenden im Überblick</div>
+</header>
+
+<button class="refresh-btn" onclick="loadAll()">🔄 Aktualisieren</button>
+
+<div class="stats" id="statsRow"></div>
+
+<div class="filter-row" id="filterRow">
+  <button class="filter-btn active" data-filter="all" onclick="setFilter(this,'all')">Alle</button>
+  <button class="filter-btn" data-filter="Bekleidung" onclick="setFilter(this,'Bekleidung')">Bekleidung</button>
+  <button class="filter-btn" data-filter="Handel" onclick="setFilter(this,'Handel')">Handel</button>
+</div>
+
+<div class="status-box" id="mainStatus"></div>
+
+<div id="studentList"></div>
+
+<footer>PACDI · Technologie im Dienste der Menschlichkeit.</footer>
+</div>
+
+<!-- Detay overlay -->
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-box">
+    <button class="close-btn" onclick="closeDetail()">✕</button>
+    <h2 id="detailName"></h2>
+    <div class="sub" id="detailMeta"></div>
+    <div id="detailEntries"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+// ── AYARLANMASI GEREKEN TEK YER ──
+var SCRIPT_URL = 'BURAYA_APPS_SCRIPT_WEB_APP_URL_YAPISTIR';
+
+var allStudents = [];
+var allEntries = [];
+var currentFilter = 'all';
+
+window.setFilter = function(btn, val){
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  currentFilter = val;
+  renderList();
+};
+
+window.loadAll = function(){
+  var statusBox = document.getElementById('mainStatus');
+
+  if (SCRIPT_URL.indexOf('BURAYA_') === 0) {
+    statusBox.className = 'status-box error';
+    statusBox.style.display = 'block';
+    statusBox.innerHTML = '⚠️ Entwickler-Hinweis: SCRIPT_URL noch nicht konfiguriert.';
+    return;
+  }
+
+  statusBox.className = 'status-box';
+  statusBox.style.display = 'block';
+  statusBox.innerHTML = '<span class="spinner"></span>Wird geladen...';
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({ action: 'getAllOverview' })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
+    if (!data.ok) {
+      statusBox.className = 'status-box error';
+      statusBox.innerHTML = '❌ Fehler: ' + (data.error || 'Unbekannt');
+      return;
+    }
+    allStudents = data.students || [];
+    allEntries = data.entries || [];
+    statusBox.style.display = 'none';
+    renderStats();
+    renderList();
+  })
+  .catch(function(err){
+    statusBox.className = 'status-box error';
+    statusBox.innerHTML = '❌ Verbindungsfehler: ' + err;
+  });
+};
+
+function latestEntryFor(ogrenciKod){
+  var matches = allEntries.filter(function(e){ return e.ogrenciKod === ogrenciKod; });
+  if (!matches.length) return null;
+  return matches[matches.length - 1];
+}
+
+function renderStats(){
+  var total = allStudents.length;
+  var today = new Date().toISOString().slice(0,10);
+  var todayEntries = allEntries.filter(function(e){ return e.tarih === today; });
+  var presentToday = todayEntries.filter(function(e){ return e.devamDurumu === 'Var'; }).length;
+
+  document.getElementById('statsRow').innerHTML =
+    '<div class="stat"><strong>' + total + '</strong>Auszubildende</div>' +
+    '<div class="stat"><strong>' + todayEntries.length + '</strong>Einträge heute</div>' +
+    '<div class="stat"><strong>' + presentToday + '</strong>Anwesend heute</div>';
+}
+
+function renderList(){
+  var list = document.getElementById('studentList');
+  var filtered = currentFilter === 'all' ? allStudents :
+    allStudents.filter(function(s){ return s.meslekDali === currentFilter; });
+
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty-state">Keine Auszubildenden gefunden.</div>';
+    return;
+  }
+
+  var html = '';
+  filtered.forEach(function(s){
+    var latest = latestEntryFor(s.ogrenciKod);
+    var badge = latest ?
+      '<span class="badge ' + latest.devamDurumu + '">' + latest.devamDurumu + '</span>' :
+      '<span class="badge none">Kein Eintrag</span>';
+    var score = latest && latest.performansNotu ?
+      '<span class="score-pill">★ ' + latest.performansNotu + '/5</span>' : '';
+
+    html += '<div class="student-card" onclick="openDetail(\'' + s.ogrenciKod + '\')">' +
+      '<div class="student-top">' +
+        '<span class="student-name">' + escH(s.ogrenciAd) + '</span>' +
+        '<span class="student-code">' + s.ogrenciKod + '</span>' +
+      '</div>' +
+      '<div class="student-meta">' + escH(s.meslekDali) + ' · Betrieb: ' + s.isyeriKod + '</div>' +
+      '<div style="margin-top:6px;">' + badge + score + '</div>' +
+    '</div>';
+  });
+  list.innerHTML = html;
+}
+
+window.openDetail = function(ogrenciKod){
+  var student = allStudents.filter(function(s){ return s.ogrenciKod === ogrenciKod; })[0];
+  if (!student) return;
+
+  var entries = allEntries.filter(function(e){ return e.ogrenciKod === ogrenciKod; }).reverse();
+
+  document.getElementById('detailName').textContent = student.ogrenciAd + ' (' + student.ogrenciKod + ')';
+  document.getElementById('detailMeta').textContent = student.meslekDali + ' · Betrieb: ' + student.isyeriKod;
+
+  var html = '';
+  if (!entries.length) {
+    html = '<div class="empty-state">Noch keine Einträge vorhanden.</div>';
+  } else {
+    entries.forEach(function(e){
+      var badge = '<span class="badge ' + e.devamDurumu + '">' + e.devamDurumu + '</span>';
+      var score = e.performansNotu ? '<span class="score-pill">★ ' + e.performansNotu + '/5</span>' : '';
+      html += '<div class="entry-row">' +
+        '<span class="entry-date">' + e.tarih + '</span> — ' + badge + score +
+        (e.yaziliNot ? '<div class="entry-note">"' + escH(e.yaziliNot) + '"</div>' : '') +
+      '</div>';
+    });
+  }
+  document.getElementById('detailEntries').innerHTML = html;
+  document.getElementById('detailOverlay').classList.add('active');
+};
+
+window.closeDetail = function(){
+  document.getElementById('detailOverlay').classList.remove('active');
+};
+
+function escH(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// İlk yükleme
+loadAll();
+
+})();
+</script>
+</body>
+</html>
