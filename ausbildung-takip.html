@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ausbildung-Takip | Tageseintrag</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#04162E;color:#eaf2fb;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;min-height:100vh;padding:16px;}
+.app{max-width:520px;margin:0 auto;}
+header{margin-bottom:20px;}
+header h1{color:#F6B45F;font-size:1.15rem;margin-bottom:3px;}
+header .sub{color:#7a9ab8;font-size:0.75rem;}
+
+.card{background:#0a1828;border:1px solid rgba(246,180,95,0.15);border-radius:12px;padding:16px;margin-bottom:14px;}
+.field{margin-bottom:14px;}
+.field label{font-size:0.78rem;color:#7a9ab8;display:block;margin-bottom:5px;}
+.field input,.field select,.field textarea{width:100%;background:#04162E;border:1px solid rgba(246,180,95,0.25);color:#eaf2fb;padding:10px 12px;border-radius:8px;font-size:0.88rem;font-family:inherit;}
+.field textarea{resize:vertical;min-height:70px;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#F6B45F;}
+.field .hint{font-size:0.68rem;color:#4a6a88;margin-top:4px;}
+
+.btn-gold{width:100%;background:#F6B45F;color:#04162E;border:none;padding:13px 20px;border-radius:10px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;transition:0.2s;}
+.btn-gold:hover{background:#f0c870;}
+.btn-gold:disabled{opacity:0.5;cursor:not-allowed;}
+.btn-outline{width:100%;background:transparent;border:1px solid rgba(246,180,95,0.35);color:#F6B45F;padding:11px 20px;border-radius:10px;font-size:0.85rem;cursor:pointer;font-family:inherit;margin-top:8px;}
+
+.attend-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.attend-btn{padding:14px 8px;border-radius:10px;border:2px solid rgba(246,180,95,0.2);background:#04162E;color:#7a9ab8;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:center;transition:0.15s;}
+.attend-btn.selected{border-color:#F6B45F;background:rgba(246,180,95,0.12);color:#F6B45F;}
+.attend-btn[data-val="Var"].selected{border-color:#34D399;background:rgba(52,211,153,0.12);color:#34D399;}
+.attend-btn[data-val="Yok"].selected{border-color:#f87171;background:rgba(248,113,113,0.12);color:#f87171;}
+.attend-btn[data-val="Izinli"].selected{border-color:#60a5fa;background:rgba(96,165,250,0.12);color:#60a5fa;}
+.attend-btn[data-val="Hasta"].selected{border-color:#fbbf24;background:rgba(251,191,36,0.12);color:#fbbf24;}
+
+.score-grid{display:flex;gap:6px;}
+.score-btn{flex:1;padding:12px 0;border-radius:8px;border:2px solid rgba(246,180,95,0.2);background:#04162E;color:#7a9ab8;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;transition:0.15s;}
+.score-btn.selected{border-color:#F6B45F;background:#F6B45F;color:#04162E;}
+
+.status-box{background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.3);border-radius:10px;padding:14px;margin-top:14px;display:none;font-size:0.85rem;}
+.status-box.error{background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.3);}
+
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(246,180,95,0.3);border-top-color:#F6B45F;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:8px;vertical-align:-2px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.step{display:none;}
+.step.active{display:block;}
+
+footer{text-align:center;font-size:0.65rem;color:#4a6a88;margin-top:24px;padding-bottom:20px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <h1>📅 Tageseintrag</h1>
+  <div class="sub">Anwesenheit & Leistung des/der Auszubildenden erfassen</div>
+</header>
+
+<!-- STEP 1: Betriebscode + Auszubildenden laden -->
+<div class="step active" id="step1">
+  <div class="card">
+    <div class="field">
+      <label>Ihr Betriebs-Code</label>
+      <input id="isyeriKod" placeholder="z.B. WP-03" style="text-transform:uppercase;">
+    </div>
+    <button class="btn-gold" onclick="loadStudents()">Auszubildende laden</button>
+  </div>
+  <div class="status-box" id="step1Status"></div>
+</div>
+
+<!-- STEP 2: Öğrenci seç + veri gir -->
+<div class="step" id="step2">
+  <div class="card">
+    <div class="field">
+      <label>Auszubildende/r</label>
+      <select id="ogrenciSelect"></select>
+    </div>
+    <div class="field">
+      <label>Datum</label>
+      <input id="tarih" type="date">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label>Anwesenheit</label>
+      <div class="attend-grid">
+        <button class="attend-btn" data-val="Var" onclick="selectAttend(this)">✅ Anwesend</button>
+        <button class="attend-btn" data-val="Yok" onclick="selectAttend(this)">❌ Abwesend</button>
+        <button class="attend-btn" data-val="Izinli" onclick="selectAttend(this)">📝 Beurlaubt</button>
+        <button class="attend-btn" data-val="Hasta" onclick="selectAttend(this)">🤒 Krank</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Leistungsbewertung (1–5)</label>
+      <div class="score-grid">
+        <button class="score-btn" data-val="1" onclick="selectScore(this)">1</button>
+        <button class="score-btn" data-val="2" onclick="selectScore(this)">2</button>
+        <button class="score-btn" data-val="3" onclick="selectScore(this)">3</button>
+        <button class="score-btn" data-val="4" onclick="selectScore(this)">4</button>
+        <button class="score-btn" data-val="5" onclick="selectScore(this)">5</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Schriftliche Notiz <span style="color:#4a6a88;">(optional — zur Anerkennung/Förderung)</span></label>
+      <textarea id="yaziliNot" placeholder="z.B. Sehr motiviert bei der Kundenberatung heute."></textarea>
+    </div>
+  </div>
+
+  <button class="btn-gold" id="submitBtn" onclick="submitEntry()">✅ Eintrag speichern</button>
+  <button class="btn-outline" onclick="goStep1()">← Anderer Betrieb</button>
+
+  <div class="status-box" id="step2Status"></div>
+</div>
+
+<footer>PACDI · Technologie im Dienste der Menschlichkeit.</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+// ── AYARLANMASI GEREKEN TEK YER ──
+var SCRIPT_URL = 'BURAYA_APPS_SCRIPT_WEB_APP_URL_YAPISTIR';
+
+var selectedAttend = null;
+var selectedScore = null;
+var currentIsyeriKod = null;
+
+document.getElementById('tarih').value = new Date().toISOString().slice(0,10);
+
+window.loadStudents = function(){
+  var kod = document.getElementById('isyeriKod').value.trim().toUpperCase();
+  var statusBox = document.getElementById('step1Status');
+
+  if (!kod) {
+    statusBox.className = 'status-box error';
+    statusBox.style.display = 'block';
+    statusBox.innerHTML = '❌ Bitte Betriebs-Code eingeben.';
+    return;
+  }
+  if (SCRIPT_URL.indexOf('BURAYA_') === 0) {
+    statusBox.className = 'status-box error';
+    statusBox.style.display = 'block';
+    statusBox.innerHTML = '⚠️ Entwickler-Hinweis: SCRIPT_URL noch nicht konfiguriert.';
+    return;
+  }
+
+  statusBox.className = 'status-box';
+  statusBox.style.display = 'block';
+  statusBox.innerHTML = '<span class="spinner"></span>Wird geladen...';
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({ action: 'lookupStudent', isyeriKod: kod })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
+    if (!data.ok) {
+      statusBox.className = 'status-box error';
+      statusBox.innerHTML = '❌ Fehler: ' + (data.error || 'Unbekannt');
+      return;
+    }
+    if (!data.students || !data.students.length) {
+      statusBox.className = 'status-box error';
+      statusBox.innerHTML = '❌ Keine Auszubildenden für diesen Betriebs-Code gefunden.';
+      return;
+    }
+    currentIsyeriKod = kod;
+    var sel = document.getElementById('ogrenciSelect');
+    sel.innerHTML = '';
+    data.students.forEach(function(s){
+      var opt = document.createElement('option');
+      opt.value = s.ogrenciKod;
+      opt.textContent = s.ogrenciAd + ' (' + s.ogrenciKod + ')';
+      sel.appendChild(opt);
+    });
+    statusBox.style.display = 'none';
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step2').classList.add('active');
+  })
+  .catch(function(err){
+    statusBox.className = 'status-box error';
+    statusBox.innerHTML = '❌ Verbindungsfehler: ' + err;
+  });
+};
+
+window.goStep1 = function(){
+  document.getElementById('step2').classList.remove('active');
+  document.getElementById('step1').classList.add('active');
+  document.getElementById('step1Status').style.display = 'none';
+};
+
+window.selectAttend = function(btn){
+  document.querySelectorAll('.attend-btn').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  selectedAttend = btn.getAttribute('data-val');
+};
+
+window.selectScore = function(btn){
+  document.querySelectorAll('.score-btn').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  selectedScore = btn.getAttribute('data-val');
+};
+
+window.submitEntry = function(){
+  var statusBox = document.getElementById('step2Status');
+  var btn = document.getElementById('submitBtn');
+  var ogrenciKod = document.getElementById('ogrenciSelect').value;
+  var tarih = document.getElementById('tarih').value;
+  var yaziliNot = document.getElementById('yaziliNot').value.trim();
+
+  if (!ogrenciKod || !selectedAttend) {
+    statusBox.className = 'status-box error';
+    statusBox.style.display = 'block';
+    statusBox.innerHTML = '❌ Bitte Anwesenheit auswählen.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Wird gespeichert...';
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'dailyEntry',
+      ogrenciKod: ogrenciKod,
+      isyeriKod: currentIsyeriKod,
+      tarih: tarih,
+      devamDurumu: selectedAttend,
+      performansNotu: selectedScore || '',
+      yaziliNot: yaziliNot
+    })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
+    btn.disabled = false;
+    btn.innerHTML = '✅ Eintrag speichern';
+    statusBox.style.display = 'block';
+    if (data.ok) {
+      statusBox.className = 'status-box';
+      statusBox.innerHTML = '✅ Eintrag erfolgreich gespeichert.';
+      document.getElementById('yaziliNot').value = '';
+      document.querySelectorAll('.attend-btn,.score-btn').forEach(function(b){ b.classList.remove('selected'); });
+      selectedAttend = null; selectedScore = null;
+    } else {
+      statusBox.className = 'status-box error';
+      statusBox.innerHTML = '❌ Fehler: ' + (data.error || 'Unbekannter Fehler');
+    }
+  })
+  .catch(function(err){
+    btn.disabled = false;
+    btn.innerHTML = '✅ Eintrag speichern';
+    statusBox.className = 'status-box error';
+    statusBox.style.display = 'block';
+    statusBox.innerHTML = '❌ Verbindungsfehler: ' + err;
+  });
+};
+
+})();
+</script>
+</body>
+</html>
