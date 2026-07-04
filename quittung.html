@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quittung erstellen kostenlos — Kleinunternehmer & GoBD | PACDI Store</title>
 <meta name="description" content="Quittung online erstellen — kostenlos, mit fortlaufender Nummer, §19 Kleinunternehmerregelung und Betrag in Worten. Als PDF speichern, 8 Jahre Aufbewahrungspflicht (GoBD, Stand 2025).">
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   * { box-sizing: border-box; margin:0; padding:0; }
@@ -236,6 +237,7 @@
     <div class="amount-display" id="amountDisplay"></div>
 
     <button class="btn-save" id="generateBtn">📄 Quittung als PDF erstellen</button>
+    <button class="btn-save" id="generateQrBtn" style="background:transparent;border:1px solid #D4AF37;color:#D4AF37;margin-top:8px;">🔳 Als QR-Code (Alternative)</button>
   </div>
 
   <div class="history-list">
@@ -829,6 +831,119 @@
         document.getElementById('exportJsonBtn').click();
       }
     }, 500);
+  });
+
+  // ── QR-Code als Alternativformat ──
+  document.getElementById('generateQrBtn').addEventListener('click', function() {
+    if (!canCreateQuittung()) {
+      document.getElementById('paywallModal').classList.add('active');
+      return;
+    }
+
+    var name = document.getElementById('ausstellerName').value.trim();
+    var adresse = document.getElementById('ausstellerAdresse').value.trim();
+    var empfaenger = document.getElementById('empfaenger').value.trim();
+    var datum = document.getElementById('datum').value;
+    var leistung = document.getElementById('leistung').value.trim();
+    var betrag = parseFloat(document.getElementById('betrag').value) || 0;
+
+    if (!name) { alert('Bitte Name/Firma des Ausstellers eingeben.'); return; }
+    if (!datum) { alert('Bitte Datum angeben.'); return; }
+    if (!leistung) { alert('Bitte Leistung/Ware beschreiben.'); return; }
+    if (leistung.length < 5) { alert('Bitte eine genauere Beschreibung eingeben (z.B. nicht nur "Diverses").'); return; }
+    if (betrag <= 0) { alert('Bitte gültigen Betrag eingeben.'); return; }
+    if (betrag > 250 && taxMode === 'kleinunternehmer') {
+      if (!confirm('Hinweis: Beträge über 250 € benötigen eigentlich eine vollständige Rechnung mit Empfängerangaben. Trotzdem als einfache Quittung fortfahren?')) return;
+    }
+
+    var belegNrNum = getNextBelegNr();
+    var belegNr = formatBelegNr(belegNrNum);
+
+    var taxLine = (taxMode === 'kleinunternehmer')
+      ? 'Gemäß § 19 UStG keine USt.'
+      : 'USt. (' + taxRate + '%) enthalten.';
+
+    var qrLines = [
+      'QUITTUNG ' + belegNr,
+      'Aussteller: ' + name + (adresse ? ', ' + adresse : ''),
+      empfaenger ? 'Empfänger: ' + empfaenger : null,
+      'Datum: ' + fmtDateDE(datum),
+      'Leistung: ' + leistung,
+      'Betrag: ' + betrag.toFixed(2).replace('.', ',') + ' € (' + amountToWordsDE(betrag) + ')',
+      taxLine,
+      'pacdi.store'
+    ].filter(Boolean);
+    var qrText = qrLines.join('\n');
+
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(4,22,46,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+    var box = document.createElement('div');
+    box.style.cssText = 'background:#0a1828;border:1px solid rgba(212,175,55,0.3);border-radius:14px;padding:22px;max-width:340px;width:100%;text-align:center;';
+
+    var title = document.createElement('div');
+    title.style.cssText = 'color:#D4AF37;font-weight:700;font-size:1rem;margin-bottom:4px;';
+    title.textContent = '🔳 Quittung als QR-Code';
+
+    var hint = document.createElement('div');
+    hint.style.cssText = 'color:#7a9ab8;font-size:0.72rem;margin-bottom:14px;line-height:1.4;';
+    hint.textContent = 'Alternative zum PDF — scannen zeigt den vollständigen Quittungsinhalt. Als Bild speichern oder direkt archivieren.';
+
+    var qrHolder = document.createElement('div');
+    qrHolder.style.cssText = 'background:#fff;display:inline-block;padding:12px;border-radius:8px;margin-bottom:14px;';
+
+    box.appendChild(title);
+    box.appendChild(hint);
+    box.appendChild(qrHolder);
+
+    var btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
+    var btnBase = 'padding:10px;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;';
+
+    var dlBtn = document.createElement('button');
+    dlBtn.style.cssText = btnBase + 'background:#D4AF37;color:#04162E;border:none;';
+    dlBtn.textContent = '⬇️ Als PNG speichern';
+
+    var closeBtn = document.createElement('button');
+    closeBtn.style.cssText = btnBase + 'background:transparent;border:1px solid rgba(212,175,55,0.4);color:#D4AF37;';
+    closeBtn.textContent = 'Schließen';
+    closeBtn.onclick = function(){ overlay.remove(); };
+
+    btnRow.appendChild(dlBtn);
+    btnRow.appendChild(closeBtn);
+    box.appendChild(btnRow);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function(e){ if (e.target === overlay) overlay.remove(); });
+
+    new QRCode(qrHolder, {
+      text: qrText,
+      width: 220,
+      height: 220,
+      correctLevel: QRCode.CorrectLevel.M
+    });
+
+    dlBtn.onclick = function(){
+      var img = qrHolder.querySelector('img') || qrHolder.querySelector('canvas');
+      var dataUrl = img.tagName === 'CANVAS' ? img.toDataURL('image/png') : img.src;
+      var a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = 'Quittung_' + belegNr + '_QR.png';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    };
+
+    localStorage.setItem(COUNTER_KEY, String(belegNrNum));
+    incrementMonthlyUsage();
+    updateUsageDisplay();
+    var history = loadHistory();
+    history.push({ belegNr: belegNr, datum: datum, leistung: leistung, betrag: betrag, taxMode: taxMode, format: 'qr', erstelltAm: new Date().toISOString() });
+    saveHistory(history);
+
+    document.getElementById('leistung').value = '';
+    document.getElementById('betrag').value = '';
+    document.getElementById('empfaenger').value = '';
+    document.getElementById('amountDisplay').innerHTML = '';
+    refreshBelegNrField();
+    renderHistory();
   });
 
   // ── Paywall modal controls ──
