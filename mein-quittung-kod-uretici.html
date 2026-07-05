@@ -13,52 +13,79 @@ h1{color:#F6B45F;font-size:1.1rem;margin-bottom:4px;}
 .sub{color:#7a9ab8;font-size:0.75rem;margin-bottom:20px;}
 .card{background:#0a1828;border:1px solid rgba(246,180,95,0.15);border-radius:12px;padding:18px;}
 label{font-size:0.78rem;color:#7a9ab8;display:block;margin-bottom:6px;}
-input{width:100%;background:#04162E;border:1px solid rgba(246,180,95,0.25);color:#eaf2fb;padding:10px;border-radius:8px;font-size:0.9rem;margin-bottom:14px;}
+input,select{width:100%;background:#04162E;border:1px solid rgba(246,180,95,0.25);color:#eaf2fb;padding:10px;border-radius:8px;font-size:0.9rem;margin-bottom:14px;}
 button{width:100%;background:#F6B45F;color:#04162E;border:none;padding:12px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.9rem;}
+button:disabled{opacity:0.5;cursor:not-allowed;}
 .result{margin-top:16px;padding:14px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.3);border-radius:8px;display:none;}
-.result code{font-family:'Courier New',monospace;font-size:1.05rem;color:#34D399;font-weight:700;display:block;text-align:center;margin:8px 0;word-break:break-all;}
+.result code{font-family:'Courier New',monospace;font-size:1.15rem;color:#34D399;font-weight:700;display:block;text-align:center;margin:8px 0;word-break:break-all;}
 .copy-btn{background:transparent;border:1px solid rgba(52,211,153,0.4);color:#34D399;padding:8px;border-radius:6px;font-size:0.8rem;width:100%;cursor:pointer;margin-top:8px;}
+.error-box{margin-top:14px;padding:12px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.3);border-radius:8px;font-size:0.8rem;color:#f87171;display:none;}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(4,22,46,0.3);border-top-color:#04162E;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:8px;vertical-align:-2px;}
+@keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
 <div class="app">
   <h1>🔑 Quittung — Kişisel Kod Üretici</h1>
-  <div class="sub">Sadece senin kullanımın için. Kimseye bu sayfanın linkini verme.</div>
+  <div class="sub">Sadece senin kullanımın için. Kimseye bu sayfanın linkini verme. Her kod, ilk giren kişiye kilitlenir.</div>
 
   <div class="card">
+    <label>Meslek/notu (isteğe bağlı, sadece senin takibin için)</label>
+    <input type="text" id="meslekInput" placeholder="z.B. Security - Ahmet'in arkadaşı">
+
     <label>Kodun geçerli olacağı son gün</label>
     <input type="date" id="expiryDate">
-    <button onclick="generate()">Kod Üret</button>
+
+    <button id="generateBtn" onclick="generate()">Kod Üret</button>
 
     <div class="result" id="result">
       <div style="font-size:0.75rem;color:#7a9ab8;">Bu kodu ilgili kişiye ver:</div>
       <code id="codeOutput"></code>
+      <div style="font-size:0.68rem;color:#7a9ab8;text-align:center;">İlk giren kişinin ismine kilitlenecek — sonra başkası kullanamaz.</div>
       <button class="copy-btn" onclick="copyCode()">📋 Kopyala</button>
     </div>
+
+    <div class="error-box" id="errorBox"></div>
   </div>
 </div>
 
 <script>
-function simpleChecksum(dateStr) {
-  var salt = 'pacdi-quittung-2026';
-  var str = dateStr + salt;
-  var hash = 0;
-  for (var i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash) + str.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash).toString(16).toUpperCase().slice(0, 4).padStart(4, '0');
-}
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsCbjxBP4yO2mhQHrV0ZpUYtyIwkgnRHcvpD7KXO0F_tj0xqPgh_boLeb2khTd0mv9/exec';
 
 function generate() {
-  var dateVal = document.getElementById('expiryDate').value;
-  if (!dateVal) { alert('Lütfen bir tarih seç.'); return; }
-  var parts = dateVal.split('-');
-  var dateStr = parts[0] + parts[1] + parts[2];
-  var checksum = simpleChecksum(dateStr);
-  var code = 'PACDI-' + dateStr + '-' + checksum;
-  document.getElementById('codeOutput').textContent = code;
-  document.getElementById('result').style.display = 'block';
+  var meslek = document.getElementById('meslekInput').value.trim();
+  var expiry = document.getElementById('expiryDate').value;
+  var btn = document.getElementById('generateBtn');
+  var errBox = document.getElementById('errorBox');
+  errBox.style.display = 'none';
+
+  if (!expiry) { alert('Lütfen bir tarih seç.'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Üretiliyor...';
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({ action: 'generateQuittungCode', meslek: meslek, sonGecerlilik: expiry })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
+    btn.disabled = false;
+    btn.textContent = 'Kod Üret';
+    if (data.ok) {
+      document.getElementById('codeOutput').textContent = data.kod;
+      document.getElementById('result').style.display = 'block';
+    } else {
+      errBox.style.display = 'block';
+      errBox.textContent = '❌ ' + (data.error || 'Bilinmeyen hata');
+    }
+  })
+  .catch(function(err){
+    btn.disabled = false;
+    btn.textContent = 'Kod Üret';
+    errBox.style.display = 'block';
+    errBox.textContent = '❌ Bağlantı hatası: ' + err;
+  });
 }
 
 function copyCode() {

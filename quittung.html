@@ -117,124 +117,131 @@
     <div class="modal">
       <div id="modalStateInfo">
         <div class="modal-icon">📋</div>
-        <h2>Monatslimit erreicht</h2>
-        <p>Sie haben Ihre 5 kostenlosen Quittungen für diesen Monat verbraucht. Mit Pro erstellen Sie unbegrenzt viele Quittungen.</p>
-        <div class="modal-price"><strong>9€</strong> <span>/ Monat</span></div>
+        <h2 data-i18n="modal_title">Monatslimit erreicht</h2>
+        <p data-i18n="modal_text">Sie haben Ihre 5 kostenlosen Quittungen für diesen Monat verbraucht. Mit Pro erstellen Sie unbegrenzt viele Quittungen.</p>
+        <div class="modal-price"><strong>9€</strong> <span data-i18n="modal_permonth">/ Monat</span></div>
         <ul class="modal-features">
-          <li>Unbegrenzte Quittungen</li>
-          <li>Cloud-Backup (optional)</li>
-          <li>Firmenlogo auf Quittung</li>
-          <li>Priorit&auml;ts-Support</li>
+          <li data-i18n="feat_unlimited">Unbegrenzte Quittungen</li>
+          <li data-i18n="feat_backup">Cloud-Backup (optional)</li>
+          <li data-i18n="feat_logo">Firmenlogo auf Quittung</li>
+          <li data-i18n="feat_support">Priorit&auml;ts-Support</li>
         </ul>
-        <button class="modal-btn-primary" id="btnEarlyAccess">🎯 Frühzugang + Rabatt sichern</button>
+        <button class="modal-btn-primary" id="btnEarlyAccess" data-i18n="btn_early_access">🎯 Frühzugang + Rabatt sichern</button>
         <br>
-        <button class="modal-btn-cancel" id="btnCancelModal">Schließen</button>
+        <button class="modal-btn-cancel" id="btnCancelModal" data-i18n="btn_close">Schließen</button>
 
         <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(246,180,95,0.15);">
-          <div style="font-size:0.72rem;color:#8A8F9A;margin-bottom:6px;">Haben Sie einen persönlichen Zugangscode?</div>
-          <input type="text" id="personalCodeInput" placeholder="z.B. PACDI-20260901-XXXX" style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(246,180,95,0.25);background:#04162E;color:#eaf2fb;font-size:0.8rem;margin-bottom:6px;">
-          <button onclick="applyPersonalCode()" style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(246,180,95,0.35);background:transparent;color:#F6B45F;font-size:0.8rem;cursor:pointer;">Code einlösen</button>
+          <div style="font-size:0.72rem;color:#8A8F9A;margin-bottom:6px;" data-i18n="have_code">Haben Sie einen persönlichen Zugangscode?</div>
+          <input type="text" id="personalCodeName" data-i18n-placeholder="your_name" placeholder="Ihr Name" style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(246,180,95,0.25);background:#04162E;color:#eaf2fb;font-size:0.8rem;margin-bottom:6px;">
+          <input type="text" id="personalCodeInput" placeholder="z.B. PACDI-XXXXXXXX" style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(246,180,95,0.25);background:#04162E;color:#eaf2fb;font-size:0.8rem;margin-bottom:6px;">
+          <button onclick="applyPersonalCode()" style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(246,180,95,0.35);background:transparent;color:#F6B45F;font-size:0.8rem;cursor:pointer;" data-i18n="btn_redeem_code">Code einlösen</button>
           <div id="personalCodeStatus" style="font-size:0.72rem;margin-top:6px;"></div>
         </div>
       </div>
       <div id="modalStateForm" style="display:none;">
         <div class="modal-icon">🎯</div>
-        <h2>Early Access sichern</h2>
-        <input type="email" id="earlyAccessEmail" placeholder="Ihre E-Mail-Adresse" style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid rgba(246,180,95,0.3);background:rgba(255,255,255,0.04);color:#eaf2fb;font-size:0.85rem;font-family:inherit;outline:none;margin-bottom:10px;">
+        <h2 data-i18n="early_access_title">Early Access sichern</h2>
+        <input type="email" id="earlyAccessEmail" data-i18n-placeholder="your_email" placeholder="Ihre E-Mail-Adresse" style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid rgba(246,180,95,0.3);background:rgba(255,255,255,0.04);color:#eaf2fb;font-size:0.85rem;font-family:inherit;outline:none;margin-bottom:10px;">
         <div id="earlyAccessMsg" style="font-size:0.78rem;min-height:20px;margin-bottom:10px;"></div>
-        <button class="modal-btn-primary" id="btnSubmitEA">✔ Jetzt sichern</button>
+        <button class="modal-btn-primary" id="btnSubmitEA" data-i18n="btn_secure_now">✔ Jetzt sichern</button>
         <br>
-        <button class="modal-btn-cancel" id="btnCancelModal2">Vielleicht später</button>
+        <button class="modal-btn-cancel" id="btnCancelModal2" data-i18n="btn_maybe_later">Vielleicht später</button>
       </div>
       <div id="modalStateSuccess" style="display:none;">
         <div class="modal-icon">🎉</div>
-        <h2 style="color:#34D399;">Danke!</h2>
-        <p>Wir benachrichtigen Sie, sobald Pro verfügbar ist.</p>
-        <button class="modal-btn-primary" style="background:#34D399;" id="btnCloseSuccess">Schließen</button>
+        <h2 style="color:#34D399;" data-i18n="thanks_title">Danke!</h2>
+        <p data-i18n="thanks_text">Wir benachrichtigen Sie, sobald Pro verfügbar ist.</p>
+        <button class="modal-btn-primary" style="background:#34D399;" id="btnCloseSuccess" data-i18n="btn_close">Schließen</button>
       </div>
     </div>
   </div>
 
+  <div class="lang-switcher" style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:10px;">
+    <button class="lang-btn" data-lang="tr" onclick="setLang('tr')" style="padding:5px 12px;border-radius:14px;border:1px solid rgba(246,180,95,0.3);background:transparent;color:#7a9ab8;font-size:0.72rem;cursor:pointer;">TR</button>
+    <button class="lang-btn" data-lang="de" onclick="setLang('de')" style="padding:5px 12px;border-radius:14px;border:1px solid rgba(246,180,95,0.3);background:transparent;color:#7a9ab8;font-size:0.72rem;cursor:pointer;">DE</button>
+    <button class="lang-btn" data-lang="en" onclick="setLang('en')" style="padding:5px 12px;border-radius:14px;border:1px solid rgba(246,180,95,0.3);background:transparent;color:#7a9ab8;font-size:0.72rem;cursor:pointer;">EN</button>
+  </div>
+
   <header>
-    <h1>🧾 Quittung Generator</h1>
-    <div class="sub">Kostenlos, kein Konto nötig — fortlaufende Nummer, §19 Kleinunternehmerregelung, Betrag in Worten</div>
-    <a href="/zeiterfassung.html" style="display:inline-block;margin-top:8px;font-size:0.72rem;color:#7a9ab8;text-decoration:none;border:1px solid rgba(246,180,95,0.2);padding:4px 12px;border-radius:14px;">⏱️ Zur Zeiterfassung</a>
+    <h1>🧾 <span data-i18n="page_title">Quittung Generator</span></h1>
+    <div class="sub" data-i18n="page_sub">Kostenlos, kein Konto nötig — fortlaufende Nummer, §19 Kleinunternehmerregelung, Betrag in Worten</div>
+    <a href="/zeiterfassung.html" style="display:inline-block;margin-top:8px;font-size:0.72rem;color:#7a9ab8;text-decoration:none;border:1px solid rgba(246,180,95,0.2);padding:4px 12px;border-radius:14px;">⏱️ <span data-i18n="link_zeiterfassung">Zur Zeiterfassung</span></a>
   </header>
 
   <div class="info-box">
-    <strong>ℹ️ Hinweis:</strong> Diese Quittung erfüllt die Pflichtangaben für Kleinbetragsrechnungen bis 250&nbsp;€ brutto. Für höhere Beträge ist eine vollständige Rechnung mit Empfängerangaben und fortlaufender Rechnungsnummer erforderlich. Anders als reine Word-/Excel-Vorlagen erstellt dieses Tool automatisch eine fortlaufende Belegnummer und den Betrag zusätzlich in Worten — beides erschwert nachträgliche Manipulation und stärkt die Beweiskraft.
+    <strong data-i18n="info_label">ℹ️ Hinweis:</strong> <span data-i18n="info_text">Diese Quittung erfüllt die Pflichtangaben für Kleinbetragsrechnungen bis 250&nbsp;€ brutto. Für höhere Beträge ist eine vollständige Rechnung mit Empfängerangaben und fortlaufender Rechnungsnummer erforderlich. Anders als reine Word-/Excel-Vorlagen erstellt dieses Tool automatisch eine fortlaufende Belegnummer und den Betrag zusätzlich in Worten — beides erschwert nachträgliche Manipulation und stärkt die Beweiskraft.</span>
   </div>
 
   <div class="warning-box">
-    <strong>⚠️ Wichtig — Aufbewahrungspflicht:</strong> Dieses Tool speichert Ihre Daten ausschließlich lokal in diesem Browser (keine Cloud, kein Server). Nach GoBD sind Sie als Aussteller gesetzlich verpflichtet, erstellte Belege <strong>8 Jahre lang selbst</strong> sicher aufzubewahren (z. B. PDF-Export auf eigenem Gerät, Cloud-Speicher oder E-Mail-Archiv). Browser-Daten können jederzeit verloren gehen — verlassen Sie sich nicht allein auf den Verlauf in diesem Tool.
+    <strong data-i18n="warning_label">⚠️ Wichtig — Aufbewahrungspflicht:</strong> <span data-i18n="warning_text">Dieses Tool speichert Ihre Daten ausschließlich lokal in diesem Browser (keine Cloud, kein Server). Nach GoBD sind Sie als Aussteller gesetzlich verpflichtet, erstellte Belege <strong>8 Jahre lang selbst</strong> sicher aufzubewahren (z. B. PDF-Export auf eigenem Gerät, Cloud-Speicher oder E-Mail-Archiv). Browser-Daten können jederzeit verloren gehen — verlassen Sie sich nicht allein auf den Verlauf in diesem Tool.</span>
   </div>
 
   <div class="card" id="ausstellerCard">
-    <h3>👤 Ihre Daten (Aussteller)</h3>
+    <h3 data-i18n="issuer_title">👤 Ihre Daten (Aussteller)</h3>
     <div class="field">
-      <label>Name / Firma</label>
-      <input type="text" id="ausstellerName" placeholder="Vor- und Nachname oder Firmenname">
+      <label data-i18n="label_name">Name / Firma</label>
+      <input type="text" id="ausstellerName" data-i18n-placeholder="ph_name" placeholder="Vor- und Nachname oder Firmenname">
     </div>
     <div class="field">
-      <label>Adresse</label>
-      <textarea id="ausstellerAdresse" placeholder="Straße, PLZ Ort"></textarea>
+      <label data-i18n="label_address">Adresse</label>
+      <textarea id="ausstellerAdresse" data-i18n-placeholder="ph_address" placeholder="Straße, PLZ Ort"></textarea>
     </div>
-    <button class="btn-outline" id="saveAusstellerBtn" type="button">💾 Als Standard speichern</button>
+    <button class="btn-outline" id="saveAusstellerBtn" type="button" data-i18n="btn_save_default">💾 Als Standard speichern</button>
   </div>
 
   <div class="card">
-    <h3>🧾 Neue Quittung</h3>
+    <h3 data-i18n="new_receipt_title">🧾 Neue Quittung</h3>
 
     <div class="field">
-      <label>Belegnummer (automatisch fortlaufend)</label>
+      <label data-i18n="label_belegnr">Belegnummer (automatisch fortlaufend)</label>
       <input type="text" id="belegNr" readonly style="opacity:0.7;">
       <div class="hint" id="usageDisplay" style="margin-top:6px;"></div>
     </div>
 
     <div class="row2">
       <div class="field">
-        <label>Datum</label>
+        <label data-i18n="label_date">Datum</label>
         <input type="date" id="datum">
-        <div class="hint" id="datumHint" style="display:none;color:#f87171;">⚠️ Rückwirkendes Datum — der tatsächliche Erstellungszeitpunkt wird zusätzlich auf dem PDF vermerkt.</div>
+        <div class="hint" id="datumHint" style="display:none;color:#f87171;" data-i18n="hint_backdate">⚠️ Rückwirkendes Datum — der tatsächliche Erstellungszeitpunkt wird zusätzlich auf dem PDF vermerkt.</div>
       </div>
       <div class="field">
-        <label>Empfänger (optional)</label>
-        <input type="text" id="empfaenger" placeholder="Name (nicht Pflicht)">
+        <label data-i18n="label_recipient">Empfänger (optional)</label>
+        <input type="text" id="empfaenger" data-i18n-placeholder="ph_recipient" placeholder="Name (nicht Pflicht)">
       </div>
     </div>
 
     <div class="field">
-      <label>Tätigkeitsbereich <span style="font-weight:400;color:#4a6a88;">(für Vorlagen)</span></label>
+      <label data-i18n="label_beruf"><span data-i18n="label_beruf_main">Tätigkeitsbereich</span> <span style="font-weight:400;color:#4a6a88;" data-i18n="label_beruf_sub">(für Vorlagen)</span></label>
       <select id="berufsTyp">
-        <option value="">— Allgemein —</option>
-        <option value="honorar">🎓 Honorardozent / Kursleiter</option>
-        <option value="handwerk">🔧 Handwerker / Reparatur</option>
-        <option value="pflege">🏥 Pflege / Betreuung</option>
-        <option value="nachhilfe">📚 Nachhilfe / Unterricht</option>
-        <option value="reinigung">🧹 Reinigung / Haushaltshilfe</option>
-        <option value="garten">🌳 Garten- / Außenarbeiten</option>
-        <option value="transport">🚗 Transport / Fahrdienst</option>
-        <option value="security">🛡️ Security / Türsteher</option>
+        <option value="" data-i18n="opt_general">— Allgemein —</option>
+        <option value="honorar" data-i18n="opt_honorar">🎓 Honorardozent / Kursleiter</option>
+        <option value="handwerk" data-i18n="opt_handwerk">🔧 Handwerker / Reparatur</option>
+        <option value="pflege" data-i18n="opt_pflege">🏥 Pflege / Betreuung</option>
+        <option value="nachhilfe" data-i18n="opt_nachhilfe">📚 Nachhilfe / Unterricht</option>
+        <option value="reinigung" data-i18n="opt_reinigung">🧹 Reinigung / Haushaltshilfe</option>
+        <option value="garten" data-i18n="opt_garten">🌳 Garten- / Außenarbeiten</option>
+        <option value="transport" data-i18n="opt_transport">🚗 Transport / Fahrdienst</option>
+        <option value="security" data-i18n="opt_security">🛡️ Security / Türsteher</option>
       </select>
       <div class="quick-templates" id="berufTemplates" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
     </div>
 
     <div class="field">
-      <label>Leistung / Ware</label>
-      <textarea id="leistung" placeholder="z.B. 2x Reparatur Steckdose, Materialkosten enthalten"></textarea>
-      <div class="hint">⚠️ Genaue Beschreibung erforderlich — "Diverses" wird vom Finanzamt nicht anerkannt.</div>
+      <label data-i18n="label_leistung">Leistung / Ware</label>
+      <textarea id="leistung" data-i18n-placeholder="ph_leistung" placeholder="z.B. 2x Reparatur Steckdose, Materialkosten enthalten"></textarea>
+      <div class="hint" data-i18n="hint_leistung">⚠️ Genaue Beschreibung erforderlich — "Diverses" wird vom Finanzamt nicht anerkannt.</div>
     </div>
 
     <div class="field">
-      <label>Bruttobetrag (€)</label>
+      <label data-i18n="label_betrag">Bruttobetrag (€)</label>
       <input type="number" id="betrag" step="0.01" min="0.01" placeholder="0.00">
     </div>
 
     <div class="field">
-      <label>Steuerstatus</label>
+      <label data-i18n="label_tax">Steuerstatus</label>
       <div class="tax-toggle">
-        <button class="tax-btn active" id="taxKleinunternehmerBtn" type="button">§19 Kleinunternehmer</button>
-        <button class="tax-btn" id="taxNormalBtn" type="button">Regelbesteuert</button>
+        <button class="tax-btn active" id="taxKleinunternehmerBtn" type="button" data-i18n="tax_klein">§19 Kleinunternehmer</button>
+        <button class="tax-btn" id="taxNormalBtn" type="button" data-i18n="tax_normal">Regelbesteuert</button>
       </div>
       <div class="tax-rate-row" id="taxRateRow">
         <button class="tax-rate-btn" data-rate="19" type="button">19%</button>
@@ -244,79 +251,303 @@
 
     <div class="amount-display" id="amountDisplay"></div>
 
-    <button class="btn-save" id="generateBtn">📄 Quittung als PDF erstellen</button>
-    <button class="btn-save" id="generateQrBtn" style="background:transparent;border:1px solid #D4AF37;color:#D4AF37;margin-top:8px;">🔳 Als QR-Code (Alternative)</button>
+    <button class="btn-save" id="generateBtn" data-i18n="btn_generate_pdf">📄 Quittung als PDF erstellen</button>
+    <button class="btn-save" id="generateQrBtn" style="background:transparent;border:1px solid #D4AF37;color:#D4AF37;margin-top:8px;" data-i18n="btn_generate_qr">🔳 Als QR-Code (Alternative)</button>
   </div>
 
   <div class="history-list">
-    <h3>📋 Letzte Quittungen</h3>
+    <h3 data-i18n="history_title">📋 Letzte Quittungen</h3>
     <div id="historyContainer"></div>
-    <button class="btn-outline" id="exportJsonBtn" type="button" style="margin-top:10px;">💾 Alle Daten als JSON-Backup sichern</button>
-    <div style="font-size:0.65rem;color:#4a6a88;margin-top:6px;text-align:center;">Empfehlung: Nach jeder Quittung oder regelmäßig sichern — für Ihre 8-jährige Aufbewahrungspflicht.</div>
+    <button class="btn-outline" id="exportJsonBtn" type="button" style="margin-top:10px;" data-i18n="btn_export_json">💾 Alle Daten als JSON-Backup sichern</button>
+    <div style="font-size:0.65rem;color:#4a6a88;margin-top:6px;text-align:center;" data-i18n="backup_hint">Empfehlung: Nach jeder Quittung oder regelmäßig sichern — für Ihre 8-jährige Aufbewahrungspflicht.</div>
   </div>
 
-  <div class="footer">Quittung Generator · Lokal gespeichert, keine Cloud · PACDI Store</div>
+  <div class="footer" data-i18n="footer_text">Quittung Generator · Lokal gespeichert, keine Cloud · PACDI Store</div>
 </div>
 
 <script>
 (function() {
   'use strict';
 
+  // ── Çok Dilli Arayüz (TR/DE/EN) ──
+  // ÖNEMLİ: Bu sadece EKRANDAKİ arayüzü çevirir. Üretilen PDF/QR çıktısı
+  // her zaman Almanca kalır (Finanzamt/GoBD gereksinimi, esneklik yok).
+  var I18N = {
+    tr: {
+      page_title: 'Quittung Oluşturucu',
+      page_sub: 'Ücretsiz, hesap gerekmez — sıralı numara, §19 Küçük İşletme muafiyeti, tutar yazıyla',
+      link_zeiterfassung: 'Zaman Takibine Git',
+      info_label: 'ℹ️ Bilgi:',
+      info_text: 'Bu makbuz, 250 € brüte kadar küçük tutarlı faturalar için zorunlu bilgileri karşılar. Daha yüksek tutarlar için alıcı bilgileri ve sıralı fatura numarası içeren tam bir fatura gereklidir. Sadece Word/Excel şablonlarının aksine, bu araç otomatik olarak sıralı bir belge numarası ve tutarı ayrıca yazıyla da oluşturur — ikisi de sonradan değiştirmeyi zorlaştırır ve kanıt gücünü artırır.',
+      warning_label: '⚠️ Önemli — Saklama Yükümlülüğü:',
+      warning_text: 'Bu araç verilerinizi sadece bu tarayıcıda, yerel olarak saklar (bulut yok, sunucu yok). GoBD\'ye göre, düzenleyen kişi olarak oluşturulan belgeleri <strong>8 yıl boyunca kendiniz</strong> güvenle saklamakla yükümlüsünüz (örn. kendi cihazınıza PDF olarak kaydetme, bulut depolama veya e-posta arşivi). Tarayıcı verileri her an kaybolabilir — sadece bu aracın geçmişine güvenmeyin.',
+      issuer_title: '👤 Sizin Bilgileriniz (Düzenleyen)',
+      label_name: 'İsim / Firma',
+      ph_name: 'Ad Soyad veya firma adı',
+      label_address: 'Adres',
+      ph_address: 'Sokak, Posta Kodu Şehir',
+      btn_save_default: '💾 Varsayılan Olarak Kaydet',
+      new_receipt_title: '🧾 Yeni Makbuz',
+      label_belegnr: 'Belge Numarası (otomatik sıralı)',
+      label_date: 'Tarih',
+      hint_backdate: '⚠️ Geriye dönük tarih — gerçek oluşturulma zamanı ayrıca PDF üzerinde belirtilir.',
+      label_recipient: 'Alıcı (isteğe bağlı)',
+      ph_recipient: 'İsim (zorunlu değil)',
+      label_beruf_main: 'Çalışma Alanı',
+      label_beruf_sub: '(şablonlar için)',
+      opt_general: '— Genel —',
+      opt_honorar: '🎓 Ders Veren / Kurs Eğitmeni',
+      opt_handwerk: '🔧 Zanaatkar / Tamirci',
+      opt_pflege: '🏥 Bakım / Refakat',
+      opt_nachhilfe: '📚 Özel Ders',
+      opt_reinigung: '🧹 Temizlik / Ev Yardımı',
+      opt_garten: '🌳 Bahçe / Dış Alan İşleri',
+      opt_transport: '🚗 Nakliye / Şoförlük',
+      opt_security: '🛡️ Güvenlik / Kapı Görevlisi',
+      label_leistung: 'Hizmet / Ürün',
+      ph_leistung: 'örn. 2x Priz Tamiri, malzeme dahil',
+      hint_leistung: '⚠️ Kesin açıklama gerekli — "Çeşitli" gibi ifadeler vergi dairesi tarafından kabul edilmez.',
+      label_betrag: 'Brüt Tutar (€)',
+      label_tax: 'Vergi Durumu',
+      tax_klein: '§19 Küçük İşletme',
+      tax_normal: 'Standart Vergili',
+      btn_generate_pdf: '📄 Makbuzu PDF Olarak Oluştur',
+      btn_generate_qr: '🔳 QR Kod Olarak (Alternatif)',
+      history_title: '📋 Son Makbuzlar',
+      btn_export_json: '💾 Tüm Verileri JSON Yedek Olarak Kaydet',
+      backup_hint: 'Öneri: Her makbuzdan sonra ya da düzenli olarak yedekleyin — 8 yıllık saklama yükümlülüğünüz için.',
+      footer_text: 'Quittung Oluşturucu · Yerel olarak kaydedilir, bulut yok · PACDI Store',
+      modal_title: 'Aylık Limit Doldu',
+      modal_text: 'Bu ay için 5 ücretsiz makbuzunuzu kullandınız. Pro ile sınırsız makbuz oluşturabilirsiniz.',
+      modal_permonth: '/ Ay',
+      feat_unlimited: 'Sınırsız Makbuz',
+      feat_backup: 'Bulut Yedekleme (isteğe bağlı)',
+      feat_logo: 'Makbuzda Firma Logosu',
+      feat_support: 'Öncelikli Destek',
+      btn_early_access: '🎯 Erken Erişim + İndirim Al',
+      btn_close: 'Kapat',
+      have_code: 'Kişisel erişim kodunuz var mı?',
+      your_name: 'İsminiz',
+      btn_redeem_code: 'Kodu Kullan',
+      early_access_title: 'Erken Erişim Al',
+      your_email: 'E-posta adresiniz',
+      btn_secure_now: '✔ Şimdi Al',
+      btn_maybe_later: 'Belki Sonra',
+      thanks_title: 'Teşekkürler!',
+      thanks_text: 'Pro kullanıma açılır açılmaz sizi bilgilendireceğiz.'
+    },
+    de: {
+      page_title: 'Quittung Generator',
+      page_sub: 'Kostenlos, kein Konto nötig — fortlaufende Nummer, §19 Kleinunternehmerregelung, Betrag in Worten',
+      link_zeiterfassung: 'Zur Zeiterfassung',
+      info_label: 'ℹ️ Hinweis:',
+      info_text: 'Diese Quittung erfüllt die Pflichtangaben für Kleinbetragsrechnungen bis 250&nbsp;€ brutto. Für höhere Beträge ist eine vollständige Rechnung mit Empfängerangaben und fortlaufender Rechnungsnummer erforderlich. Anders als reine Word-/Excel-Vorlagen erstellt dieses Tool automatisch eine fortlaufende Belegnummer und den Betrag zusätzlich in Worten — beides erschwert nachträgliche Manipulation und stärkt die Beweiskraft.',
+      warning_label: '⚠️ Wichtig — Aufbewahrungspflicht:',
+      warning_text: 'Dieses Tool speichert Ihre Daten ausschließlich lokal in diesem Browser (keine Cloud, kein Server). Nach GoBD sind Sie als Aussteller gesetzlich verpflichtet, erstellte Belege <strong>8 Jahre lang selbst</strong> sicher aufzubewahren (z. B. PDF-Export auf eigenem Gerät, Cloud-Speicher oder E-Mail-Archiv). Browser-Daten können jederzeit verloren gehen — verlassen Sie sich nicht allein auf den Verlauf in diesem Tool.',
+      issuer_title: '👤 Ihre Daten (Aussteller)',
+      label_name: 'Name / Firma',
+      ph_name: 'Vor- und Nachname oder Firmenname',
+      label_address: 'Adresse',
+      ph_address: 'Straße, PLZ Ort',
+      btn_save_default: '💾 Als Standard speichern',
+      new_receipt_title: '🧾 Neue Quittung',
+      label_belegnr: 'Belegnummer (automatisch fortlaufend)',
+      label_date: 'Datum',
+      hint_backdate: '⚠️ Rückwirkendes Datum — der tatsächliche Erstellungszeitpunkt wird zusätzlich auf dem PDF vermerkt.',
+      label_recipient: 'Empfänger (optional)',
+      ph_recipient: 'Name (nicht Pflicht)',
+      label_beruf_main: 'Tätigkeitsbereich',
+      label_beruf_sub: '(für Vorlagen)',
+      opt_general: '— Allgemein —',
+      opt_honorar: '🎓 Honorardozent / Kursleiter',
+      opt_handwerk: '🔧 Handwerker / Reparatur',
+      opt_pflege: '🏥 Pflege / Betreuung',
+      opt_nachhilfe: '📚 Nachhilfe / Unterricht',
+      opt_reinigung: '🧹 Reinigung / Haushaltshilfe',
+      opt_garten: '🌳 Garten- / Außenarbeiten',
+      opt_transport: '🚗 Transport / Fahrdienst',
+      opt_security: '🛡️ Security / Türsteher',
+      label_leistung: 'Leistung / Ware',
+      ph_leistung: 'z.B. 2x Reparatur Steckdose, Materialkosten enthalten',
+      hint_leistung: '⚠️ Genaue Beschreibung erforderlich — "Diverses" wird vom Finanzamt nicht anerkannt.',
+      label_betrag: 'Bruttobetrag (€)',
+      label_tax: 'Steuerstatus',
+      tax_klein: '§19 Kleinunternehmer',
+      tax_normal: 'Regelbesteuert',
+      btn_generate_pdf: '📄 Quittung als PDF erstellen',
+      btn_generate_qr: '🔳 Als QR-Code (Alternative)',
+      history_title: '📋 Letzte Quittungen',
+      btn_export_json: '💾 Alle Daten als JSON-Backup sichern',
+      backup_hint: 'Empfehlung: Nach jeder Quittung oder regelmäßig sichern — für Ihre 8-jährige Aufbewahrungspflicht.',
+      footer_text: 'Quittung Generator · Lokal gespeichert, keine Cloud · PACDI Store',
+      modal_title: 'Monatslimit erreicht',
+      modal_text: 'Sie haben Ihre 5 kostenlosen Quittungen für diesen Monat verbraucht. Mit Pro erstellen Sie unbegrenzt viele Quittungen.',
+      modal_permonth: '/ Monat',
+      feat_unlimited: 'Unbegrenzte Quittungen',
+      feat_backup: 'Cloud-Backup (optional)',
+      feat_logo: 'Firmenlogo auf Quittung',
+      feat_support: 'Priorit&auml;ts-Support',
+      btn_early_access: '🎯 Frühzugang + Rabatt sichern',
+      btn_close: 'Schließen',
+      have_code: 'Haben Sie einen persönlichen Zugangscode?',
+      your_name: 'Ihr Name',
+      btn_redeem_code: 'Code einlösen',
+      early_access_title: 'Early Access sichern',
+      your_email: 'Ihre E-Mail-Adresse',
+      btn_secure_now: '✔ Jetzt sichern',
+      btn_maybe_later: 'Vielleicht später',
+      thanks_title: 'Danke!',
+      thanks_text: 'Wir benachrichtigen Sie, sobald Pro verfügbar ist.'
+    },
+    en: {
+      page_title: 'Receipt Generator',
+      page_sub: 'Free, no account needed — sequential number, §19 small business tax exemption, amount in words',
+      link_zeiterfassung: 'Go to Time Tracking',
+      info_label: 'ℹ️ Note:',
+      info_text: 'This receipt meets the mandatory requirements for small-amount invoices up to 250&nbsp;€ gross. For higher amounts, a full invoice with recipient details and sequential invoice number is required. Unlike plain Word/Excel templates, this tool automatically creates a sequential document number and the amount in words as well — both make later manipulation harder and strengthen evidentiary value.',
+      warning_label: '⚠️ Important — Retention Obligation:',
+      warning_text: 'This tool stores your data exclusively locally in this browser (no cloud, no server). Under GoBD, as the issuer you are legally required to safely keep created receipts <strong>yourself for 8 years</strong> (e.g. PDF export on your own device, cloud storage, or email archive). Browser data can be lost at any time — do not rely solely on the history in this tool.',
+      issuer_title: '👤 Your Details (Issuer)',
+      label_name: 'Name / Company',
+      ph_name: 'First and last name or company name',
+      label_address: 'Address',
+      ph_address: 'Street, ZIP code, City',
+      btn_save_default: '💾 Save as Default',
+      new_receipt_title: '🧾 New Receipt',
+      label_belegnr: 'Document Number (automatic, sequential)',
+      label_date: 'Date',
+      hint_backdate: '⚠️ Backdated date — the actual creation time is additionally noted on the PDF.',
+      label_recipient: 'Recipient (optional)',
+      ph_recipient: 'Name (not required)',
+      label_beruf_main: 'Field of Work',
+      label_beruf_sub: '(for templates)',
+      opt_general: '— General —',
+      opt_honorar: '🎓 Instructor / Course Leader',
+      opt_handwerk: '🔧 Craftsman / Repair',
+      opt_pflege: '🏥 Care / Assistance',
+      opt_nachhilfe: '📚 Tutoring',
+      opt_reinigung: '🧹 Cleaning / Household Help',
+      opt_garten: '🌳 Garden / Outdoor Work',
+      opt_transport: '🚗 Transport / Driving Service',
+      opt_security: '🛡️ Security / Door Staff',
+      label_leistung: 'Service / Goods',
+      ph_leistung: 'e.g. 2x socket repair, materials included',
+      hint_leistung: '⚠️ Precise description required — "Miscellaneous" is not accepted by the tax office.',
+      label_betrag: 'Gross Amount (€)',
+      label_tax: 'Tax Status',
+      tax_klein: '§19 Small Business',
+      tax_normal: 'Standard Taxed',
+      btn_generate_pdf: '📄 Create Receipt as PDF',
+      btn_generate_qr: '🔳 As QR Code (Alternative)',
+      history_title: '📋 Recent Receipts',
+      btn_export_json: '💾 Save All Data as JSON Backup',
+      backup_hint: 'Recommendation: Back up after every receipt or regularly — for your 8-year retention obligation.',
+      footer_text: 'Receipt Generator · Stored locally, no cloud · PACDI Store',
+      modal_title: 'Monthly Limit Reached',
+      modal_text: 'You have used your 5 free receipts for this month. With Pro, create unlimited receipts.',
+      modal_permonth: '/ month',
+      feat_unlimited: 'Unlimited receipts',
+      feat_backup: 'Cloud backup (optional)',
+      feat_logo: 'Company logo on receipt',
+      feat_support: 'Priority support',
+      btn_early_access: '🎯 Secure Early Access + Discount',
+      btn_close: 'Close',
+      have_code: 'Do you have a personal access code?',
+      your_name: 'Your name',
+      btn_redeem_code: 'Redeem code',
+      early_access_title: 'Secure Early Access',
+      your_email: 'Your email address',
+      btn_secure_now: '✔ Secure now',
+      btn_maybe_later: 'Maybe later',
+      thanks_title: 'Thank you!',
+      thanks_text: 'We will notify you as soon as Pro is available.'
+    }
+  };
+
+  window.setLang = function(lang) {
+    var t = I18N[lang] || I18N.de;
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+      var key = el.getAttribute('data-i18n');
+      if (t[key] !== undefined) el.innerHTML = t[key];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+      var key = el.getAttribute('data-i18n-placeholder');
+      if (t[key] !== undefined) el.setAttribute('placeholder', t[key]);
+    });
+    document.querySelectorAll('.lang-btn').forEach(function(btn) {
+      if (btn.getAttribute('data-lang') === lang) {
+        btn.style.background = '#F6B45F'; btn.style.color = '#04162E'; btn.style.borderColor = '#F6B45F';
+      } else {
+        btn.style.background = 'transparent'; btn.style.color = '#7a9ab8'; btn.style.borderColor = 'rgba(246,180,95,0.3)';
+      }
+    });
+    try { localStorage.setItem('quittung_lang', lang); } catch(e) {}
+  };
+
+  function initLang() {
+    var saved = null;
+    try { saved = localStorage.getItem('quittung_lang'); } catch(e) {}
+    if (!saved) {
+      var nav = (navigator.language || 'de').toLowerCase();
+      saved = nav.indexOf('tr') === 0 ? 'tr' : (nav.indexOf('en') === 0 ? 'en' : 'de');
+    }
+    setLang(saved);
+  }
+  initLang();
+
+
   var AUSSTELLER_KEY = 'quittung_aussteller';
   var COUNTER_KEY = 'quittung_counter';
   var FIRST_USE_KEY = 'quittung_first_use_month';
   var MONTHLY_USAGE_KEY = 'quittung_monthly_usage';
   var PERSONAL_CODE_KEY = 'quittung_personal_code';
+  var PERSONAL_CODE_EXPIRY_KEY = 'quittung_personal_code_expiry';
+  var QUITTUNG_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsCbjxBP4yO2mhQHrV0ZpUYtyIwkgnRHcvpD7KXO0F_tj0xqPgh_boLeb2khTd0mv9/exec';
 
-  // ── Süreli kişisel kod sistemi ──
-  // Kod formatı: PACDI-YYYYMMDD-XXXX (XXXX = basit checksum, kolayca uydurulamasın diye)
-  // YYYYMMDD = kodun geçerli olduğu son gün.
-  function simpleChecksum(dateStr) {
-    var salt = 'pacdi-quittung-2026';
-    var str = dateStr + salt;
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
-      hash = ((hash << 5) - hash) + str.charCodeAt(i);
-      hash |= 0;
-    }
-    return Math.abs(hash).toString(16).toUpperCase().slice(0, 4).padStart(4, '0');
-  }
-
-  function isValidPersonalCode(code) {
-    if (!code) return false;
-    var parts = code.trim().toUpperCase().split('-');
-    if (parts.length !== 3 || parts[0] !== 'PACDI') return false;
-    var dateStr = parts[1];
-    var checksum = parts[2];
-    if (simpleChecksum(dateStr) !== checksum) return false;
-    if (!/^\d{8}$/.test(dateStr)) return false;
-    var y = parseInt(dateStr.slice(0,4), 10);
-    var m = parseInt(dateStr.slice(4,6), 10) - 1;
-    var d = parseInt(dateStr.slice(6,8), 10);
-    var expiry = new Date(y, m, d, 23, 59, 59);
-    return new Date() <= expiry;
-  }
-
+  // ── Süreli kişisel kod sistemi (ilk giren isme kilitlenir, backend üzerinden) ──
   function hasActivePersonalCode() {
     try {
-      var saved = localStorage.getItem(PERSONAL_CODE_KEY);
-      return isValidPersonalCode(saved);
+      var expiry = localStorage.getItem(PERSONAL_CODE_EXPIRY_KEY);
+      if (!expiry) return false;
+      var exp = new Date(expiry + 'T23:59:59');
+      return new Date() <= exp;
     } catch(e) { return false; }
   }
 
   window.applyPersonalCode = function() {
-    var input = document.getElementById('personalCodeInput');
+    var codeInput = document.getElementById('personalCodeInput');
+    var nameInput = document.getElementById('personalCodeName');
     var status = document.getElementById('personalCodeStatus');
-    var code = input.value.trim();
-    if (isValidPersonalCode(code)) {
-      localStorage.setItem(PERSONAL_CODE_KEY, code.toUpperCase());
-      status.style.color = '#34D399';
-      status.textContent = '✅ Kod kabul edildi, sınırsız erişim aktif.';
-      setTimeout(function(){ document.getElementById('paywallModal').classList.remove('active'); location.reload(); }, 1200);
-    } else {
+    var code = codeInput.value.trim();
+    var isim = nameInput.value.trim();
+
+    if (!isim) { status.style.color = '#f87171'; status.textContent = '❌ Bitte Namen eingeben.'; return; }
+    if (!code) { status.style.color = '#f87171'; status.textContent = '❌ Bitte Code eingeben.'; return; }
+
+    status.style.color = '#7a9ab8';
+    status.innerHTML = 'Wird geprüft...';
+
+    fetch(QUITTUNG_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'claimQuittungCode', kod: code, isim: isim })
+    })
+    .then(function(res){ return res.json(); })
+    .then(function(data){
+      if (data.ok) {
+        localStorage.setItem(PERSONAL_CODE_KEY, code.toUpperCase());
+        localStorage.setItem(PERSONAL_CODE_EXPIRY_KEY, data.sonGecerlilik);
+        status.style.color = '#34D399';
+        status.textContent = '✅ Code aktiviert bis ' + data.sonGecerlilik + '.';
+        setTimeout(function(){ document.getElementById('paywallModal').classList.remove('active'); location.reload(); }, 1200);
+      } else {
+        status.style.color = '#f87171';
+        status.textContent = '❌ ' + (data.error || 'Code ungültig.');
+      }
+    })
+    .catch(function(err){
       status.style.color = '#f87171';
-      status.textContent = '❌ Kod geçersiz veya süresi dolmuş.';
-    }
+      status.textContent = '❌ Verbindungsfehler: ' + err;
+    });
   };
   var FREE_LIMIT = 5;
 
