@@ -129,6 +129,13 @@
         <button class="modal-btn-primary" id="btnEarlyAccess">🎯 Frühzugang + Rabatt sichern</button>
         <br>
         <button class="modal-btn-cancel" id="btnCancelModal">Schließen</button>
+
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(246,180,95,0.15);">
+          <div style="font-size:0.72rem;color:#8A8F9A;margin-bottom:6px;">Haben Sie einen persönlichen Zugangscode?</div>
+          <input type="text" id="personalCodeInput" placeholder="z.B. PACDI-20260901-XXXX" style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(246,180,95,0.25);background:#04162E;color:#eaf2fb;font-size:0.8rem;margin-bottom:6px;">
+          <button onclick="applyPersonalCode()" style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(246,180,95,0.35);background:transparent;color:#F6B45F;font-size:0.8rem;cursor:pointer;">Code einlösen</button>
+          <div id="personalCodeStatus" style="font-size:0.72rem;margin-top:6px;"></div>
+        </div>
       </div>
       <div id="modalStateForm" style="display:none;">
         <div class="modal-icon">🎯</div>
@@ -207,6 +214,7 @@
         <option value="reinigung">🧹 Reinigung / Haushaltshilfe</option>
         <option value="garten">🌳 Garten- / Außenarbeiten</option>
         <option value="transport">🚗 Transport / Fahrdienst</option>
+        <option value="security">🛡️ Security / Türsteher</option>
       </select>
       <div class="quick-templates" id="berufTemplates" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
     </div>
@@ -258,6 +266,58 @@
   var COUNTER_KEY = 'quittung_counter';
   var FIRST_USE_KEY = 'quittung_first_use_month';
   var MONTHLY_USAGE_KEY = 'quittung_monthly_usage';
+  var PERSONAL_CODE_KEY = 'quittung_personal_code';
+
+  // ── Süreli kişisel kod sistemi ──
+  // Kod formatı: PACDI-YYYYMMDD-XXXX (XXXX = basit checksum, kolayca uydurulamasın diye)
+  // YYYYMMDD = kodun geçerli olduğu son gün.
+  function simpleChecksum(dateStr) {
+    var salt = 'pacdi-quittung-2026';
+    var str = dateStr + salt;
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash |= 0;
+    }
+    return Math.abs(hash).toString(16).toUpperCase().slice(0, 4).padStart(4, '0');
+  }
+
+  function isValidPersonalCode(code) {
+    if (!code) return false;
+    var parts = code.trim().toUpperCase().split('-');
+    if (parts.length !== 3 || parts[0] !== 'PACDI') return false;
+    var dateStr = parts[1];
+    var checksum = parts[2];
+    if (simpleChecksum(dateStr) !== checksum) return false;
+    if (!/^\d{8}$/.test(dateStr)) return false;
+    var y = parseInt(dateStr.slice(0,4), 10);
+    var m = parseInt(dateStr.slice(4,6), 10) - 1;
+    var d = parseInt(dateStr.slice(6,8), 10);
+    var expiry = new Date(y, m, d, 23, 59, 59);
+    return new Date() <= expiry;
+  }
+
+  function hasActivePersonalCode() {
+    try {
+      var saved = localStorage.getItem(PERSONAL_CODE_KEY);
+      return isValidPersonalCode(saved);
+    } catch(e) { return false; }
+  }
+
+  window.applyPersonalCode = function() {
+    var input = document.getElementById('personalCodeInput');
+    var status = document.getElementById('personalCodeStatus');
+    var code = input.value.trim();
+    if (isValidPersonalCode(code)) {
+      localStorage.setItem(PERSONAL_CODE_KEY, code.toUpperCase());
+      status.style.color = '#34D399';
+      status.textContent = '✅ Kod kabul edildi, sınırsız erişim aktif.';
+      setTimeout(function(){ document.getElementById('paywallModal').classList.remove('active'); location.reload(); }, 1200);
+    } else {
+      status.style.color = '#f87171';
+      status.textContent = '❌ Kod geçersiz veya süresi dolmuş.';
+    }
+  };
   var FREE_LIMIT = 5;
 
   function currentMonthKey() {
@@ -298,6 +358,7 @@
     var params = new URLSearchParams(window.location.search);
     if (params.get('beta') === 'pacdi2026') return true;
     try { if (sessionStorage.getItem('betaUnlock') === '1') return true; } catch(e) {}
+    if (hasActivePersonalCode()) return true;
     if (isFirstMonth()) return true;
     return getMonthlyUsage() < FREE_LIMIT;
   }
@@ -407,6 +468,11 @@
       'Fahrdienst am {DATUM}, Strecke: ___',
       'Transportleistung inkl. Be-/Entladung',
       'Botengang / Lieferung am {DATUM}'
+    ],
+    security: [
+      'Security-/Türsteherdienst am {DATUM}, {STD} Stunden',
+      'Einlasskontrolle Veranstaltung am {DATUM}, {STD} Stunden',
+      'Objektschutz / Veranstaltungssicherheit, {STD} Stunden'
     ]
   };
 
