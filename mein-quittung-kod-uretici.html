@@ -51,6 +51,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 
 <script>
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsCbjxBP4yO2mhQHrV0ZpUYtyIwkgnRHcvpD7KXO0F_tj0xqPgh_boLeb2khTd0mv9/exec';
+var API_SECRET = 'pacdi-2026-guvenlik-anahtari-x7k2';
 
 function generate() {
   var meslek = document.getElementById('meslekInput').value.trim();
@@ -66,7 +67,7 @@ function generate() {
 
   fetch(SCRIPT_URL, {
     method: 'POST',
-    body: JSON.stringify({ action: 'generateQuittungCode', meslek: meslek, sonGecerlilik: expiry })
+    body: JSON.stringify({ apiKey: API_SECRET, action: 'generateQuittungCode', meslek: meslek, sonGecerlilik: expiry })
   })
   .then(function(res){ return res.json(); })
   .then(function(data){

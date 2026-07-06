@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ausbildung-Takip | Nachrichten</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#04162E;color:#eaf2fb;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;min-height:100vh;padding:16px;}
+.app{max-width:560px;margin:0 auto;}
+header{margin-bottom:18px;}
+header h1{color:#F6B45F;font-size:1.15rem;margin-bottom:3px;}
+header .sub{color:#7a9ab8;font-size:0.75rem;}
+
+.card{background:#0a1828;border:1px solid rgba(246,180,95,0.15);border-radius:12px;padding:16px;margin-bottom:14px;}
+.field{margin-bottom:14px;}
+.field label{font-size:0.78rem;color:#7a9ab8;display:block;margin-bottom:5px;}
+.field input,.field select,.field textarea{width:100%;background:#04162E;border:1px solid rgba(246,180,95,0.25);color:#eaf2fb;padding:10px 12px;border-radius:8px;font-size:0.88rem;font-family:inherit;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#F6B45F;}
+
+.btn-gold{width:100%;background:#F6B45F;color:#04162E;border:none;padding:13px 20px;border-radius:10px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;}
+.btn-gold:hover{background:#f0c870;}
+.btn-outline{width:100%;background:transparent;border:1px solid rgba(246,180,95,0.35);color:#F6B45F;padding:11px 20px;border-radius:10px;font-size:0.85rem;cursor:pointer;font-family:inherit;margin-top:8px;}
+.btn-small{background:transparent;border:1px solid rgba(246,180,95,0.35);color:#F6B45F;padding:6px 12px;border-radius:16px;font-size:0.72rem;cursor:pointer;font-family:inherit;}
+
+.thread-card{background:#0a1828;border:1px solid rgba(246,180,95,0.15);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;}
+.thread-card:active{border-color:rgba(246,180,95,0.4);}
+.thread-title{font-weight:700;font-size:0.88rem;color:#eaf2fb;}
+.thread-meta{font-size:0.7rem;color:#7a9ab8;margin-top:3px;}
+.thread-badge{display:inline-block;background:rgba(246,180,95,0.15);color:#F6B45F;font-size:0.65rem;padding:2px 8px;border-radius:10px;margin-top:5px;}
+
+.chat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.chat-title{color:#F6B45F;font-size:0.95rem;font-weight:700;}
+.chat-meta{color:#7a9ab8;font-size:0.7rem;}
+
+.msg-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;max-height:55vh;overflow-y:auto;}
+.msg-bubble{max-width:78%;padding:9px 13px;border-radius:12px;font-size:0.84rem;line-height:1.4;}
+.msg-bubble.mine{align-self:flex-end;background:#F6B45F;color:#04162E;}
+.msg-bubble.theirs{align-self:flex-start;background:#0a1828;border:1px solid rgba(246,180,95,0.2);}
+.msg-sender{font-size:0.62rem;opacity:0.7;margin-bottom:3px;font-weight:700;}
+.msg-time{font-size:0.6rem;opacity:0.6;margin-top:3px;text-align:right;}
+
+.send-row{display:flex;gap:8px;}
+.send-row input{flex:1;}
+.send-btn{background:#F6B45F;color:#04162E;border:none;padding:0 18px;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit;}
+
+.status-box{background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.3);border-radius:10px;padding:12px;margin-bottom:14px;display:none;font-size:0.8rem;}
+.status-box.error{background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.3);}
+
+.step{display:none;}
+.step.active{display:block;}
+.empty-state{text-align:center;color:#4a6a88;font-size:0.82rem;padding:24px 10px;}
+
+footer{text-align:center;font-size:0.65rem;color:#4a6a88;margin-top:24px;padding-bottom:20px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <h1>💬 Nachrichten</h1>
+  <div class="sub">Direktnachrichten — Koordinator, Betrieb, Auszubildende/r</div>
+</header>
+
+<!-- STEP 1: Kimlik seç -->
+<div class="step active" id="stepIdentity">
+  <div class="card">
+    <div class="field">
+      <label>Ich bin...</label>
+      <select id="myTip" onchange="toggleKodField()">
+        <option value="Koordinator">Koordinator/in</option>
+        <option value="Isyeri">Betrieb</option>
+        <option value="Ogrenci">Auszubildende/r</option>
+      </select>
+    </div>
+    <div class="field" id="kodField">
+      <label>Ihr Code</label>
+      <input id="myKod" placeholder="z.B. WP-03 oder BK-72" style="text-transform:uppercase;">
+    </div>
+    <button class="btn-gold" onclick="enterInbox()">Weiter →</button>
+  </div>
+  <div class="status-box" id="identityStatus"></div>
+</div>
+
+<!-- STEP 2: Konuşma listesi -->
+<div class="step" id="stepInbox">
+  <div class="chat-header">
+    <span class="chat-meta" id="myIdentityLabel"></span>
+    <button class="btn-small" onclick="goIdentity()">Wechseln</button>
+  </div>
+  <button class="btn-gold" onclick="goNewThread()">+ Neue Unterhaltung</button>
+  <div style="margin-top:14px;" id="threadList"></div>
+</div>
+
+<!-- STEP 3: Yeni konuşma -->
+<div class="step" id="stepNewThread">
+  <div class="card">
+    <div class="field">
+      <label>Mit wem sprechen?</label>
+      <select id="targetTip" onchange="loadTargetOptions()">
+        <option value="Koordinator">Koordinator/in</option>
+        <option value="Isyeri">Betrieb</option>
+        <option value="Ogrenci">Auszubildende/r</option>
+      </select>
+    </div>
+    <div class="field" id="targetKodWrap">
+      <label>Auswählen</label>
+      <select id="targetKod"></select>
+    </div>
+    <div class="field">
+      <label>Bezug zu Auszubildende/r <span style="color:#4a6a88;">(optional)</span></label>
+      <select id="baglamKod"><option value="">— Kein Bezug —</option></select>
+    </div>
+  </div>
+  <button class="btn-gold" onclick="startThread()">Unterhaltung starten</button>
+  <button class="btn-outline" onclick="goInbox()">← Zurück</button>
+  <div class="status-box" id="newThreadStatus"></div>
+</div>
+
+<!-- STEP 4: Sohbet ekranı -->
+<div class="step" id="stepChat">
+  <div class="chat-header">
+    <div>
+      <div class="chat-title" id="chatTitle"></div>
+      <div class="chat-meta" id="chatMeta"></div>
+    </div>
+    <button class="btn-small" onclick="goInbox()">← Liste</button>
+  </div>
+  <button class="btn-small" style="margin-bottom:10px;" onclick="showInvite()">+ Person einladen</button>
+  <div id="inviteBox" style="display:none;margin-bottom:10px;">
+    <div class="field">
+      <select id="inviteTip"><option value="Koordinator">Koordinator/in</option><option value="Isyeri">Betrieb</option><option value="Ogrenci">Auszubildende/r</option></select>
+    </div>
+    <div class="field"><select id="inviteKod"></select></div>
+    <button class="btn-gold" onclick="doInvite()">Einladen</button>
+  </div>
+  <div class="msg-list" id="msgList"></div>
+  <div class="send-row">
+    <input id="msgInput" placeholder="Nachricht schreiben..." onkeydown="if(event.key==='Enter')sendMsg();">
+    <button class="send-btn" onclick="sendMsg()">Senden</button>
+  </div>
+</div>
+
+<footer>PACDI · Technologie im Dienste der Menschlichkeit.</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsCbjxBP4yO2mhQHrV0ZpUYtyIwkgnRHcvpD7KXO0F_tj0xqPgh_boLeb2khTd0mv9/exec';
+var API_SECRET = 'pacdi-2026-guvenlik-anahtari-x7k2';
+
+var myTip = '', myKod = '';
+var currentThreadId = '';
+var directory = { students: [], isyerler: [] };
+var pollTimer = null;
+
+function api(payload){
+  payload.apiKey = API_SECRET;
+  return fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(payload) }).then(function(r){ return r.json(); });
+}
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function goStep(id){
+  document.querySelectorAll('.step').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+}
+
+window.toggleKodField = function(){
+  var tip = document.getElementById('myTip').value;
+  document.getElementById('kodField').style.display = (tip === 'Koordinator') ? 'none' : 'block';
+};
+
+window.enterInbox = function(){
+  myTip = document.getElementById('myTip').value;
+  myKod = (myTip === 'Koordinator') ? 'KOORDINATOR' : document.getElementById('myKod').value.trim().toUpperCase();
+  var st = document.getElementById('identityStatus');
+
+  if (myTip !== 'Koordinator' && !myKod) {
+    st.className = 'status-box error'; st.style.display='block'; st.innerHTML = '❌ Bitte Code eingeben.';
+    return;
+  }
+  if (SCRIPT_URL.indexOf('BURAYA_') === 0) {
+    st.className='status-box error'; st.style.display='block'; st.innerHTML='⚠️ SCRIPT_URL nicht konfiguriert.';
+    return;
+  }
+  st.style.display='none';
+  loadDirectory(function(){ goInbox(); });
+};
+
+function loadDirectory(cb){
+  api({ action:'getDirectory' }).then(function(d){
+    if (d.ok) { directory = d; }
+    if (cb) cb();
+  });
+}
+
+window.goIdentity = function(){ goStep('stepIdentity'); };
+
+window.goInbox = function(){
+  document.getElementById('myIdentityLabel').textContent = myTip + ' · ' + myKod;
+  goStep('stepInbox');
+  refreshThreads();
+};
+
+function refreshThreads(){
+  api({ action:'getThreads', tip: myTip, kod: myKod }).then(function(d){
+    var list = document.getElementById('threadList');
+    if (!d.ok || !d.threads || !d.threads.length) {
+      list.innerHTML = '<div class="empty-state">Noch keine Unterhaltungen.</div>';
+      return;
+    }
+    var html = '';
+    d.threads.forEach(function(t){
+      html += '<div class="thread-card" onclick="openThread(\'' + t.threadId + '\',\'' + esc(t.baslik) + '\')">' +
+        '<div class="thread-title">' + esc(t.baslik) + '</div>' +
+        (t.ogrenciBaglam ? '<div class="thread-badge">Bezug: ' + esc(t.ogrenciBaglam) + '</div>' : '') +
+      '</div>';
+    });
+    list.innerHTML = html;
+  });
+}
+
+window.goNewThread = function(){
+  loadTargetOptions();
+  loadBaglamOptions();
+  goStep('stepNewThread');
+};
+
+window.loadTargetOptions = function(){
+  var tip = document.getElementById('targetTip').value;
+  var sel = document.getElementById('targetKod');
+  sel.innerHTML = '';
+  if (tip === 'Koordinator') {
+    sel.innerHTML = '<option value="KOORDINATOR">Koordinator/in</option>';
+    return;
+  }
+  var list = (tip === 'Isyeri') ? directory.isyerler : directory.students;
+  (list || []).forEach(function(item){
+    var opt = document.createElement('option');
+    opt.value = item.kod;
+    opt.textContent = item.ad + ' (' + item.kod + ')';
+    sel.appendChild(opt);
+  });
+};
+
+function loadBaglamOptions(){
+  var sel = document.getElementById('baglamKod');
+  sel.innerHTML = '<option value="">— Kein Bezug —</option>';
+  (directory.students || []).forEach(function(s){
+    var opt = document.createElement('option');
+    opt.value = s.kod;
+    opt.textContent = s.ad + ' (' + s.kod + ')';
+    sel.appendChild(opt);
+  });
+}
+
+window.startThread = function(){
+  var hedefTip = document.getElementById('targetTip').value;
+  var hedefKod = document.getElementById('targetKod').value;
+  var baglam = document.getElementById('baglamKod').value;
+  var st = document.getElementById('newThreadStatus');
+
+  if (!hedefKod) { st.className='status-box error'; st.style.display='block'; st.innerHTML='❌ Bitte auswählen.'; return; }
+
+  api({
+    action:'createThread',
+    baslatanTip: myTip, baslatanKod: myKod,
+    hedefTip: hedefTip, hedefKod: hedefKod,
+    ogrenciBaglam: baglam
+  }).then(function(d){
+    if (d.ok) {
+      openThread(d.threadId, hedefTip + ' ' + hedefKod);
+    } else {
+      st.className='status-box error'; st.style.display='block'; st.innerHTML='❌ ' + (d.error||'Fehler');
+    }
+  });
+};
+
+window.openThread = function(threadId, baslik){
+  currentThreadId = threadId;
+  document.getElementById('chatTitle').textContent = baslik;
+  document.getElementById('chatMeta').textContent = myTip + ' · ' + myKod;
+  document.getElementById('inviteBox').style.display = 'none';
+  goStep('stepChat');
+  loadMessages();
+  pollTimer = setInterval(loadMessages, 20000);
+};
+
+function loadMessages(){
+  api({ action:'getMessages', threadId: currentThreadId }).then(function(d){
+    if (!d.ok) return;
+    var list = document.getElementById('msgList');
+    var html = '';
+    (d.messages || []).forEach(function(m){
+      var mine = (m.gonderenTip === myTip && String(m.gonderenKod).toUpperCase() === myKod.toUpperCase());
+      html += '<div class="msg-bubble ' + (mine?'mine':'theirs') + '">' +
+        (!mine ? '<div class="msg-sender">' + esc(m.gonderenTip) + ' ' + esc(m.gonderenKod) + '</div>' : '') +
+        esc(m.mesaj) +
+        '<div class="msg-time">' + esc(m.zaman) + '</div>' +
+      '</div>';
+    });
+    list.innerHTML = html || '<div class="empty-state">Noch keine Nachrichten.</div>';
+    list.scrollTop = list.scrollHeight;
+  });
+}
+
+window.sendMsg = function(){
+  var input = document.getElementById('msgInput');
+  var text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  api({
+    action:'sendMessage',
+    threadId: currentThreadId,
+    gonderenTip: myTip, gonderenKod: myKod,
+    mesaj: text
+  }).then(function(){ loadMessages(); });
+};
+
+window.showInvite = function(){
+  var box = document.getElementById('inviteBox');
+  box.style.display = (box.style.display === 'none') ? 'block' : 'none';
+  loadInviteOptions();
+};
+
+window.loadInviteOptions = function(){
+  var tip = document.getElementById('inviteTip').value;
+  var sel = document.getElementById('inviteKod');
+  sel.innerHTML = '';
+  if (tip === 'Koordinator') { sel.innerHTML = '<option value="KOORDINATOR">Koordinator/in</option>'; return; }
+  var list = (tip === 'Isyeri') ? directory.isyerler : directory.students;
+  (list || []).forEach(function(item){
+    var opt = document.createElement('option');
+    opt.value = item.kod;
+    opt.textContent = item.ad + ' (' + item.kod + ')';
+    sel.appendChild(opt);
+  });
+};
+document.addEventListener('DOMContentLoaded', function(){
+  var it = document.getElementById('inviteTip');
+  if (it) it.addEventListener('change', window.loadInviteOptions);
+});
+
+window.doInvite = function(){
+  var tip = document.getElementById('inviteTip').value;
+  var kod = document.getElementById('inviteKod').value;
+  api({ action:'inviteToThread', threadId: currentThreadId, davetTip: tip, davetKod: kod })
+    .then(function(d){
+      if (d.ok) { document.getElementById('inviteBox').style.display='none'; }
+    });
+};
+
+})();
+</script>
+</body>
+</html>

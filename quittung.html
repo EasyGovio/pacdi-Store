@@ -334,7 +334,21 @@
       btn_secure_now: '✔ Şimdi Al',
       btn_maybe_later: 'Belki Sonra',
       thanks_title: 'Teşekkürler!',
-      thanks_text: 'Pro kullanıma açılır açılmaz sizi bilgilendireceğiz.'
+      thanks_text: 'Pro kullanıma açılır açılmaz sizi bilgilendireceğiz.',
+      msg_enter_name_firma: 'Lütfen isim/firma girin.',
+      msg_saved_default: 'Kaydedildi! Bu bilgiler artık otomatik olarak kullanılacak.',
+      msg_storno_reason_required: 'İptal edildi — bir sebep belirtmeniz gerekli.',
+      msg_storno_marked: 'iptal edildi olarak işaretlendi (orijinal hâlâ görüntülenebilir).',
+      msg_no_receipts_yet: 'Henüz makbuz oluşturulmadı.',
+      msg_share_not_supported: 'Bu tarayıcı paylaşımı desteklemiyor. Lütfen "Kopyala" seçeneğini kullanın.',
+      msg_share_failed: 'Paylaşım başarısız oldu. Lütfen "Kopyala" seçeneğini kullanın.',
+      msg_enter_issuer_name: 'Lütfen düzenleyenin isim/firma bilgisini girin.',
+      msg_enter_date: 'Lütfen tarih girin.',
+      msg_enter_leistung: 'Lütfen hizmet/ürünü açıklayın.',
+      msg_more_precise_desc: 'Lütfen daha kesin bir açıklama girin (örn. sadece "Çeşitli" yazmayın).',
+      msg_enter_valid_amount: 'Lütfen geçerli bir tutar girin.',
+      msg_confirm_over_250: 'Uyarı: 250 €\'nun üzerindeki tutarlar için alıcı bilgileri içeren tam bir fatura gerekir. Yine de basit makbuz olarak devam edilsin mi?',
+      msg_confirm_backup: 'Makbuz oluşturuldu! ✅\n\nŞimdi tüm verilerin JSON yedeğini de almak ister misiniz? (8 yıllık saklama yükümlülüğünüz için önerilir)'
     },
     de: {
       page_title: 'Quittung Generator',
@@ -397,7 +411,21 @@
       btn_secure_now: '✔ Jetzt sichern',
       btn_maybe_later: 'Vielleicht später',
       thanks_title: 'Danke!',
-      thanks_text: 'Wir benachrichtigen Sie, sobald Pro verfügbar ist.'
+      thanks_text: 'Wir benachrichtigen Sie, sobald Pro verfügbar ist.',
+      msg_enter_name_firma: 'Bitte Name/Firma eingeben.',
+      msg_saved_default: 'Gespeichert! Diese Daten werden ab jetzt automatisch verwendet.',
+      msg_storno_reason_required: 'Storno abgebrochen — ein Grund ist erforderlich.',
+      msg_storno_marked: 'wurde als storniert markiert (Original bleibt einsehbar).',
+      msg_no_receipts_yet: 'Noch keine Quittungen vorhanden.',
+      msg_share_not_supported: 'Teilen wird von diesem Browser nicht unterstützt. Bitte "Kopieren" nutzen.',
+      msg_share_failed: 'Teilen fehlgeschlagen. Bitte "Kopieren" nutzen.',
+      msg_enter_issuer_name: 'Bitte Name/Firma des Ausstellers eingeben.',
+      msg_enter_date: 'Bitte Datum angeben.',
+      msg_enter_leistung: 'Bitte Leistung/Ware beschreiben.',
+      msg_more_precise_desc: 'Bitte eine genauere Beschreibung eingeben (z.B. nicht nur "Diverses").',
+      msg_enter_valid_amount: 'Bitte gültigen Betrag eingeben.',
+      msg_confirm_over_250: 'Hinweis: Beträge über 250 € benötigen eigentlich eine vollständige Rechnung mit Empfängerangaben. Trotzdem als einfache Quittung fortfahren?',
+      msg_confirm_backup: 'Quittung erstellt! ✅\n\nMöchten Sie jetzt auch ein JSON-Backup aller Daten sichern? (Empfohlen für Ihre Aufbewahrungspflicht)'
     },
     en: {
       page_title: 'Receipt Generator',
@@ -460,12 +488,32 @@
       btn_secure_now: '✔ Secure now',
       btn_maybe_later: 'Maybe later',
       thanks_title: 'Thank you!',
-      thanks_text: 'We will notify you as soon as Pro is available.'
+      thanks_text: 'We will notify you as soon as Pro is available.',
+      msg_enter_name_firma: 'Please enter name/company.',
+      msg_saved_default: 'Saved! This data will now be used automatically.',
+      msg_storno_reason_required: 'Cancellation aborted — a reason is required.',
+      msg_storno_marked: 'has been marked as cancelled (original remains viewable).',
+      msg_no_receipts_yet: 'No receipts created yet.',
+      msg_share_not_supported: 'Sharing is not supported by this browser. Please use "Copy".',
+      msg_share_failed: 'Sharing failed. Please use "Copy".',
+      msg_enter_issuer_name: 'Please enter the issuer name/company.',
+      msg_enter_date: 'Please enter a date.',
+      msg_enter_leistung: 'Please describe the service/goods.',
+      msg_more_precise_desc: 'Please enter a more precise description (e.g. not just "Miscellaneous").',
+      msg_enter_valid_amount: 'Please enter a valid amount.',
+      msg_confirm_over_250: 'Note: Amounts over 250 € actually require a full invoice with recipient details. Continue as a simple receipt anyway?',
+      msg_confirm_backup: 'Receipt created! ✅\n\nWould you also like to save a JSON backup of all data now? (Recommended for your retention obligation)'
     }
   };
 
+  var currentLangCode = 'de';
+  function msgT(key) {
+    return (I18N[currentLangCode] && I18N[currentLangCode][key]) || I18N.de[key] || key;
+  }
+
   window.setLang = function(lang) {
     var t = I18N[lang] || I18N.de;
+    currentLangCode = lang;
     document.querySelectorAll('[data-i18n]').forEach(function(el) {
       var key = el.getAttribute('data-i18n');
       if (t[key] !== undefined) el.innerHTML = t[key];
@@ -503,6 +551,7 @@
   var PERSONAL_CODE_KEY = 'quittung_personal_code';
   var PERSONAL_CODE_EXPIRY_KEY = 'quittung_personal_code_expiry';
   var QUITTUNG_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsCbjxBP4yO2mhQHrV0ZpUYtyIwkgnRHcvpD7KXO0F_tj0xqPgh_boLeb2khTd0mv9/exec';
+  var QUITTUNG_API_SECRET = 'pacdi-2026-guvenlik-anahtari-x7k2';
 
   // ── Süreli kişisel kod sistemi (ilk giren isme kilitlenir, backend üzerinden) ──
   function hasActivePersonalCode() {
@@ -529,7 +578,7 @@
 
     fetch(QUITTUNG_SCRIPT_URL, {
       method: 'POST',
-      body: JSON.stringify({ action: 'claimQuittungCode', kod: code, isim: isim })
+      body: JSON.stringify({ apiKey: QUITTUNG_API_SECRET, action: 'claimQuittungCode', kod: code, isim: isim })
     })
     .then(function(res){ return res.json(); })
     .then(function(data){
@@ -626,9 +675,9 @@
   document.getElementById('saveAusstellerBtn').addEventListener('click', function() {
     var name = document.getElementById('ausstellerName').value.trim();
     var adresse = document.getElementById('ausstellerAdresse').value.trim();
-    if (!name) { alert('Bitte Name/Firma eingeben.'); return; }
+    if (!name) { alert(msgT('msg_enter_name_firma')); return; }
     saveAussteller({ name: name, adresse: adresse });
-    alert('Gespeichert! Diese Daten werden ab jetzt automatisch verwendet.');
+    alert(msgT('msg_saved_default'));
   });
 
   // ── Belegnummer ──
@@ -863,7 +912,7 @@
   // ── Storno (niemals löschen — nur als storniert markieren, mit Pflichtgrund) ──
   window.stornoEntry = function(belegNr) {
     var grund = prompt('Stornogrund für Beleg ' + belegNr + ' (Pflichtangabe, z.B. "Fehleingabe Betrag", "Doppelt erfasst"):');
-    if (!grund || !grund.trim()) { alert('Storno abgebrochen — ein Grund ist erforderlich.'); return; }
+    if (!grund || !grund.trim()) { alert(msgT('msg_storno_reason_required')); return; }
     var history = loadHistory();
     var idx = history.findIndex(function(h) { return h.belegNr === belegNr; });
     if (idx === -1) return;
@@ -872,12 +921,12 @@
     history[idx].stornoDatum = new Date().toISOString();
     saveHistory(history);
     renderHistory();
-    alert('Beleg ' + belegNr + ' wurde als storniert markiert (Original bleibt einsehbar).');
+    alert('Beleg ' + belegNr + ' ' + msgT('msg_storno_marked'));
   };
 
   document.getElementById('exportJsonBtn').addEventListener('click', function() {
     var history = loadHistory();
-    if (!history.length) { alert('Noch keine Quittungen vorhanden.'); return; }
+    if (!history.length) { alert(msgT('msg_no_receipts_yet')); return; }
     var backup = {
       exportDate: new Date().toISOString(),
       aussteller: loadAussteller(),
@@ -929,10 +978,10 @@
         } else if (navigator.share) {
           navigator.share({ title: filename, text: content }).catch(function(){});
         } else {
-          alert('Teilen wird von diesem Browser nicht unterstützt. Bitte "Kopieren" nutzen.');
+          alert(msgT("msg_share_not_supported"));
         }
       } catch (e) {
-        alert('Teilen fehlgeschlagen. Bitte "Kopieren" nutzen.');
+        alert(msgT("msg_share_failed"));
       }
     };
 
@@ -995,13 +1044,13 @@
     var leistung = document.getElementById('leistung').value.trim();
     var betrag = parseFloat(document.getElementById('betrag').value) || 0;
 
-    if (!name) { alert('Bitte Name/Firma des Ausstellers eingeben.'); return; }
-    if (!datum) { alert('Bitte Datum angeben.'); return; }
-    if (!leistung) { alert('Bitte Leistung/Ware beschreiben.'); return; }
-    if (leistung.length < 5) { alert('Bitte eine genauere Beschreibung eingeben (z.B. nicht nur "Diverses").'); return; }
-    if (betrag <= 0) { alert('Bitte gültigen Betrag eingeben.'); return; }
+    if (!name) { alert(msgT('msg_enter_issuer_name')); return; }
+    if (!datum) { alert(msgT('msg_enter_date')); return; }
+    if (!leistung) { alert(msgT('msg_enter_leistung')); return; }
+    if (leistung.length < 5) { alert(msgT('msg_more_precise_desc')); return; }
+    if (betrag <= 0) { alert(msgT('msg_enter_valid_amount')); return; }
     if (betrag > 250 && taxMode === 'kleinunternehmer') {
-      if (!confirm('Hinweis: Beträge über 250 € benötigen eigentlich eine vollständige Rechnung mit Empfängerangaben. Trotzdem als einfache Quittung fortfahren?')) return;
+      if (!confirm(msgT('msg_confirm_over_250'))) return;
     }
 
     var belegNrNum = getNextBelegNr();
@@ -1124,7 +1173,7 @@
     renderHistory();
 
     setTimeout(function() {
-      if (confirm('Quittung erstellt! ✅\n\nMöchten Sie jetzt auch ein JSON-Backup aller Daten sichern? (Empfohlen für Ihre Aufbewahrungspflicht)')) {
+      if (confirm(msgT('msg_confirm_backup'))) {
         document.getElementById('exportJsonBtn').click();
       }
     }, 500);
@@ -1144,13 +1193,13 @@
     var leistung = document.getElementById('leistung').value.trim();
     var betrag = parseFloat(document.getElementById('betrag').value) || 0;
 
-    if (!name) { alert('Bitte Name/Firma des Ausstellers eingeben.'); return; }
-    if (!datum) { alert('Bitte Datum angeben.'); return; }
-    if (!leistung) { alert('Bitte Leistung/Ware beschreiben.'); return; }
-    if (leistung.length < 5) { alert('Bitte eine genauere Beschreibung eingeben (z.B. nicht nur "Diverses").'); return; }
-    if (betrag <= 0) { alert('Bitte gültigen Betrag eingeben.'); return; }
+    if (!name) { alert(msgT('msg_enter_issuer_name')); return; }
+    if (!datum) { alert(msgT('msg_enter_date')); return; }
+    if (!leistung) { alert(msgT('msg_enter_leistung')); return; }
+    if (leistung.length < 5) { alert(msgT('msg_more_precise_desc')); return; }
+    if (betrag <= 0) { alert(msgT('msg_enter_valid_amount')); return; }
     if (betrag > 250 && taxMode === 'kleinunternehmer') {
-      if (!confirm('Hinweis: Beträge über 250 € benötigen eigentlich eine vollständige Rechnung mit Empfängerangaben. Trotzdem als einfache Quittung fortfahren?')) return;
+      if (!confirm(msgT('msg_confirm_over_250'))) return;
     }
 
     var belegNrNum = getNextBelegNr();

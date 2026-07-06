@@ -91,6 +91,7 @@ footer{text-align:center;font-size:0.65rem;color:#4a6a88;margin-top:24px;padding
 // ── AYARLANMASI GEREKEN TEK YER ──
 // Apps Script'i "Web App" olarak dağıttıktan sonra aldığın URL'i buraya yapıştır.
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsCbjxBP4yO2mhQHrV0ZpUYtyIwkgnRHcvpD7KXO0F_tj0xqPgh_boLeb2khTd0mv9/exec';
+var API_SECRET = 'pacdi-2026-guvenlik-anahtari-x7k2';
 
 function genStudentCode(meslekDali) {
   var prefixMap = {
@@ -134,6 +135,7 @@ window.registerStudent = function(){
   fetch(SCRIPT_URL, {
     method: 'POST',
     body: JSON.stringify({
+      apiKey: API_SECRET,
       action: 'registerStudent',
       isyeriAd: isyeriAd,
       isyeriKod: isyeriKod,
