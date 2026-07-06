@@ -543,10 +543,14 @@
   }
   initLang();
 
+  // ── Test amaçlı: ?testpaywall=1 ile paywall ekranını zorla aç ──
+  if (new URLSearchParams(window.location.search).get('testpaywall') === '1') {
+    document.getElementById('paywallModal').classList.add('active');
+  }
+
 
   var AUSSTELLER_KEY = 'quittung_aussteller';
   var COUNTER_KEY = 'quittung_counter';
-  var FIRST_USE_KEY = 'quittung_first_use_month';
   var MONTHLY_USAGE_KEY = 'quittung_monthly_usage';
   var PERSONAL_CODE_KEY = 'quittung_personal_code';
   var PERSONAL_CODE_EXPIRY_KEY = 'quittung_personal_code_expiry';
@@ -605,19 +609,6 @@
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
   }
 
-  function getFirstUseMonth() {
-    var v = localStorage.getItem(FIRST_USE_KEY);
-    if (!v) {
-      v = currentMonthKey();
-      localStorage.setItem(FIRST_USE_KEY, v);
-    }
-    return v;
-  }
-
-  function isFirstMonth() {
-    return getFirstUseMonth() === currentMonthKey();
-  }
-
   function getMonthlyUsage() {
     try {
       var data = JSON.parse(localStorage.getItem(MONTHLY_USAGE_KEY) || '{}');
@@ -639,25 +630,19 @@
     if (params.get('beta') === 'pacdi2026') return true;
     try { if (sessionStorage.getItem('betaUnlock') === '1') return true; } catch(e) {}
     if (hasActivePersonalCode()) return true;
-    if (isFirstMonth()) return true;
     return getMonthlyUsage() < FREE_LIMIT;
   }
 
   function remainingThisMonth() {
-    if (isFirstMonth()) return null; // unlimited
     return Math.max(0, FREE_LIMIT - getMonthlyUsage());
   }
 
   function updateUsageDisplay() {
     var el = document.getElementById('usageDisplay');
     if (!el) return;
-    if (isFirstMonth()) {
-      el.innerHTML = '🎉 <strong style="color:#34D399;">Erster Monat: unbegrenzte Nutzung!</strong>';
-    } else {
-      var remaining = remainingThisMonth();
-      var color = remaining > 1 ? '#7a9ab8' : '#f87171';
-      el.innerHTML = '<span style="color:' + color + ';">' + remaining + ' von ' + FREE_LIMIT + ' kostenlosen Quittungen diesen Monat übrig</span>';
-    }
+    var remaining = remainingThisMonth();
+    var color = remaining > 1 ? '#7a9ab8' : '#f87171';
+    el.innerHTML = '<span style="color:' + color + ';">' + remaining + ' von ' + FREE_LIMIT + ' kostenlosen Quittungen diesen Monat übrig</span>';
   }
   var HISTORY_KEY = 'quittung_history';
 
