@@ -333,6 +333,8 @@ function showResult(text) {
   stopLive();
 
   var deviceInfo = null;
+
+  // 1. Önce JSON olarak dene
   try {
     var parsed = JSON.parse(text);
     if (parsed && parsed.id && parsed.id.indexOf('PACDI-') === 0) {
@@ -341,6 +343,15 @@ function showResult(text) {
       if (found) deviceInfo = found;
     }
   } catch(e) {}
+
+  // 2. JSON değilse veya bulunamadıysa, düz metni doğrudan UID olarak ara
+  if (!deviceInfo) {
+    try {
+      var inv2 = JSON.parse(localStorage.getItem('pacdi_inventory') || '[]');
+      var found2 = inv2.find(function(x){ return x.uid === text; });
+      if (found2) deviceInfo = found2;
+    } catch(e) {}
+  }
 
   var isUrl = /^https?:\/\//i.test(text);
   var card = document.createElement('div'); card.className='result-card';

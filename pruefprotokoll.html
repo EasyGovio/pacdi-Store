@@ -1334,7 +1334,37 @@
             updateRowCounter();
         }
 
+        function parsePruefParams() {
+            var params = new URLSearchParams(window.location.search);
+            var inv = params.get('inv');
+            var bez = params.get('bez');
+            var standort = params.get('standort');
+            var datum = params.get('datum');
+
+            if (!inv && !bez) return;
+
+            var rows = tableBody.querySelectorAll('tr');
+            var targetRow = rows.length > 0 ? rows[rows.length - 1] : null;
+            if (!targetRow) {
+                addRow();
+                targetRow = tableBody.querySelector('tr:last-child');
+            }
+            if (!targetRow) return;
+
+            var invInput = targetRow.querySelector('.inventar');
+            if (invInput) invInput.value = (inv ? inv + ' ' : '') + (bez || '');
+
+            var lastInput = targetRow.querySelector('.letzte-pruefung');
+            if (lastInput && datum) lastInput.value = datum;
+
+            var noteInput = targetRow.querySelector('.bemerkung');
+            if (noteInput && standort) noteInput.value = 'Standort: ' + standort;
+
+            if (typeof calculateNextPruefung === 'function') calculateNextPruefung(targetRow);
+        }
+
         init();
+        if (typeof parsePruefParams === 'function') parsePruefParams();
 
     })();
 </script>

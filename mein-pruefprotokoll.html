@@ -231,7 +231,7 @@ function renderPruefTable(){
       var cls=d.result==='ok'?'ok-row':d.result==='fail'?'fail-row':'';
       var ohmWarn='';
       if(d.ohm!=='' && !isNaN(parseFloat(d.ohm))){
-        ohmWarn=parseFloat(d.ohm)<0.5?'<span class="ohm-ok">✓</span>':'<span class="ohm-warn">!</span>';
+        ohmWarn=parseFloat(d.ohm)<0.3?'<span class="ohm-ok">✓</span>':'<span class="ohm-warn">!</span>';
       }
       html+='<tr class="'+cls+'" id="row-'+d.id+'">';
       html+='<td style="font-size:0.62rem;color:#4a6a88;white-space:nowrap;">'+escH(d.id)+'</td>';
@@ -471,7 +471,7 @@ window.generatePDF = function(){
 
       // Ohm value with color
       var ohmStr=d.ohm!==''?d.ohm+' Ohm':'—';
-      if(d.ohm!=='' && parseFloat(d.ohm)>=0.5) doc.setTextColor(180,30,30);
+      if(d.ohm!=='' && parseFloat(d.ohm)>=0.3) doc.setTextColor(180,30,30);
       else if(d.ohm!=='') doc.setTextColor(0,130,60);
       doc.text(ohmStr,cols[5],y+3.8);
       doc.setTextColor(40,40,40);

@@ -161,6 +161,7 @@
       <div id="inv-list"><div class="empty" id="empty-list">Noch keine Geräte erfasst.</div></div>
     </div>
     <button class="btn btn-outline" onclick="exportInventar()" id="btn-export">📦 Inventar exportieren (JSON)</button>
+    <button class="btn btn-outline" onclick="exportInventarCSV()" id="btn-export-csv" style="margin-top:8px;">📋 CSV (Prüfprotokoll) exportieren</button>
   </div>
 
   <div id="tab-kontrol" class="tab-content">
@@ -577,6 +578,21 @@
     // stillschweigend fehlschlagen. Deshalb: Teilen/Kopieren-Dialog als
     // zuverlässiger Weg, plus klassischer Download für Desktop.
     showExportModal(json, filename, 'application/json');
+    toast(t.toast_exported);
+  };
+
+  window.exportInventarCSV = function() {
+    var t = i18n[currentLang] || i18n.de;
+    var header = 'ID,Raum,Gerät,Marke/Modell,Typ,Seriennr.,Notiz\n';
+    var rows = inventory.map(function(item) {
+      var uid = item.uid || '';
+      var standort = item.standort || '';
+      var name = item.name || '';
+      return uid + ',' + standort + ',' + name + ',,qr,,';
+    });
+    var csv = header + rows.join('\n');
+    var filename = 'PACDI-Inventar-Pruefprotokoll-' + new Date().toISOString().split('T')[0] + '.csv';
+    showExportModal(csv, filename, 'text/csv;charset=utf-8;');
     toast(t.toast_exported);
   };
 
