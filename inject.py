@@ -56,6 +56,13 @@ BETA_UNLOCK_SCRIPT = """<script>
 </script>
 """
 
+# ── Blog makaleleri için: tarayıcı çevirisi ipucu kutusu ──
+TRANSLATE_TIP = """        <div class="info-box" style="background:#eef6ff;border-color:#a8cff0;border-left-color:#2a7de1;">
+            <p><strong>\U0001f30d In Ihrer Sprache lesen?</strong> Bu sayfay\u0131 kendi dilinizde okumak isterseniz / Want to read this in your language: <strong>iPhone/Safari</strong> \u2014 Adressleiste antippen \u2192 "aA" \u2192 \u00dcbersetzen. <strong>Android/Chrome</strong> \u2014 Men\u00fc (\u22ee) \u2192 \u00dcbersetzen. Die \u00dcbersetzung erfolgt direkt im Browser, kostenlos.</p>
+        </div>
+
+"""
+
 # ── FIXED: tek tırnak kaçışı düzgün, daha önce defalarca tespit edilen bug giderildi ──
 PWA_SCRIPT = """<script>
 (function() {
@@ -215,7 +222,7 @@ SKIP = ['legal.html','impressum.html','datenschutz.html','404.html','master-temp
 SKIP_FOOTER = ['legal.html','impressum.html','datenschutz.html','404.html','master-template.html','test.html']
 
 # ── Kişisel/özel dosyalar — inject edilmez ──
-PRIVATE_PREFIXES = ('mein-', 'private-', 'pacdi-sunum', 'personal-', 'intern-', 'ausbildung-')
+PRIVATE_PREFIXES = ('mein-', 'private-', 'pacdi-sunum', 'personal-', 'intern-')
 
 def is_private(filename):
     return any(filename.startswith(p) for p in PRIVATE_PREFIXES)
@@ -367,6 +374,14 @@ for root, dirs, files in os.walk('.'):
                 if _pwa_block_re.search(content):
                     content = _pwa_block_re.sub(PWA_SCRIPT.strip(), content, count=1)
                     print('Fixed: stale/broken PWA banner ->', fpath)
+
+            # ── Blog makaleleri: çeviri ipucu kutusu ──
+            if 'blog' in root.split(os.sep) and 'In Ihrer Sprache lesen' not in content:
+                import re as _re4
+                _disclaimer_re = _re4.compile(r'(<div class="disclaimer">.*?</div>\n)', _re4.S)
+                if _disclaimer_re.search(content):
+                    content = _disclaimer_re.sub(lambda m: m.group(1) + '\n' + TRANSLATE_TIP, content, count=1)
+                    print('Added translation tip ->', fpath)
 
             # ── ASCII muhur → <body> sonrasi ──
             if 'PACDI FRAMEWORK' not in content and '<body' in content:
