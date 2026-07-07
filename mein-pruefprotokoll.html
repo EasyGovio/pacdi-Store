@@ -427,7 +427,7 @@ window.generatePDF = function(){
   function tblHdr(){
     doc.setFillColor(10,24,40);doc.rect(M,y,PW-M*2,6,'F');
     doc.setFont('helvetica','bold');doc.setFontSize(6);doc.setTextColor(246,180,95);
-    var heads=['Gerät-ID','Raum / Standort','Gerätename','Marke / Modell','SN','R Ω','Ergebnis'];
+    var heads=['Gerät-ID','Raum / Standort','Gerätename','Marke / Modell','SN','R (Ohm)','Ergebnis'];
     heads.forEach(function(h,i){doc.text(h,cols[i],y+4);});
     doc.setTextColor(40,40,40);y+=7;
   }
@@ -470,7 +470,7 @@ window.generatePDF = function(){
       doc.text((d.serial||'—').slice(0,10),cols[4],y+3.8);
 
       // Ohm value with color
-      var ohmStr=d.ohm!==''?d.ohm+' Ω':'—';
+      var ohmStr=d.ohm!==''?d.ohm+' Ohm':'—';
       if(d.ohm!=='' && parseFloat(d.ohm)>=0.5) doc.setTextColor(180,30,30);
       else if(d.ohm!=='') doc.setTextColor(0,130,60);
       doc.text(ohmStr,cols[5],y+3.8);
@@ -479,10 +479,10 @@ window.generatePDF = function(){
       // Result with icon
       if(d.result==='ok'){
         doc.setTextColor(0,140,70);doc.setFont('helvetica','bold');
-        doc.text('✓ OK',cols[6],y+3.8);
+        doc.text('OK',cols[6],y+3.8);
       } else if(d.result==='fail'){
         doc.setTextColor(180,20,20);doc.setFont('helvetica','bold');
-        doc.text('✗ FAIL',cols[6],y+3.8);
+        doc.text('FEHLER',cols[6],y+3.8);
       } else {
         doc.setTextColor(150,150,150);doc.setFont('helvetica','normal');
         doc.text('—',cols[6],y+3.8);
@@ -519,7 +519,7 @@ window.generatePDF = function(){
     devices.filter(function(d){return d.result==='fail';}).forEach(function(d){
       chkPage();
       doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(100,20,20);
-      doc.text('• '+d.id+' | R:'+d.room+' | '+d.name+(d.brand?' ('+d.brand+')':'')+(d.ohm?' | '+d.ohm+' Ω':''),M+3,y);
+      doc.text('• '+d.id+' | R:'+d.room+' | '+d.name+(d.brand?' ('+d.brand+')':'')+(d.ohm?' | '+d.ohm+' Ohm':''),M+3,y);
       y+=4.5;
     });
     y+=4;

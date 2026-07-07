@@ -1142,8 +1142,15 @@
             if (tableData.length === 0) { alert(ppT('alert_no_devices', 'Keine Geräte zum Exportieren.')); return; }
 
             var intervallLabels = ppIntervalLabels();
+            var pdfSafeSymbol = function(v) {
+                if (v === '✓') return 'i.O.';
+                if (v === '✗') return 'n.i.O.';
+                return v;
+            };
             var formattedData = tableData.map(function(row) {
                 var newRow = row.slice();
+                newRow[2] = pdfSafeSymbol(newRow[2]);
+                newRow[3] = pdfSafeSymbol(newRow[3]);
                 newRow[8] = intervallLabels[row[8]] || row[8] + ' ' + ppT('interval_24', 'Monate').replace(/^\d+\s*/, '');
                 return newRow;
             });
