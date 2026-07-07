@@ -295,6 +295,44 @@
     <a href="/qr.html" class="btn" id="cta2-btn">Hemen Dene →</a>
   </div>
 
+  <div style="margin-top:40px;">
+    <div id="quittung-section-title" style="font-size:0.75rem;font-weight:700;letter-spacing:0.08em;color:#F6B45F;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(246,180,95,0.2);">🧾 Quittung &amp; GoBD Rehberi</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;">
+      <a href="gobd-konforme-quittung-kleinunternehmer.html" class="card" data-key="quittung-gobd-konforme-quittung-kleinunternehmer">
+        <div class="card-title">Quittung erstellen kostenlos — § 33 UStDV-konform</div>
+        <div class="card-cta">Oku →</div>
+      </a>
+      <a href="kleinunternehmer-quittung-vorlage-pdf.html" class="card" data-key="quittung-kleinunternehmer-quittung-vorlage-pdf">
+        <div class="card-title">Kleinunternehmer Quittung Vorlage PDF — kostenlos erstellen</div>
+        <div class="card-cta">Oku →</div>
+      </a>
+      <a href="gobd-pwa-quittung-ecommerce.html" class="card" data-key="quittung-gobd-pwa-quittung-ecommerce">
+        <div class="card-title">GoBD &amp; PWA im E-Commerce: Digitale Quittungen</div>
+        <div class="card-cta">Oku →</div>
+      </a>
+      <a href="finanzamt-quittung-checkliste-was-wird-geprueft.html" class="card" data-key="quittung-finanzamt-checkliste">
+        <div class="card-title">Finanzamt-Checkliste: Was wird bei einer Quittung wirklich geprüft?</div>
+        <div class="card-cta">Oku →</div>
+      </a>
+      <a href="haeufigste-quittung-fehler-finanzamt.html" class="card" data-key="quittung-haeufigste-fehler">
+        <div class="card-title">5 Quittungsfehler, die fast jeder macht</div>
+        <div class="card-cta">Oku →</div>
+      </a>
+      <a href="umsatzsteuer-7-oder-19-prozent-guide.html" class="card" data-key="quittung-umsatzsteuer-7-oder-19">
+        <div class="card-title">7% oder 19%? Der Steuersatz-Guide für Ihre Quittung</div>
+        <div class="card-cta">Oku →</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="cta-strip" style="margin-top:24px;" id="cta3">
+    <div>
+      <strong id="cta3-title">🧾 Quittung Generator</strong>
+      <p id="cta3-desc">Kostenlos, lokal, ohne Anmeldung — jetzt Quittung erstellen.</p>
+    </div>
+    <a href="/quittung.html" class="btn" id="cta3-btn">Hemen Dene →</a>
+  </div>
+
 </main>
 <footer>
   <span>© 2026 PACDI Global · pacdi.store</span>
@@ -331,6 +369,9 @@
       cta2_title: "🔳 QR & Barkod Oluşturucu",
       cta2_desc: "Ücretsiz, kayıt gerekmez, watermark yok — hemen deneyin.",
       cta2_btn: "Hemen Dene →",
+      cta3_title: "🧾 Quittung Oluşturucu",
+      cta3_desc: "Ücretsiz, yerel, kayıt gerekmez — hemen makbuz oluşturun.",
+      cta3_btn: "Hemen Dene →",
       read_more: "Oku →",
       card_dguv_v3_ohne_excel_chaos: "DGUV V3 Excel'siz Kargaşa",
       card_pruefprotokoll_elektrischer_anlagen_ohne_excel: "Excel'siz Elektrik Tesisatları Prüfprotokolü",
@@ -390,6 +431,9 @@
       cta2_title: "🔳 QR & Barcode Generator",
       cta2_desc: "Kostenlos, keine Registrierung, kein Wasserzeichen — jetzt ausprobieren.",
       cta2_btn: "Jetzt testen →",
+      cta3_title: "🧾 Quittung Generator",
+      cta3_desc: "Kostenlos, lokal, ohne Anmeldung — jetzt Quittung erstellen.",
+      cta3_btn: "Jetzt testen →",
       read_more: "Lesen →",
       card_dguv_v3_ohne_excel_chaos: "DGUV V3 ohne Excel Chaos",
       card_pruefprotokoll_elektrischer_anlagen_ohne_excel: "Prüfprotokoll elektrischer Anlagen ohne Excel",
@@ -449,6 +493,9 @@
       cta2_title: "🔳 QR & Barcode Generator",
       cta2_desc: "Free, no registration, no watermark — try it now.",
       cta2_btn: "Try now →",
+      cta3_title: "🧾 Receipt Generator",
+      cta3_desc: "Free, local, no registration — create your receipt now.",
+      cta3_btn: "Try now →",
       read_more: "Read →",
       card_dguv_v3_ohne_excel_chaos: "DGUV V3 without Excel Chaos",
       card_pruefprotokoll_elektrischer_anlagen_ohne_excel: "Inspection protocol for electrical systems without Excel",
@@ -515,6 +562,9 @@
     document.getElementById('cta2-title').textContent = d.cta2_title;
     document.getElementById('cta2-desc').textContent = d.cta2_desc;
     document.getElementById('cta2-btn').textContent = d.cta2_btn;
+    document.getElementById('cta3-title').textContent = d.cta3_title;
+    document.getElementById('cta3-desc').textContent = d.cta3_desc;
+    document.getElementById('cta3-btn').textContent = d.cta3_btn;
 
     var cards = document.querySelectorAll('.card');
     cards.forEach(function(card) {
