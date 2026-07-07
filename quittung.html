@@ -693,8 +693,26 @@
     var params = new URLSearchParams(window.location.search);
     var datum = params.get('datum');
     var leistung = params.get('leistung');
+    var stunden = params.get('stunden');
+    var firma = params.get('firma');
+    var stundenlohn = params.get('stundenlohn');
     if (datum) document.getElementById('datum').value = datum;
-    if (leistung) document.getElementById('leistung').value = leistung;
+    if (leistung) {
+      var leistungText = leistung;
+      if (stunden) {
+        var datumLesbar = datum && typeof fmtDateDE === 'function' ? fmtDateDE(datum) : datum;
+        leistungText += ' am ' + (datumLesbar || '') + ', ' + stunden + ' Stunden';
+      }
+      document.getElementById('leistung').value = leistungText.trim();
+    }
+    if (firma) document.getElementById('empfaenger').value = firma;
+    if (stunden && stundenlohn) {
+      var berechneterBetrag = parseFloat(stunden) * parseFloat(stundenlohn);
+      if (!isNaN(berechneterBetrag) && berechneterBetrag > 0) {
+        document.getElementById('betrag').value = berechneterBetrag.toFixed(2);
+        if (typeof updateAmountDisplay === 'function') updateAmountDisplay();
+      }
+    }
   })();
 
   // ── Berufsbezogene Schnellvorlagen ──

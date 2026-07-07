@@ -200,6 +200,12 @@
         </div>
       </div>
 
+      <div class="field" id="stundenlohnWrap" style="display:none;">
+        <label>Stundenlohn (€) <span style="font-weight:400;color:#4a6a88;">— nur falls Quittung automatisch berechnet werden soll</span></label>
+        <input type="number" id="stundenlohn" step="0.5" min="0" placeholder="z.B. 15.00">
+      </div>
+      <a href="#" id="stundenlohnToggle" style="display:inline-block;margin:-6px 0 10px;font-size:0.72rem;color:#7a9ab8;text-decoration:underline;">💰 Stundenlohn angeben (optional)</a>
+
       <div class="field">
         <label>Kategorie <span style="font-weight:400;color:#4a6a88;">(Vorschlag basiert auf Bereich)</span></label>
         <select id="firma"></select>
@@ -565,9 +571,14 @@
     var bereich = document.getElementById('bereich').value.trim();
     var stunden = parseFloat(document.getElementById('stunden').value) || 0;
     var firma = document.getElementById('firma').value;
+    var stundenlohn = parseFloat(document.getElementById('stundenlohn').value) || 0;
 
     if (!art) { alert('Bitte "Art der Arbeit" ausfüllen.'); return; }
     if (stunden <= 0) { alert('Bitte gültige Stundenzahl eingeben.'); return; }
+
+    if (stundenlohn > 0) {
+      try { localStorage.setItem('zeit_stundenlohn', String(stundenlohn)); } catch(e) {}
+    }
 
     var entries = loadEntries();
     entries.push({
@@ -577,7 +588,8 @@
       art: art,
       bereich: bereich,
       stunden: stunden,
-      firma: firma
+      firma: firma,
+      stundenlohn: stundenlohn > 0 ? stundenlohn : undefined
     });
     saveEntries(entries);
 
@@ -589,6 +601,21 @@
     refreshCurrentDayField();
     renderEntries();
     renderTotals();
+  });
+
+  document.getElementById('stundenlohnToggle').addEventListener('click', function(e) {
+    e.preventDefault();
+    var wrap = document.getElementById('stundenlohnWrap');
+    var isHidden = wrap.style.display === 'none';
+    wrap.style.display = isHidden ? 'block' : 'none';
+    if (isHidden) {
+      try {
+        var saved = localStorage.getItem('zeit_stundenlohn');
+        if (saved && !document.getElementById('stundenlohn').value) {
+          document.getElementById('stundenlohn').value = saved;
+        }
+      } catch(err) {}
+    }
   });
 
   document.getElementById('saveEmergencyBtn').addEventListener('click', function() {
@@ -702,6 +729,9 @@
     var params = new URLSearchParams();
     params.set('datum', entry.date);
     params.set('leistung', entry.art);
+    if (entry.stunden) params.set('stunden', entry.stunden);
+    if (entry.firma) params.set('firma', entry.firma);
+    if (entry.stundenlohn) params.set('stundenlohn', entry.stundenlohn);
     return '/quittung.html?' + params.toString();
   }
 
