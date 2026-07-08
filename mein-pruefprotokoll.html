@@ -159,6 +159,12 @@ BWK-0003,FRISEURSALON,Bartschneider,,qr,,'></textarea>
 (function(){
 'use strict';
 
+// ════════════════════════════════════════════════════════════════
+// 📌 LOGO BASE64: Aşağıdaki boşluğa logonuzun Base64 kodunu yapıştırın
+// ════════════════════════════════════════════════════════════════
+var LOGO_BASE64 = ''; 
+// Örnek: var LOGO_BASE64 = 'data:image/webp;base64,UklGRlIAAABXRUJQVlA4...';
+
 var devices = []; // {id, room, name, brand, type, serial, note, result:'', ohm:''}
 
 // ── Navigation ──
@@ -272,9 +278,7 @@ function renderPruefTable(){
   updateStats();
 }
 
-// ── Bluetooth/USB HID Barkod-Scanner (markenunabhängig) ──
-// Ein HID-Scanner tippt den Code sehr schnell als Tastatureingaben und schließt
-// meist mit Enter ab — genau wie eine Tastatur. Kein spezielles SDK nötig.
+// ── Bluetooth/USB HID Barkod-Scanner ──
 var scannerListenerAttached = false;
 function setupScannerInput(){
   var input = document.getElementById('scannerInput');
@@ -289,7 +293,6 @@ function setupScannerInput(){
     }
   });
 
-  // Fokus nicht verlieren — Scanner braucht das aktive Feld
   input.addEventListener('blur', function(){
     setTimeout(function(){
       if(document.getElementById('panel3') && document.getElementById('panel3').classList.contains('active')){
@@ -303,8 +306,6 @@ function handleScan(raw){
   var fb = document.getElementById('scannerFeedback');
   if(!raw){ if(fb) fb.textContent=''; return; }
 
-  // QR-Format: 'BWK|BWK-0001|R:319|Gerätename|...' → ID ist Segment 2
-  // Barcode/Direkt-Format: einfach die rohe ID selbst (z. B. 'BWK-0001')
   var id = raw;
   if(raw.indexOf('|') > -1){
     var parts = raw.split('|');
@@ -330,7 +331,6 @@ function handleScan(raw){
 
   if(fb){ fb.style.color = '#34D399'; fb.textContent = '✅ Gefunden: '+d.id+' — '+d.name+' (Raum '+d.room+')'; }
 
-  // Fokus zurück aufs Scanfeld für den nächsten Scan
   var input = document.getElementById('scannerInput');
   if(input) setTimeout(function(){ input.focus(); }, 400);
 }
@@ -339,15 +339,12 @@ window.setResult = function(id, res){
   var d = devices.find(function(x){return x.id===id;});
   if(!d) return;
   d.result = res;
-  // Update row class and buttons
   var row = document.getElementById('row-'+id);
   if(row){
     row.className = res==='ok'?'ok-row':res==='fail'?'fail-row':'';
-    // Update result buttons
     var btns = row.querySelectorAll('.btn-ok,.btn-fail');
     btns[0].classList.toggle('selected', res==='ok');
     btns[1].classList.toggle('selected', res==='fail');
-    // Update result text
     var cells = row.querySelectorAll('td');
     var lastTd = cells[cells.length-1];
     lastTd.style.color = res==='ok'?'#34D399':'#f87171';
@@ -360,7 +357,6 @@ window.setOhm = function(id, val){
   var d = devices.find(function(x){return x.id===id;});
   if(!d) return;
   d.ohm = val;
-  // Auto-set result if ohm entered
   if(val!=='' && !isNaN(parseFloat(val))){
     var v = parseFloat(val);
     if(d.result==='') setResult(id, v<getOhmLimit()?'ok':'fail');
@@ -368,11 +364,6 @@ window.setOhm = function(id, val){
   updateStats();
 };
 
-// Hinweis: "Alle OK" / "Raum OK" trägt bewusst KEINEN erfundenen Einzelwert ein.
-// Alle Geräte wurden manuell mit dem Prüfmittel gemessen; Geräte über dem Grenzwert
-// wurden bereits vorher aussortiert/instandgesetzt. Für die verbleibenden (bestandenen)
-// Geräte wird im Protokoll der Grenzwert selbst als Nachweis ausgewiesen (≤0,3Ω / ≤0,5Ω),
-// statt für jedes Gerät einen identischen, nicht individuell geloggten Messwert vorzutäuschen.
 window.setAllOk = function(){
   devices.forEach(function(d){d.result='ok';});
   renderPruefTable();
@@ -432,15 +423,22 @@ window.generatePDF = function(){
   var pGrund=document.getElementById('grundlage').value||'DGUV Vorschrift 3 / BGV A3';
 
   var M=12,y=14,PW=210;
-  // Erste 5 Spalten linksbündig; letzte 2 Spalten (R/Ergebnis) rechtsbündig
-  // am inneren Rahmenrand verankert, damit lange Kopf-/Zelltexte (z.B. "Ergebnis",
-  // "≤0,3 Ω") nie über die rechte Tabellenkante (PW-M) hinauslaufen.
   var cols=[12,44,88,130,150];
-  var rOhmX=181;   // rechte Ankerkante Spalte "R (Ohm)"
-  var rErgX=PW-M-1; // rechte Ankerkante Spalte "Ergebnis", 1mm Innenabstand zur Rahmenlinie
+  var rOhmX=181;
+  var rErgX=PW-M-1;
 
   function hdr(){
     doc.setFillColor(4,22,46);doc.rect(0,0,210,30,'F');
+    
+    // ── Logo rechts oben mit weißem Hintergrund ──
+    if(LOGO_BASE64){
+      // Weiße Box für das Logo
+      doc.setFillColor(255,255,255);
+      doc.rect(210 - 56, 2, 54, 26, 'F');
+      // Logo platzieren (Format: WEBP)
+      doc.addImage(LOGO_BASE64, 'WEBP', 210 - 52, 4, 48, 22);
+    }
+
     doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(246,180,95);
     doc.text('Prüfprotokoll — DGUV Vorschrift 3',M,11);
     doc.setFontSize(6.5);doc.setTextColor(160,175,195);
@@ -455,7 +453,7 @@ window.generatePDF = function(){
     doc.setFont('helvetica','bold');doc.setFontSize(6);doc.setTextColor(246,180,95);
     var heads=['Gerät-ID','Raum / Standort','Gerätename','Marke / Modell','SN'];
     heads.forEach(function(h,i){doc.text(h,cols[i],y+4);});
-    doc.text('R (Ohm)',rOhmX,y+4,{align:'right'});  // <-- Düzeltme 1
+    doc.text('R (Ohm)',rOhmX,y+4,{align:'right'});
     doc.text('Ergebnis',rErgX,y+4,{align:'right'});
     doc.setTextColor(40,40,40);y+=7;
   }
@@ -472,7 +470,6 @@ window.generatePDF = function(){
     var list=rooms[room];
     var okC=list.filter(function(d){return d.result==='ok';}).length;
 
-    // Room header
     doc.setFillColor(15,30,60);doc.rect(M,y,PW-M*2,5,'F');
     doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.setTextColor(246,180,95);
     doc.text('Raum '+room,M+1,y+3.5);
@@ -482,7 +479,6 @@ window.generatePDF = function(){
 
     list.forEach(function(d,i){
       chkPage();
-      // Row background
       if(d.result==='ok') doc.setFillColor(240,252,245);
       else if(d.result==='fail') doc.setFillColor(255,242,242);
       else doc.setFillColor(i%2===0?248:255,i%2===0?249:255,i%2===0?252:255);
@@ -497,17 +493,14 @@ window.generatePDF = function(){
       doc.text((d.brand||'—').slice(0,12),cols[3],y+3.8);
       doc.text((d.serial||'—').slice(0,9),cols[4],y+3.8);
 
-      // Ohm-Wert: entweder real gemessener Wert, oder bei manuell geprüften/
-      // bestandenen Geräten ohne einzeln geloggten Messwert der Grenzwert
-      // selbst als Nachweis ("<=0,3 Ohm") statt eines erfundenen Einzelwerts.
       var lim=getOhmLimit(), limDE=fmtOhmDE(lim);
       var ohmStr;
       if(d.ohm!==''){
-        ohmStr=fmtOhmDE(d.ohm)+' Ohm';   // <-- Düzeltme 2
+        ohmStr=fmtOhmDE(d.ohm)+' Ohm';
         if(parseFloat(d.ohm)>=lim) doc.setTextColor(180,30,30);
         else doc.setTextColor(0,130,60);
       } else if(d.result==='ok'){
-        ohmStr='<='+limDE+' Ohm';        // <-- Düzeltme 3
+        ohmStr='<='+limDE+' Ohm';
         doc.setTextColor(0,130,60);
       } else {
         ohmStr='—';
@@ -516,7 +509,6 @@ window.generatePDF = function(){
       doc.text(ohmStr,rOhmX,y+3.8,{align:'right'});
       doc.setTextColor(40,40,40);
 
-      // Result with icon
       if(d.result==='ok'){
         doc.setTextColor(0,140,70);doc.setFont('helvetica','bold');
         doc.text('OK',rErgX,y+3.8,{align:'right'});
@@ -552,7 +544,6 @@ window.generatePDF = function(){
   doc.setTextColor(40,40,40);doc.text('Gesamt: '+devices.length+' Geräte',M+110,y);
   y+=12;
 
-  // Fail list
   if(fail>0){
     doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.setTextColor(180,20,20);
     doc.text('Geräte mit Mängeln (Sofortmaßnahmen erforderlich):',M,y);y+=5;
@@ -565,7 +556,6 @@ window.generatePDF = function(){
     y+=4;
   }
 
-  // Signatures
   chkPage();y+=2;
   doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(40,40,40);
   doc.text('Datum: '+pDat,M,y);doc.text('Datum: '+pDat,130,y);y+=10;
@@ -577,7 +567,6 @@ window.generatePDF = function(){
   y+=10;doc.setFontSize(5.5);doc.setTextColor(150,150,150);
   doc.text('Erstellt mit PACDI Prüfprotokoll-Manager (Dokumentationswerkzeug). Aufbewahrungspflicht beim Betreiber. pacdi.store',M,y);
 
-  // Hinweis zu Prüfplaketten
   y+=5;
   doc.setDrawColor(180,180,180);doc.setLineWidth(0.1);
   doc.line(M,y,PW-M,y);y+=4;
@@ -603,7 +592,6 @@ document.getElementById('pruefDatum').value=new Date().toISOString().slice(0,10)
 var nx=new Date();nx.setFullYear(nx.getFullYear()+1);
 document.getElementById('naechstePruef').value=nx.toISOString().slice(0,10);
 
-// Drag & drop
 var da=document.getElementById('dropArea');
 da.addEventListener('dragover',function(e){e.preventDefault();da.style.borderColor='#F6B45F';});
 da.addEventListener('dragleave',function(){da.style.borderColor='';});
