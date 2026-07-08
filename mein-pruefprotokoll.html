@@ -120,6 +120,10 @@ BWK-0003,FRISEURSALON,Bartschneider,,qr,,'></textarea>
     <div><label>Prüfmittel / Messgerät</label><input id="pruefmittel" placeholder="z.B. FLUKE 1664 FC, SN: 12345"></div>
     <div><label>Einrichtung / Standort</label><input id="einrichtung" value="BWK Berlin"></div>
     <div><label>Prüfungsgrundlage</label><input id="grundlage" value="DGUV Vorschrift 3 / BGV A3 / DIN VDE 0701-0702"></div>
+    <div><label>Grenzwert Schutzleiterwiderstand</label><select id="ohmLimit" onchange="renderPruefTable()">
+      <option value="0.3" selected>≤ 0,3 Ω</option>
+      <option value="0.5">≤ 0,5 Ω</option>
+    </select></div>
   </div>
   <button class="btn-gold" onclick="goStep(3)">Weiter zur Prüfung →</button>
 </div>
@@ -207,8 +211,18 @@ window.importCSV = function(){
   goStep(2);
 };
 
+// ── Grenzwert-Helfer ──
+function getOhmLimit(){
+  var el=document.getElementById('ohmLimit');
+  var v=el?parseFloat(el.value):0.3;
+  return isNaN(v)?0.3:v;
+}
+function fmtOhmDE(n){return String(n).replace('.',',');}
+
 // ── Prüftabelle ──
 function renderPruefTable(){
+  var lim=getOhmLimit();
+  var limDE=fmtOhmDE(lim);
   var rooms={};
   devices.forEach(function(d){(rooms[d.room]=rooms[d.room]||[]).push(d);});
   var html='';
@@ -225,13 +239,15 @@ function renderPruefTable(){
     '</div>';
     html+='<table><thead><tr>'+
       '<th>ID</th><th>Gerät</th><th>Marke</th><th>SN</th>'+
-      '<th>R&lt;0,5Ω</th><th style="min-width:80px;">Messwert</th><th>Ergebnis</th>'+
+      '<th>R≤'+limDE+'Ω</th><th style="min-width:80px;">Messwert</th><th>Ergebnis</th>'+
     '</tr></thead><tbody>';
     list.forEach(function(d){
       var cls=d.result==='ok'?'ok-row':d.result==='fail'?'fail-row':'';
       var ohmWarn='';
       if(d.ohm!=='' && !isNaN(parseFloat(d.ohm))){
-        ohmWarn=parseFloat(d.ohm)<0.3?'<span class="ohm-ok">✓</span>':'<span class="ohm-warn">!</span>';
+        ohmWarn=parseFloat(d.ohm)<lim?'<span class="ohm-ok">✓</span>':'<span class="ohm-warn">!</span>';
+      } else if(d.ohm==='' && d.result==='ok'){
+        ohmWarn='<span class="ohm-ok">✓ ≤'+limDE+'Ω</span>';
       }
       html+='<tr class="'+cls+'" id="row-'+d.id+'">';
       html+='<td style="font-size:0.62rem;color:#4a6a88;white-space:nowrap;">'+escH(d.id)+'</td>';
@@ -244,7 +260,7 @@ function renderPruefTable(){
           '<button class="btn-fail'+(d.result==='fail'?' selected':'')+'" onclick="setResult(\''+d.id+'\',\'fail\')">❌</button>'+
         '</div>'+
       '</td>';
-      html+='<td><div class="ohm-wrap"><input id="ohm-'+d.id+'" type="number" step="0.01" min="0" max="99" value="'+escH(d.ohm)+'" placeholder="0.00" onchange="setOhm(\''+d.id+'\',this.value)" onblur="setOhm(\''+d.id+'\',this.value)"><span>Ω</span>'+ohmWarn+'</div></td>';
+      html+='<td><div class="ohm-wrap"><input id="ohm-'+d.id+'" type="number" step="0.01" min="0" max="99" value="'+escH(d.ohm)+'" placeholder="'+(d.result==='ok'?'≤'+limDE:'0.00')+'" title="Leer lassen = manuell geprüft, Grenzwert eingehalten (≤'+limDE+'Ω)" onchange="setOhm(\''+d.id+'\',this.value)" onblur="setOhm(\''+d.id+'\',this.value)"><span>Ω</span>'+ohmWarn+'</div></td>';
       html+='<td style="font-size:0.72rem;color:'+(d.result==='ok'?'#34D399':d.result==='fail'?'#f87171':'#4a6a88')+';">'+
         (d.result==='ok'?'Bestanden':d.result==='fail'?'Nicht bestanden':'—')+
       '</td>';
@@ -347,18 +363,23 @@ window.setOhm = function(id, val){
   // Auto-set result if ohm entered
   if(val!=='' && !isNaN(parseFloat(val))){
     var v = parseFloat(val);
-    if(d.result==='') setResult(id, v<0.5?'ok':'fail');
+    if(d.result==='') setResult(id, v<getOhmLimit()?'ok':'fail');
   }
   updateStats();
 };
 
+// Hinweis: "Alle OK" / "Raum OK" trägt bewusst KEINEN erfundenen Einzelwert ein.
+// Alle Geräte wurden manuell mit dem Prüfmittel gemessen; Geräte über dem Grenzwert
+// wurden bereits vorher aussortiert/instandgesetzt. Für die verbleibenden (bestandenen)
+// Geräte wird im Protokoll der Grenzwert selbst als Nachweis ausgewiesen (≤0,3Ω / ≤0,5Ω),
+// statt für jedes Gerät einen identischen, nicht individuell geloggten Messwert vorzutäuschen.
 window.setAllOk = function(){
-  devices.forEach(function(d){d.result='ok';if(d.ohm==='')d.ohm='0.1';});
+  devices.forEach(function(d){d.result='ok';});
   renderPruefTable();
 };
 
 window.setRoomOk = function(room){
-  devices.forEach(function(d){if(d.room===room){d.result='ok';if(d.ohm==='')d.ohm='0.1';}});
+  devices.forEach(function(d){if(d.room===room){d.result='ok';}});
   renderPruefTable();
 };
 
@@ -411,7 +432,12 @@ window.generatePDF = function(){
   var pGrund=document.getElementById('grundlage').value||'DGUV Vorschrift 3 / BGV A3';
 
   var M=12,y=14,PW=210;
-  var cols=[12,44,88,136,157,177,194];
+  // Erste 5 Spalten linksbündig; letzte 2 Spalten (R/Ergebnis) rechtsbündig
+  // am inneren Rahmenrand verankert, damit lange Kopf-/Zelltexte (z.B. "Ergebnis",
+  // "≤0,3 Ω") nie über die rechte Tabellenkante (PW-M) hinauslaufen.
+  var cols=[12,44,88,130,150];
+  var rOhmX=181;   // rechte Ankerkante Spalte "R (Ω)"
+  var rErgX=PW-M-1; // rechte Ankerkante Spalte "Ergebnis", 1mm Innenabstand zur Rahmenlinie
 
   function hdr(){
     doc.setFillColor(4,22,46);doc.rect(0,0,210,30,'F');
@@ -427,8 +453,10 @@ window.generatePDF = function(){
   function tblHdr(){
     doc.setFillColor(10,24,40);doc.rect(M,y,PW-M*2,6,'F');
     doc.setFont('helvetica','bold');doc.setFontSize(6);doc.setTextColor(246,180,95);
-    var heads=['Gerät-ID','Raum / Standort','Gerätename','Marke / Modell','SN','R (Ohm)','Ergebnis'];
+    var heads=['Gerät-ID','Raum / Standort','Gerätename','Marke / Modell','SN'];
     heads.forEach(function(h,i){doc.text(h,cols[i],y+4);});
+    doc.text('R (\u03A9)',rOhmX,y+4,{align:'right'});
+    doc.text('Ergebnis',rErgX,y+4,{align:'right'});
     doc.setTextColor(40,40,40);y+=7;
   }
 
@@ -464,28 +492,40 @@ window.generatePDF = function(){
       doc.text(d.id,cols[0],y+3.8);
       doc.text(String(d.room),cols[1],y+3.8);
 
-      var nm=d.name.length>24?d.name.slice(0,22)+'…':d.name;
+      var nm=d.name.length>20?d.name.slice(0,18)+'…':d.name;
       doc.text(nm,cols[2],y+3.8);
-      doc.text((d.brand||'—').slice(0,14),cols[3],y+3.8);
-      doc.text((d.serial||'—').slice(0,10),cols[4],y+3.8);
+      doc.text((d.brand||'—').slice(0,12),cols[3],y+3.8);
+      doc.text((d.serial||'—').slice(0,9),cols[4],y+3.8);
 
-      // Ohm value with color
-      var ohmStr=d.ohm!==''?d.ohm+' Ohm':'—';
-      if(d.ohm!=='' && parseFloat(d.ohm)>=0.3) doc.setTextColor(180,30,30);
-      else if(d.ohm!=='') doc.setTextColor(0,130,60);
-      doc.text(ohmStr,cols[5],y+3.8);
+      // Ohm-Wert: entweder real gemessener Wert, oder bei manuell geprüften/
+      // bestandenen Geräten ohne einzeln geloggten Messwert der Grenzwert
+      // selbst als Nachweis ("<=0,3 Ω") statt eines erfundenen Einzelwerts.
+      var lim=getOhmLimit(), limDE=fmtOhmDE(lim);
+      var ohmStr;
+      if(d.ohm!==''){
+        ohmStr=fmtOhmDE(d.ohm)+' \u03A9';
+        if(parseFloat(d.ohm)>=lim) doc.setTextColor(180,30,30);
+        else doc.setTextColor(0,130,60);
+      } else if(d.result==='ok'){
+        ohmStr='<='+limDE+' \u03A9';
+        doc.setTextColor(0,130,60);
+      } else {
+        ohmStr='—';
+        doc.setTextColor(150,150,150);
+      }
+      doc.text(ohmStr,rOhmX,y+3.8,{align:'right'});
       doc.setTextColor(40,40,40);
 
       // Result with icon
       if(d.result==='ok'){
         doc.setTextColor(0,140,70);doc.setFont('helvetica','bold');
-        doc.text('OK',cols[6],y+3.8);
+        doc.text('OK',rErgX,y+3.8,{align:'right'});
       } else if(d.result==='fail'){
         doc.setTextColor(180,20,20);doc.setFont('helvetica','bold');
-        doc.text('FEHLER',cols[6],y+3.8);
+        doc.text('FEHLER',rErgX,y+3.8,{align:'right'});
       } else {
         doc.setTextColor(150,150,150);doc.setFont('helvetica','normal');
-        doc.text('—',cols[6],y+3.8);
+        doc.text('—',rErgX,y+3.8,{align:'right'});
       }
       doc.setTextColor(40,40,40);doc.setFont('helvetica','normal');
 
