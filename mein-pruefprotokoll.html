@@ -436,7 +436,7 @@ window.generatePDF = function(){
   // am inneren Rahmenrand verankert, damit lange Kopf-/Zelltexte (z.B. "Ergebnis",
   // "≤0,3 Ω") nie über die rechte Tabellenkante (PW-M) hinauslaufen.
   var cols=[12,44,88,130,150];
-  var rOhmX=181;   // rechte Ankerkante Spalte "R (Ohm)"
+  var rOhmX=181;   // rechte Ankerkante Spalte "R (Ω)"
   var rErgX=PW-M-1; // rechte Ankerkante Spalte "Ergebnis", 1mm Innenabstand zur Rahmenlinie
 
   function hdr(){
@@ -455,7 +455,7 @@ window.generatePDF = function(){
     doc.setFont('helvetica','bold');doc.setFontSize(6);doc.setTextColor(246,180,95);
     var heads=['Gerät-ID','Raum / Standort','Gerätename','Marke / Modell','SN'];
     heads.forEach(function(h,i){doc.text(h,cols[i],y+4);});
-    doc.text('R (Ohm)',rOhmX,y+4,{align:'right'});  // <-- Düzeltme 1
+    doc.text('R (\u03A9)',rOhmX,y+4,{align:'right'});
     doc.text('Ergebnis',rErgX,y+4,{align:'right'});
     doc.setTextColor(40,40,40);y+=7;
   }
@@ -499,15 +499,15 @@ window.generatePDF = function(){
 
       // Ohm-Wert: entweder real gemessener Wert, oder bei manuell geprüften/
       // bestandenen Geräten ohne einzeln geloggten Messwert der Grenzwert
-      // selbst als Nachweis ("<=0,3 Ohm") statt eines erfundenen Einzelwerts.
+      // selbst als Nachweis ("<=0,3 Ω") statt eines erfundenen Einzelwerts.
       var lim=getOhmLimit(), limDE=fmtOhmDE(lim);
       var ohmStr;
       if(d.ohm!==''){
-        ohmStr=fmtOhmDE(d.ohm)+' Ohm';   // <-- Düzeltme 2
+        ohmStr=fmtOhmDE(d.ohm)+' \u03A9';
         if(parseFloat(d.ohm)>=lim) doc.setTextColor(180,30,30);
         else doc.setTextColor(0,130,60);
       } else if(d.result==='ok'){
-        ohmStr='<='+limDE+' Ohm';        // <-- Düzeltme 3
+        ohmStr='<='+limDE+' \u03A9';
         doc.setTextColor(0,130,60);
       } else {
         ohmStr='—';
