@@ -104,7 +104,11 @@ var API_SECRET = 'pacdi-2026-guvenlik-anahtari-x7k2';
 
 function api(payload){
   payload.apiKey = API_SECRET;
-  return fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(payload) }).then(function(r){ return r.json(); });
+  return fetch(SCRIPT_URL, {
+    method:'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(function(r){ return r.json(); });
 }
 
 window.updateToplam = function(){
