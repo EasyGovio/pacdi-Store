@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAPP Aday Takip</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#04162E;color:#eaf2fb;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;min-height:100vh;padding:16px;}
+.app{max-width:640px;margin:0 auto;}
+h1{color:#F6B45F;font-size:1.15rem;margin-bottom:3px;}
+.sub{color:#7a9ab8;font-size:0.75rem;margin-bottom:18px;}
+.card{background:#0a1828;border:1px solid rgba(246,180,95,0.15);border-radius:12px;padding:16px;margin-bottom:14px;}
+h2{color:#F6B45F;font-size:0.95rem;margin-bottom:12px;}
+.field{margin-bottom:12px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+label{font-size:0.75rem;color:#7a9ab8;display:block;margin-bottom:4px;}
+input,select{width:100%;background:#04162E;border:1px solid rgba(246,180,95,0.25);color:#eaf2fb;padding:9px 10px;border-radius:8px;font-size:0.85rem;font-family:inherit;}
+.puan-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+.puan-grid label{font-size:0.62rem;}
+.puan-grid input{padding:7px 4px;text-align:center;font-size:0.8rem;}
+.toplam-display{margin-top:10px;padding:8px;background:rgba(246,180,95,0.08);border-radius:6px;font-size:0.8rem;text-align:center;color:#F6B45F;font-weight:700;}
+button{width:100%;background:#F6B45F;color:#04162E;border:none;padding:11px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:inherit;}
+button.outline{background:transparent;border:1px solid rgba(246,180,95,0.35);color:#F6B45F;margin-top:8px;}
+button:disabled{opacity:0.5;}
+.status{font-size:0.75rem;margin-top:8px;min-height:16px;}
+.status.ok{color:#34D399;}
+.status.err{color:#f87171;}
+
+.bewerber-card{background:#0a1828;border:1px solid rgba(246,180,95,0.15);border-radius:10px;padding:12px;margin-bottom:8px;}
+.bewerber-top{display:flex;justify-content:space-between;align-items:center;}
+.bewerber-name{font-weight:700;font-size:0.85rem;}
+.bewerber-meta{font-size:0.68rem;color:#7a9ab8;margin-top:2px;}
+.puan-badge{font-family:monospace;font-size:0.75rem;color:#F6B45F;}
+.entscheidung-row{display:flex;gap:6px;margin-top:8px;}
+.ent-btn{flex:1;padding:6px;border-radius:6px;font-size:0.68rem;border:1px solid rgba(246,180,95,0.25);background:transparent;color:#7a9ab8;cursor:pointer;}
+.ent-btn.gruen.active{background:rgba(52,211,153,0.15);border-color:#34D399;color:#34D399;}
+.ent-btn.gelb.active{background:rgba(251,191,36,0.15);border-color:#fbbf24;color:#fbbf24;}
+.ent-btn.rot.active{background:rgba(248,113,113,0.15);border-color:#f87171;color:#f87171;}
+.doc-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.doc-btn{font-size:0.65rem;padding:5px 10px;border-radius:12px;border:1px solid rgba(246,180,95,0.3);background:transparent;color:#F6B45F;cursor:pointer;width:auto;}
+.spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(4,22,46,0.3);border-top-color:#04162E;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:6px;vertical-align:-1px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>📋 BAPP Aday Takip</h1>
+  <div class="sub">Kayıt + puanlama + belge üretimi — sadece koordinatör kullanımı için.</div>
+
+  <div class="card">
+    <h2>➕ Yeni Aday Ekle</h2>
+    <div class="row2">
+      <div class="field"><label>Soyisim</label><input id="fName"></div>
+      <div class="field"><label>İsim</label><input id="fVorname"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Doğum Tarihi</label><input id="fGeburtsdatum" type="date"></div>
+      <div class="field"><label>Doğum Yeri</label><input id="fGeburtsort"></div>
+    </div>
+    <div class="field"><label>Adres</label><input id="fAdresse" placeholder="Straße, Hausnr."></div>
+    <div class="row2">
+      <div class="field"><label>PLZ / Ort</label><input id="fPlzOrt"></div>
+      <div class="field"><label>Handy</label><input id="fHandy"></div>
+    </div>
+    <div class="field"><label>E-Mail</label><input id="fEmail" type="email"></div>
+    <div class="row2">
+      <div class="field"><label>Schulabschluss</label><input id="fSchulabschluss"></div>
+      <div class="field"><label>Betrieb-Kod (varsa)</label><input id="fBetriebKod" placeholder="z.B. BT-01"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>1. Beruf</label><input id="fBeruf1"></div>
+      <div class="field"><label>2. Beruf</label><input id="fBeruf2"></div>
+    </div>
+
+    <label style="margin-top:6px;">Test Puanları</label>
+    <div class="puan-grid">
+      <div><label>Allg. (96)</label><input id="pAllg" type="number" min="0" max="96" value="0" oninput="updateToplam()"></div>
+      <div><label>Deutsch (45)</label><input id="pDeutsch" type="number" min="0" max="45" value="0" oninput="updateToplam()"></div>
+      <div><label>Logik (28)</label><input id="pLogik" type="number" min="0" max="28" value="0" oninput="updateToplam()"></div>
+      <div><label>Mathe (27)</label><input id="pMathe" type="number" min="0" max="27" value="0" oninput="updateToplam()"></div>
+      <div><label>Erinn. (9)</label><input id="pErinnerung" type="number" min="0" max="9" value="0" oninput="updateToplam()"></div>
+    </div>
+    <div class="toplam-display" id="toplamDisplay">Toplam: 0 / 205</div>
+
+    <button onclick="addBewerber()" id="addBtn" style="margin-top:12px;">✅ Aday Kaydet</button>
+    <div class="status" id="addStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>📇 Aday Listesi</h2>
+    <button class="outline" onclick="loadBewerber()">🔄 Listeyi Yenile</button>
+    <div id="bewerberList" style="margin-top:12px;"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var SCRIPT_URL = 'https://bapp.pacdi.store/api';
+var API_SECRET = 'pacdi-2026-guvenlik-anahtari-x7k2';
+
+function api(payload){
+  payload.apiKey = API_SECRET;
+  return fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(payload) }).then(function(r){ return r.json(); });
+}
+
+window.updateToplam = function(){
+  var toplam = (parseInt(document.getElementById('pAllg').value)||0) +
+               (parseInt(document.getElementById('pDeutsch').value)||0) +
+               (parseInt(document.getElementById('pLogik').value)||0) +
+               (parseInt(document.getElementById('pMathe').value)||0) +
+               (parseInt(document.getElementById('pErinnerung').value)||0);
+  document.getElementById('toplamDisplay').textContent = 'Toplam: ' + toplam + ' / 205';
+};
+
+window.addBewerber = function(){
+  var name = document.getElementById('fName').value.trim();
+  var vorname = document.getElementById('fVorname').value.trim();
+  var status = document.getElementById('addStatus');
+  var btn = document.getElementById('addBtn');
+
+  if (!name || !vorname) {
+    status.className = 'status err'; status.textContent = '❌ İsim ve soyisim gerekli.';
+    return;
+  }
+  if (SCRIPT_URL.indexOf('BURAYA_') === 0) {
+    status.className = 'status err'; status.textContent = '⚠️ SCRIPT_URL henüz ayarlanmadı.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Kaydediliyor...';
+
+  api({
+    action: 'addBewerber',
+    name: name, vorname: vorname,
+    geburtsdatum: document.getElementById('fGeburtsdatum').value,
+    geburtsort: document.getElementById('fGeburtsort').value.trim(),
+    adresse: document.getElementById('fAdresse').value.trim(),
+    plzOrt: document.getElementById('fPlzOrt').value.trim(),
+    handy: document.getElementById('fHandy').value.trim(),
+    email: document.getElementById('fEmail').value.trim(),
+    schulabschluss: document.getElementById('fSchulabschluss').value.trim(),
+    betriebKod: document.getElementById('fBetriebKod').value.trim(),
+    beruf1: document.getElementById('fBeruf1').value.trim(),
+    beruf2: document.getElementById('fBeruf2').value.trim(),
+    puanAllg: parseInt(document.getElementById('pAllg').value)||0,
+    puanDeutsch: parseInt(document.getElementById('pDeutsch').value)||0,
+    puanLogik: parseInt(document.getElementById('pLogik').value)||0,
+    puanMathe: parseInt(document.getElementById('pMathe').value)||0,
+    puanErinnerung: parseInt(document.getElementById('pErinnerung').value)||0
+  }).then(function(data){
+    btn.disabled = false;
+    btn.textContent = '✅ Aday Kaydet';
+    if (data.ok) {
+      status.className = 'status ok';
+      status.textContent = '✅ Kaydedildi (Nr. ' + data.nr + ').';
+      ['fName','fVorname','fGeburtsdatum','fGeburtsort','fAdresse','fPlzOrt','fHandy','fEmail',
+       'fSchulabschluss','fBetriebKod','fBeruf1','fBeruf2'].forEach(function(id){
+        document.getElementById(id).value = '';
+      });
+      ['pAllg','pDeutsch','pLogik','pMathe','pErinnerung'].forEach(function(id){
+        document.getElementById(id).value = 0;
+      });
+      updateToplam();
+      loadBewerber();
+    } else {
+      status.className = 'status err';
+      status.textContent = '❌ ' + (data.error || 'Bilinmeyen hata');
+    }
+  }).catch(function(err){
+    btn.disabled = false;
+    btn.textContent = '✅ Aday Kaydet';
+    status.className = 'status err';
+    status.textContent = '❌ Bağlantı hatası: ' + err;
+  });
+};
+
+var DOC_TYPES = [
+  { key: 'teilnahmeempfehlung', label: 'Teilnahmeempf.' },
+  { key: 'personalbogen', label: 'Personalbogen' },
+  { key: 'praktikumsvertrag', label: 'Praktikumsvertr.' },
+  { key: 'kooperationsvertrag', label: 'Kooperationsvertr.' },
+  { key: 'praktikumsbeurteilung', label: 'Beurteilung' }
+];
+
+window.loadBewerber = function(){
+  var list = document.getElementById('bewerberList');
+  list.innerHTML = '<div style="color:#7a9ab8;font-size:0.8rem;">Yükleniyor...</div>';
+
+  api({ action: 'listBewerber' }).then(function(data){
+    if (!data.ok) {
+      list.innerHTML = '<div style="color:#f87171;font-size:0.8rem;">❌ ' + (data.error||'Hata') + '</div>';
+      return;
+    }
+    if (!data.bewerber || !data.bewerber.length) {
+      list.innerHTML = '<div style="color:#4a6a88;font-size:0.8rem;">Henüz aday yok.</div>';
+      return;
+    }
+
+    var html = '';
+    data.bewerber.forEach(function(b){
+      var docBtns = DOC_TYPES.map(function(d){
+        return '<button class="doc-btn" onclick="generateDoc(' + b.nr + ',\'' + d.key + '\')">📄 ' + d.label + '</button>';
+      }).join('');
+
+      html += '<div class="bewerber-card">' +
+        '<div class="bewerber-top">' +
+          '<span class="bewerber-name">' + esc(b.vorname) + ' ' + esc(b.name) + '</span>' +
+          '<span class="puan-badge">' + b.puanToplam + '/205</span>' +
+        '</div>' +
+        '<div class="bewerber-meta">' + esc(b.beruf1 || '—') + ' · Nr. ' + b.nr + '</div>' +
+        '<div class="entscheidung-row">' +
+          '<button class="ent-btn gruen' + (b.entscheidung==='GRUEN'?' active':'') + '" onclick="setEntscheidung(' + b.nr + ',\'GRUEN\')">🟢 Einstellen</button>' +
+          '<button class="ent-btn gelb' + (b.entscheidung==='GELB'?' active':'') + '" onclick="setEntscheidung(' + b.nr + ',\'GELB\')">🟡 Gespräch</button>' +
+          '<button class="ent-btn rot' + (b.entscheidung==='ROT'?' active':'') + '" onclick="setEntscheidung(' + b.nr + ',\'ROT\')">🔴 Absage</button>' +
+        '</div>' +
+        '<div class="doc-row">' + docBtns + '</div>' +
+        '<div class="status" id="docStatus_' + b.nr + '"></div>' +
+      '</div>';
+    });
+    list.innerHTML = html;
+  });
+};
+
+window.setEntscheidung = function(nr, val){
+  api({ action: 'updateEntscheidung', nr: nr, entscheidung: val }).then(function(data){
+    if (data.ok) loadBewerber();
+  });
+};
+
+window.generateDoc = function(nr, templateKey){
+  var statusEl = document.getElementById('docStatus_' + nr);
+  statusEl.className = 'status'; statusEl.innerHTML = '<span class="spinner"></span>Üretiliyor...';
+
+  api({ action: 'generateDocument', nr: nr, templateKey: templateKey }).then(function(data){
+    if (data.ok) {
+      statusEl.className = 'status ok';
+      statusEl.innerHTML = '✅ Hazır: <a href="' + data.docUrl + '" target="_blank" style="color:#34D399;">Belgeyi Aç</a>';
+    } else {
+      statusEl.className = 'status err';
+      statusEl.textContent = '❌ ' + (data.error || 'Hata');
+    }
+  });
+};
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+loadBewerber();
+
+})();
+</script>
+</body>
+</html>
