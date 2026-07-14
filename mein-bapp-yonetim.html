@@ -15,6 +15,7 @@ h1{color:#F6B45F;font-size:1.15rem;margin-bottom:3px;}
 h2{color:#F6B45F;font-size:0.95rem;margin-bottom:12px;}
 .field{margin-bottom:12px;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
 label{font-size:0.75rem;color:#7a9ab8;display:block;margin-bottom:4px;}
 input,select{width:100%;background:#04162E;border:1px solid rgba(246,180,95,0.25);color:#eaf2fb;padding:9px 10px;border-radius:8px;font-size:0.85rem;font-family:inherit;}
 .puan-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
@@ -28,6 +29,13 @@ button:disabled{opacity:0.5;}
 .status.ok{color:#34D399;}
 .status.err{color:#f87171;}
 
+.betrieb-list{margin-top:10px;}
+.betrieb-item{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(246,180,95,0.08);font-size:0.75rem;}
+.betrieb-item:last-child{border-bottom:none;}
+.betrieb-kod{color:#F6B45F;font-family:monospace;margin-right:6px;}
+.betrieb-name{color:#eaf2fb;}
+.betrieb-meta{color:#7a9ab8;font-size:0.65rem;}
+
 .bewerber-card{background:#0a1828;border:1px solid rgba(246,180,95,0.15);border-radius:10px;padding:12px;margin-bottom:8px;}
 .bewerber-top{display:flex;justify-content:space-between;align-items:center;}
 .bewerber-name{font-weight:700;font-size:0.85rem;}
@@ -38,6 +46,9 @@ button:disabled{opacity:0.5;}
 .ent-btn.gruen.active{background:rgba(52,211,153,0.15);border-color:#34D399;color:#34D399;}
 .ent-btn.gelb.active{background:rgba(251,191,36,0.15);border-color:#fbbf24;color:#fbbf24;}
 .ent-btn.rot.active{background:rgba(248,113,113,0.15);border-color:#f87171;color:#f87171;}
+.tarih-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
+.tarih-row label{font-size:0.6rem;margin-bottom:2px;}
+.tarih-row input{padding:6px 8px;font-size:0.72rem;}
 .doc-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
 .doc-btn{font-size:0.65rem;padding:5px 10px;border-radius:12px;border:1px solid rgba(246,180,95,0.3);background:transparent;color:#F6B45F;cursor:pointer;width:auto;}
 .spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(4,22,46,0.3);border-top-color:#04162E;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:6px;vertical-align:-1px;}
@@ -48,6 +59,21 @@ button:disabled{opacity:0.5;}
 <div class="app">
   <h1>📋 BAPP Aday Takip</h1>
   <div class="sub">Kayıt + puanlama + belge üretimi — sadece koordinatör kullanımı için.</div>
+
+  <div class="card">
+    <h2>🏢 Betrieb (İşyeri) Yönetimi</h2>
+    <div class="field"><label>Betrieb-Kod</label><input id="btKod" placeholder="z.B. BT-01"></div>
+    <div class="field"><label>Firma Adı</label><input id="btName"></div>
+    <div class="field"><label>Adres</label><input id="btAdresse" placeholder="Straße, PLZ Ort"></div>
+    <div class="row2">
+      <div class="field"><label>Ansprechpartner*in</label><input id="btAnsprechpartner"></div>
+      <div class="field"><label>Telefon</label><input id="btTelefon"></div>
+    </div>
+    <button onclick="addBetrieb()" id="btAddBtn">✅ Betrieb Kaydet</button>
+    <div class="status" id="btStatus"></div>
+    <button class="outline" onclick="loadBetriebe()">🔄 Betrieb Listesini Yenile</button>
+    <div class="betrieb-list" id="betriebList"></div>
+  </div>
 
   <div class="card">
     <h2>➕ Yeni Aday Ekle</h2>
@@ -67,7 +93,10 @@ button:disabled{opacity:0.5;}
     <div class="field"><label>E-Mail</label><input id="fEmail" type="email"></div>
     <div class="row2">
       <div class="field"><label>Schulabschluss</label><input id="fSchulabschluss"></div>
-      <div class="field"><label>Betrieb-Kod (varsa)</label><input id="fBetriebKod" placeholder="z.B. BT-01"></div>
+      <div class="field">
+        <label>Betrieb</label>
+        <select id="fBetriebKod"><option value="">— Betrieb seçin (opsiyonel) —</option></select>
+      </div>
     </div>
     <div class="row2">
       <div class="field"><label>1. Beruf</label><input id="fBeruf1"></div>
@@ -101,15 +130,96 @@ button:disabled{opacity:0.5;}
 
 var SCRIPT_URL = 'https://bapp.pacdi.store/api';
 var API_SECRET = 'pacdi-2026-guvenlik-anahtari-x7k2';
+var betriebeCache = [];
 
 function api(payload){
   payload.apiKey = API_SECRET;
-  return fetch(SCRIPT_URL, {
-    method:'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  }).then(function(r){ return r.json(); });
+  return fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(payload) }).then(function(r){ return r.json(); });
 }
+
+/* ---------- BETRIEB ---------- */
+
+window.addBetrieb = function(){
+  var kod = document.getElementById('btKod').value.trim();
+  var name = document.getElementById('btName').value.trim();
+  var status = document.getElementById('btStatus');
+  var btn = document.getElementById('btAddBtn');
+
+  if (!kod || !name) {
+    status.className = 'status err'; status.textContent = '❌ Kod ve firma adı gerekli.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Kaydediliyor...';
+
+  api({
+    action: 'addBetrieb',
+    kod: kod,
+    name: name,
+    adresse: document.getElementById('btAdresse').value.trim(),
+    ansprechpartner: document.getElementById('btAnsprechpartner').value.trim(),
+    telefon: document.getElementById('btTelefon').value.trim()
+  }).then(function(data){
+    btn.disabled = false;
+    btn.textContent = '✅ Betrieb Kaydet';
+    if (data.ok) {
+      status.className = 'status ok';
+      status.textContent = '✅ Betrieb kaydedildi.';
+      ['btKod','btName','btAdresse','btAnsprechpartner','btTelefon'].forEach(function(id){
+        document.getElementById(id).value = '';
+      });
+      loadBetriebe();
+    } else {
+      status.className = 'status err';
+      status.textContent = '❌ ' + (data.error || 'Bilinmeyen hata');
+    }
+  }).catch(function(err){
+    btn.disabled = false;
+    btn.textContent = '✅ Betrieb Kaydet';
+    status.className = 'status err';
+    status.textContent = '❌ Bağlantı hatası: ' + err;
+  });
+};
+
+window.loadBetriebe = function(){
+  var list = document.getElementById('betriebList');
+  list.innerHTML = '<div style="color:#7a9ab8;font-size:0.75rem;">Yükleniyor...</div>';
+
+  api({ action: 'listBetriebe' }).then(function(data){
+    if (!data.ok) {
+      list.innerHTML = '<div style="color:#f87171;font-size:0.75rem;">❌ ' + (data.error||'Hata') + '</div>';
+      return;
+    }
+    betriebeCache = data.betriebe || [];
+
+    if (!betriebeCache.length) {
+      list.innerHTML = '<div style="color:#4a6a88;font-size:0.75rem;">Henüz Betrieb yok.</div>';
+    } else {
+      var html = '';
+      betriebeCache.forEach(function(bt){
+        html += '<div class="betrieb-item">' +
+          '<span><span class="betrieb-kod">' + esc(bt.kod) + '</span><span class="betrieb-name">' + esc(bt.name) + '</span></span>' +
+          '<span class="betrieb-meta">' + esc(bt.ansprechpartner||'') + '</span>' +
+        '</div>';
+      });
+      list.innerHTML = html;
+    }
+
+    var sel = document.getElementById('fBetriebKod');
+    var current = sel.value;
+    sel.innerHTML = '<option value="">— Betrieb seçin (opsiyonel) —</option>';
+    betriebeCache.forEach(function(bt){
+      var opt = document.createElement('option');
+      opt.value = bt.kod;
+      opt.textContent = bt.kod + ' — ' + bt.name;
+      sel.appendChild(opt);
+    });
+    sel.value = current;
+  });
+};
+
+/* ---------- BEWERBER ---------- */
 
 window.updateToplam = function(){
   var toplam = (parseInt(document.getElementById('pAllg').value)||0) +
@@ -163,9 +273,10 @@ window.addBewerber = function(){
       status.className = 'status ok';
       status.textContent = '✅ Kaydedildi (Nr. ' + data.nr + ').';
       ['fName','fVorname','fGeburtsdatum','fGeburtsort','fAdresse','fPlzOrt','fHandy','fEmail',
-       'fSchulabschluss','fBetriebKod','fBeruf1','fBeruf2'].forEach(function(id){
+       'fSchulabschluss','fBeruf1','fBeruf2'].forEach(function(id){
         document.getElementById(id).value = '';
       });
+      document.getElementById('fBetriebKod').value = '';
       ['pAllg','pDeutsch','pLogik','pMathe','pErinnerung'].forEach(function(id){
         document.getElementById(id).value = 0;
       });
@@ -216,11 +327,15 @@ window.loadBewerber = function(){
           '<span class="bewerber-name">' + esc(b.vorname) + ' ' + esc(b.name) + '</span>' +
           '<span class="puan-badge">' + b.puanToplam + '/205</span>' +
         '</div>' +
-        '<div class="bewerber-meta">' + esc(b.beruf1 || '—') + ' · Nr. ' + b.nr + '</div>' +
+        '<div class="bewerber-meta">' + esc(b.beruf1 || '—') + ' · Nr. ' + b.nr + (b.betriebKod ? ' · Betrieb: ' + esc(b.betriebKod) : '') + '</div>' +
         '<div class="entscheidung-row">' +
           '<button class="ent-btn gruen' + (b.entscheidung==='GRUEN'?' active':'') + '" onclick="setEntscheidung(' + b.nr + ',\'GRUEN\')">🟢 Einstellen</button>' +
           '<button class="ent-btn gelb' + (b.entscheidung==='GELB'?' active':'') + '" onclick="setEntscheidung(' + b.nr + ',\'GELB\')">🟡 Gespräch</button>' +
           '<button class="ent-btn rot' + (b.entscheidung==='ROT'?' active':'') + '" onclick="setEntscheidung(' + b.nr + ',\'ROT\')">🔴 Absage</button>' +
+        '</div>' +
+        '<div class="tarih-row">' +
+          '<div><label>Beginn</label><input type="date" id="beginn_' + b.nr + '"></div>' +
+          '<div><label>Ende</label><input type="date" id="ende_' + b.nr + '"></div>' +
         '</div>' +
         '<div class="doc-row">' + docBtns + '</div>' +
         '<div class="status" id="docStatus_' + b.nr + '"></div>' +
@@ -236,11 +351,31 @@ window.setEntscheidung = function(nr, val){
   });
 };
 
+function fmtDate(iso){
+  if (!iso) return '';
+  var p = iso.split('-');
+  if (p.length !== 3) return iso;
+  return p[2] + '.' + p[1] + '.' + p[0];
+}
+
 window.generateDoc = function(nr, templateKey){
   var statusEl = document.getElementById('docStatus_' + nr);
   statusEl.className = 'status'; statusEl.innerHTML = '<span class="spinner"></span>Üretiliyor...';
 
-  api({ action: 'generateDocument', nr: nr, templateKey: templateKey }).then(function(data){
+  var beginnEl = document.getElementById('beginn_' + nr);
+  var endeEl = document.getElementById('ende_' + nr);
+  var beginn = beginnEl ? fmtDate(beginnEl.value) : '';
+  var ende = endeEl ? fmtDate(endeEl.value) : '';
+  var zeitraum = (beginn && ende) ? (beginn + ' - ' + ende) : '';
+
+  api({
+    action: 'generateDocument',
+    nr: nr,
+    templateKey: templateKey,
+    beginn_datum: beginn,
+    ende_datum: ende,
+    teilnahme_zeitraum: zeitraum
+  }).then(function(data){
     if (data.ok) {
       statusEl.className = 'status ok';
       statusEl.innerHTML = '✅ Hazır: <a href="' + data.docUrl + '" target="_blank" style="color:#34D399;">Belgeyi Aç</a>';
@@ -253,6 +388,7 @@ window.generateDoc = function(nr, templateKey){
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+loadBetriebe();
 loadBewerber();
 
 })();
