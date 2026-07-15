@@ -527,6 +527,7 @@
           <option value="wifi">📶 WiFi Ağı</option>
           <option value="event">📅 Etkinlik (Takvim)</option>
           <option value="social">📱 Sosyal Medya</option>
+          <option value="personal_msg">📝 Kişisel Mesaj / Beyan</option>
         </select>
       </div>
 
@@ -750,7 +751,14 @@ var translations = {
     purpose_business: '🏪 İşletme',
     purpose_event: '📅 Etkinlik',
     purpose_personal: '👤 Kişisel',
-    purpose_pruef: '⚡ Prüfprotokoll'
+    purpose_pruef: '⚡ Prüfprotokoll',
+    msg_no_organ: 'Organlarımı bağışlamak istemiyorum',
+    msg_yes_organ: 'Organ bağışçısıyım',
+    msg_custom_option: 'Kendi özel mesajım',
+    msg_custom_placeholder: 'Mesajınızı yazın (ör. acil durum bilgisi, ilaç/alerji notu, kişisel beyan)...',
+    hint_personal_msg: 'Bu QR taratıldığında mesajınız doğrudan metin olarak görünür. Cüzdanınıza, telefon kılıfınıza veya bilekliğe yapıştırabilirsiniz.',
+    msg_no_organ_full: 'Organlarımı bağışlamak istemiyorum.',
+    msg_yes_organ_full: 'Organ bağışçısıyım.'
   },
   de: {
     title: '🔳 QR-Code-Generator',
@@ -816,7 +824,14 @@ var translations = {
     purpose_business: '🏪 Geschäft',
     purpose_event: '📅 Veranstaltung',
     purpose_personal: '👤 Persönlich',
-    purpose_pruef: '⚡ Prüfprotokoll'
+    purpose_pruef: '⚡ Prüfprotokoll',
+    msg_no_organ: 'Ich möchte keine Organe spenden',
+    msg_yes_organ: 'Ich bin Organspender:in',
+    msg_custom_option: 'Eigene individuelle Nachricht',
+    msg_custom_placeholder: 'Schreiben Sie Ihre Nachricht (z. B. Notfallinfo, Medikamenten-/Allergiehinweis, persönliche Erklärung)...',
+    hint_personal_msg: 'Beim Scannen dieses QR-Codes wird Ihre Nachricht direkt als Text angezeigt. Zum Aufkleben auf Geldbörse, Handyhülle oder Armband geeignet.',
+    msg_no_organ_full: 'Ich möchte keine Organe spenden.',
+    msg_yes_organ_full: 'Ich bin Organspender:in.'
   },
   en: {
     title: '🔳 QR Code Generator',
@@ -883,7 +898,14 @@ var translations = {
     purpose_business: '🏪 Business',
     purpose_event: '📅 Event',
     purpose_personal: '👤 Personal',
-    purpose_pruef: '⚡ Inspection'
+    purpose_pruef: '⚡ Inspection',
+    msg_no_organ: 'I do not want to donate my organs',
+    msg_yes_organ: 'I am an organ donor',
+    msg_custom_option: 'My own custom message',
+    msg_custom_placeholder: 'Write your message (e.g. emergency info, medication/allergy note, personal statement)...',
+    hint_personal_msg: 'When this QR is scanned, your message appears directly as text. Good for a wallet, phone case, or wristband.',
+    msg_no_organ_full: 'I do not want to donate my organs.',
+    msg_yes_organ_full: 'I am an organ donor.'
   }
 };
 
@@ -1024,8 +1046,24 @@ function updateTemplateFields() {
       '<input type="text" id="socialTwitter" class="qr-input" placeholder="' + t.social_twitter + '">' +
       '<input type="text" id="socialLinkedin" class="qr-input" placeholder="' + t.social_linkedin + '">' +
       '<input type="text" id="socialYoutube" class="qr-input" placeholder="' + t.social_youtube + '">';
+  } else if (tpl === 'personal_msg') {
+    html = '<select id="msgPreset" class="qr-select">' +
+      '<option value="no_organ">🚫 ' + t.msg_no_organ + '</option>' +
+      '<option value="yes_organ">✅ ' + t.msg_yes_organ + '</option>' +
+      '<option value="custom">✏️ ' + t.msg_custom_option + '</option>' +
+      '</select>' +
+      '<textarea id="customMsgInput" class="qr-input" rows="4" style="display:none;resize:vertical;font-family:inherit;" placeholder="' + t.msg_custom_placeholder + '"></textarea>' +
+      '<div style="font-size:0.72rem;color:#7a9ab8;margin-top:8px;line-height:1.5;">' + t.hint_personal_msg + '</div>';
   }
   fields.innerHTML = html;
+
+  if (tpl === 'personal_msg') {
+    var presetEl = document.getElementById('msgPreset');
+    var customEl = document.getElementById('customMsgInput');
+    presetEl.addEventListener('change', function() {
+      customEl.style.display = (presetEl.value === 'custom') ? 'block' : 'none';
+    });
+  }
 
   // Prüf helper alanları
   var prufInputs = document.querySelectorAll('#pruf-helper .qr-input');
@@ -1135,6 +1173,13 @@ function getContent() {
     if (li) parts.push('LinkedIn: ' + li);
     if (yt) parts.push('YouTube: ' + yt);
     return parts.join('\n');
+  }
+  if (tpl === 'personal_msg') {
+    var tMsg = translations[currentLang] || translations.tr;
+    var preset = ($('msgPreset') && $('msgPreset').value) || 'custom';
+    if (preset === 'no_organ') return tMsg.msg_no_organ_full;
+    if (preset === 'yes_organ') return tMsg.msg_yes_organ_full;
+    return ($('customMsgInput') && $('customMsgInput').value.trim()) || '';
   }
   return ($('urlInput') && $('urlInput').value.trim()) || 'https://pacdi.store';
 }
