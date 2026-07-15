@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BAPP Aday Takip</title>
+<title>BAPP Bewerberverwaltung</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#04162E;color:#eaf2fb;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;min-height:100vh;padding:16px;}
@@ -57,35 +57,35 @@ button:disabled{opacity:0.5;}
 </head>
 <body>
 <div class="app">
-  <h1>📋 BAPP Aday Takip</h1>
-  <div class="sub">Kayıt + puanlama + belge üretimi — sadece koordinatör kullanımı için.</div>
+  <h1>📋 BAPP Bewerberverwaltung</h1>
+  <div class="sub">Erfassung + Bewertung + Dokumentenerstellung — nur für Koordinator*innen.</div>
 
   <div class="card">
-    <h2>🏢 Betrieb (İşyeri) Yönetimi</h2>
-    <div class="field"><label>Betrieb-Kod</label><input id="btKod" placeholder="z.B. BT-01"></div>
-    <div class="field"><label>Firma Adı</label><input id="btName"></div>
-    <div class="field"><label>Adres</label><input id="btAdresse" placeholder="Straße, PLZ Ort"></div>
+    <h2>🏢 Betriebsverwaltung</h2>
+    <div class="field"><label>Betrieb-Kode</label><input id="btKod" placeholder="z.B. BT-01"></div>
+    <div class="field"><label>Firmenname</label><input id="btName"></div>
+    <div class="field"><label>Adresse</label><input id="btAdresse" placeholder="Straße, PLZ Ort"></div>
     <div class="row2">
       <div class="field"><label>Ansprechpartner*in</label><input id="btAnsprechpartner"></div>
       <div class="field"><label>Telefon</label><input id="btTelefon"></div>
     </div>
-    <button onclick="addBetrieb()" id="btAddBtn">✅ Betrieb Kaydet</button>
+    <button onclick="addBetrieb()" id="btAddBtn">✅ Betrieb speichern</button>
     <div class="status" id="btStatus"></div>
-    <button class="outline" onclick="loadBetriebe()">🔄 Betrieb Listesini Yenile</button>
+    <button class="outline" onclick="loadBetriebe()">🔄 Betriebsliste aktualisieren</button>
     <div class="betrieb-list" id="betriebList"></div>
   </div>
 
   <div class="card">
-    <h2>➕ Yeni Aday Ekle</h2>
+    <h2>➕ Neue/n Bewerber/in hinzufügen</h2>
     <div class="row2">
-      <div class="field"><label>Soyisim</label><input id="fName"></div>
-      <div class="field"><label>İsim</label><input id="fVorname"></div>
+      <div class="field"><label>Nachname</label><input id="fName"></div>
+      <div class="field"><label>Vorname</label><input id="fVorname"></div>
     </div>
     <div class="row2">
-      <div class="field"><label>Doğum Tarihi</label><input id="fGeburtsdatum" type="date"></div>
-      <div class="field"><label>Doğum Yeri</label><input id="fGeburtsort"></div>
+      <div class="field"><label>Geburtsdatum</label><input id="fGeburtsdatum" type="date"></div>
+      <div class="field"><label>Geburtsort</label><input id="fGeburtsort"></div>
     </div>
-    <div class="field"><label>Adres</label><input id="fAdresse" placeholder="Straße, Hausnr."></div>
+    <div class="field"><label>Adresse</label><input id="fAdresse" placeholder="Straße, Hausnr."></div>
     <div class="row2">
       <div class="field"><label>PLZ / Ort</label><input id="fPlzOrt"></div>
       <div class="field"><label>Handy</label><input id="fHandy"></div>
@@ -95,7 +95,7 @@ button:disabled{opacity:0.5;}
       <div class="field"><label>Schulabschluss</label><input id="fSchulabschluss"></div>
       <div class="field">
         <label>Betrieb</label>
-        <select id="fBetriebKod"><option value="">— Betrieb seçin (opsiyonel) —</option></select>
+        <select id="fBetriebKod"><option value="">— Betrieb auswählen (optional) —</option></select>
       </div>
     </div>
     <div class="row2">
@@ -103,7 +103,7 @@ button:disabled{opacity:0.5;}
       <div class="field"><label>2. Beruf</label><input id="fBeruf2"></div>
     </div>
 
-    <label style="margin-top:6px;">Test Puanları</label>
+    <label style="margin-top:6px;">Testergebnisse</label>
     <div class="puan-grid">
       <div><label>Allg. (96)</label><input id="pAllg" type="number" min="0" max="96" value="0" oninput="updateToplam()"></div>
       <div><label>Deutsch (45)</label><input id="pDeutsch" type="number" min="0" max="45" value="0" oninput="updateToplam()"></div>
@@ -111,15 +111,15 @@ button:disabled{opacity:0.5;}
       <div><label>Mathe (27)</label><input id="pMathe" type="number" min="0" max="27" value="0" oninput="updateToplam()"></div>
       <div><label>Erinn. (9)</label><input id="pErinnerung" type="number" min="0" max="9" value="0" oninput="updateToplam()"></div>
     </div>
-    <div class="toplam-display" id="toplamDisplay">Toplam: 0 / 205</div>
+    <div class="toplam-display" id="toplamDisplay">Gesamt: 0 / 205</div>
 
-    <button onclick="addBewerber()" id="addBtn" style="margin-top:12px;">✅ Aday Kaydet</button>
+    <button onclick="addBewerber()" id="addBtn" style="margin-top:12px;">✅ Bewerber/in speichern</button>
     <div class="status" id="addStatus"></div>
   </div>
 
   <div class="card">
-    <h2>📇 Aday Listesi</h2>
-    <button class="outline" onclick="loadBewerber()">🔄 Listeyi Yenile</button>
+    <h2>📇 Bewerberliste</h2>
+    <button class="outline" onclick="loadBewerber()">🔄 Liste aktualisieren</button>
     <div id="bewerberList" style="margin-top:12px;"></div>
   </div>
 </div>
@@ -141,7 +141,6 @@ function api(payload){
   }).then(function(r){ return r.json(); });
 }
 
-
 /* ---------- BETRIEB ---------- */
 
 window.addBetrieb = function(){
@@ -151,12 +150,12 @@ window.addBetrieb = function(){
   var btn = document.getElementById('btAddBtn');
 
   if (!kod || !name) {
-    status.className = 'status err'; status.textContent = '❌ Kod ve firma adı gerekli.';
+    status.className = 'status err'; status.textContent = '❌ Kode und Firmenname erforderlich.';
     return;
   }
 
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Kaydediliyor...';
+  btn.innerHTML = '<span class="spinner"></span>Wird gespeichert...';
 
   api({
     action: 'addBetrieb',
@@ -167,39 +166,39 @@ window.addBetrieb = function(){
     telefon: document.getElementById('btTelefon').value.trim()
   }).then(function(data){
     btn.disabled = false;
-    btn.textContent = '✅ Betrieb Kaydet';
+    btn.textContent = '✅ Betrieb speichern';
     if (data.ok) {
       status.className = 'status ok';
-      status.textContent = '✅ Betrieb kaydedildi.';
+      status.textContent = '✅ Betrieb gespeichert.';
       ['btKod','btName','btAdresse','btAnsprechpartner','btTelefon'].forEach(function(id){
         document.getElementById(id).value = '';
       });
       loadBetriebe();
     } else {
       status.className = 'status err';
-      status.textContent = '❌ ' + (data.error || 'Bilinmeyen hata');
+      status.textContent = '❌ ' + (data.error || 'Unbekannter Fehler');
     }
   }).catch(function(err){
     btn.disabled = false;
-    btn.textContent = '✅ Betrieb Kaydet';
+    btn.textContent = '✅ Betrieb speichern';
     status.className = 'status err';
-    status.textContent = '❌ Bağlantı hatası: ' + err;
+    status.textContent = '❌ Verbindungsfehler: ' + err;
   });
 };
 
 window.loadBetriebe = function(){
   var list = document.getElementById('betriebList');
-  list.innerHTML = '<div style="color:#7a9ab8;font-size:0.75rem;">Yükleniyor...</div>';
+  list.innerHTML = '<div style="color:#7a9ab8;font-size:0.75rem;">Wird geladen...</div>';
 
   api({ action: 'listBetriebe' }).then(function(data){
     if (!data.ok) {
-      list.innerHTML = '<div style="color:#f87171;font-size:0.75rem;">❌ ' + (data.error||'Hata') + '</div>';
+      list.innerHTML = '<div style="color:#f87171;font-size:0.75rem;">❌ ' + (data.error||'Fehler') + '</div>';
       return;
     }
     betriebeCache = data.betriebe || [];
 
     if (!betriebeCache.length) {
-      list.innerHTML = '<div style="color:#4a6a88;font-size:0.75rem;">Henüz Betrieb yok.</div>';
+      list.innerHTML = '<div style="color:#4a6a88;font-size:0.75rem;">Noch kein Betrieb vorhanden.</div>';
     } else {
       var html = '';
       betriebeCache.forEach(function(bt){
@@ -213,7 +212,7 @@ window.loadBetriebe = function(){
 
     var sel = document.getElementById('fBetriebKod');
     var current = sel.value;
-    sel.innerHTML = '<option value="">— Betrieb seçin (opsiyonel) —</option>';
+    sel.innerHTML = '<option value="">— Betrieb auswählen (optional) —</option>';
     betriebeCache.forEach(function(bt){
       var opt = document.createElement('option');
       opt.value = bt.kod;
@@ -232,7 +231,7 @@ window.updateToplam = function(){
                (parseInt(document.getElementById('pLogik').value)||0) +
                (parseInt(document.getElementById('pMathe').value)||0) +
                (parseInt(document.getElementById('pErinnerung').value)||0);
-  document.getElementById('toplamDisplay').textContent = 'Toplam: ' + toplam + ' / 205';
+  document.getElementById('toplamDisplay').textContent = 'Gesamt: ' + toplam + ' / 205';
 };
 
 window.addBewerber = function(){
@@ -242,16 +241,16 @@ window.addBewerber = function(){
   var btn = document.getElementById('addBtn');
 
   if (!name || !vorname) {
-    status.className = 'status err'; status.textContent = '❌ İsim ve soyisim gerekli.';
+    status.className = 'status err'; status.textContent = '❌ Vor- und Nachname erforderlich.';
     return;
   }
   if (SCRIPT_URL.indexOf('BURAYA_') === 0) {
-    status.className = 'status err'; status.textContent = '⚠️ SCRIPT_URL henüz ayarlanmadı.';
+    status.className = 'status err'; status.textContent = '⚠️ SCRIPT_URL ist noch nicht konfiguriert.';
     return;
   }
 
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Kaydediliyor...';
+  btn.innerHTML = '<span class="spinner"></span>Wird gespeichert...';
 
   api({
     action: 'addBewerber',
@@ -273,10 +272,10 @@ window.addBewerber = function(){
     puanErinnerung: parseInt(document.getElementById('pErinnerung').value)||0
   }).then(function(data){
     btn.disabled = false;
-    btn.textContent = '✅ Aday Kaydet';
+    btn.textContent = '✅ Bewerber/in speichern';
     if (data.ok) {
       status.className = 'status ok';
-      status.textContent = '✅ Kaydedildi (Nr. ' + data.nr + ').';
+      status.textContent = '✅ Gespeichert (Nr. ' + data.nr + ').';
       ['fName','fVorname','fGeburtsdatum','fGeburtsort','fAdresse','fPlzOrt','fHandy','fEmail',
        'fSchulabschluss','fBeruf1','fBeruf2'].forEach(function(id){
         document.getElementById(id).value = '';
@@ -289,13 +288,13 @@ window.addBewerber = function(){
       loadBewerber();
     } else {
       status.className = 'status err';
-      status.textContent = '❌ ' + (data.error || 'Bilinmeyen hata');
+      status.textContent = '❌ ' + (data.error || 'Unbekannter Fehler');
     }
   }).catch(function(err){
     btn.disabled = false;
-    btn.textContent = '✅ Aday Kaydet';
+    btn.textContent = '✅ Bewerber/in speichern';
     status.className = 'status err';
-    status.textContent = '❌ Bağlantı hatası: ' + err;
+    status.textContent = '❌ Verbindungsfehler: ' + err;
   });
 };
 
@@ -309,15 +308,15 @@ var DOC_TYPES = [
 
 window.loadBewerber = function(){
   var list = document.getElementById('bewerberList');
-  list.innerHTML = '<div style="color:#7a9ab8;font-size:0.8rem;">Yükleniyor...</div>';
+  list.innerHTML = '<div style="color:#7a9ab8;font-size:0.8rem;">Wird geladen...</div>';
 
   api({ action: 'listBewerber' }).then(function(data){
     if (!data.ok) {
-      list.innerHTML = '<div style="color:#f87171;font-size:0.8rem;">❌ ' + (data.error||'Hata') + '</div>';
+      list.innerHTML = '<div style="color:#f87171;font-size:0.8rem;">❌ ' + (data.error||'Fehler') + '</div>';
       return;
     }
     if (!data.bewerber || !data.bewerber.length) {
-      list.innerHTML = '<div style="color:#4a6a88;font-size:0.8rem;">Henüz aday yok.</div>';
+      list.innerHTML = '<div style="color:#4a6a88;font-size:0.8rem;">Noch keine Bewerber vorhanden.</div>';
       return;
     }
 
@@ -365,7 +364,7 @@ function fmtDate(iso){
 
 window.generateDoc = function(nr, templateKey){
   var statusEl = document.getElementById('docStatus_' + nr);
-  statusEl.className = 'status'; statusEl.innerHTML = '<span class="spinner"></span>Üretiliyor...';
+  statusEl.className = 'status'; statusEl.innerHTML = '<span class="spinner"></span>Wird erstellt...';
 
   var beginnEl = document.getElementById('beginn_' + nr);
   var endeEl = document.getElementById('ende_' + nr);
@@ -383,10 +382,10 @@ window.generateDoc = function(nr, templateKey){
   }).then(function(data){
     if (data.ok) {
       statusEl.className = 'status ok';
-      statusEl.innerHTML = '✅ Hazır: <a href="' + data.docUrl + '" target="_blank" style="color:#34D399;">Belgeyi Aç</a>';
+      statusEl.innerHTML = '✅ Fertig: <a href="' + data.docUrl + '" target="_blank" style="color:#34D399;">Dokument öffnen</a>';
     } else {
       statusEl.className = 'status err';
-      statusEl.textContent = '❌ ' + (data.error || 'Hata');
+      statusEl.textContent = '❌ ' + (data.error || 'Fehler');
     }
   });
 };
