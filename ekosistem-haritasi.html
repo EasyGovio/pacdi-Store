@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PACDI Ekosistem Haritası</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#04162E;
+    --navy2:#0A1828;
+    --navy3:#0F2136;
+    --gold:#F6B45F;
+    --light:#EAF2FB;
+    --muted:#7A9AB8;
+    --line-edu:#F6B45F;
+    --line-health:#7ED9A8;
+    --line-admin:#6FA8DC;
+    --line-community:#C99BDB;
+    --line-infra:#EAF2FB;
+    --border:rgba(246,180,95,0.15);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--navy);
+    color:var(--light);
+    font-family:'Inter',-apple-system,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--gold);color:var(--navy);}
+
+  /* ---------- Layout shell ---------- */
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px;}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(4,22,46,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .header-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 24px;max-width:920px;margin:0 auto;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{width:26px;height:26px;flex-shrink:0;}
+  .brand-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:0.02em;color:var(--gold);}
+  .lang-switch{display:flex;gap:4px;background:var(--navy2);border:1px solid var(--border);border-radius:999px;padding:3px;}
+  .lang-btn{
+    font-family:'IBM Plex Mono',monospace;font-size:0.72rem;font-weight:600;letter-spacing:0.03em;
+    padding:6px 12px;border-radius:999px;border:none;background:transparent;color:var(--muted);
+    cursor:pointer;transition:all .2s ease;
+  }
+  .lang-btn.active{background:var(--gold);color:var(--navy);}
+  .lang-btn:not(.active):hover{color:var(--light);}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:72px 0 56px;position:relative;overflow:hidden;}
+  .compass{
+    position:absolute;top:-60px;right:-60px;width:280px;height:280px;opacity:0.08;
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:'';width:24px;height:1px;background:var(--gold);}
+  h1{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(2.1rem,5vw,3.1rem);
+    line-height:1.08;letter-spacing:-0.01em;margin-bottom:20px;max-width:11ch;
+  }
+  .hero-sub{font-size:1.05rem;color:var(--muted);max-width:52ch;margin-bottom:8px;}
+  .hero-meta{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--muted);margin-top:28px;display:flex;gap:24px;flex-wrap:wrap;}
+  .hero-meta b{color:var(--light);font-weight:600;}
+
+  /* ---------- Legend ---------- */
+  .legend{
+    display:flex;flex-wrap:wrap;gap:10px;margin-top:32px;
+  }
+  .legend-item{
+    display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:0.7rem;
+    color:var(--muted);background:var(--navy2);border:1px solid var(--border);border-radius:999px;padding:6px 12px 6px 8px;
+  }
+  .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+  /* ---------- Lines (route sections) ---------- */
+  .line-section{padding:44px 0 12px;position:relative;}
+  .line-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;}
+  .line-num{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--line-color,var(--gold));font-weight:600;}
+  .line-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.35rem;letter-spacing:-0.01em;}
+  .line-desc{color:var(--muted);font-size:0.9rem;margin:6px 0 30px;max-width:60ch;}
+
+  .stations{position:relative;padding-left:28px;}
+  .stations::before{
+    content:'';position:absolute;left:6px;top:8px;bottom:8px;width:2px;
+    background:linear-gradient(to bottom, var(--line-color,var(--gold)) 0%, var(--line-color,var(--gold)) 100%);
+    opacity:0.35;
+  }
+  .station{position:relative;padding-bottom:28px;}
+  .station:last-child{padding-bottom:4px;}
+  .station::before{
+    content:'';position:absolute;left:-28px;top:6px;width:12px;height:12px;border-radius:50%;
+    background:var(--navy);border:2px solid var(--line-color,var(--gold));
+  }
+  .station.live::before{background:var(--line-color,var(--gold));}
+  .station-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:5px;}
+  .station-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.02rem;}
+  .station-link{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--line-color,var(--gold));text-decoration:none;opacity:0.85;}
+  .station-link:hover{opacity:1;text-decoration:underline;}
+  .badge{
+    font-family:'IBM Plex Mono',monospace;font-size:0.62rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;
+    padding:2px 8px;border-radius:999px;border:1px solid currentColor;
+  }
+  .badge.live{color:#7ED9A8;}
+  .badge.planned{color:var(--muted);}
+  .station-desc{color:var(--muted);font-size:0.88rem;max-width:58ch;}
+
+  /* ---------- Footer ---------- */
+  footer{
+    margin-top:60px;padding:40px 0 60px;border-top:1px solid var(--border);
+  }
+  .footer-text{color:var(--muted);font-size:0.82rem;max-width:56ch;}
+  .footer-mono{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--muted);margin-top:14px;opacity:0.7;}
+
+  @media (max-width:600px){
+    .hero{padding:52px 0 40px;}
+    .compass{display:none;}
+    .header-inner{padding:14px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="14.5" stroke="#F6B45F" stroke-width="1.4"/>
+        <path d="M16 6 L19 14 L16 26 L13 14 Z" fill="#F6B45F"/>
+      </svg>
+      <span class="brand-name">PACDI</span>
+    </div>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button class="lang-btn active" data-lang="tr">TR</button>
+      <button class="lang-btn" data-lang="de">DE</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <svg class="compass" viewBox="0 0 200 200" fill="none">
+      <circle cx="100" cy="100" r="98" stroke="#F6B45F" stroke-width="1"/>
+      <circle cx="100" cy="100" r="70" stroke="#F6B45F" stroke-width="1"/>
+      <path d="M100 10 L112 100 L100 190 L88 100 Z" fill="#F6B45F"/>
+      <path d="M10 100 L100 88 L190 100 L100 112 Z" fill="#F6B45F" opacity="0.5"/>
+    </svg>
+    <div class="eyebrow" data-i18n="eyebrow">Ekosistem Haritası</div>
+    <h1 data-i18n="h1">Rotaları önceden çizilmiş bir ekosistem</h1>
+    <p class="hero-sub" data-i18n="sub">Almanya'da yaşayan göçmenler, aileler ve bakım verenler için inşa edilen dijital pusulalar — canlı ve geliştirme aşamasındaki tüm araçlar tek yerde.</p>
+    <div class="hero-meta">
+      <span><b id="countLive">0</b> <span data-i18n="metaLive">canlı</span></span>
+      <span><b id="countPlanned">0</b> <span data-i18n="metaPlanned">planlamada</span></span>
+      <span><b id="countLines">5</b> <span data-i18n="metaLines">hat</span></span>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#F6B45F"></span><span data-i18n="legEdu">Eğitim & Kariyer</span></div>
+      <div class="legend-item"><span class="legend-dot" style="background:#7ED9A8"></span><span data-i18n="legHealth">Sağlık & Bakım</span></div>
+      <div class="legend-item"><span class="legend-dot" style="background:#6FA8DC"></span><span data-i18n="legAdmin">İdari & Hukuki</span></div>
+      <div class="legend-item"><span class="legend-dot" style="background:#C99BDB"></span><span data-i18n="legCommunity">Topluluk</span></div>
+      <div class="legend-item"><span class="legend-dot" style="background:#EAF2FB"></span><span data-i18n="legInfra">Altyapı & Marka</span></div>
+    </div>
+  </section>
+
+  <div id="lines"></div>
+
+  <footer>
+    <p class="footer-text" data-i18n="footer">Bu sayfa PACDI Global / AskMeAI Teknoloji ekosisteminin güncel bir görünümüdür. Durumlar zaman içinde değişebilir.</p>
+    <p class="footer-mono">pacdi.store · askmeai.io</p>
+  </footer>
+
+</main>
+
+<script>
+const DATA = {
+  lines: [
+    {
+      id: 1, color: "var(--line-edu)",
+      title: { tr: "Eğitim & Kariyer", de: "Ausbildung & Karriere", en: "Education & Career" },
+      desc: {
+        tr: "Meslek seçimi, okul sistemi ve iş dünyasına yönelik yönlendirme araçları.",
+        de: "Orientierungstools für Berufswahl, Schulsystem und Arbeitswelt.",
+        en: "Wayfinding tools for career choice, the school system, and the world of work."
+      },
+      stations: [
+        { name:"NavigoPro", url:"navigopro.de", status:"live",
+          d:{tr:"Kariyer değerlendirme ve yönlendirme aracı; ilgi ve yetkinlikleri meslek yollarıyla eşleştirir.",
+             de:"Karriereorientierungstool, das Interessen und Fähigkeiten mit passenden Ausbildungswegen verknüpft.",
+             en:"Career orientation tool matching interests and skills to suitable training paths."}},
+        { name:"SchulRoute", url:"schulroute.de", status:"live",
+          d:{tr:"Almanya'daki okul sistemini ve geçiş noktalarını anlaşılır şekilde haritalayan rehber.",
+             de:"Wegweiser durch das deutsche Schulsystem und seine Übergänge, verständlich erklärt.",
+             en:"Guide mapping the German school system and its transition points clearly."}},
+        { name:"KiezFlow", url:"kiezflow.de", status:"live",
+          d:{tr:"Yaşanılan mahalledeki (Kiez) yerel fırsat ve hizmetleri gösteren yönlendirme aracı.",
+             de:"Orientierungstool für lokale Angebote und Chancen direkt im eigenen Kiez.",
+             en:"Wayfinding tool surfacing local opportunities and services within your neighborhood."}},
+        { name:"CogniRoute", url:"cogniroute.de", status:"live",
+          d:{tr:"Bilişsel ve mesleki güçlü yanları belirleyip uygun eğitim rotasına yönlendiren test aracı.",
+             de:"Testtool zur Stärkenanalyse mit Empfehlung passender Bildungs- und Berufsrouten.",
+             en:"Strengths-assessment tool recommending suitable education and career routes."}},
+        { name:"CareerMap", url:"careermap.pro", status:"planned",
+          d:{tr:"Yapay zekâ destekli iş koçluğu; CV'den mülakata uçtan uca kariyer rehberliği.",
+             de:"KI-gestütztes Jobcoaching — Karrierebegleitung vom Lebenslauf bis zum Vorstellungsgespräch.",
+             en:"AI-powered job coaching — career guidance from CV to interview."}},
+        { name:"FoundrPro", url:"foundrpro.de", status:"planned",
+          d:{tr:"Kendi kuruluş deneyiminden yola çıkan, içerik üreticileri için pratik girişim rehberi.",
+             de:"Praxisnaher Gründerguide für Content-Creator, basierend auf eigener Gründungserfahrung.",
+             en:"Practical founder's guide for content creators, built on firsthand startup experience."}}
+      ]
+    },
+    {
+      id: 2, color: "var(--line-health)",
+      title: { tr: "Sağlık & Bakım", de: "Gesundheit & Pflege", en: "Health & Care" },
+      desc: {
+        tr: "Kronik hastalık takibi, yaşlı bakımı ve yasal vasilik için dijital destek.",
+        de: "Digitale Unterstützung bei chronischen Erkrankungen, Altenpflege und rechtlicher Betreuung.",
+        en: "Digital support for chronic illness tracking, elder care, and legal guardianship."
+      },
+      stations: [
+        { name:"GlucoNavigatör", url:"gluconavigator.io", status:"live",
+          d:{tr:"TÜRKPATENT tescilli diyabet takip ve yönlendirme uygulaması; beta aşamasında aktif.",
+             de:"Türkpatent-registrierte Diabetes-Tracking-App zur Alltagsnavigation — aktuell in der Beta-Phase.",
+             en:"TÜRKPATENT-registered diabetes tracking app for daily navigation — active in beta."}},
+        { name:"SilverCompass", url:"silvercompass.world", status:"live",
+          d:{tr:"Yaşlılar için bilişsel navigasyon paneli; hafıza egzersizleri ve günlük yönlendirme sunar.",
+             de:"Kognitives Navigationspanel für Senior:innen mit Gedächtnisübungen und Alltagsorientierung.",
+             en:"Cognitive navigation panel for seniors offering memory exercises and daily guidance."}},
+        { name:"BetreuerPro", url:"betreuerpro.io", status:"live",
+          d:{tr:"Yasal vasilik (Betreuung) süreçlerini dijitalleştiren, 1,3M+ vakayı hedefleyen SaaS aracı.",
+             de:"SaaS-Tool zur Digitalisierung rechtlicher Betreuungsprozesse, ausgerichtet auf 1,3 Mio.+ Fälle.",
+             en:"SaaS tool digitizing legal guardianship (Betreuung) processes, targeting 1.3M+ active cases."}},
+        { name:"Pflegegrad Pusulası", url:null, status:"planned",
+          d:{tr:"NBA puanlama sistemini basitleştirip bakım derecesi (Pflegegrad) tahmini sunan hesaplayıcı.",
+             de:"Rechner, der das NBA-Bewertungssystem vereinfacht und den voraussichtlichen Pflegegrad schätzt.",
+             en:"Calculator simplifying the NBA scoring system to estimate care level (Pflegegrad)."}}
+      ]
+    },
+    {
+      id: 3, color: "var(--line-admin)",
+      title: { tr: "İdari & Hukuki", de: "Verwaltung & Recht", en: "Administration & Rights" },
+      desc: {
+        tr: "Sosyal haklar, konut, emeklilik ve sigorta konularında yön gösteren araçlar.",
+        de: "Wegweiser durch soziale Rechte, Wohnen, Rente und Versicherungsfragen.",
+        en: "Guides navigating social rights, housing, pensions, and insurance."
+      },
+      stations: [
+        { name:"EasyGov", url:"easygov.io", status:"live",
+          d:{tr:"Almanya'da sosyal hakları çok dilli anlatan, idari sistemde yön gösteren rehber.",
+             de:"Mehrsprachiger Wegweiser durch soziale Rechte und Verwaltungsstrukturen in Deutschland.",
+             en:"Multilingual guide navigating social rights and administrative structures in Germany."}},
+        { name:"WasStehtMirZu", url:"wasstehtmirzu.com", status:"live",
+          d:{tr:'"Bana ne düşer?" sorusuna yanıt arayanlar için hak ve yardım yönlendirme sitesi.',
+             de:'Orientierungsseite für alle, die fragen: "Was steht mir eigentlich zu?"',
+             en:'Guidance site answering the question "What am I actually entitled to?"'}},
+        { name:"WohnRoute", url:"wohnroute.de", status:"live",
+          d:{tr:"Konut, kira ve barınma haklarında yön bulmaya yardımcı rehber araç.",
+             de:"Wegweiser für Wohnrecht, Miete und Fragen rund ums Wohnen.",
+             en:"Guide helping navigate housing rights, rent, and accommodation questions."}},
+        { name:"GrundRente", url:"grundrente.io", status:"live",
+          d:{tr:"Temel emeklilik (Grundrente) hak edişini anlaşılır şekilde açıklayan bilgilendirme aracı.",
+             de:"Informationstool, das den Anspruch auf Grundrente verständlich erklärt.",
+             en:"Information tool explaining basic pension (Grundrente) entitlement in plain terms."}},
+        { name:"Kindererziehungszeiten", url:"kindererziehungszeiten.de", status:"live",
+          d:{tr:"Çocuk büyütme sürelerinin emeklilik puanına etkisini hesaplayan bilgilendirme aracı.",
+             de:"Rechner zur Anrechnung von Kindererziehungszeiten auf die Rentenpunkte.",
+             en:"Calculator showing how child-rearing periods count toward pension credits."}},
+        { name:"SGK Pusulası", url:null, status:"planned",
+          d:{tr:"Türk sosyal güvenlik sistemine göre emeklilik hesaplaması yapan rehber araç.",
+             de:"Rechner zur Altersrente nach dem türkischen Sozialversicherungssystem (SGK).",
+             en:"Retirement calculator based on the Turkish social security system (SGK)."}},
+        { name:"Rente Pusulası", url:null, status:"planned",
+          d:{tr:"Yaşlılık ve erken emeklilik (EM-Rente) kararında yol gösteren karar ağacı aracı.",
+             de:"Entscheidungsbaum-Tool zur Orientierung zwischen Altersrente und Erwerbsminderungsrente.",
+             en:"Decision-tree tool guiding the choice between standard and disability pension."}},
+        { name:"Krankenkasse Vergleich", url:null, status:"planned",
+          d:{tr:"Sağlık sigortası (KVdR) katkı paylarını karşılaştıran hesaplama aracı.",
+             de:"Vergleichsrechner für Krankenkassenbeiträge im Rahmen der KVdR.",
+             en:"Comparison calculator for statutory health insurance (KVdR) contributions."}},
+        { name:"Wohnrente Rehberi", url:null, status:"planned",
+          d:{tr:"Teilverkauf ve ters ipotek gibi konut-emeklilik modellerinin risk analizini sunar.",
+             de:"Risikoanalyse für Wohnrenten-Modelle wie Teilverkauf und Umkehrhypothek.",
+             en:"Risk analysis for home-equity pension models like partial sale and reverse mortgage."}}
+      ]
+    },
+    {
+      id: 4, color: "var(--line-community)",
+      title: { tr: "Topluluk & Duygusal Destek", de: "Gemeinschaft & Seelsorge", en: "Community & Emotional Support" },
+      desc: {
+        tr: "Anonim paylaşım ve kuşaklar arası dertleşme için üç dilli topluluk alanları.",
+        de: "Dreisprachige Community-Räume für anonymen Austausch und Gespräche zwischen Generationen.",
+        en: "Trilingual community spaces for anonymous sharing and cross-generational conversation."
+      },
+      stations: [
+        { name:"Beichtraum", url:"beichtraum.de", status:"live",
+          d:{tr:"Anonim itiraf ve paylaşım alanı; TR/DE/EN üç dilde topluluk desteği sunar.",
+             de:"Anonymer Beichtraum für Gedanken und Sorgen — dreisprachig (TR/DE/EN).",
+             en:"Anonymous confession space for thoughts and worries — trilingual (TR/DE/EN)."}},
+        { name:"Geduldstein", url:"geduldstein.de", status:"live",
+          d:{tr:"Sabır ve bekleyiş süreçlerinde duygusal destek sunan topluluk sitesi.",
+             de:"Community-Seite für emotionalen Halt in Zeiten des Wartens und der Geduld.",
+             en:"Community site offering emotional support through periods of waiting and patience."}},
+        { name:"OnkelSorgen", url:"onkelsorgen.de", status:"live",
+          d:{tr:"Kuşaklar arası dertleşme ve tavsiye paylaşımına alan açan topluluk sitesi.",
+             de:"Community-Plattform für generationenübergreifenden Austausch und Rat.",
+             en:"Community platform for cross-generational conversation and advice-sharing."}}
+      ]
+    },
+    {
+      id: 5, color: "var(--line-infra)",
+      title: { tr: "Altyapı & Marka", de: "Infrastruktur & Marke", en: "Infrastructure & Brand" },
+      desc: {
+        tr: "Ekosistemin merkezi platformu, kurumsal vitrin ve marka koruma alanları.",
+        de: "Die zentrale Plattform, das Unternehmensschaufenster und die Domains zur Markensicherung.",
+        en: "The ecosystem's central platform, corporate showcase, and brand-protection domains."
+      },
+      stations: [
+        { name:"PACDI Store", url:"pacdi.store", status:"live",
+          d:{tr:"Ekosistemin ana platformu; Fiş/Makbuz üretici, Zaman takip ve DGUV V3 Prüfprotokoll SaaS araçlarını barındırır.",
+             de:"Zentrale Plattform des Ökosystems mit Quittungs-Generator, Zeiterfassung und DGUV-V3-Prüfprotokoll-SaaS.",
+             en:"The ecosystem's central hub, hosting the receipt generator, time tracking, and DGUV V3 inspection-protocol SaaS."}},
+        { name:"PACDI Digital Studio", url:"pacdi.io", status:"live",
+          d:{tr:"Üç dilli hizmet vitrini; dijital ürün geliştirme paketlerini tanıtan kurumsal sayfa.",
+             de:"Dreisprachige Service-Seite, die die digitalen Entwicklungspakete des Studios präsentiert.",
+             en:"Trilingual service showcase presenting the studio's digital development packages."}},
+        { name:"Domain Portföyü", url:"pacdi.eu · pacdi.de · pacdi.games", status:"live",
+          d:{tr:"Marka koruması ve gelecekteki genişleme için ayrılmış tamamlayıcı alan adları.",
+             de:"Ergänzende Domains zur Markensicherung und für künftige Erweiterungen reserviert.",
+             en:"Complementary domains reserved for brand protection and future expansion."}},
+        { name:"BorsaNavi", url:"borsanavi.de", status:"planned",
+          d:{tr:"BIST ve Forex için çoklu yöntemli kişisel analiz aracı (özel kullanım).",
+             de:"Persönliches Multi-Methoden-Analysetool für BIST und Forex (Eigennutzung).",
+             en:"Personal multi-method analysis tool for BIST and Forex (private use)."}}
+      ]
+    }
+  ]
+};
+
+const I18N = {
+  eyebrow: { tr:"Ekosistem Haritası", de:"Ökosystemkarte", en:"Ecosystem Map" },
+  h1: { tr:"Rotaları önceden çizilmiş bir ekosistem", de:"Ein Ökosystem mit vorgezeichneten Routen", en:"An ecosystem with routes already drawn" },
+  sub: { tr:"Almanya'da yaşayan göçmenler, aileler ve bakım verenler için inşa edilen dijital pusulalar — canlı ve geliştirme aşamasındaki tüm araçlar tek yerde.",
+         de:"Digitale Kompasse für Migrant:innen, Familien und pflegende Angehörige in Deutschland — alle Tools, live und in Entwicklung, an einem Ort.",
+         en:"Digital compasses built for immigrants, families, and caregivers living in Germany — every tool, live or in development, in one place." },
+  metaLive: { tr:"canlı", de:"live", en:"live" },
+  metaPlanned: { tr:"planlamada", de:"in Planung", en:"planned" },
+  metaLines: { tr:"hat", de:"Linien", en:"lines" },
+  legEdu: { tr:"Eğitim & Kariyer", de:"Ausbildung & Karriere", en:"Education & Career" },
+  legHealth: { tr:"Sağlık & Bakım", de:"Gesundheit & Pflege", en:"Health & Care" },
+  legAdmin: { tr:"İdari & Hukuki", de:"Verwaltung & Recht", en:"Administration & Rights" },
+  legCommunity: { tr:"Topluluk", de:"Gemeinschaft", en:"Community" },
+  legInfra: { tr:"Altyapı & Marka", de:"Infrastruktur & Marke", en:"Infrastructure & Brand" },
+  live: { tr:"Canlı", de:"Live", en:"Live" },
+  planned: { tr:"Planlamada", de:"In Planung", en:"Planned" },
+  footer: { tr:"Bu sayfa PACDI Global / AskMeAI Teknoloji ekosisteminin güncel bir görünümüdür. Durumlar zaman içinde değişebilir.",
+            de:"Diese Seite zeigt eine aktuelle Übersicht des PACDI Global / AskMeAI Teknoloji Ökosystems. Status kann sich ändern.",
+            en:"This page shows a current snapshot of the PACDI Global / AskMeAI Teknoloji ecosystem. Status may change over time." }
+};
+
+let currentLang = 'tr';
+
+function renderLines(lang){
+  const container = document.getElementById('lines');
+  container.innerHTML = '';
+  let live = 0, planned = 0;
+
+  DATA.lines.forEach(line => {
+    const section = document.createElement('section');
+    section.className = 'line-section';
+    section.style.setProperty('--line-color', line.color);
+
+    const head = document.createElement('div');
+    head.className = 'line-head';
+    head.innerHTML = `<span class="line-num">Linie ${String(line.id).padStart(2,'0')}</span><span class="line-title">${line.title[lang]}</span>`;
+    section.appendChild(head);
+
+    const desc = document.createElement('p');
+    desc.className = 'line-desc';
+    desc.textContent = line.desc[lang];
+    section.appendChild(desc);
+
+    const stations = document.createElement('div');
+    stations.className = 'stations';
+
+    line.stations.forEach(st => {
+      if (st.status === 'live') live++; else planned++;
+      const div = document.createElement('div');
+      div.className = 'station' + (st.status === 'live' ? ' live' : '');
+      const linkHtml = st.url
+        ? `<a class="station-link" href="https://${st.url.split(' ')[0].replace(/·.*/,'').trim()}" target="_blank" rel="noopener">${st.url}</a>`
+        : '';
+      div.innerHTML = `
+        <div class="station-top">
+          <span class="station-name">${st.name}</span>
+          ${linkHtml}
+          <span class="badge ${st.status}">${I18N[st.status][lang]}</span>
+        </div>
+        <div class="station-desc">${st.d[lang]}</div>
+      `;
+      stations.appendChild(div);
+    });
+
+    section.appendChild(stations);
+    container.appendChild(section);
+  });
+
+  document.getElementById('countLive').textContent = live;
+  document.getElementById('countPlanned').textContent = planned;
+}
+
+function applyI18n(lang){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (I18N[key]) el.textContent = I18N[key][lang];
+  });
+  renderLines(lang);
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentLang = btn.dataset.lang;
+    applyI18n(currentLang);
+  });
+});
+
+applyI18n(currentLang);
+</script>
+</body>
+</html>
