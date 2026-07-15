@@ -520,14 +520,14 @@
       <div id="qr-template-section">
         <div class="section-label" id="lb-template">ŞABLON</div>
         <select class="qr-select" id="templateSelect">
-          <option value="url">🌐 URL / Link</option>
-          <option value="google_review">⭐ Google Değerlendirme</option>
-          <option value="menu">🍽️ Menü / Speisekarte</option>
-          <option value="vcard">👤 vCard (Kartvizit)</option>
-          <option value="wifi">📶 WiFi Ağı</option>
-          <option value="event">📅 Etkinlik (Takvim)</option>
-          <option value="social">📱 Sosyal Medya</option>
-          <option value="personal_msg">📝 Kişisel Mesaj / Beyan</option>
+          <option value="url" id="opt-url">🌐 URL / Link</option>
+          <option value="google_review" id="opt-google_review">⭐ Google Değerlendirme</option>
+          <option value="menu" id="opt-menu">🍽️ Menü / Speisekarte</option>
+          <option value="vcard" id="opt-vcard">👤 vCard (Kartvizit)</option>
+          <option value="wifi" id="opt-wifi">📶 WiFi Ağı</option>
+          <option value="event" id="opt-event">📅 Etkinlik (Takvim)</option>
+          <option value="social" id="opt-social">📱 Sosyal Medya</option>
+          <option value="personal_msg" id="opt-personal_msg">📝 Kişisel Mesaj / Beyan</option>
         </select>
       </div>
 
@@ -605,7 +605,7 @@
           <div style="font-size:0.7rem;color:#7a9ab8;margin-bottom:10px;" id="lb-email-sub">Reklam yok — sadece faydalı güncellemeler.</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <input type="email" class="qr-input" id="emailInput" placeholder="e-posta@adresiniz.com" style="margin-bottom:0;flex:1;min-width:120px;">
-            <button class="bc-btn active" id="emailBtn" style="white-space:nowrap;" id="lb-email-btn">Katıl</button>
+            <button class="bc-btn active" id="lb-email-btn" style="white-space:nowrap;">Katıl</button>
           </div>
           <div style="font-size:0.65rem;color:#4a6a88;margin-top:6px;cursor:pointer;" onclick="document.getElementById('emailSection').style.display='none'" id="lb-email-skip">Şimdi değil</div>
         </div>
@@ -758,7 +758,16 @@ var translations = {
     msg_custom_placeholder: 'Mesajınızı yazın (ör. acil durum bilgisi, ilaç/alerji notu, kişisel beyan)...',
     hint_personal_msg: 'Bu QR taratıldığında mesajınız doğrudan metin olarak görünür. Cüzdanınıza, telefon kılıfınıza veya bilekliğe yapıştırabilirsiniz.',
     msg_no_organ_full: 'Organlarımı bağışlamak istemiyorum.',
-    msg_yes_organ_full: 'Organ bağışçısıyım.'
+    msg_yes_organ_full: 'Organ bağışçısıyım.',
+    opt_url: '🌐 URL / Link',
+    opt_google_review: '⭐ Google Değerlendirme',
+    opt_menu: '🍽️ Menü / Speisekarte',
+    opt_vcard: '👤 vCard (Kartvizit)',
+    opt_wifi: '📶 WiFi Ağı',
+    opt_event: '📅 Etkinlik (Takvim)',
+    opt_social: '📱 Sosyal Medya',
+    opt_personal_msg: '📝 Kişisel Mesaj / Beyan',
+    pruf_device_label: 'CİHAZ BİLGİSİ'
   },
   de: {
     title: '🔳 QR-Code-Generator',
@@ -831,7 +840,16 @@ var translations = {
     msg_custom_placeholder: 'Schreiben Sie Ihre Nachricht (z. B. Notfallinfo, Medikamenten-/Allergiehinweis, persönliche Erklärung)...',
     hint_personal_msg: 'Beim Scannen dieses QR-Codes wird Ihre Nachricht direkt als Text angezeigt. Zum Aufkleben auf Geldbörse, Handyhülle oder Armband geeignet.',
     msg_no_organ_full: 'Ich möchte keine Organe spenden.',
-    msg_yes_organ_full: 'Ich bin Organspender:in.'
+    msg_yes_organ_full: 'Ich bin Organspender:in.',
+    opt_url: '🌐 URL / Link',
+    opt_google_review: '⭐ Google-Bewertung',
+    opt_menu: '🍽️ Speisekarte',
+    opt_vcard: '👤 vCard (Visitenkarte)',
+    opt_wifi: '📶 WLAN',
+    opt_event: '📅 Veranstaltung (Kalender)',
+    opt_social: '📱 Soziale Medien',
+    opt_personal_msg: '📝 Persönliche Nachricht / Erklärung',
+    pruf_device_label: 'GERÄTEINFORMATION'
   },
   en: {
     title: '🔳 QR Code Generator',
@@ -905,7 +923,16 @@ var translations = {
     msg_custom_placeholder: 'Write your message (e.g. emergency info, medication/allergy note, personal statement)...',
     hint_personal_msg: 'When this QR is scanned, your message appears directly as text. Good for a wallet, phone case, or wristband.',
     msg_no_organ_full: 'I do not want to donate my organs.',
-    msg_yes_organ_full: 'I am an organ donor.'
+    msg_yes_organ_full: 'I am an organ donor.',
+    opt_url: '🌐 URL / Link',
+    opt_google_review: '⭐ Google Review',
+    opt_menu: '🍽️ Menu',
+    opt_vcard: '👤 vCard (Business Card)',
+    opt_wifi: '📶 WiFi Network',
+    opt_event: '📅 Event (Calendar)',
+    opt_social: '📱 Social Media',
+    opt_personal_msg: '📝 Personal Message / Statement',
+    pruf_device_label: 'DEVICE INFO'
   }
 };
 
@@ -987,6 +1014,22 @@ function setLanguage(lang) {
     if (key && purposeMap[key]) {
       pBtn.textContent = purposeMap[key];
     }
+  }
+
+  // Şablon seçenekleri (dropdown)
+  var optMap = {
+    'opt-url': t.opt_url,
+    'opt-google_review': t.opt_google_review,
+    'opt-menu': t.opt_menu,
+    'opt-vcard': t.opt_vcard,
+    'opt-wifi': t.opt_wifi,
+    'opt-event': t.opt_event,
+    'opt-social': t.opt_social,
+    'opt-personal_msg': t.opt_personal_msg
+  };
+  for (var o in optMap) {
+    var oEl = document.getElementById(o);
+    if (oEl && optMap[o]) oEl.textContent = optMap[o];
   }
 
   // Şablon alanlarını güncelle (placeholder'lar ve etiketler)
@@ -1075,7 +1118,7 @@ function updateTemplateFields() {
   var prufHint = document.querySelector('#pruf-helper div:last-child');
   if (prufHint) prufHint.textContent = t.pruf_hint;
   var prufLabel = document.querySelector('#pruf-helper .section-label');
-  if (prufLabel) prufLabel.textContent = 'CİHAZ BİLGİSİ'; // sabit veya çevrilebilir
+  if (prufLabel) prufLabel.textContent = t.pruf_device_label;
 }
 
 // ── QR / BARCODE LOGIC ──
@@ -1449,7 +1492,7 @@ for (var p = 0; p < purposeBtns.length; p++) {
 }
 
 // Email
-$('emailBtn').addEventListener('click', function() {
+$('lb-email-btn').addEventListener('click', function() {
   var email = $('emailInput').value.trim();
   if (!email || email.indexOf('@') < 1) return;
   fetch('/api/user/subscribe', {
