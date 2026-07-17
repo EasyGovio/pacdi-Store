@@ -34,6 +34,9 @@ button:disabled{opacity:0.5;}
 .bewerber-meta{font-size:0.68rem;color:#7a9ab8;margin-top:2px;}
 .puan-badge{font-family:monospace;font-size:0.75rem;color:#F6B45F;}
 .entscheidung-row{display:flex;gap:6px;margin-top:8px;}
+.flag-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.flag-chip{display:flex;align-items:center;gap:4px;font-size:0.65rem;color:#7a9ab8;background:rgba(246,180,95,0.06);border:1px solid rgba(246,180,95,0.15);border-radius:10px;padding:3px 8px;cursor:pointer;}
+.flag-chip input{width:auto;padding:0;margin:0;}
 .ent-btn{flex:1;padding:6px;border-radius:6px;font-size:0.68rem;border:1px solid rgba(246,180,95,0.25);background:transparent;color:#7a9ab8;cursor:pointer;}
 .ent-btn.gruen.active{background:rgba(52,211,153,0.15);border-color:#34D399;color:#34D399;}
 .ent-btn.gelb.active{background:rgba(251,191,36,0.15);border-color:#fbbf24;color:#fbbf24;}
@@ -99,6 +102,12 @@ button:disabled{opacity:0.5;}
       <div class="field"><label>İsim</label><input id="fVorname"></div>
     </div>
     <div class="row2">
+      <div class="field"><label>Anrede</label>
+        <select id="fAnrede"><option value="">—</option><option value="Herr">Herr</option><option value="Frau">Frau</option></select>
+      </div>
+      <div class="field"><label>TLN-Nummer</label><input id="fTlnNummer" placeholder="resmi TLN-Nr."></div>
+    </div>
+    <div class="row2">
       <div class="field"><label>Doğum Tarihi</label><input id="fGeburtsdatum" type="date"></div>
       <div class="field"><label>Doğum Yeri</label><input id="fGeburtsort"></div>
     </div>
@@ -107,10 +116,19 @@ button:disabled{opacity:0.5;}
       <div class="field"><label>PLZ / Ort</label><input id="fPlzOrt"></div>
       <div class="field"><label>Handy</label><input id="fHandy"></div>
     </div>
-    <div class="field"><label>E-Mail</label><input id="fEmail" type="email"></div>
+    <div class="row2">
+      <div class="field"><label>E-Mail</label><input id="fEmail" type="email"></div>
+      <div class="field"><label>Telefon (Notfall)</label><input id="fTelefonNotfall"></div>
+    </div>
     <div class="row2">
       <div class="field"><label>Schulabschluss</label><input id="fSchulabschluss"></div>
+      <div class="field"><label>Abschlussjahr</label><input id="fAbschlussjahr" type="number" placeholder="z.B. 2024"></div>
+    </div>
+    <div class="row2">
       <div class="field"><label>Betrieb-Kod (varsa)</label><input id="fBetriebKod" placeholder="z.B. BT-01"></div>
+      <div class="field"><label>Phase</label>
+        <select id="fPhase"><option value="">—</option><option value="1">1. Phase</option><option value="2">2. Phase</option></select>
+      </div>
     </div>
     <div class="row2">
       <div class="field"><label>1. Beruf</label><input id="fBeruf1"></div>
@@ -135,6 +153,46 @@ button:disabled{opacity:0.5;}
     <h2>📇 Aday Listesi</h2>
     <button class="outline" onclick="loadBewerber()">🔄 Listeyi Yenile</button>
     <div id="bewerberList" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="card">
+    <h2>🏢 Yeni Betrieb Ekle</h2>
+    <div class="row2">
+      <div class="field"><label>Kod</label><input id="btKod" placeholder="z.B. BT-01"></div>
+      <div class="field"><label>Firma Adı</label><input id="btName"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Bezirk</label><input id="btBezirk"></div>
+      <div class="field"><label>Beruf/Qualifikation</label><input id="btBerufQual"></div>
+    </div>
+    <div class="field"><label>Adres</label><input id="btAdresse"></div>
+    <div class="row2">
+      <div class="field"><label>Ort</label><input id="btOrt"></div>
+      <div class="field"><label>Ansprechpartner</label><input id="btAnsprechpartner"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Telefon</label><input id="btTelefon"></div>
+      <div class="field"><label>Fax</label><input id="btFax"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Kammer</label><input id="btKammer" placeholder="IHK / HWK"></div>
+      <div class="field"><label>IHK ID-Nr.</label><input id="btIhkId"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>BA Betriebsnr.</label><input id="btBaNr"></div>
+      <div class="field" style="display:flex;align-items:flex-end;">
+        <label class="flag-chip" style="padding:9px 10px;"><input type="checkbox" id="btAevo"> AEVO var</label>
+      </div>
+    </div>
+    <div class="field"><label>Notiz</label><input id="btNotiz"></div>
+    <button onclick="addBetrieb()" id="btAddBtn" style="margin-top:12px;">✅ Betrieb Kaydet</button>
+    <div class="status" id="btAddStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>🏢 Betriebe Listesi</h2>
+    <button class="outline" onclick="loadBetriebe()">🔄 Listeyi Yenile</button>
+    <div id="betriebeList" style="margin-top:12px;"></div>
   </div>
 </div>
 
@@ -180,14 +238,19 @@ window.addBewerber = function(){
   api({
     action: 'addBewerber',
     name: name, vorname: vorname,
+    anrede: document.getElementById('fAnrede').value,
+    tlnNummer: document.getElementById('fTlnNummer').value.trim(),
     geburtsdatum: document.getElementById('fGeburtsdatum').value,
     geburtsort: document.getElementById('fGeburtsort').value.trim(),
     adresse: document.getElementById('fAdresse').value.trim(),
     plzOrt: document.getElementById('fPlzOrt').value.trim(),
     handy: document.getElementById('fHandy').value.trim(),
     email: document.getElementById('fEmail').value.trim(),
+    telefonNotfall: document.getElementById('fTelefonNotfall').value.trim(),
     schulabschluss: document.getElementById('fSchulabschluss').value.trim(),
+    abschlussjahr: parseInt(document.getElementById('fAbschlussjahr').value) || '',
     betriebKod: document.getElementById('fBetriebKod').value.trim(),
+    phase: document.getElementById('fPhase').value,
     beruf1: document.getElementById('fBeruf1').value.trim(),
     beruf2: document.getElementById('fBeruf2').value.trim(),
     puanAllg: parseInt(document.getElementById('pAllg').value)||0,
@@ -201,10 +264,11 @@ window.addBewerber = function(){
     if (data.ok) {
       status.className = 'status ok';
       status.textContent = '✅ Kaydedildi (Nr. ' + data.nr + ').';
-      ['fName','fVorname','fGeburtsdatum','fGeburtsort','fAdresse','fPlzOrt','fHandy','fEmail',
-       'fSchulabschluss','fBetriebKod','fBeruf1','fBeruf2'].forEach(function(id){
+      ['fName','fVorname','fTlnNummer','fGeburtsdatum','fGeburtsort','fAdresse','fPlzOrt','fHandy','fEmail','fTelefonNotfall',
+       'fSchulabschluss','fAbschlussjahr','fBetriebKod','fBeruf1','fBeruf2'].forEach(function(id){
         document.getElementById(id).value = '';
       });
+      ['fAnrede','fPhase'].forEach(function(id){ document.getElementById(id).value = ''; });
       ['pAllg','pDeutsch','pLogik','pMathe','pErinnerung'].forEach(function(id){
         document.getElementById(id).value = 0;
       });
@@ -221,6 +285,14 @@ window.addBewerber = function(){
     status.textContent = '❌ Bağlantı hatası: ' + err;
   });
 };
+
+var FLAG_TYPES = [
+  { key: 'einladung', label: 'Einladung' },
+  { key: 'vv', label: 'VV' },
+  { key: 'stellenanzeige', label: 'Anzeige' },
+  { key: 'initiativbewerbung', label: 'Initiativ' },
+  { key: 'serienbrief', label: 'Serienbrief' }
+];
 
 var DOC_TYPES = [
   { key: 'teilnahmeempfehlung', label: 'Teilnahmeempf.' },
@@ -255,7 +327,12 @@ window.loadBewerber = function(){
           '<span class="bewerber-name">' + esc(b.vorname) + ' ' + esc(b.name) + '</span>' +
           '<span class="puan-badge">' + b.puanToplam + '/205</span>' +
         '</div>' +
-        '<div class="bewerber-meta">' + esc(b.beruf1 || '—') + ' · Nr. ' + b.nr + '</div>' +
+        '<div class="bewerber-meta">' + esc(b.beruf1 || '—') + ' · Nr. ' + b.nr + (b.tlnNummer ? ' · TLN ' + esc(b.tlnNummer) : '') + '</div>' +
+        '<div class="flag-row">' + FLAG_TYPES.map(function(f){
+          var checked = b[f.key] ? ' checked' : '';
+          return '<label class="flag-chip"><input type="checkbox"' + checked +
+            ' onchange="toggleFlag(' + b.nr + ',\'' + f.key + '\',this.checked)"> ' + f.label + '</label>';
+        }).join('') + '</div>' +
         '<div class="entscheidung-row">' +
           '<button class="ent-btn gruen' + (b.entscheidung==='GRUEN'?' active':'') + '" onclick="setEntscheidung(' + b.nr + ',\'GRUEN\')">🟢 Einstellen</button>' +
           '<button class="ent-btn gelb' + (b.entscheidung==='GELB'?' active':'') + '" onclick="setEntscheidung(' + b.nr + ',\'GELB\')">🟡 Gespräch</button>' +
@@ -275,6 +352,12 @@ window.setEntscheidung = function(nr, val){
   });
 };
 
+window.toggleFlag = function(nr, key, val){
+  var payload = { action: 'updateBewerber', nr: nr };
+  payload[key] = val;
+  api(payload);
+};
+
 window.generateDoc = function(nr, templateKey){
   var statusEl = document.getElementById('docStatus_' + nr);
   statusEl.className = 'status'; statusEl.innerHTML = '<span class="spinner"></span>Üretiliyor...';
@@ -292,7 +375,91 @@ window.generateDoc = function(nr, templateKey){
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+window.addBetrieb = function(){
+  var kod = document.getElementById('btKod').value.trim();
+  var name = document.getElementById('btName').value.trim();
+  var status = document.getElementById('btAddStatus');
+  var btn = document.getElementById('btAddBtn');
+
+  if (!kod || !name) {
+    status.className = 'status err'; status.textContent = '❌ Kod ve firma adı gerekli.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Kaydediliyor...';
+
+  api({
+    action: 'addBetrieb',
+    kod: kod, name: name,
+    bezirk: document.getElementById('btBezirk').value.trim(),
+    beruf_qualifikation: document.getElementById('btBerufQual').value.trim(),
+    adresse: document.getElementById('btAdresse').value.trim(),
+    ort: document.getElementById('btOrt').value.trim(),
+    ansprechpartner: document.getElementById('btAnsprechpartner').value.trim(),
+    telefon: document.getElementById('btTelefon').value.trim(),
+    fax: document.getElementById('btFax').value.trim(),
+    kammer: document.getElementById('btKammer').value.trim(),
+    ihk_id_nr: document.getElementById('btIhkId').value.trim(),
+    ba_betriebsnr: document.getElementById('btBaNr').value.trim(),
+    aevo: document.getElementById('btAevo').checked,
+    notiz: document.getElementById('btNotiz').value.trim()
+  }).then(function(data){
+    btn.disabled = false;
+    btn.textContent = '✅ Betrieb Kaydet';
+    if (data.ok) {
+      status.className = 'status ok';
+      status.textContent = '✅ Kaydedildi: ' + kod;
+      ['btKod','btName','btBezirk','btBerufQual','btAdresse','btOrt','btAnsprechpartner',
+       'btTelefon','btFax','btKammer','btIhkId','btBaNr','btNotiz'].forEach(function(id){
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('btAevo').checked = false;
+      loadBetriebe();
+    } else {
+      status.className = 'status err';
+      status.textContent = '❌ ' + (data.error || 'Bilinmeyen hata');
+    }
+  }).catch(function(err){
+    btn.disabled = false;
+    btn.textContent = '✅ Betrieb Kaydet';
+    status.className = 'status err';
+    status.textContent = '❌ Bağlantı hatası: ' + err;
+  });
+};
+
+window.loadBetriebe = function(){
+  var list = document.getElementById('betriebeList');
+  list.innerHTML = '<div style="color:#7a9ab8;font-size:0.8rem;">Yükleniyor...</div>';
+
+  api({ action: 'listBetriebe' }).then(function(data){
+    if (!data.ok) {
+      list.innerHTML = '<div style="color:#f87171;font-size:0.8rem;">❌ ' + (data.error||'Hata') + '</div>';
+      return;
+    }
+    if (!data.betriebe || !data.betriebe.length) {
+      list.innerHTML = '<div style="color:#4a6a88;font-size:0.8rem;">Henüz betrieb yok.</div>';
+      return;
+    }
+
+    var html = '';
+    data.betriebe.forEach(function(bt){
+      html += '<div class="bewerber-card">' +
+        '<div class="bewerber-top">' +
+          '<span class="bewerber-name">' + esc(bt.name) + '</span>' +
+          '<span class="puan-badge">' + esc(bt.kod) + '</span>' +
+        '</div>' +
+        '<div class="bewerber-meta">' + esc(bt.bezirk || '—') + (bt.beruf_qualifikation ? ' · ' + esc(bt.beruf_qualifikation) : '') +
+          (bt.aevo ? ' · AEVO ✅' : '') + '</div>' +
+        '<div class="bewerber-meta">' + esc(bt.ansprechpartner || '—') + (bt.telefon ? ' · ' + esc(bt.telefon) : '') + '</div>' +
+      '</div>';
+    });
+    list.innerHTML = html;
+  });
+};
+
 loadBewerber();
+loadBetriebe();
 
 })();
 </script>
