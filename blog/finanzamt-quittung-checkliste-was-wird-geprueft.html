@@ -148,6 +148,52 @@
     .pacdi-share-btn{display:inline-flex;align-items:center;gap:4px;font-size:0.78rem;padding:7px 14px;border-radius:20px;border:1px solid rgba(246,180,95,0.3);background:transparent;color:#F6B45F;text-decoration:none;cursor:pointer;font-family:inherit;}
     .pacdi-share-btn:hover{background:rgba(246,180,95,0.1);}
     </style>
+    <style>
+    [data-theme="dark"]:not([data-pacdi-native-theme]) { filter: invert(1) hue-rotate(180deg); background: #fff; }
+    [data-theme="dark"]:not([data-pacdi-native-theme]) img,
+    [data-theme="dark"]:not([data-pacdi-native-theme]) svg,
+    [data-theme="dark"]:not([data-pacdi-native-theme]) video,
+    [data-theme="dark"]:not([data-pacdi-native-theme]) picture,
+    [data-theme="dark"]:not([data-pacdi-native-theme]) iframe { filter: invert(1) hue-rotate(180deg); }
+    .pacdi-theme-toggle { position: fixed; top: 10px; right: 10px; z-index: 99999; width: 2.1rem; height: 2.1rem;
+      border: none; border-radius: 50%; background: rgba(0,0,0,0.08); font-size: 1.05rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    .pacdi-theme-toggle:hover { background: rgba(0,0,0,0.16); }
+    </style>
+    <script>
+(function(){
+  var KEY = 'pacdi-theme';
+  function apply(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    var btn = document.getElementById('pacdiThemeToggle');
+    if (btn) btn.textContent = theme === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+  }
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch(e) {}
+  var preferred = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  apply(saved || preferred);
+  function addBtn() {
+    if (document.getElementById('pacdiThemeToggle')) return;
+    var btn = document.createElement('button');
+    btn.id = 'pacdiThemeToggle';
+    btn.className = 'pacdi-theme-toggle';
+    btn.setAttribute('aria-label', 'Koyu/Acik mod');
+    btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    btn.onclick = function() {
+      var cur = document.documentElement.getAttribute('data-theme');
+      var next = cur === 'dark' ? 'light' : 'dark';
+      try { localStorage.setItem(KEY, next); } catch(e) {}
+      apply(next);
+    };
+    document.body.appendChild(btn);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', addBtn);
+  } else {
+    addBtn();
+  }
+})();
+</script>
 </head>
 <body>
 <!--
