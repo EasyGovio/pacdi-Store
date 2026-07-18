@@ -57,6 +57,50 @@ print("Domain:", domain)
 ANALYTICS = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>'
 ADSENSE = '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>'
 
+LICENSE_TEMPLATE = """Copyright (c) 2026 PACDI Global Yazılım Ltd. Şti.
+Tüm hakları saklıdır. / All rights reserved.
+
+Bu yazılım kütüphanesi ve modüler mimarisi, PACDI Software Library
+kapsamında FSEK (5846 Sayılı Fikir ve Sanat Eserleri Kanunu) tescili
+ile korunmaktadır.
+
+FSEK Tescil No: 2026/18897
+Ticaret Sicil No: 23836 — PACDI Global Yazılım Ltd. Şti., Yunusemre/Manisa, Türkiye
+
+Bu deponun (repository) içeriği, sahibinin açık yazılı izni olmaksızın
+kopyalanamaz, çoğaltılamaz, değiştirilemez, dağıtılamaz, alt lisanslanamaz
+veya ticari ya da ticari olmayan herhangi bir amaçla kullanılamaz.
+
+İzinsiz kullanım, kopyalama veya dağıtım FSEK ve ilgili mevzuat
+kapsamında hukuki işleme tabidir.
+
+Bu depo sadece görüntüleme ve inceleme amacıyla herkese açıktır;
+kaynak kodun kullanım hakkını vermez.
+
+---
+
+Copyright (c) 2026 PACDI Global Yazılım Ltd. Şti.
+All rights reserved.
+
+This software library and its modular architecture are protected under
+Turkish copyright law (FSEK — Law No. 5846 on Intellectual and Artistic
+Works) registration.
+
+FSEK Registration No: 2026/18897
+Trade Registry No: 23836 — PACDI Global Yazılım Ltd. Şti., Yunusemre/Manisa, Turkey
+
+No part of this repository's contents may be copied, reproduced,
+modified, distributed, sublicensed, or used for any commercial or
+non-commercial purpose without the express written permission of the
+copyright holder.
+
+Unauthorized use, copying, or distribution is subject to legal action
+under FSEK and applicable law.
+
+This repository is public for viewing and review purposes only and
+does not grant any rights to use the source code.
+"""
+
 ASCII_MUHUR = """<!--
 \u256c\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u256e
 \u2551         \U0001f6e1\ufe0f  PACDI FRAMEWORK \u2014 PROTECTED WORK                  \u2551
@@ -103,14 +147,6 @@ BETA_UNLOCK_SCRIPT = """<script>
 </script>
 """
 
-# ── Blog makaleleri için: tarayıcı çevirisi ipucu kutusu ──
-TRANSLATE_TIP = """        <div class="info-box" style="background:#eef6ff;border-color:#a8cff0;border-left-color:#2a7de1;">
-            <p><strong>\U0001f30d In Ihrer Sprache lesen?</strong> Bu sayfay\u0131 kendi dilinizde okumak isterseniz / Want to read this in your language: <strong>iPhone/Safari</strong> \u2014 Adressleiste antippen \u2192 "aA" \u2192 \u00dcbersetzen. <strong>Android/Chrome</strong> \u2014 Men\u00fc (\u22ee) \u2192 \u00dcbersetzen. Die \u00dcbersetzung erfolgt direkt im Browser, kostenlos.</p>
-        </div>
-
-"""
-
-# ── FIXED: tek tırnak kaçışı düzgün, daha önce defalarca tespit edilen bug giderildi ──
 PWA_SCRIPT = """<script>
 (function() {
   if ('serviceWorker' in navigator) {
@@ -122,6 +158,7 @@ PWA_SCRIPT = """<script>
   var shown = sessionStorage.getItem('pwa-banner-shown');
   if (shown || isInStandalone) return;
 
+  // iOS Safari — manuel yönlendirme
   if (isIOS) {
     setTimeout(function() {
       var bar = document.createElement('div');
@@ -131,10 +168,10 @@ PWA_SCRIPT = """<script>
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
           '<div>' +
             '<div style="color:#F6B45F;font-size:0.82rem;font-weight:700;margin-bottom:4px;">📲 Ana ekrana ekle</div>' +
-            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">Safari\\'de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.</div>' +
-            '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS\\'ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
+            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">Safari&#39;de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.</div>' +
+            '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS&#39;ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
           '</div>' +
-          '<button onclick="document.getElementById(\\'pwa-banner\\').remove();sessionStorage.setItem(\\'pwa-banner-shown\\',\\'1\\')" style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
+          '<button onclick="document.getElementById(&#39;pwa-banner&#39;).remove();sessionStorage.setItem(&#39;pwa-banner-shown&#39;,&#39;1&#39;)" style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
         '</div>';
       document.body.appendChild(bar);
       sessionStorage.setItem('pwa-banner-shown', '1');
@@ -142,6 +179,7 @@ PWA_SCRIPT = """<script>
     return;
   }
 
+  // Android / Desktop Chrome — otomatik install prompt
   var deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
@@ -155,7 +193,7 @@ PWA_SCRIPT = """<script>
         '<span style="color:#eaf2fb;font-size:0.85rem;">📲 Ana ekrana ekle &mdash; daha hızlı aç!</span>' +
         '<div style="display:flex;gap:8px;">' +
           '<button onclick="installPWA()" style="background:#F6B45F;border:none;color:#04162E;padding:6px 16px;border-radius:20px;font-weight:700;cursor:pointer;font-size:0.82rem;">Ekle</button>' +
-          '<button onclick="document.getElementById(\\'pwa-banner\\').remove();sessionStorage.setItem(\\'pwa-banner-shown\\',\\'1\\')" style="background:transparent;border:1px solid rgba(246,180,95,0.3);color:#7a9ab8;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:0.82rem;">Sonra</button>' +
+          '<button onclick="document.getElementById(&#39;pwa-banner&#39;).remove();sessionStorage.setItem(&#39;pwa-banner-shown&#39;,&#39;1&#39;)" style="background:transparent;border:1px solid rgba(246,180,95,0.3);color:#7a9ab8;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:0.82rem;">Sonra</button>' +
         '</div>';
       document.body.appendChild(bar);
     }, 3000);
@@ -170,7 +208,7 @@ PWA_SCRIPT = """<script>
 </script>
 """
 
-FSEK_FOOTER = """<div id="pacdi-fsek" style="clear:both;width:100%;flex-basis:100%;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-sizing:border-box;">
+FSEK_FOOTER = """<div id="pacdi-fsek" style="clear:both;width:100%;display:block;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-sizing:border-box;">
   <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.25);border-radius:24px;padding:8px 20px;margin-bottom:12px;flex-wrap:wrap;justify-content:center;">
     <span style="font-size:1rem;">\U0001f6e1\ufe0f</span>
     <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#D4AF37;text-transform:uppercase;">FSEK Registered \u00b7 PACDI Framework</span>
@@ -268,7 +306,7 @@ LEGAL_HTML = '''<!DOCTYPE html>
 SKIP = ['legal.html','impressum.html','datenschutz.html','404.html','master-template.html','test.html']
 SKIP_FOOTER = ['legal.html','impressum.html','datenschutz.html','404.html','master-template.html','test.html']
 
-# ── Kişisel/özel dosyalar — inject edilmez ──
+# ── Kişisel/özel dosyalar — inject ve FSEK footer eklenmez, AdSense/Analytics eklenmez ──
 PRIVATE_PREFIXES = ('mein-', 'private-', 'pacdi-sunum', 'personal-', 'intern-')
 
 def is_private(filename):
@@ -278,6 +316,7 @@ def is_private(filename):
 if domain != 'pacdi.store':
     legal_content = LEGAL_HTML.format()
     legal_path = 'legal.html'
+    # Always overwrite to keep standard
     with open(legal_path, 'w', encoding='utf-8') as f:
         f.write(legal_content)
     print('Legal updated: legal.html')
@@ -333,6 +372,20 @@ with open('ads.txt', 'w', encoding='utf-8') as f:
     f.write('google.com, pub-8426936740213369, DIRECT, f08c47fec0942fa0\n')
 print('ads.txt created:', domain)
 
+# ── LICENSE kontrol/onar ──
+# Eksikse oluştur; yanlışlıkla MIT gibi izin verici bir lisans konmuşsa
+# doğru FSEK tabanlı, tüm hakları saklı bildirimle değiştir.
+_license_needs_write = True
+if os.path.exists('LICENSE'):
+    with open('LICENSE', encoding='utf-8', errors='ignore') as f:
+        _existing_license = f.read()
+    if 'FSEK' in _existing_license and '2026/18897' in _existing_license:
+        _license_needs_write = False  # zaten doğru
+if _license_needs_write:
+    with open('LICENSE', 'w', encoding='utf-8') as f:
+        f.write(LICENSE_TEMPLATE)
+    print('LICENSE oluşturuldu/düzeltildi (FSEK):', domain)
+
 updated = 0
 for root, dirs, files in os.walk('.'):
     dirs[:] = [d for d in dirs if d not in ['.git','.github']]
@@ -370,45 +423,21 @@ for root, dirs, files in os.walk('.'):
                 insert += '    ' + LANG_DETECT_SCRIPT
             if 'betaUnlock' not in content and fname not in SKIP:
                 insert += '    ' + BETA_UNLOCK_SCRIPT
-
-            # ── ÖZEL: index.html giriş butonu CSS düzeltmesi ──
-            if fname == 'index.html' and '#userPanel .btn-sm' not in content:
-                insert += '    <style>#userPanel .btn-sm { background: transparent !important; color: var(--gold) !important; border: 1px solid var(--gold) !important; } #userPanel .btn-sm:hover { background: rgba(246,180,95,0.1) !important; }</style>\n'
-
             if insert:
                 content = content.replace('</head>', insert + '</head>', 1)
-
-            # ── ÖZEL: pruefprotokoll.html beta override — BODY SONUNA, handlePDF tanımlandıktan SONRA ──
-            if fname == 'pruefprotokoll.html' and 'pacdi2026' not in content:
-                override_script = '''<script>
-(function() {
-  var params = new URLSearchParams(window.location.search);
-  var urlBeta = params.get('beta') === 'pacdi2026';
-  var sessionBeta = false;
-  try { sessionBeta = sessionStorage.getItem('betaUnlock') === '1'; } catch(e) {}
-  if (!urlBeta && !sessionBeta) return;
-  var origHandle = window.handlePDF;
-  window.handlePDF = function() {
-    if (typeof generatePDF === 'function') { generatePDF(); return; }
-    if (origHandle) origHandle();
-  };
-})();
-</script>
-'''
-                if '</body>' in content:
-                    content = content.replace('</body>', override_script + '</body>', 1)
 
             # ── PWA Script ──
             if 'serviceWorker' not in content and '</body>' in content and fname not in SKIP_FOOTER:
                 content = content.replace('</body>', PWA_SCRIPT + '\n</body>', 1)
 
             # ── PWA Script eski (bozuk) versiyon güncelle ──
-            # Çok eski enjeksiyonlarda apostrof (Safari'de, iOS'ta, onclick içindeki
-            # iç içe tek tırnaklar) hiç escape edilmemişti; bu da tarayıcıda JS
-            # string'inin kırılmasına (SyntaxError) ve banner'ın hiç çalışmamasına
-            # yol açıyordu. 'serviceWorker' zaten var olduğu için üstteki blok bu
-            # dosyalara asla dokunmuyordu — burada eski (bozuk) imzayı tanıyıp
-            # PWA_SCRIPT'in güncel/düzeltilmiş haliyle değiştiriyoruz.
+            # Eski enjeksiyonlarda apostrof (Safari'de, iOS'ta, onclick içindeki
+            # iç içe tek tırnaklar) HTML entity ile escape edilmemişti; bu da
+            # tarayıcıda JS string'inin kırılmasına (SyntaxError) ve banner'ın
+            # hiç çalışmamasına yol açıyordu. 'serviceWorker' zaten var olduğu
+            # için üstteki blok bu dosyalara asla dokunmuyordu — burada eski
+            # (bozuk) imzayı tanıyıp PWA_SCRIPT'in güncel/düzeltilmiş haliyle
+            # değiştiriyoruz, böylece bir daha hiç sıkışmıyor.
             if 'pwa-banner' in content and (
                 "Safari'de" in content or
                 "iOS'ta otomatik" in content or
@@ -423,14 +452,6 @@ for root, dirs, files in os.walk('.'):
                     content = _pwa_block_re.sub(PWA_SCRIPT.strip(), content, count=1)
                     print('Fixed: stale/broken PWA banner ->', fpath)
 
-            # ── Blog makaleleri: çeviri ipucu kutusu ──
-            if 'blog' in root.split(os.sep) and 'In Ihrer Sprache lesen' not in content:
-                import re as _re4
-                _disclaimer_re = _re4.compile(r'(<div class="disclaimer">.*?</div>\n)', _re4.S)
-                if _disclaimer_re.search(content):
-                    content = _disclaimer_re.sub(lambda m: m.group(1) + '\n' + TRANSLATE_TIP, content, count=1)
-                    print('Added translation tip ->', fpath)
-
             # ── ASCII muhur → <body> sonrasi ──
             if 'PACDI FRAMEWORK' not in content and '<body' in content:
                 body_end = content.find('>', content.find('<body')) + 1
@@ -438,6 +459,7 @@ for root, dirs, files in os.walk('.'):
 
             # ── FSEK footer eski versiyon güncelle ──
             if 'pacdi-fsek' in content:
+                # Eski tek satırlı versiyon → yeni iki şirketli versiyon
                 content = content.replace(
                     '<div style="font-size:0.78rem;color:#8A8F9A;margin-bottom:4px;">\u00a9 2026 PACDI Global Yaz\u0131l\u0131m Ltd. \u015eti.</div>\n  <div style="font-size:0.72rem;color:#6B7280;margin-bottom:10px;">Protected under FSEK Copyright Registration No: <a href="https://pacdi.eu" style="color:#D4AF37;text-decoration:none;">2026/18897</a></div>',
                     '<div style="font-size:0.78rem;color:#8A8F9A;margin-bottom:4px;">Operated by AskMeAI Teknoloji Ltd. \u015eti. (TR: 23837)</div>\n  <div style="font-size:0.72rem;color:#6B7280;margin-bottom:10px;">Intellectual property owned by \u00a9 2026 PACDI Global Yaz\u0131l\u0131m Ltd. \u015eti. &mdash; FSEK No: <a href="https://pacdi.eu/legal.html" style="color:#D4AF37;text-decoration:none;">2026/18897</a></div>'
@@ -457,20 +479,26 @@ for root, dirs, files in os.walk('.'):
                     'Ein Service von AskMeAI Teknoloji Ltd. \u015eti.'
                 )
 
-            # ── Body flex fix ──
+            # ── Body flex fix: mevcut FSEK yanlış yerdeyse düzelt ──
             import re as _re2
             if 'pacdi-fsek' in content:
                 body_flex2 = _re2.search(r'body\s*\{[^}]*display\s*:\s*flex', content)
                 if body_flex2 and 'flex-direction:column' not in content:
+                    # body'ye flex-direction:column ekle
                     content = _re2.sub(
                         r'(body\s*\{[^}]*)(display\s*:\s*flex)',
                         r'\1flex-direction:column;\2',
                         content, count=1
                     )
+
+            # ── Body flex fix: FSEK footer yan kaymasın ──
+            if 'pacdi-fsek' in content and 'display:flex' in content:
+                # Yeni versiyon
                 content = content.replace(
                     'id="pacdi-fsek" style="clear:both;width:100%;display:block;',
                     'id="pacdi-fsek" style="clear:both;width:100%;flex-basis:100%;display:block;'
                 )
+                # Eski versiyon — padding ile başlayan
                 import re
                 content = re.sub(
                     r'id="pacdi-fsek" style="([^"]*?)"',
@@ -482,9 +510,11 @@ for root, dirs, files in os.walk('.'):
 
             # ── FSEK visible footer ──
             if 'pacdi-fsek' not in content and '</body>' in content and fname not in SKIP_FOOTER:
+                # Body display:flex varsa son </div> öncesine ekle (layout fix)
                 import re as _re
                 body_flex = _re.search(r'body\s*\{[^}]*display\s*:\s*flex', content)
                 if body_flex:
+                    # Son </div> + </body> pattern'ı bul
                     last_div = content.rfind('</div>')
                     if last_div > 0:
                         content = content[:last_div] + FSEK_FOOTER + '\n' + content[last_div:]
