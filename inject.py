@@ -1,544 +1,108 @@
-import os, sys, re
-
-# ══════════════════════════════════════════════════════════════════
-# PACDI ÇOK DİLLİLİK STANDARDI — Temmuz 2026'dan itibaren zorunlu
-# ══════════════════════════════════════════════════════════════════
-# Çok dilli bir sayfa yazılırken TEK doğru kalıp:
+#!/usr/bin/env python3
+# patch-share-bar.py
+# pacdi.store'un inject.py'sine, her modül sayfasının altına (FSEK footer'ın
+# hemen üstüne) o modüle özel bir paylaşım çubuğu ekler. WhatsApp/X/Facebook/
+# LinkedIn butonları + mobilde native paylaşım menüsü (navigator.share —
+# Instagram/TikTok dahil yüklü tüm uygulamaları kapsar) + kopyala butonu.
 #
-#   <div data-lang="de">...Almanca içerik...</div>
-#   <div data-lang="tr">...Türkçe içerik...</div>
-#   (satır içi metinler için: <span data-lang-inline="de">...</span>)
-#
-#   Dil değiştirme butonları <div class="lang-bar"> içinde olmalı.
-#   JS SADECE .style.display ile blokları gösterip gizlemeli;
-#   ASLA .innerText / .innerHTML ile metin YAZMAMALI — bu, içeriği
-#   Google'a görünmez kılar (bkz. Temmuz 2026 SEO denetimi: grundrente.io
-#   ve türevleri bu yüzden aylarca indexlenmedi).
-#
-#   Neden: data-lang bloklarının ikisi de ham HTML'de gerçekten var
-#   olur, JS sadece görünürlüğü değiştirir — Google her iki dili de
-#   kaynak kodda görür. innerText/innerHTML ile JS-obje swap'inde ise
-#   ikinci dil hiçbir zaman HTML kaynağında yer almaz, sadece tarayıcı
-#   çalışırken üretilir — Google bunu görmez.
-#
-#   Bu standarda uymayan sayfalar aşağıdaki lint tarafından otomatik
-#   tespit edilip konsola uyarı olarak basılır (dosya OTOMATIK
-#   DÜZELTİLMEZ — batch_split_lang.py ile elle/yarı-otomatik taşınması
-#   gerekir).
-# ══════════════════════════════════════════════════════════════════
+# Kullanım: python3 patch-share-bar.py
+# (inject.py'nin bulunduğu dizinde çalıştır)
 
-_NONCOMPLIANT_MARKERS = [
-    (re.compile(r'\.innerText\s*=\s*t\.'),
-     "JS obje (L[lang]) ile innerText swap — SEO görünmezliği riski"),
-    (re.compile(r'\.innerHTML\s*=\s*t\.'),
-     "JS obje (L[lang]) ile innerHTML swap — SEO görünmezliği riski"),
-    (re.compile(r'var\s+L\s*=\s*\{'),
-     "Dil objesi (var L = {...}) tespit edildi — data-lang bloklarına taşınmalı"),
-]
+PATH = "inject.py"
 
-_lint_hits = []
+with open(PATH, "r", encoding="utf-8") as f:
+    content = f.read()
 
-def lint_multilingual(fpath, content):
-    """Standart dışı çok dillilik kalıplarını tespit eder, dosyayı değiştirmez."""
-    if 'data-lang=' in content or 'data-i18n=' in content:
-        return  # zaten standart (veya standarda yakın) bir kalıp kullanıyor
-    for pattern, reason in _NONCOMPLIANT_MARKERS:
-        if pattern.search(content):
-            _lint_hits.append((fpath, reason))
-            break
+if "pacdiShareBar" in content:
+    print("Zaten uygulanmış, çıkılıyor.")
+    raise SystemExit(0)
 
-domain = "example.com"
-if os.path.exists("CNAME"):
-    with open("CNAME") as f:
-        domain = f.read().strip()
-
-print("Domain:", domain)
-
-ANALYTICS = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>'
-ADSENSE = '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8426936740213369" crossorigin="anonymous"></script>'
-
-LICENSE_TEMPLATE = """Copyright (c) 2026 PACDI Global Yazılım Ltd. Şti.
-Tüm hakları saklıdır. / All rights reserved.
-
-Bu yazılım kütüphanesi ve modüler mimarisi, PACDI Software Library
-kapsamında FSEK (5846 Sayılı Fikir ve Sanat Eserleri Kanunu) tescili
-ile korunmaktadır.
-
-FSEK Tescil No: 2026/18897
-Ticaret Sicil No: 23836 — PACDI Global Yazılım Ltd. Şti., Yunusemre/Manisa, Türkiye
-
-Bu deponun (repository) içeriği, sahibinin açık yazılı izni olmaksızın
-kopyalanamaz, çoğaltılamaz, değiştirilemez, dağıtılamaz, alt lisanslanamaz
-veya ticari ya da ticari olmayan herhangi bir amaçla kullanılamaz.
-
-İzinsiz kullanım, kopyalama veya dağıtım FSEK ve ilgili mevzuat
-kapsamında hukuki işleme tabidir.
-
-Bu depo sadece görüntüleme ve inceleme amacıyla herkese açıktır;
-kaynak kodun kullanım hakkını vermez.
-
----
-
-Copyright (c) 2026 PACDI Global Yazılım Ltd. Şti.
-All rights reserved.
-
-This software library and its modular architecture are protected under
-Turkish copyright law (FSEK — Law No. 5846 on Intellectual and Artistic
-Works) registration.
-
-FSEK Registration No: 2026/18897
-Trade Registry No: 23836 — PACDI Global Yazılım Ltd. Şti., Yunusemre/Manisa, Turkey
-
-No part of this repository's contents may be copied, reproduced,
-modified, distributed, sublicensed, or used for any commercial or
-non-commercial purpose without the express written permission of the
-copyright holder.
-
-Unauthorized use, copying, or distribution is subject to legal action
-under FSEK and applicable law.
-
-This repository is public for viewing and review purposes only and
-does not grant any rights to use the source code.
-"""
-
-ASCII_MUHUR = """<!--
-\u256c\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u256e
-\u2551         \U0001f6e1\ufe0f  PACDI FRAMEWORK \u2014 PROTECTED WORK                  \u2551
-\u2551                                                               \u2551
-\u2551  \u00a9 2026 PACDI Global Yaz\u0131l\u0131m Ltd. \u015eti.                       \u2551
-\u2551  FSEK Registration No : 2026/18897                            \u2551
-\u2551  Trade Registry      : 23836 \u00b7 Yunusemre / Manisa, TR       \u2551
-\u2551                                                               \u2551
-\u2551  This work and its modular software architecture are          \u2551
-\u2551  protected under PACDI Software Library FSEK registration.   \u2551
-\u2551  Unauthorized copying is subject to legal action.            \u2551
-\u2551                                                               \u2551
-\u2551  pacdi.eu \u00b7 pacdi.de \u00b7 info@pacdi.eu                         \u2551
-\u2560\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2563
--->"""
-
-PWA_HEAD = """    <link rel="manifest" href="/manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PACDI">
-"""
-
-LANG_DETECT_SCRIPT = """<script>
-(function(){
-  if (sessionStorage.getItem('autoLang')) return;
-  var bl = (navigator.language || navigator.userLanguage || 'en').substring(0,2).toLowerCase();
-  var supported = ['tr','de','en'];
-  var lang = supported.indexOf(bl) > -1 ? bl : 'en';
-  sessionStorage.setItem('autoLang', lang);
-})();
-</script>
-"""
-
-BETA_UNLOCK_SCRIPT = """<script>
-(function(){
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('beta') === 'pacdi2026') {
-    try { sessionStorage.setItem('betaUnlock', '1'); } catch(e) {}
-  }
-  window.isBetaUnlocked = function() {
-    try { return sessionStorage.getItem('betaUnlock') === '1'; } catch(e) { return false; }
-  };
-})();
-</script>
-"""
-
-PWA_SCRIPT = """<script>
-(function() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(function(){});
-  }
-
-  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  var isInStandalone = ('standalone' in navigator && navigator.standalone);
-  var shown = sessionStorage.getItem('pwa-banner-shown');
-  if (shown || isInStandalone) return;
-
-  // iOS Safari — manuel yönlendirme
-  if (isIOS) {
-    setTimeout(function() {
-      var bar = document.createElement('div');
-      bar.id = 'pwa-banner';
-      bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#04162E;border-top:2px solid #F6B45F;padding:14px 16px;z-index:9999;font-family:system-ui;';
-      bar.innerHTML =
-        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
-          '<div>' +
-            '<div style="color:#F6B45F;font-size:0.82rem;font-weight:700;margin-bottom:4px;">📲 Ana ekrana ekle</div>' +
-            '<div style="color:#b0b5bf;font-size:0.75rem;line-height:1.5;">Safari&#39;de <strong style="color:#eaf2fb;">&#11015; Paylaş</strong> butonuna bas, ardından <strong style="color:#eaf2fb;">Ana Ekrana Ekle</strong> seçeneğini seç.</div>' +
-            '<div style="color:#4a6a88;font-size:0.68rem;margin-top:4px;">&#9432; iOS&#39;ta otomatik kurulum desteklenmiyor — bu adım gerekli.</div>' +
-          '</div>' +
-          '<button onclick="document.getElementById(&#39;pwa-banner&#39;).remove();sessionStorage.setItem(&#39;pwa-banner-shown&#39;,&#39;1&#39;)" style="background:transparent;border:none;color:#7a9ab8;font-size:1.2rem;cursor:pointer;padding:0 4px;flex-shrink:0;">✕</button>' +
-        '</div>';
-      document.body.appendChild(bar);
-      sessionStorage.setItem('pwa-banner-shown', '1');
-    }, 3000);
-    return;
-  }
-
-  // Android / Desktop Chrome — otomatik install prompt
-  var deferredPrompt = null;
-  window.addEventListener('beforeinstallprompt', function(e) {
-    e.preventDefault();
-    deferredPrompt = e;
-    setTimeout(function() {
-      if (!deferredPrompt) return;
-      var bar = document.createElement('div');
-      bar.id = 'pwa-banner';
-      bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#04162E;border-top:2px solid #F6B45F;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:9999;font-family:system-ui;';
-      bar.innerHTML =
-        '<span style="color:#eaf2fb;font-size:0.85rem;">📲 Ana ekrana ekle &mdash; daha hızlı aç!</span>' +
-        '<div style="display:flex;gap:8px;">' +
-          '<button onclick="installPWA()" style="background:#F6B45F;border:none;color:#04162E;padding:6px 16px;border-radius:20px;font-weight:700;cursor:pointer;font-size:0.82rem;">Ekle</button>' +
-          '<button onclick="document.getElementById(&#39;pwa-banner&#39;).remove();sessionStorage.setItem(&#39;pwa-banner-shown&#39;,&#39;1&#39;)" style="background:transparent;border:1px solid rgba(246,180,95,0.3);color:#7a9ab8;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:0.82rem;">Sonra</button>' +
-        '</div>';
-      document.body.appendChild(bar);
-    }, 3000);
-  });
-
-  window.installPWA = function() {
-    if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(function(){ deferredPrompt=null; }); }
-    var b = document.getElementById('pwa-banner'); if (b) b.remove();
-    sessionStorage.setItem('pwa-banner-shown', '1');
-  };
-})();
-</script>
-"""
-
-FSEK_FOOTER = """<div id="pacdi-fsek" style="clear:both;width:100%;display:block;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-sizing:border-box;">
-  <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.25);border-radius:24px;padding:8px 20px;margin-bottom:12px;flex-wrap:wrap;justify-content:center;">
-    <span style="font-size:1rem;">\U0001f6e1\ufe0f</span>
-    <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#D4AF37;text-transform:uppercase;">FSEK Registered \u00b7 PACDI Framework</span>
-  </div>
-  <div style="font-size:0.78rem;color:#8A8F9A;margin-bottom:4px;">Operated by AskMeAI Teknoloji Ltd. \u015eti. (TR: 23837)</div>
-  <div style="font-size:0.72rem;color:#6B7280;margin-bottom:10px;">Intellectual property owned by \u00a9 2026 PACDI Global Yaz\u0131l\u0131m Ltd. \u015eti. &mdash; FSEK No: <a href="https://pacdi.eu/legal.html" style="color:#D4AF37;text-decoration:none;">2026/18897</a></div>
-  <div style="font-size:0.82rem;font-style:italic;color:#6B7280;">&ldquo;Technology in the service of humanity.&rdquo;</div>
-</div>"""
-
-# ── Legal.html content (standard — all repos except pacdi.store) ──
-LEGAL_HTML = '''<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Impressum &amp; Datenschutz</title>
-    <meta name="robots" content="noindex, nofollow">
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
-    <style>
-        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-        body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #04162E; color: #e8edf2; padding: 40px 20px 80px; line-height: 1.75; }}
-        .wrap {{ max-width: 760px; margin: 0 auto; }}
-        .back {{ display: inline-flex; align-items: center; gap: 6px; color: #7a9ab8; text-decoration: none; font-size: 0.85rem; margin-bottom: 36px; }}
-        .back:hover {{ color: #F6B45F; }}
-        h1 {{ font-size: 1.6rem; color: #F6B45F; margin-bottom: 6px; }}
-        .subtitle {{ font-size: 0.85rem; color: #7a9ab8; margin-bottom: 36px; }}
-        h2 {{ font-size: 0.8rem; font-weight: 700; color: #F6B45F; margin: 28px 0 10px; text-transform: uppercase; letter-spacing: 0.06em; }}
-        p {{ font-size: 0.88rem; color: #8a9ab0; margin-bottom: 10px; }}
-        a {{ color: #F6B45F; text-decoration: none; }}
-        a:hover {{ text-decoration: underline; }}
-        hr {{ border: none; border-top: 1px solid rgba(246,180,95,0.1); margin: 28px 0; }}
-        .box {{ background: rgba(255,255,255,0.02); border: 1px solid rgba(246,180,95,0.15); border-radius: 12px; padding: 20px 24px; margin: 12px 0; }}
-        .warn {{ background: rgba(246,180,95,0.05); border-left: 4px solid #F6B45F; border-radius: 8px; padding: 14px 18px; margin: 12px 0; }}
-        .warn p {{ color: #c8cdd5; margin: 0; }}
-        .fsek-block {{ text-align: center; padding: 28px 0 0; }}
-        .fsek-badge {{ display: inline-flex; align-items: center; gap: 8px; background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.25); border-radius: 24px; padding: 8px 20px; margin-bottom: 12px; }}
-        .fsek-badge span {{ font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: #D4AF37; text-transform: uppercase; }}
+SHARE_BAR_HEAD = """    <style>
+    .pacdi-share-bar{margin-top:24px;padding:16px;background:rgba(246,180,95,0.05);border:1px solid rgba(246,180,95,0.15);border-radius:10px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif;box-sizing:border-box;}
+    .pacdi-share-label{font-size:0.8rem;color:#7a9ab8;margin-bottom:10px;font-weight:600;}
+    .pacdi-share-btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+    .pacdi-share-btn{display:inline-flex;align-items:center;gap:4px;font-size:0.78rem;padding:7px 14px;border-radius:20px;border:1px solid rgba(246,180,95,0.3);background:transparent;color:#F6B45F;text-decoration:none;cursor:pointer;font-family:inherit;}
+    .pacdi-share-btn:hover{background:rgba(246,180,95,0.1);}
     </style>
-</head>
-<body>
-<div class="wrap">
-<a href="/" class="back">&larr; Zur&uuml;ck</a>
-<h1>Impressum &amp; Datenschutz</h1>
-<p class="subtitle">Vollst&auml;ndige rechtliche Informationen: <a href="https://pacdi.eu/legal.html" target="_blank">pacdi.eu/legal.html</a></p>
+"""
 
-<h2>Impressum</h2>
-<div class="box">
-    <p><strong style="color:#e8edf2;">AskMeAI Teknoloji Ltd. &Scaron;ti.</strong><br>
-    Ticaret Sicil No: 23837<br>
-    Ayni Ali Mah. 3317 Sk. Nur Apt No:43 I&ccedil; Kap&imath; No:3<br>
-    Yunusemre / Manisa, T&uuml;rkiye<br>
-    MER&Scaron;&Iuml;S: 0086178065200001</p>
-    <p style="margin-top:12px;"><strong style="color:#e8edf2;">Verantwortlicher gem&auml;&szlig; &sect; 18 Abs. 2 MStV:</strong><br>
-    Mehmet Ayd&imath;nl&imath;<br>
-    Bernauerstr. 115, 13507 Berlin, Deutschland<br>
-    E-Mail: <a href="mailto:info@askmeai.io">info@askmeai.io</a></p>
-</div>
+SHARE_BAR_SCRIPT = """<div class="pacdi-share-bar" id="pacdiShareBar"></div>
+<script>
+(function(){
+  var pageTitle = (document.title.split('|')[0] || document.title).trim();
+  var pageUrl = window.location.href;
+  var shareText = 'Bu ' + pageTitle + ' aracını faydalı buldum, senin de işine yarayabilir:';
 
-<div class="warn">
-    <p>Dieses Angebot ist ein digitaler Informationsdienst und stellt keine Rechts- oder Steuerberatung dar.</p>
-</div>
+  var bar = document.getElementById('pacdiShareBar');
+  if (!bar) return;
+  bar.innerHTML =
+    '<div class="pacdi-share-label">🔗 Bu aracı paylaş</div>' +
+    '<div class="pacdi-share-btns">' +
+      '<button class="pacdi-share-btn" id="pacdiShareNative" style="display:none;">📤 Paylaş</button>' +
+      '<a class="pacdi-share-btn" target="_blank" rel="noopener" href="https://api.whatsapp.com/send?text=' + encodeURIComponent(shareText + ' ' + pageUrl) + '">💬 WhatsApp</a>' +
+      '<a class="pacdi-share-btn" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(pageUrl) + '">𝕏</a>' +
+      '<a class="pacdi-share-btn" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(pageUrl) + '">Facebook</a>' +
+      '<a class="pacdi-share-btn" target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(pageUrl) + '">LinkedIn</a>' +
+      '<button class="pacdi-share-btn" id="pacdiShareCopy">🔗 Kopyala</button>' +
+    '</div>';
 
-<hr>
+  if (navigator.share) {
+    var nativeBtn = document.getElementById('pacdiShareNative');
+    nativeBtn.style.display = 'inline-flex';
+    nativeBtn.onclick = function(){
+      navigator.share({ title: pageTitle, text: shareText, url: pageUrl }).catch(function(){});
+    };
+  }
 
-<h2>Datenschutzerkl&auml;rung</h2>
+  var copyBtn = document.getElementById('pacdiShareCopy');
+  copyBtn.onclick = function(){
+    navigator.clipboard.writeText(pageUrl).then(function(){
+      var old = copyBtn.textContent;
+      copyBtn.textContent = '✓ Kopyalandı!';
+      setTimeout(function(){ copyBtn.textContent = old; }, 2000);
+    }).catch(function(){});
+  };
+})();
+</script>
+"""
 
-<h2>1. Datenerhebung</h2>
-<p>Die meisten PACDI-Tools speichern Daten ausschlie&szlig;lich lokal in Ihrem Browser (localStorage). Es werden keine pers&ouml;nlichen Daten an unsere Server &uuml;bertragen.</p>
+# 1) Sabitleri PWA_SCRIPT'ten hemen sonra ekle
+marker_const = 'FSEK_FOOTER = """<div id="pacdi-fsek"'
+if marker_const not in content:
+    raise SystemExit("HATA: FSEK_FOOTER tanımı bulunamadı — dosya beklenenden farklı, elle kontrol et.")
 
-<h2>2. Google Analytics</h2>
-<p>Diese Website verwendet Google Analytics (Google Ireland Limited). IP-Adressen werden vor der Speicherung anonymisiert. Opt-out: <a href="https://tools.google.com/dlpage/gaoptout" target="_blank">Google Analytics Opt-out Add-on</a>.</p>
+const_block = (
+    'SHARE_BAR_HEAD = ' + repr(SHARE_BAR_HEAD) + '\n\n'
+    'SHARE_BAR_SCRIPT = ' + repr(SHARE_BAR_SCRIPT) + '\n\n'
+)
+content = content.replace(marker_const, const_block + marker_const, 1)
 
-<h2>3. Google AdSense</h2>
-<p>Diese Website zeigt Werbeanzeigen &uuml;ber Google AdSense. AdSense verwendet Cookies f&uuml;r interessenbezogene Werbung. Weitere Informationen: <a href="https://policies.google.com/privacy" target="_blank">Google Datenschutzerkl&auml;rung</a>.</p>
+# 2) Head insert bloğuna paylaşım çubuğu CSS'ini ekle (betaUnlock satırından hemen sonra)
+marker_head = "insert += '    ' + BETA_UNLOCK_SCRIPT\n"
+if marker_head not in content:
+    raise SystemExit("HATA: BETA_UNLOCK_SCRIPT insert satırı bulunamadı — dosya beklenenden farklı, elle kontrol et.")
 
-<h2>4. Ihre Rechte (DSGVO Art. 15&ndash;21)</h2>
-<p>Auskunft, Berichtigung, L&ouml;schung, Einschr&auml;nkung, Daten&uuml;bertragbarkeit, Widerspruch. Kontakt: <a href="mailto:info@askmeai.io">info@askmeai.io</a> &mdash; Antwort innerhalb von 30 Tagen.</p>
+new_head_insert = marker_head + (
+    "            if 'pacdiShareBar' not in content and fname not in SKIP_FOOTER:\n"
+    "                insert += SHARE_BAR_HEAD\n"
+)
+content = content.replace(marker_head, new_head_insert, 1)
 
-<h2>5. Geistiges Eigentum</h2>
-<p>Alle Softwarearchitekturen und Inhaltsstrukturen sind Eigentum der <strong style="color:#e8edf2;">PACDI Global Yaz&imath;l&imath;m Ltd. &Scaron;ti.</strong> (TR: 23836) und gesch&uuml;tzt unter FSEK-Registrierung Nr. 2026/18897. Betrieben durch AskMeAI Teknoloji Ltd. &Scaron;ti. im Rahmen einer Sublizenz.</p>
+# 3) Paylaşım çubuğunu FSEK footer'ın hemen üstüne ekle — footer ister yeni
+#    eklenmiş olsun ister zaten var olsun, ikisinde de calisir.
+marker_insert_point = "            if content != orig:\n                with open(fpath, 'w', encoding='utf-8') as f:"
+if marker_insert_point not in content:
+    raise SystemExit("HATA: dosya yazma bloğu bulunamadı — dosya beklenenden farklı, elle kontrol et.")
 
-<hr>
+share_bar_logic = (
+    "            # ── PACDI paylaşım çubuğu — her modülün altına, FSEK footer'ın hemen üstüne ──\n"
+    "            if ('pacdiShareBar' not in content and fname not in SKIP_FOOTER\n"
+    "                    and '<div id=\"pacdi-fsek\"' in content):\n"
+    "                content = content.replace('<div id=\"pacdi-fsek\"', SHARE_BAR_SCRIPT + '\\n<div id=\"pacdi-fsek\"', 1)\n\n"
+)
+content = content.replace(marker_insert_point, share_bar_logic + marker_insert_point, 1)
 
-<div id="pacdi-fsek" class="fsek-block">
-    <div class="fsek-badge"><span>&#128737;&#65039;</span><span>FSEK Registered &middot; PACDI Framework</span></div>
-    <p style="font-size:0.78rem;color:#6B7280;margin-bottom:4px;">Operated by AskMeAI Teknoloji Ltd. &Scaron;ti. (TR: 23837)</p>
-    <p style="font-size:0.72rem;color:#4a6a88;margin-bottom:6px;">&copy; 2026 PACDI Global Yaz&imath;l&imath;m Ltd. &Scaron;ti. &mdash; FSEK No: 2026/18897</p>
-    <p style="font-size:0.82rem;font-style:italic;color:#4a6a88;">&ldquo;Technology in the service of humanity.&rdquo;</p>
-</div>
-</div>
-</body>
-</html>'''
+with open(PATH, "w", encoding="utf-8") as f:
+    f.write(content)
 
-SKIP = ['legal.html','impressum.html','datenschutz.html','404.html','master-template.html','test.html']
-SKIP_FOOTER = ['legal.html','impressum.html','datenschutz.html','404.html','master-template.html','test.html']
-
-# ── Kişisel/özel dosyalar — inject ve FSEK footer eklenmez, AdSense/Analytics eklenmez ──
-PRIVATE_PREFIXES = ('mein-', 'private-', 'pacdi-sunum', 'personal-', 'intern-')
-
-def is_private(filename):
-    return any(filename.startswith(p) for p in PRIVATE_PREFIXES)
-
-# ── Write standard legal.html (skip if pacdi.store) ──
-if domain != 'pacdi.store':
-    legal_content = LEGAL_HTML.format()
-    legal_path = 'legal.html'
-    # Always overwrite to keep standard
-    with open(legal_path, 'w', encoding='utf-8') as f:
-        f.write(legal_content)
-    print('Legal updated: legal.html')
-else:
-    print('Skipping legal.html for pacdi.store (has custom version)')
-
-# ── manifest.json otomatik oluştur ──
-import json
-manifest = {
-    "name": "PACDI — " + domain,
-    "short_name": "PACDI",
-    "description": "PACDI Digital — Technology in the service of humanity.",
-    "start_url": "./index.html",
-    "display": "standalone",
-    "background_color": "#04162E",
-    "theme_color": "#04162E",
-    "orientation": "portrait",
-    "categories": ["business", "productivity", "utilities"],
-    "icons": [
-        {
-            "src": "https://cdn-icons-png.flaticon.com/512/6849/6849232.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any maskable"
-        },
-        {
-            "src": "https://cdn-icons-png.flaticon.com/512/6849/6849232.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any maskable"
-        }
-    ]
-}
-with open('manifest.json', 'w', encoding='utf-8') as f:
-    json.dump(manifest, f, ensure_ascii=False, indent=2)
-print('manifest.json created:', domain)
-
-# ── sw.js otomatik oluştur ──
-sw = "const CACHE_NAME = 'pacdi-v1';\n"
-sw += "const ASSETS = ['./'];\n"
-sw += "self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS))));\n"
-sw += "self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))));\n"
-sw += "self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => {\n"
-sw += "  if (r) { fetch(e.request).then(nr => { if(nr.status===200) caches.open(CACHE_NAME).then(c=>c.put(e.request,nr)); }).catch(()=>{}); return r; }\n"
-sw += "  return fetch(e.request);\n"
-sw += "})));\n"
-with open('sw.js', 'w', encoding='utf-8') as f:
-    f.write(sw)
-print('sw.js created:', domain)
-
-# ── ads.txt otomatik oluştur ──
-with open('ads.txt', 'w', encoding='utf-8') as f:
-    f.write('google.com, pub-8426936740213369, DIRECT, f08c47fec0942fa0\n')
-print('ads.txt created:', domain)
-
-# ── LICENSE kontrol/onar ──
-# Eksikse oluştur; yanlışlıkla MIT gibi izin verici bir lisans konmuşsa
-# doğru FSEK tabanlı, tüm hakları saklı bildirimle değiştir.
-_license_needs_write = True
-if os.path.exists('LICENSE'):
-    with open('LICENSE', encoding='utf-8', errors='ignore') as f:
-        _existing_license = f.read()
-    if 'FSEK' in _existing_license and '2026/18897' in _existing_license:
-        _license_needs_write = False  # zaten doğru
-if _license_needs_write:
-    with open('LICENSE', 'w', encoding='utf-8') as f:
-        f.write(LICENSE_TEMPLATE)
-    print('LICENSE oluşturuldu/düzeltildi (FSEK):', domain)
-
-updated = 0
-for root, dirs, files in os.walk('.'):
-    dirs[:] = [d for d in dirs if d not in ['.git','.github']]
-    for fname in files:
-        if not fname.endswith('.html') or fname.startswith('google4d'):
-            continue
-        if is_private(fname):
-            print('Skipped (private):', fname)
-            continue
-        fpath = os.path.join(root, fname)
-        try:
-            with open(fpath, 'r', encoding='utf-8', errors='ignore') as f:
-                content = f.read()
-            lint_multilingual(fpath, content)
-            if '</head>' not in content:
-                continue
-            orig = content
-            relpath = fpath.replace('./','').replace('.\\','')
-            if relpath == 'index.html':
-                url = 'https://' + domain + '/'
-            else:
-                url = 'https://' + domain + '/' + relpath
-
-            # ── HEAD injections ──
-            insert = ''
-            if 'G-E6ML8EDW0H' not in content:
-                insert += '    ' + ANALYTICS + '\n'
-            if 'ca-pub-8426936740213369' not in content and fname not in SKIP:
-                insert += '    ' + ADSENSE + '\n'
-            if 'canonical' not in content:
-                insert += '    <link rel="canonical" href="' + url + '" />\n'
-            if 'manifest.json' not in content and fname not in SKIP:
-                insert += PWA_HEAD
-            if 'autoLang' not in content and fname not in SKIP:
-                insert += '    ' + LANG_DETECT_SCRIPT
-            if 'betaUnlock' not in content and fname not in SKIP:
-                insert += '    ' + BETA_UNLOCK_SCRIPT
-            if insert:
-                content = content.replace('</head>', insert + '</head>', 1)
-
-            # ── PWA Script ──
-            if 'serviceWorker' not in content and '</body>' in content and fname not in SKIP_FOOTER:
-                content = content.replace('</body>', PWA_SCRIPT + '\n</body>', 1)
-
-            # ── PWA Script eski (bozuk) versiyon güncelle ──
-            # Eski enjeksiyonlarda apostrof (Safari'de, iOS'ta, onclick içindeki
-            # iç içe tek tırnaklar) HTML entity ile escape edilmemişti; bu da
-            # tarayıcıda JS string'inin kırılmasına (SyntaxError) ve banner'ın
-            # hiç çalışmamasına yol açıyordu. 'serviceWorker' zaten var olduğu
-            # için üstteki blok bu dosyalara asla dokunmuyordu — burada eski
-            # (bozuk) imzayı tanıyıp PWA_SCRIPT'in güncel/düzeltilmiş haliyle
-            # değiştiriyoruz, böylece bir daha hiç sıkışmıyor.
-            if 'pwa-banner' in content and (
-                "Safari'de" in content or
-                "iOS'ta otomatik" in content or
-                "getElementById('pwa-banner').remove()" in content
-            ):
-                import re as _re3
-                _pwa_block_re = _re3.compile(
-                    r'<script>\s*\(function\(\)\s*\{\s*if \(\'serviceWorker\' in navigator\).*?\}\)\(\);\s*</script>',
-                    _re3.S
-                )
-                if _pwa_block_re.search(content):
-                    content = _pwa_block_re.sub(PWA_SCRIPT.strip(), content, count=1)
-                    print('Fixed: stale/broken PWA banner ->', fpath)
-
-            # ── ASCII muhur → <body> sonrasi ──
-            if 'PACDI FRAMEWORK' not in content and '<body' in content:
-                body_end = content.find('>', content.find('<body')) + 1
-                content = content[:body_end] + '\n' + ASCII_MUHUR + '\n' + content[body_end:]
-
-            # ── FSEK footer eski versiyon güncelle ──
-            if 'pacdi-fsek' in content:
-                # Eski tek satırlı versiyon → yeni iki şirketli versiyon
-                content = content.replace(
-                    '<div style="font-size:0.78rem;color:#8A8F9A;margin-bottom:4px;">\u00a9 2026 PACDI Global Yaz\u0131l\u0131m Ltd. \u015eti.</div>\n  <div style="font-size:0.72rem;color:#6B7280;margin-bottom:10px;">Protected under FSEK Copyright Registration No: <a href="https://pacdi.eu" style="color:#D4AF37;text-decoration:none;">2026/18897</a></div>',
-                    '<div style="font-size:0.78rem;color:#8A8F9A;margin-bottom:4px;">Operated by AskMeAI Teknoloji Ltd. \u015eti. (TR: 23837)</div>\n  <div style="font-size:0.72rem;color:#6B7280;margin-bottom:10px;">Intellectual property owned by \u00a9 2026 PACDI Global Yaz\u0131l\u0131m Ltd. \u015eti. &mdash; FSEK No: <a href="https://pacdi.eu/legal.html" style="color:#D4AF37;text-decoration:none;">2026/18897</a></div>'
-                )
-
-            # ── Inline Impressum fix: PACDI Global → AskMeAI ──
-            if 'Verantwortlich: PACDI Global' in content:
-                content = content.replace(
-                    'Verantwortlich: PACDI Global',
-                    'Verantwortlicher: Mehmet Ayd\u0131nl\u0131 / AskMeAI Teknoloji Ltd. \u015eti.'
-                )
-                print('Fixed: inline impressum ->', fpath)
-
-            if 'Ein Service von PACDI Global' in content:
-                content = content.replace(
-                    'Ein Service von PACDI Global',
-                    'Ein Service von AskMeAI Teknoloji Ltd. \u015eti.'
-                )
-
-            # ── Body flex fix: mevcut FSEK yanlış yerdeyse düzelt ──
-            import re as _re2
-            if 'pacdi-fsek' in content:
-                body_flex2 = _re2.search(r'body\s*\{[^}]*display\s*:\s*flex', content)
-                if body_flex2 and 'flex-direction:column' not in content:
-                    # body'ye flex-direction:column ekle
-                    content = _re2.sub(
-                        r'(body\s*\{[^}]*)(display\s*:\s*flex)',
-                        r'\1flex-direction:column;\2',
-                        content, count=1
-                    )
-
-            # ── Body flex fix: FSEK footer yan kaymasın ──
-            if 'pacdi-fsek' in content and 'display:flex' in content:
-                # Yeni versiyon
-                content = content.replace(
-                    'id="pacdi-fsek" style="clear:both;width:100%;display:block;',
-                    'id="pacdi-fsek" style="clear:both;width:100%;flex-basis:100%;display:block;'
-                )
-                # Eski versiyon — padding ile başlayan
-                import re
-                content = re.sub(
-                    r'id="pacdi-fsek" style="([^"]*?)"',
-                    lambda m: 'id="pacdi-fsek" style="' + m.group(1) + '"' 
-                        if 'flex-basis' in m.group(1) or 'clear:both' in m.group(1)
-                        else 'id="pacdi-fsek" style="clear:both;width:100%;flex-basis:100%;' + m.group(1) + '"',
-                    content
-                )
-
-            # ── FSEK visible footer ──
-            if 'pacdi-fsek' not in content and '</body>' in content and fname not in SKIP_FOOTER:
-                # Body display:flex varsa son </div> öncesine ekle (layout fix)
-                import re as _re
-                body_flex = _re.search(r'body\s*\{[^}]*display\s*:\s*flex', content)
-                if body_flex:
-                    # Son </div> + </body> pattern'ı bul
-                    last_div = content.rfind('</div>')
-                    if last_div > 0:
-                        content = content[:last_div] + FSEK_FOOTER + '\n' + content[last_div:]
-                    else:
-                        content = content.replace('</body>', FSEK_FOOTER + '\n</body>', 1)
-                else:
-                    content = content.replace('</body>', FSEK_FOOTER + '\n</body>', 1)
-
-            if content != orig:
-                with open(fpath, 'w', encoding='utf-8') as f:
-                    f.write(content)
-                updated += 1
-                print('Updated:', fpath)
-        except Exception as e:
-            print('Error:', fpath, str(e))
-
-print('Total updated:', updated)
-
-if _lint_hits:
-    print()
-    print('⚠️  ÇOK DİLLİLİK STANDART DIŞI SAYFALAR (' + str(len(_lint_hits)) + '):')
-    for fpath, reason in _lint_hits:
-        print('   -', fpath, '—', reason)
-    print('   → Bu sayfalar batch_split_lang.py ile gerçek ayrı dil')
-    print('     sayfalarına taşınmalı (bkz. PACDI çok dillilik standardı).')
-else:
-    print('✓ Çok dillilik standardı: tüm sayfalar uyumlu (ya da tek dilli).')
+print("Tamamlandı: paylaşım çubuğu (SHARE_BAR_HEAD + SHARE_BAR_SCRIPT) eklendi.")
