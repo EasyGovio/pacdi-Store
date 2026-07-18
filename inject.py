@@ -488,6 +488,17 @@ for root, dirs, files in os.walk('.'):
                 else:
                     content = content.replace('</body>', FSEK_FOOTER + '\n</body>', 1)
 
+            # ── PACDI paylaşım çubuğu — eski (flex-basis'siz) sürümü otomatik onar ──
+            # Bu düzeltmeden önce eklenmiş sayfalarda çubuk stilsiz div ile duruyordu;
+            # flex kapsayıcılarda diğer öğelerle yan yana sıkışmasına sebep oluyordu.
+            if '<div class="pacdi-share-bar" id="pacdiShareBar"></div>' in content:
+                content = content.replace(
+                    '<div class="pacdi-share-bar" id="pacdiShareBar"></div>',
+                    '<div class="pacdi-share-bar" id="pacdiShareBar" style="clear:both;width:100%;flex-basis:100%;"></div>',
+                    1
+                )
+                print('Fixed: stale share-bar (missing flex-basis) ->', fpath)
+
             # ── PACDI paylaşım çubuğu — her modülün altına, FSEK footer'ın hemen üstüne ──
             if ('pacdiShareBar' not in content and fname not in SKIP_FOOTER
                     and '<div id="pacdi-fsek"' in content):
