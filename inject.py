@@ -172,7 +172,77 @@ PWA_SCRIPT = """<script>
 
 SHARE_BAR_HEAD = '    <style>\n    .pacdi-share-bar{margin-top:24px;padding:16px;background:rgba(246,180,95,0.05);border:1px solid rgba(246,180,95,0.15);border-radius:10px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif;box-sizing:border-box;}\n    .pacdi-share-label{font-size:0.8rem;color:#7a9ab8;margin-bottom:10px;font-weight:600;}\n    .pacdi-share-btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}\n    .pacdi-share-btn{display:inline-flex;align-items:center;gap:4px;font-size:0.78rem;padding:7px 14px;border-radius:20px;border:1px solid rgba(246,180,95,0.3);background:transparent;color:#F6B45F;text-decoration:none;cursor:pointer;font-family:inherit;}\n    .pacdi-share-btn:hover{background:rgba(246,180,95,0.1);}\n    </style>\n'
 
-SHARE_BAR_SCRIPT = '<div class="pacdi-share-bar" id="pacdiShareBar"></div>\n<script>\n(function(){\n  var pageTitle = (document.title.split(\'|\')[0] || document.title).trim();\n  var pageUrl = window.location.href;\n  var shareText = \'Bu \' + pageTitle + \' aracını faydalı buldum, senin de işine yarayabilir:\';\n\n  var bar = document.getElementById(\'pacdiShareBar\');\n  if (!bar) return;\n  bar.innerHTML =\n    \'<div class="pacdi-share-label">🔗 Bu aracı paylaş</div>\' +\n    \'<div class="pacdi-share-btns">\' +\n      \'<button class="pacdi-share-btn" id="pacdiShareNative" style="display:none;">📤 Paylaş</button>\' +\n      \'<a class="pacdi-share-btn" target="_blank" rel="noopener" href="https://api.whatsapp.com/send?text=\' + encodeURIComponent(shareText + \' \' + pageUrl) + \'">💬 WhatsApp</a>\' +\n      \'<a class="pacdi-share-btn" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=\' + encodeURIComponent(shareText) + \'&url=\' + encodeURIComponent(pageUrl) + \'">𝕏</a>\' +\n      \'<a class="pacdi-share-btn" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=\' + encodeURIComponent(pageUrl) + \'">Facebook</a>\' +\n      \'<a class="pacdi-share-btn" target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url=\' + encodeURIComponent(pageUrl) + \'">LinkedIn</a>\' +\n      \'<button class="pacdi-share-btn" id="pacdiShareCopy">🔗 Kopyala</button>\' +\n    \'</div>\';\n\n  if (navigator.share) {\n    var nativeBtn = document.getElementById(\'pacdiShareNative\');\n    nativeBtn.style.display = \'inline-flex\';\n    nativeBtn.onclick = function(){\n      navigator.share({ title: pageTitle, text: shareText, url: pageUrl }).catch(function(){});\n    };\n  }\n\n  var copyBtn = document.getElementById(\'pacdiShareCopy\');\n  copyBtn.onclick = function(){\n    navigator.clipboard.writeText(pageUrl).then(function(){\n      var old = copyBtn.textContent;\n      copyBtn.textContent = \'✓ Kopyalandı!\';\n      setTimeout(function(){ copyBtn.textContent = old; }, 2000);\n    }).catch(function(){});\n  };\n})();\n</script>\n'
+def page_is_light_by_default(content):
+    """body arkaplanı zaten koyuysa (ör. #04162E lacivert) invert-tabanlı
+    gece modu TERSİNE işler (koyu sayfa açılır). Sadece açık arkaplanlı
+    sayfalara (kremli/beyaz blog vb.) gece modu enjekte edilmeli."""
+    import re as _re5
+    m = _re5.search(r'body\s*\{[^}]*background(?:-color)?\s*:\s*#([0-9a-fA-F]{6})', content)
+    hexval = None
+    if m:
+        hexval = m.group(1)
+    else:
+        m3 = _re5.search(r'body\s*\{[^}]*background(?:-color)?\s*:\s*#([0-9a-fA-F]{3})\b', content)
+        if m3:
+            hexval = ''.join(c * 2 for c in m3.group(1))
+    if not hexval:
+        return True  # arkaplan bulunamadıysa varsayılan tarayıcı beyazı kabul et
+    r, g, b = int(hexval[0:2], 16), int(hexval[2:4], 16), int(hexval[4:6], 16)
+    luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
+    return luminance > 128  # eşik: 128 üstü "açık" sayılır
+
+
+DARKMODE_HEAD = """<style>
+    [data-theme="dark"]:not([data-pacdi-native-theme]) { filter: invert(1) hue-rotate(180deg); background: #fff; }
+    [data-theme="dark"]:not([data-pacdi-native-theme]) img,
+    [data-theme="dark"]:not([data-pacdi-native-theme]) svg,
+    [data-theme="dark"]:not([data-pacdi-native-theme]) video,
+    [data-theme="dark"]:not([data-pacdi-native-theme]) picture,
+    [data-theme="dark"]:not([data-pacdi-native-theme]) iframe { filter: invert(1) hue-rotate(180deg); }
+    .pacdi-theme-toggle { position: fixed; top: 10px; right: 10px; z-index: 99999; width: 2.1rem; height: 2.1rem;
+      border: none; border-radius: 50%; background: rgba(0,0,0,0.08); font-size: 1.05rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    .pacdi-theme-toggle:hover { background: rgba(0,0,0,0.16); }
+    </style>
+"""
+
+DARKMODE_SCRIPT = """<script>
+(function(){
+  var KEY = 'pacdi-theme';
+  function apply(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    var btn = document.getElementById('pacdiThemeToggle');
+    if (btn) btn.textContent = theme === 'dark' ? '\\u2600\\uFE0F' : '\\uD83C\\uDF19';
+  }
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch(e) {}
+  var preferred = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  apply(saved || preferred);
+  function addBtn() {
+    if (document.getElementById('pacdiThemeToggle')) return;
+    var btn = document.createElement('button');
+    btn.id = 'pacdiThemeToggle';
+    btn.className = 'pacdi-theme-toggle';
+    btn.setAttribute('aria-label', 'Koyu/Acik mod');
+    btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\\u2600\\uFE0F' : '\\uD83C\\uDF19';
+    btn.onclick = function() {
+      var cur = document.documentElement.getAttribute('data-theme');
+      var next = cur === 'dark' ? 'light' : 'dark';
+      try { localStorage.setItem(KEY, next); } catch(e) {}
+      apply(next);
+    };
+    document.body.appendChild(btn);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', addBtn);
+  } else {
+    addBtn();
+  }
+})();
+</script>
+"""
+
+SHARE_BAR_SCRIPT = '<div class="pacdi-share-bar" id="pacdiShareBar" style="clear:both;width:100%;flex-basis:100%;"></div>\n<script>\n(function(){\n  var pageTitle = (document.title.split(\'|\')[0] || document.title).trim();\n  var pageUrl = window.location.href;\n  var shareText = \'Bu \' + pageTitle + \' aracını faydalı buldum, senin de işine yarayabilir:\';\n\n  var bar = document.getElementById(\'pacdiShareBar\');\n  if (!bar) return;\n  bar.innerHTML =\n    \'<div class="pacdi-share-label">🔗 Bu aracı paylaş</div>\' +\n    \'<div class="pacdi-share-btns">\' +\n      \'<button class="pacdi-share-btn" id="pacdiShareNative" style="display:none;">📤 Paylaş</button>\' +\n      \'<a class="pacdi-share-btn" target="_blank" rel="noopener" href="https://api.whatsapp.com/send?text=\' + encodeURIComponent(shareText + \' \' + pageUrl) + \'">💬 WhatsApp</a>\' +\n      \'<a class="pacdi-share-btn" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=\' + encodeURIComponent(shareText) + \'&url=\' + encodeURIComponent(pageUrl) + \'">𝕏</a>\' +\n      \'<a class="pacdi-share-btn" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=\' + encodeURIComponent(pageUrl) + \'">Facebook</a>\' +\n      \'<a class="pacdi-share-btn" target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url=\' + encodeURIComponent(pageUrl) + \'">LinkedIn</a>\' +\n      \'<button class="pacdi-share-btn" id="pacdiShareCopy">🔗 Kopyala</button>\' +\n    \'</div>\';\n\n  if (navigator.share) {\n    var nativeBtn = document.getElementById(\'pacdiShareNative\');\n    nativeBtn.style.display = \'inline-flex\';\n    nativeBtn.onclick = function(){\n      navigator.share({ title: pageTitle, text: shareText, url: pageUrl }).catch(function(){});\n    };\n  }\n\n  var copyBtn = document.getElementById(\'pacdiShareCopy\');\n  copyBtn.onclick = function(){\n    navigator.clipboard.writeText(pageUrl).then(function(){\n      var old = copyBtn.textContent;\n      copyBtn.textContent = \'✓ Kopyalandı!\';\n      setTimeout(function(){ copyBtn.textContent = old; }, 2000);\n    }).catch(function(){});\n  };\n})();\n</script>\n'
 
 FSEK_FOOTER = """<div id="pacdi-fsek" style="clear:both;width:100%;flex-basis:100%;text-align:center;padding:28px 16px 20px;border-top:1px solid rgba(212,175,55,0.15);margin-top:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-sizing:border-box;">
   <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.25);border-radius:24px;padding:8px 20px;margin-bottom:12px;flex-wrap:wrap;justify-content:center;">
@@ -297,6 +367,10 @@ for root, dirs, files in os.walk('.'):
                 insert += '    ' + BETA_UNLOCK_SCRIPT
             if 'pacdiShareBar' not in content and fname not in SKIP_FOOTER:
                 insert += SHARE_BAR_HEAD
+            if ('pacdiThemeToggle' not in content and 'data-pacdi-native-theme' not in content
+                    and fname not in SKIP and page_is_light_by_default(content)):
+                insert += '    ' + DARKMODE_HEAD
+                insert += '    ' + DARKMODE_SCRIPT
 
             # ── ÖZEL: index.html giriş butonu CSS düzeltmesi ──
             if fname == 'index.html' and '#userPanel .btn-sm' not in content:
