@@ -330,9 +330,18 @@ function showErrorRetry(msg) {
   resultEl.appendChild(retryBtn);
 }
 
+var liveDiagHistory = [];
 function liveDiagWrite(msg) {
   var bar = document.getElementById('liveDiagFixed');
-  if (bar) { bar.style.display = 'block'; bar.textContent = msg; }
+  if (!bar) return;
+  liveDiagHistory.push(msg);
+  if (liveDiagHistory.length > 8) liveDiagHistory.shift();
+  bar.style.display = 'block';
+  bar.style.maxHeight = '32vh';
+  bar.style.overflowY = 'auto';
+  bar.style.textAlign = 'left';
+  bar.style.lineHeight = '1.5';
+  bar.innerHTML = liveDiagHistory.map(function(m){ return m.replace(/</g,'&lt;'); }).join('<br>');
 }
 
 function showResult(text) {
