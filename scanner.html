@@ -418,10 +418,15 @@ function decodeImage(src) {
   liveDiagWrite('🖼️ Resim yükleniyor...');
   var img = new Image();
   img.onload = function() {
-    liveDiagWrite('✅ Resim yüklendi: ' + img.naturalWidth + '×' + img.naturalHeight + ', ZXing çözümleniyor...');
-    canvas.width  = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-    ctx.drawImage(img, 0, 0);
+    var MAX_DIM = 1600;
+    var w = img.naturalWidth, h = img.naturalHeight;
+    var scale = Math.min(1, MAX_DIM / Math.max(w, h));
+    var drawW = Math.round(w * scale);
+    var drawH = Math.round(h * scale);
+    liveDiagWrite('✅ Resim yüklendi: ' + w + '×' + h + ' → ' + drawW + '×' + drawH + ' (ölçek ' + scale.toFixed(2) + '), ZXing çözümleniyor...');
+    canvas.width  = drawW;
+    canvas.height = drawH;
+    ctx.drawImage(img, 0, 0, drawW, drawH);
 
     var hints = new Map();
     var formats = [
