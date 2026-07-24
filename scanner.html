@@ -406,8 +406,10 @@ function showResult(text) {
 function decodeImage(src) {
   var t = i18n[currentLang] || i18n.de;
   showStatus(t.status_decoding);
+  liveDiagWrite('🖼️ Resim yükleniyor...');
   var img = new Image();
   img.onload = function() {
+    liveDiagWrite('✅ Resim yüklendi: ' + img.naturalWidth + '×' + img.naturalHeight + ', ZXing çözümleniyor...');
     canvas.width  = img.naturalWidth;
     canvas.height = img.naturalHeight;
     ctx.drawImage(img, 0, 0);
@@ -434,20 +436,24 @@ function decodeImage(src) {
       var binarizer = new ZXing.HybridBinarizer(luminance);
       var bitmap    = new ZXing.BinaryBitmap(binarizer);
       var result    = reader.decode(bitmap);
+      liveDiagWrite('✅ Kod bulundu (1. deneme)');
       showResult(result.getText());
     } catch(e) {
+      liveDiagWrite('⚠️ 1. deneme başarısız (' + (e && e.name ? e.name : e) + '), ters deneniyor...');
       try {
         var luminance2 = new ZXing.HTMLCanvasElementLuminanceSource(canvas);
         var binarizer2 = new ZXing.HybridBinarizer(luminance2);
         var bitmap2 = new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(new ZXing.InvertedLuminanceSource(luminance2)));
         var result2 = reader.decode(bitmap2);
+        liveDiagWrite('✅ Kod bulundu (2. deneme)');
         showResult(result2.getText());
       } catch(e2) {
+        liveDiagWrite('❌ Kod bulunamadı (' + (e2 && e2.name ? e2.name : e2) + ')');
         showErrorRetry(t.error_no_code);
       }
     }
   };
-  img.onerror = function(){ showError(t.error_image); };
+  img.onerror = function(){ liveDiagWrite('❌ Resim yüklenemedi (img.onerror)'); showError(t.error_image); };
   img.src = src;
 }
 
@@ -457,7 +463,12 @@ function handleFile(file) {
   decodeImage(url);
 }
 
-document.getElementById('captureInput').addEventListener('change', function(){ handleFile(this.files[0]); this.value=''; });
+document.getElementById('captureInput').addEventListener('change', function(){
+  liveDiagWrite('📷 change event tetiklendi, dosya sayısı: ' + (this.files ? this.files.length : 'files=null'));
+  if (!this.files || !this.files[0]) { liveDiagWrite('⚠️ Dosya bulunamadı (this.files boş)'); return; }
+  liveDiagWrite('📷 Dosya alındı: ' + this.files[0].size + ' byte, tip: ' + this.files[0].type);
+  handleFile(this.files[0]); this.value='';
+});
 document.getElementById('galleryInput').addEventListener('change', function(){ handleFile(this.files[0]); this.value=''; });
 
 function startLive() {
