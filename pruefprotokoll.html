@@ -684,6 +684,14 @@
             <label id="lbl-pruefer">Durch: / Prüfer</label>
             <input type="text" id="pruefer" placeholder="Name des Prüfers" value="Max Mustermann" data-store="pruefer">
         </div>
+        <div class="field" style="grid-column: span 2;">
+            <label id="lbl-firmenlogo">Firmenlogo (im PDF)</label>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <input type="file" id="firmenlogoInput" accept="image/png,image/jpeg" onchange="handleLogoUpload(event)" style="flex:1;">
+                <img id="firmenlogoPreview" src="" alt="" style="display:none; max-height:32px; max-width:80px; border-radius:4px; background:#fff; padding:2px;">
+                <button type="button" id="firmenlogoRemoveBtn" onclick="removeLogo()" style="display:none; background:none; border:1px solid #555; color:#ccc; border-radius:4px; padding:4px 8px; cursor:pointer; font-size:12px;">✕</button>
+            </div>
+        </div>
     </div>
 
     <!-- TOOLBAR -->
@@ -1023,6 +1031,48 @@
             } catch(e) { alert(ppT('alert_load_error','Fehler beim Laden') + ': ' + e.message); }
         }
 
+        // ––– FIRMENLOGO (PDF) –––
+        function handleLogoUpload(event) {
+            var file = event.target.files && event.target.files[0];
+            if (!file) return;
+            if (file.size > 1024 * 1024) {
+                alert(ppT('alert_logo_too_big', 'Logo zu groß (max. 1 MB).'));
+                event.target.value = '';
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                localStorage.setItem('pp_firmenlogo', e.target.result);
+                showLogoPreview(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeLogo() {
+            localStorage.removeItem('pp_firmenlogo');
+            document.getElementById('firmenlogoInput').value = '';
+            showLogoPreview(null);
+        }
+
+        function showLogoPreview(dataUrl) {
+            var img = document.getElementById('firmenlogoPreview');
+            var removeBtn = document.getElementById('firmenlogoRemoveBtn');
+            if (dataUrl) {
+                img.src = dataUrl;
+                img.style.display = 'inline-block';
+                removeBtn.style.display = 'inline-block';
+            } else {
+                img.src = '';
+                img.style.display = 'none';
+                removeBtn.style.display = 'none';
+            }
+        }
+
+        (function initLogoPreview() {
+            var saved = localStorage.getItem('pp_firmenlogo');
+            if (saved) showLogoPreview(saved);
+        })();
+
         // ––– FREEMIUM PDF LOGIC –––
         function handlePDF() {
             var used = localStorage.getItem('pdf_export_used');
@@ -1108,6 +1158,14 @@
             var pageHeight = doc.internal.pageSize.getHeight();
             var margin = 14;
             var startY = 30;
+
+            var firmenlogo = localStorage.getItem('pp_firmenlogo');
+            if (firmenlogo) {
+                try {
+                    var logoType = firmenlogo.indexOf('image/png') !== -1 ? 'PNG' : 'JPEG';
+                    doc.addImage(firmenlogo, logoType, margin, 8, 30, 16, undefined, 'FAST');
+                } catch (e) { /* beschädigtes/inkompatibles Logo still ignorieren */ }
+            }
 
             doc.setFontSize(16); doc.setFont('helvetica', 'bold');
             doc.setTextColor(212, 175, 55);
@@ -1509,6 +1567,7 @@
       lbl_raum: 'Oda',
       lbl_datum: 'Tarih',
       lbl_pruefer: 'Denetleyen / Denetçi',
+      lbl_firmenlogo: 'Firma Logosu (PDF içinde)',
       btn_add_row: '➕ Cihaz ekle',
       btn_del_last: '🗑️ Son satırı sil',
       btn_del_selected: '🗑️ Seçilenleri sil',
@@ -1595,6 +1654,7 @@
       lbl_raum: 'Raum',
       lbl_datum: 'Datum',
       lbl_pruefer: 'Durch: / Prüfer',
+      lbl_firmenlogo: 'Firmenlogo (im PDF)',
       btn_add_row: '➕ Gerät hinzufügen',
       btn_del_last: '🗑️ Letzte Zeile löschen',
       btn_del_selected: '🗑️ Ausgewählte löschen',
@@ -1681,6 +1741,7 @@
       lbl_raum: 'Room',
       lbl_datum: 'Date',
       lbl_pruefer: 'Inspector',
+      lbl_firmenlogo: 'Company logo (in PDF)',
       btn_add_row: '➕ Add device',
       btn_del_last: '🗑️ Delete last row',
       btn_del_selected: '🗑️ Delete selected',
@@ -1783,6 +1844,7 @@
     if (el = document.getElementById('lbl-raum')) el.textContent = t.lbl_raum;
     if (el = document.getElementById('lbl-datum')) el.textContent = t.lbl_datum;
     if (el = document.getElementById('lbl-pruefer')) el.textContent = t.lbl_pruefer;
+    if (el = document.getElementById('lbl-firmenlogo')) el.textContent = t.lbl_firmenlogo;
     if (el = document.getElementById('btn-add-row')) el.textContent = t.btn_add_row;
     if (el = document.getElementById('btn-del-last')) el.textContent = t.btn_del_last;
     if (el = document.getElementById('btn-del-selected')) el.textContent = t.btn_del_selected;
