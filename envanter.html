@@ -19,6 +19,8 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-E6ML8EDW0H"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-E6ML8EDW0H");</script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #04162E; color: #eaf2fb; font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; padding: 16px; padding-bottom: 60px; }
@@ -169,6 +171,16 @@
     </div>
     <button class="btn btn-outline" onclick="exportInventar()" id="btn-export">📦 Inventar exportieren (JSON)</button>
     <button class="btn btn-outline" onclick="exportInventarCSV()" id="btn-export-csv" style="margin-top:8px;">📋 CSV (Prüfprotokoll) exportieren</button>
+    <button class="btn btn-outline" onclick="exportInventarPDF()" id="btn-export-pdf" style="margin-top:8px;">📄 PDF exportieren</button>
+    <div class="card" style="margin-top:12px;">
+      <div class="card-title" id="lbl-firmenlogo-envanter">Firmenlogo (im PDF)</div>
+      <p style="font-size:0.72rem;color:#7a9ab8;margin-bottom:8px;">Wird auch im Prüfprotokoll-Tool verwendet — einmal hochladen, überall gültig.</p>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <input type="file" id="firmenlogoInputEnv" accept="image/png,image/jpeg" onchange="handleLogoUploadEnv(event)" style="flex:1;">
+        <img id="firmenlogoPreviewEnv" src="" alt="" style="display:none; max-height:32px; max-width:80px; border-radius:4px; background:#fff; padding:2px;">
+        <button type="button" id="firmenlogoRemoveBtnEnv" onclick="removeLogoEnv()" style="display:none; background:none; border:1px solid #555; color:#ccc; border-radius:4px; padding:4px 8px; cursor:pointer; font-size:12px;">✕</button>
+      </div>
+    </div>
   </div>
 
   <div id="tab-kontrol" class="tab-content">
@@ -585,6 +597,89 @@
     // stillschweigend fehlschlagen. Deshalb: Teilen/Kopieren-Dialog als
     // zuverlässiger Weg, plus klassischer Download für Desktop.
     showExportModal(json, filename, 'application/json');
+    toast(t.toast_exported);
+  };
+
+  // ––– FIRMENLOGO (PDF) — geteilt mit Prüfprotokoll-Tool (localStorage key: pp_firmenlogo) –––
+  window.handleLogoUploadEnv = function(event) {
+    var file = event.target.files && event.target.files[0];
+    if (!file) return;
+    if (file.size > 1024 * 1024) {
+      alert('Logo zu groß (max. 1 MB).');
+      event.target.value = '';
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      localStorage.setItem('pp_firmenlogo', e.target.result);
+      showLogoPreviewEnv(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  window.removeLogoEnv = function() {
+    localStorage.removeItem('pp_firmenlogo');
+    document.getElementById('firmenlogoInputEnv').value = '';
+    showLogoPreviewEnv(null);
+  };
+
+  function showLogoPreviewEnv(dataUrl) {
+    var img = document.getElementById('firmenlogoPreviewEnv');
+    var removeBtn = document.getElementById('firmenlogoRemoveBtnEnv');
+    if (!img || !removeBtn) return;
+    if (dataUrl) {
+      img.src = dataUrl; img.style.display = 'inline-block'; removeBtn.style.display = 'inline-block';
+    } else {
+      img.src = ''; img.style.display = 'none'; removeBtn.style.display = 'none';
+    }
+  }
+
+  (function initLogoPreviewEnv() {
+    var saved = localStorage.getItem('pp_firmenlogo');
+    if (saved) showLogoPreviewEnv(saved);
+  })();
+
+  window.exportInventarPDF = function() {
+    var t = i18n[currentLang] || i18n.de;
+    if (!inventory.length) { toast(t.toast_error, true); return; }
+
+    var doc = new jspdf.jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    var margin = 14;
+
+    var firmenlogo = localStorage.getItem('pp_firmenlogo');
+    if (firmenlogo) {
+      try {
+        var logoType = firmenlogo.indexOf('image/png') !== -1 ? 'PNG' : 'JPEG';
+        doc.addImage(firmenlogo, logoType, margin, 8, 30, 16, undefined, 'FAST');
+      } catch (e) { /* Logo überspringen falls inkompatibel */ }
+    }
+
+    doc.setFontSize(16); doc.setFont('helvetica', 'bold');
+    doc.text('Inventarliste', margin, 28);
+    doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+    doc.text('Erstellt am: ' + new Date().toLocaleDateString('de-DE'), margin, 34);
+
+    var rows = inventory.map(function(item) {
+      return [
+        item.uid || '',
+        item.standort || '',
+        item.name || '',
+        item.nextCheck || '',
+        item.status || ''
+      ];
+    });
+
+    doc.autoTable({
+      startY: 40,
+      head: [['Inventar-Code', 'Standort', 'Gerät', 'Nächste Prüfung', 'Status']],
+      body: rows,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [4, 22, 46] },
+      margin: { left: margin, right: margin }
+    });
+
+    var filename = 'PACDI-Inventarliste-' + new Date().toISOString().split('T')[0] + '.pdf';
+    doc.save(filename);
     toast(t.toast_exported);
   };
 
